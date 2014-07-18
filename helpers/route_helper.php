@@ -15,6 +15,10 @@
  */
 $_route_paths = array();
 
+/**
+ * @access private
+ * Initialize URL routing
+ */
 function route_init(){
 	if (!isset($_SERVER['HTTP_REFERER'])) {
 		$_SERVER['HTTP_REFERER'] = '';
@@ -47,6 +51,7 @@ function route_init(){
 	$_GET[ROUTE] = route_request();
 }
 /**
+ * @access private
  * Returns the requested URL path of the page being viewed.
  * Examples:
  * - http://example.com/foo/bar returns "foo/bar".

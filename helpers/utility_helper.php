@@ -13,12 +13,14 @@
  * @author		Sithu K. <cithukyaw@gmail.com>
  * @license     http://www.opensource.org/licenses/mit-license.php MIT License
  */
+ 
 /**
- * @private
+ * @access	private
  * ob_start callback function to output buffer
  * It also adds the conditional IE comments and class (ie6,...ie10..) to <html> 
- * @hook __flush() at app/helpers/utility_helper.php 
- * @return string
+ * @hook 	__flush() at app/helpers/utility_helper.php 
+ * @param	string $buffer The ouput buffer
+ * @return 	string
  */ 
 function _flush($buffer, $mode){
 	# Add IE-specific class to the <html> tag
@@ -43,7 +45,7 @@ function _flush($buffer, $mode){
 	return $buffer;
 }
 /**
- * @private 
+ * @access private 
  * This function is a callback for preg_replace_callback()
  * It adds the conditional IE comments and class (ie6,...ie10..) to <html> 
  * @return string
@@ -194,7 +196,7 @@ function _lang(){
 	return $lc_lang;
 }
 /*
- * Get the current site language code by converting dash to underscore
+ * Get the current site language code by converting dash (URL-friendly) to underscore (db-friendly)
  * @return string
  */
 function _queryLang($lang=NULL){
@@ -264,26 +266,26 @@ function _ssl(){
 }
 /**
  * Get the absolute URL path
- * @param $path		(string) Routing path such as "foo/bar"; NULL for the current path
- * @param $queryStr	(array)  Query string as array(
- *								$value1, // no key here
- *								'key1' => $value2,
- *								'key3' => $value3 or array($value3, $value4)
- *							 )
-  * @param $lang	(string) Languague code to be prepended to $path such as "en/foo/bar". It will be useful for site language switch redirect
+ * @param string 	$path		Routing path such as "foo/bar"; NULL for the current path
+ * @param array 	$queryStr	Query string as array(
+ *									$value1, // no key here
+ *									'key1' => $value2,
+ *									'key3' => $value3 or array($value3, $value4)
+ *								 )
+  * @param string	$lang		Languague code to be prepended to $path such as "en/foo/bar". It will be useful for site language switch redirect
  */
 function _url($path=NULL, $queryStr=array(), $lang=''){
 	return route_url($path, $queryStr, $lang);
 }
 /**
  * Header redirect to a specific location
- * @param $path	(string) Routing path such as "foo/bar"; NULL for the current path
- * @param $queryStr	(array)  Query string as array(
- *								$value1, // no key here
- *								'key1' => $value2,
- *								'key3' => $value3 or array($value3, $value4)
- *							 )
- * @param $lang	(string) Languague code to be prepended to $path such as "en/foo/bar". It will be useful for site language switch redirect 
+ * @param string 	$path		Routing path such as "foo/bar"; NULL for the current path
+ * @param array 	$queryStr	Query string as array(
+ *									$value1, // no key here
+ *									'key1' => $value2,
+ *									'key3' => $value3 or array($value3, $value4)
+ *							 	)
+ * @param string 	$lang		Languague code to be prepended to $path such as "en/foo/bar". It will be useful for site language switch redirect 
  */
 function _redirect($path=NULL, $queryStr=array(), $lang=''){
 	$url = route_url($path, $queryStr, $lang);
@@ -319,7 +321,8 @@ function _arg($index = NULL, $path = NULL) {
 	
 	if(is_null($path)) $path = route_path();
 	$arguments = explode('/', $path);
-	if(is_numeric($index)){		
+
+	if(is_numeric($index)){
 		if (!isset($index)) {
 			return $arguments;
 		}
@@ -350,7 +353,7 @@ function _arg($index = NULL, $path = NULL) {
 }
 /**
  * Check if the URI has a language code and return it
- * @return The 2-letter language code if it has one, otherwise return FALSE
+ * @return mixed The 2-letter language code if it has one, otherwise return FALSE
  */
 function _getLangInURI(){
 	global $lc_baseURL;
@@ -372,9 +375,8 @@ function _getLangInURI(){
 /**
  * Validate that a hostname (for example $_SERVER['HTTP_HOST']) is safe.
  *
- * @param $host string The host name
- *
- * @return boolean TRUE if only containing valid characters, or FALSE otherwise.
+ * @param 	string $host The host name
+ * @return 	boolean TRUE if only containing valid characters, or FALSE otherwise.
  */
 function _validHost($host) {
   return preg_match('/^\[?(?:[a-zA-Z0-9-:\]_]+\.?)+$/', $host);
@@ -382,8 +384,8 @@ function _validHost($host) {
 /**
  * Get the page title glued by a separator
  *
- * @param string|array
- * @return string The formatted page title
+ * @param 	string|array
+ * @return 	string The formatted page title
  */
 function _title(){
 	global $lc_siteName;
@@ -419,8 +421,8 @@ function _title(){
 /**
  * Filters elements of an array which have empty values
  *
- * @param array $input The input array
- * @return array The filtered array
+ * @param 	array $input The input array
+ * @return	array The filtered array
  */
 function _filterArrayEmpty($input){
 	return array_filter($input, '_notEmpty');
@@ -428,8 +430,8 @@ function _filterArrayEmpty($input){
 /**
  * Check the given value is not empty
  *
- * @param string $value The value to be checked
- * @return boolean TRUE if not empty; FALSE if empty
+ * @param 	string $value The value to be checked
+ * @return 	boolean TRUE if not empty; FALSE if empty
  */
 function _notEmpty($value){
 	$value = trim($value);
@@ -438,9 +440,8 @@ function _notEmpty($value){
 /**
  * Generate breadcrumb by a separator
  *
- * @param string|array
- *
- * @return string The formatted page title
+ * @param 	string|array
+ * @return 	string The formatted page title
  */
 function _breadcrumb(){
 	global $lc_breadcrumbSeparator;
@@ -474,9 +475,9 @@ function _shorten($str, $length=50, $useDots=false){
 /**
  * Format a string
  *
- * @param $value string A text string to be formatted
- * @param $glue string The glue string between each element
- * @param $lastGlue string The glue string between the last two elements
+ * @param string $value A text string to be formatted
+ * @param string $glue The glue string between each element
+ * @param string $lastGlue The glue string between the last two elements
  *
  * @return string The formatted text string
  */ 
@@ -500,9 +501,9 @@ if(!function_exists('_fstr')){
 /**
  * Format a number
  *
- * @param $value int/float A number to be formatted
- * @param $decimal int The decimal places. Default is 2.
- * @param $unit string The unit appended to the number (optional)
+ * @param int 	 $value A number to be formatted
+ * @param int	 $decimal The decimal places. Default is 2.
+ * @param string $unit The unit appended to the number (optional)
  *
  * @return string The formatted number
  */ 
@@ -522,7 +523,16 @@ if(!function_exists('_fnum')){
 		return $value;
 	}
 }
-
+/**
+ * Format a number in a smarter way, i.e., decimal places are omitted where necessary. 
+ * Given the 2 decimal places, the value 5.00 will be shown 5 whereas the value 5.01 will be shown as it is.
+ *
+ * @param int 	 $value A number to be formatted
+ * @param int	 $decimal The decimal places. Default is 2.
+ * @param string $unit The unit appended to the number (optional)
+ *
+ * @return string The formatted number
+ */ 
 if(!function_exists('_fnumSmart')){
 	function _fnumSmart($value, $decimals=2, $unit=''){
 		global $lc_nullFill;
@@ -536,6 +546,12 @@ if(!function_exists('_fnumSmart')){
 		return $value;
 	}
 }
+/**
+ * Remove the number formatting (e.g., thousand separator) from the given number
+ *
+ * @param  mixed $num A number to remove the formatting
+ * @return mixed The number
+ */ 
 
 if(!function_exists('_fnumReverse')){
 	function _fnumReverse($num){
@@ -545,7 +561,7 @@ if(!function_exists('_fnumReverse')){
 /**
  * Format a date
  *
- * @param $date string A date to be formatted
+ * @param  string $date A date to be formatted
  * @return string The formatted date
  */ 
 if(!function_exists('_fdate')){
@@ -558,8 +574,8 @@ if(!function_exists('_fdate')){
 /**
  * Format a date/time
  *
- * @param string $date A date/time to be formatted
- * @return string The formatted date/time
+ * @param 	string $date A date/time to be formatted
+ * @return 	string The formatted date/time
  */ 
 if(!function_exists('_fdatetime')){
 	function _fdatetime($dateTime){
@@ -567,7 +583,15 @@ if(!function_exists('_fdatetime')){
 		return date($lc_dateTimeFormat, strtotime($dateTime));
 	}
 }
-
+/**
+ * Print or return the message formatted with HTML
+ *
+ * @param  	mixed 	$msg A message string or Array of message strings
+ * @param	string 	$class The CSS class name
+ * @param	bool	$return TRUE to return HTML, FALSE to print it directly
+ *
+ * @return 	string 	The formatted date
+ */ 
 if(!function_exists('_msg')){
 	function _msg($msg, $class='error', $return = false){
 		if(empty($msg)) $html = '';
@@ -594,11 +618,13 @@ if(!function_exists('_msg')){
 	}
 }
 /*
- * @param string $file File name or path to a file
- * @param int $precision Digits to display after decimal
+ * Find the size of the given file.
+ * @param string 	$file File name or path to a file
+ * @param int 		$precision Digits to display after decimal
+ * @param array		$sizes Array of size units, e.g., array("TB","GB","MB","KB","B"). Default is array("MB","KB","B")
  * @return string|bool Size (B, KiB, MiB, GiB, TiB, PiB, EiB, ZiB, YiB) or boolean
  */
-function _filesize($file, $digits = 2) {
+function _filesize($file, $digits = 2, $sizes = array("MB","KB","B")) {
 	if (is_file($file)) {
 		$filePath = $file;
 		if (!realpath($filePath)) {
@@ -606,8 +632,6 @@ function _filesize($file, $digits = 2) {
        	}
 		$filePath = $file;
 		$fileSize = filesize($filePath);
-		//$sizes = array("TB","GB","MB","KB","B");
-		$sizes = array("MB","KB","B");
 		$total = count($sizes);
 		while ($total-- && $fileSize > 1024) {
 			$fileSize /= 1024;
@@ -619,9 +643,10 @@ function _filesize($file, $digits = 2) {
 
 if(!function_exists('_randomCode')){
 /**
- * @param1 	: $length	- int 	length of required random string 
- * @param2	: $letters	- array	Array of letters from which randomized string is derived from
- * @return	: Random string of requried length
+ * Generate a random string from the given array of letters.
+ * @param	int 	$length	The length of required random string 
+ * @param	array 	$letters Array of letters from which randomized string is derived from. Default is a to z and 0 to 9.
+ * @return	string 	Random string of requried length
  */ 
 	function _randomCode($length=5, $letters = array()){
 		# Letters & Numbers for default
@@ -640,9 +665,9 @@ if(!function_exists('_slug')){
 /**
  * Generate a slug of human-readable keywords
  * 
- * @param $string string Text to slug
- * @param $table string Table name to check in. If it is empty, no check in the table
- * @param $condition string|array Condition to append table check-in, e.g, 'fieldName != value' or array('fieldName !=' => value)
+ * @param string 		$string 	Text to slug
+ * @param string 		$table 		Table name to check in. If it is empty, no check in the table
+ * @param string|array	$condition 	Condition to append table check-in, e.g, 'fieldName != value' or array('fieldName !=' => value)
  *
  * @return string The slug
  */
@@ -683,9 +708,9 @@ if(!function_exists('_slug')){
 /**
  * Return the SQL date (Y-m-d) from the given date and format
  *
- * @param $date string date to convert
- * @param $givenFormat string format for the given date
- * @param $separator string separator in the date
+ * @param string $date Date to convert
+ * @param string $givenFormat Format for the given date
+ * @param string $separator Separator in the date. Default is dash "-"
  *
  * @return string the SQL date string if the given date is valid, otherwise NULL
  */
@@ -705,9 +730,9 @@ function _sqlDate($date, $givenFormat='dmy', $separator='-'){
 	}
 }
 /**
- * Encrypts the given text using security salt
+ * Encrypts the given text using security salt if mcrypt extension is enabled, otherwise using md5()
  *
- * @param string $text Text to be encrypted
+ * @param  string $text Text to be encrypted
  * @return string The encrypted text
  */
 function _encrypt($text){
@@ -716,10 +741,10 @@ function _encrypt($text){
 	return trim(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $lc_securitySalt, $text, MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND))));
 }
 /**
- * Decrypts the given text using security salt
+ * Decrypts the given text using security salt if mcrypt extension is enabled, otherwise return the original encrypted string
  *
- * @param string $text Text to be decrypted
- * @return string The decrypted text
+ * @param 	string $text Text to be decrypted
+ * @return 	string The decrypted text
  */
 function _decrypt($text){
 	global $lc_securitySalt;
@@ -731,8 +756,8 @@ $_meta = array();
 /**
  * Simple quick helper function for <meta> tag attribute values
  *
- * @param string $key The <meta> tag name
- * @param string $value If the value is empty, this is a Getter fuction; otherwise Setter function
+ * @param  string $key 		The <meta> tag name
+ * @param  string $value 	If the value is empty, this is a Getter fuction; otherwise Setter function
  * @return string The content
  */
 function _meta($key, $value=''){
@@ -751,12 +776,12 @@ function _meta($key, $value=''){
 /**
  * Simple mail helper function
  *
- * @param string $from The sender of the mail
- * @param string $to The receiver or receivers of the mail 
- * @param subject $subject Subject of the email to be sent. 
- * @param subject $message Message to be sent
- * @param string $cc The CC receiver or receivers of the mail 
- * @param string $bcc The Bcc receiver or receivers of the mail  
+ * @param string $from 		The sender of the mail
+ * @param string $to 		The receiver or receivers of the mail 
+ * @param string $subject 	Subject of the email to be sent. 
+ * @param string $message 	Message to be sent
+ * @param string $cc 		The CC receiver or receivers of the mail 
+ * @param string $bcc 		The Bcc receiver or receivers of the mail  
  * 	The formatting of $from, $to, $cc and $bcc must comply with RFC 2822. Some examples are: 
  * 		user@example.com 
  * 		user@example.com, anotheruser@example.com 

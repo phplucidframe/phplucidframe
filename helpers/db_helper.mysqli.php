@@ -18,40 +18,62 @@
 global $db_builtQueries;
 $db_builtQueries = array();
 
+/**
+ * @access private
+ * Return the database configuration of the given namespace
+ * @param string $namespace Namespace of the configuration.
+ */
 function db_config($namespace='default'){
 	if(!isset($GLOBALS['lc_databases'][$namespace])){
 		die('Database configuration error!');
 	}
 	return $GLOBALS['lc_databases'][$namespace];
 } 
- 
+/**
+ * Return the database host name of the given namespace
+ * @param string $namespace Namespace of the configuration. 
+ */ 
 function db_host($namespace='default'){
 	$conf = db_config($namespace);
 	return $conf['host'];
 }
-
+/**
+ * Return the database name of the given namespace
+ * @param string $namespace Namespace of the configuration.
+ */ 
 function db_name($namespace='default'){
 	$conf = db_config($namespace);
 	if(!isset($conf['database'])) die('Database name is not set.');
 	return $conf['database'];
 }
-
+/**
+ * Return the database user name of the given namespace
+ */ 
 function db_user($namespace='default'){
 	$conf = db_config($namespace);
 	if(!isset($conf['username'])) die('Database username is not set.');
 	return $conf['username'];
 }
-
+/**
+ * Return the database table prefix of the given namespace
+ * @param string $namespace Namespace of the configuration.
+ */ 
 function db_prefix($namespace='default'){
 	$conf = $GLOBALS['lc_databases'][$namespace];
 	return isset($conf['prefix']) ? $conf['prefix'] : '';
 }
-
+/**
+ * Return the database collation of the given namespace
+ * @param string $namespace Namespace of the configuration.
+ */ 
 function db_collation($namespace='default'){
 	$conf = db_config($namespace);
 	return isset($conf['collation']) ? $conf['collation'] : '';
 }
-
+/**
+ * Establish a new database connection to the MySQL server
+ * @param string $namespace Namespace of the configuration.
+ */ 
 function db_connect($namespace='default'){
 	global $_conn;
 	global $_db;
@@ -78,7 +100,7 @@ function db_connect($namespace='default'){
 /**
  * Sets the default client character set
  *
- * @param string $charset The charset to be set as default.
+ * @param  string $charset The charset to be set as default.
  * @return boolean Returns TRUE on success or FALSE on failure.
  */
 function db_setCharset($charset){
@@ -127,7 +149,7 @@ function db_query($sql, $args=array()){
 /**
  * Get the last executed SQL string or one of the executed SQL strings by prividing the index
  *
- * @param int The index number of the query returned; if not given, the last query is returned
+ * @param  int The index number of the query returned; if not given, the last query is returned
  * @return string Return the built and executed SQL string
  */
 function db_queryStr(){
@@ -139,7 +161,7 @@ function db_queryStr(){
 /**
  * Escapes special characters in a string for use in a SQL statement, taking into account the current charset of the connection 
  *
- * @param string $str An escaped string
+ * @param  string $str An escaped string
  * @return string
  */
 function db_escapeString($str){
@@ -151,6 +173,7 @@ function db_escapeString($str){
 	}	
 }
 /**
+ * @access privte
  * Quote and return the value if it is string; otherwise return as it is
  * This is used for array_map()
  */
@@ -158,38 +181,67 @@ function db_escapeStringMulti($val){
 	$val = db_escapeString($val);
 	return is_numeric($val) ? $val : '"'.$val.'"';
 }
-
+/**
+ * Returns a string description of the last error
+ * @return string
+ */
 function db_error(){
 	global $_conn;
 	return mysqli_error($_conn);
 }
-
+/**
+ * Returns the error code for the most recent MySQLi function call
+ * @return int
+ */
 function db_errorNo(){
 	global $_conn;
 	return mysqli_errno($_conn);
 }
-
+/**
+ * Gets the number of rows in a result
+ * @param  MySQLi result resource
+ * @return int Returns the number of rows in the result set.
+ */
 function db_numRows($result){
 	return mysqli_num_rows($result);
 }
-
+/**
+ * Fetch a result row as an associative, a numeric array, or both
+ * @param  MySQLi result resource
+ * @return An array that corresponds to the fetched row or NULL if there are no more rows for the resultset represented by the result parameter. 
+ */
 function db_fetchArray($result){
 	return mysqli_fetch_array($result);
 }
-
+/**
+ * Fetch a result row as an associative array
+ * @param  MySQLi result resource
+ * @return An associative array that corresponds to the fetched row or NULL if there are no more rows. 
+ */
 function db_fetchAssoc($result){
 	return mysqli_fetch_assoc($result);
 }
-
+/**
+ * Returns the current row of a result set as an object
+ * @param  MySQLi result resource
+ * @return an object that corresponds to the fetched row or NULL if there are no more rows in resultset. 
+ */
 function db_fetchObject($result){
 	return mysqli_fetch_object($result);
 }
-
+/**
+ * Returns the auto generated id used in the last query
+ * @return  The value of the AUTO_INCREMENT field that was updated by the previous query. 
+ *			Returns zero if there was no previous query on the connection or if the query did not update an AUTO_INCREMENT value. 
+ */
 function db_insertId(){
 	global $_conn;
 	return mysqli_insert_id($_conn);
 }
-
+/**
+ * Returns the generated slug used in the last query
+ * @return string 
+ */
 function db_insertSlug(){
 	return getSession('lastInsertSlug');
 }

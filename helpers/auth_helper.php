@@ -19,8 +19,8 @@ if(!function_exists('auth_create')){
  * Create Authentication object
  * This function is overwritable from the custom helpers/auth_helper.php 
  *
- * @param $id string PK value
- * @param $data	object The user data object (optional). If it is not given, auth_create will load it from db
+ * @param  string $id PK value
+ * @param  object $data	The user data object (optional). If it is not given, auth_create will load it from db
  *
  * @return object The authenticated user object or FALSE on failure
  */
@@ -61,6 +61,7 @@ if(!function_exists('auth_create')){
 }
 /**
  * Get the namespace for the authentication object
+ * Sometimes, the Auth session name should be different upon directory (namespace)
  */
 function auth_namespace(){
 	if(LC_NAMESPACE) $name = 'AuthUser.' . LC_NAMESPACE;
@@ -99,6 +100,7 @@ function auth_isAnonymous(){
 }
 /**
  * Check if a user is authenticated
+ * @return boolean
  */
 function auth_isLoggedIn(){
 	return ! auth_isAnonymous();
@@ -108,6 +110,8 @@ if(!function_exists('auth_role')){
 /**
  * Check if the authenticate user has the specific user role
  * This function is overwritable from the custom helpers/auth_helper.php  
+ * @param  string $role The user role name or key
+ * @return boolean
  */
 	function auth_role($role){
 		global $lc_auth;
@@ -122,7 +126,9 @@ if(!function_exists('auth_role')){
 if(!function_exists('auth_permissions')){
 /**
  * Get the permissions of a particular role
- * This function is overwritable from the custom helpers/auth_helper.php  
+ * This function is overwritable from the custom helpers/auth_helper.php
+ * @param  string $role The user role name or key
+ * @return Array of permissions of the role   
  */
 	function auth_permissions($role){
 		global $lc_auth;
@@ -134,7 +140,9 @@ if(!function_exists('auth_permissions')){
 if(!function_exists('auth_access')){
 /**
  * Check if the authenticate uses has a particular permission
- * This function is overwritable from the custom helpers/auth_helper.php  
+ * This function is overwritable from the custom helpers/auth_helper.php 
+ * @param  string $perm The permission key
+ * @return boolean  
  */
 	function auth_access($perm){
 		if(auth_isAnonymous()) return false;

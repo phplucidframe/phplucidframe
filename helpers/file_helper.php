@@ -41,9 +41,9 @@ class File{
 	/**
 	 * Move the uploaded file into the given directory.
 	 * If the uploaded file is image, this will create the various images according to the given $dimension
-	 * @param $file	(array) the uploaded file information from $_FILES['xxx']
-	 * @param 		(array) Array of the uploaded files, for example,
-	 *						uploaded[dimension] = file-name for image files or uploaded[] = file-name for other files
+	 * @param  array $file		The uploaded file information from $_FILES['xxx']
+	 * @return array $uploaded 	Array of the uploaded files, for example,
+	 *							uploaded[dimension] = file-name for image files or uploaded[] = file-name for other files
 	 */
 	public function upload($file){		
 		$fileName 		= stripslashes($file['name']);
@@ -106,8 +106,8 @@ class File{
 	/**
 	 * Get a new file name, e.g., original-file-name-[imageWidth]-[uniqueId].ext
 	 * Spaces and periods in the original file names are replaced with dashes.
-	 * @param $file		(string) the uploaded file name
-	 * @param $width 	(int) The image width if the uploaded file is image, otherwise 0
+	 * @param string $file		The uploaded file name
+	 * @param int 	 $width 	The image width if the uploaded file is image, otherwise 0
 	 */
 	private function getNewFileName($file, $width=0){
 		$info = pathinfo($file);
