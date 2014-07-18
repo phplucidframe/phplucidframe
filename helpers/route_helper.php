@@ -255,7 +255,7 @@ function route_updateQueryStr($path, &$queryStr=array()){
 				$route = _arg($key, $path);
 				if($route){
 					if(is_string($key)){
-						$regex = '/(-'.$key.'\/)';
+						$regex = '/(\-'.$key.'\/)';
 						if(is_array($route)) $regex .= '('.implode('\/', $route).'+)';
 						else $regex .= '('.$route.'+)';
 						$regex .= '/i';
