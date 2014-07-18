@@ -205,6 +205,15 @@ function _queryLang($lang=NULL){
 	return str_replace('-', '_', $lang);	
 }
 /*
+ * Get the current site language code by converting underscore (db-friendly) to dash (URL-friendly)
+ * @return string
+ */
+function _urlLang($lang=NULL){
+	global $lc_lang;
+	if(!$lang) $lang = $lc_lang;
+	return str_replace('_', '-', $lang);	
+}
+/*
  * Get the default site language code by converting dash to underscore
  * @return string
  */
