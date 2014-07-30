@@ -133,12 +133,18 @@ function route_request() {
  * @return mixed The path if found; otherwise return false
  */
 function route_search(){
-	$q = route_path();
-	$seg = explode('/', $q);
-	$count = sizeof($seg);
+	$q 		= route_path();
+	$seg 	= explode('/', $q);
+	$count 	= sizeof($seg);
+	$append	= array('/index.php', '.php');
 	for($i=$count; $i>0; $i--){
-		$path = implode('/', array_slice($seg, 0, $i)) . '/index.php';
-		if(file_exists($path)) return $path;
+		# try to look for
+		# ~/path/to/the-given-name/index.php
+		# ~/path/to/the-given-name.php
+		foreach($append as $a){
+			$path = implode('/', array_slice($seg, 0, $i)) . $a;
+			if(file_exists($path)) return $path;
+		}
 	}
 	return false;
 }
