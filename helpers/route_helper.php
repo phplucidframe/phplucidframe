@@ -239,6 +239,7 @@ function route_url($path=NULL, $queryStr=array(), $lang=''){
 		$url .= $path . '?' . ltrim($q, '&');
 		$url = trim($url, '?');
 	}
+	$url = preg_replace('/(\s){1,}/', '+', $url); # replace the space with "+"
 	return $url;
 }
 /**
