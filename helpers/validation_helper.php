@@ -352,7 +352,8 @@ function validate_fileExtension($value, $extensions = array('jpg', 'jpeg', 'png'
 	if(!is_array($value)) return true;
 	if(!file_exists($value['tmp_name'])) return true;
 	if(empty($value['name'])) return true;
-	$ext = strtolower(end(explode('.', $value['name'])));
+	$ext = explode('.', $value['name']);
+	$ext = strtolower(end($ext));
 	return (in_array($ext, $extensions)) ? true : false;
 }
 /**
@@ -467,8 +468,12 @@ class Validation{
 						}
 						# if array of values, the validation function (apart from the batch validation functions) will be applied to each value						
 					}else{
-						if(!is_array($v['value'])) $values = array($v['value']);
-						else $values = $v['value'];
+						if(!is_array($v['value']) || (is_array($v['value']) && array_key_exists('tmp_name',$v['value']))){ 
+							$values = array($v['value']);
+						}else{
+							$values = $v['value'];
+						}
+						
 					}
 
 					foreach($values as $value){	
@@ -480,8 +485,8 @@ class Validation{
 							if(!$success) self::setError($id, $rule, $v);
 						}else{
 						# Pre-defined validation functions
-							$func = 'validate_'.$rule;
-							if(function_exists($func)){						
+							$func = 'validate_'.$rule;							
+							if(function_exists($func)){
 								switch($rule){
 									case 'min': 
 										# Required property: min
@@ -569,7 +574,7 @@ class Validation{
 										
 									case 'fileExtension':
 										# Required property: extensions
-										if(!isset($v['extensions']) || !isset($v['extensions'])) continue;
+										if(!isset($v['extensions'])) continue;
 										$success = call_user_func_array($func, array($value, $v['extensions']));
 										if(!$success) self::setError($id, $rule, $v, '"'.implode(', ', $v['extensions']).'"');
 										break;																																														
