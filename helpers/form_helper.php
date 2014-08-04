@@ -48,12 +48,22 @@ class Form{
 		if(!isset($_POST['lc_formToken'])) return false;
 		$token 			= _decrypt(getSession('formToken'));		
 		$postedToken 	= _decrypt(_post($_POST['lc_formToken']));
-		if($token == $postedToken){
-			return true;
-		}else{
+		$result 		= false;
+		# check token first
+		if($token == $postedToken){	
+			# check referer if it is requesting in the same site
+			if($_SERVER['HTTP_REFERER'] && _cfg('siteDomain')){
+				$parsedURL = parse_url($_SERVER['HTTP_REFERER']);				
+				if( strcasecmp(_cfg('siteDomain'), $parsedURL['host']) == 0 ){
+					$result = true;					
+				}
+			}				
+		}		
+		if($result == false){
 			Validation::addError('', _t('Error occured during form submission. Please refresh the page to try again.'));
-			return false;			
-		}				
+			return false;
+		}
+		return true;
 	}
 	
 	/* Respond AJAX Form */
