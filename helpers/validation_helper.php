@@ -480,7 +480,11 @@ class Validation{
 						# Custom validation function
 						if(strstr($rule, 'validate_')){
 							$args = array($value);
-							if(isset($v['parameters']) && is_array($v['parameters'])) $args = array_merge($args, $v['parameters']);
+							if(isset($v['parameters']) && is_array($v['parameters'])){
+								if(isset($v['parameters'][$rule])) $params = $v['parameters'][$rule];
+								else $params = $v['parameters'];
+								$args = array_merge($args, $params);
+							}
 							$success = call_user_func_array($rule, $args);
 							if(!$success) self::setError($id, $rule, $v);
 						}else{
