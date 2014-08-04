@@ -1,2 +1,16 @@
 # User specific & automatically generated files #
 #################################################
+/files/sessions/
+/files/cache/
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
+*.ttf
