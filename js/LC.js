@@ -14,6 +14,7 @@
  */
 var Form = {
 	init: function(){
+		Form.placeholderIE();		
 		$forms = $('form');
 		$.each( $forms, function(){
 			var $form = $(this);			
@@ -24,13 +25,13 @@ var Form = {
 			// submit buttons: class="submit"
 			var btns = $form.find('.submit');
 			if(btns.size()){
-				// if the form has no type=submit button, make form submit when pressing "Enter" in any textbox
-				if( $form.find('[type=submit]').size() == 0 ){	
+				// if the form has no type=submit button and the form has a class "default-submit", make form submit when pressing "Enter" in any textbox
+				if( $form.find('[type=submit]').size() == 0 && $form.hasClass('default-submit') ){	
 					$form.find('input[type=text],input[type=password]').keyup(function(e){
 						if(e.keyCode == 13) $form.submit();
 					});
 				}				
-				$.each( btns, function(){ // buttons that has a class "submit"
+				$.each( btns, function(){ // buttons that have the class "submit"
 					// The submit button click
 					$(this).bind('click', function(){
 						$form.find('input.submitButton').val($(this).attr('name'));
@@ -66,17 +67,48 @@ var Form = {
 			changeMonth: true,
 			changeYear: true,
 			dateFormat: 'dd-mm-yy'
-		});			
+		});									
+	},
+	/* IE placeholder attribute fix */
+	placeholderIE : function(){
+		if($.browser.msie && $.browser.version <= 8.0 ){
+			$inputs = $('[placeholder]');
+			$inputs.focus(function() {
+				var input = $(this);
+				if (input.val() == input.attr('placeholder')) {
+					input.val('');
+					input.removeClass('placeholder');
+				}
+			});
+			
+			$inputs.blur(function() {
+				var input = $(this);
+				if (input.val() == '' || input.val() == input.attr('placeholder')) {
+					input.addClass('placeholder');
+					input.val(input.attr('placeholder'));
+				}
+			}).blur();
+			
+			$inputs.parents('form').submit(function() {
+				$(this).find('[placeholder]').each(function() {
+					var input = $(this);
+					if (input.val() == input.attr('placeholder')) {
+						input.val('');
+					}
+				})
+			}).addClass('no-focus'); // no focus on the first element of the form.			
+		}		
 	},
 	submitForm : function(formId, e){
-		var $form = $('#'+formId);			
-		$form.find('.message').html('').hide();
-		$form.find('.message.success').removeClass('success').addClass('error');
+		var $form = $('#'+formId);
+		var $message = $form.find('.message').filter(':first');
+		$message.html('').hide();
+		$form.find('.message.success').filter(':first').removeClass('success').addClass('error');				
 		$form.find('.invalid').removeClass('invalid');
 		
 		var $action = $form.attr('action');
 		if(!$action){
-			$form.attr('action', WEB_SELF + '/action.php');
+			$form.attr('action', LC.self + '/action.php');
 		}
 					
 		if( $form.find('input[type=file]').size() ){
@@ -99,38 +131,52 @@ var Form = {
 	},
 	submitHandler : function(){
 		if(arguments.length == 1) response = arguments[0];
-		var $form = $('#'+response.formId);
-		if(response.error){
-			var errHtml = '<ul>';
-			$.each( response.error, function(i, err){ 			
-				if(err.htmlID){ 
-					if($('#'+err.htmlID).size()) $('#' + err.htmlID).addClass('invalid');
-					else $('input[name='+err.htmlID+']').addClass('invalid');
+		if(typeof response == 'object'){
+			var $form 	 = $('#'+response.formId);
+			var $message = $form.find('.message').filter(':first');
+			if(response.error){
+				var errHtml = '<ul>';
+				$.each( response.error, function(i, err){ 			
+					if(err.htmlID){ 
+						if(err.htmlID.indexOf('[]') != -1){
+							err.htmlID = err.htmlID.replace(/\[\]/, '');
+							$form.find('#'+err.htmlID).find('input,select,textarea').addClass('invalid');
+						}else{
+							if($('#'+err.htmlID).size()) $form.find('#' + err.htmlID).addClass('invalid');
+							else $form.find('input[name='+err.htmlID+'],textarea[name='+err.htmlID+'],select[name='+err.htmlID+']').addClass('invalid');
+						}
+					}
+					errHtml += '<li>' + err.msg + '</li>';
+				} );
+				errHtml += '</ul>';			
+				$message.html(errHtml).show();
+				$message.removeClass('error').addClass('error');
+				if( $message.find('ul').html() == '' ) $('#form_error ul').remove(); 
+				window.location = '#' + response.formId;
+			}else{
+				if(response.success){
+					if(response.msg){ 
+						$message.removeClass('error').addClass('success');
+						$message.html('<ul><li>'+response.msg+'</li></ul>').show();					
+					}								
+					if(response.redirect) window.location = response.redirect;
+					else{ 
+						$form.find('.reset').click();
+						window.location = '#' + response.formId;
+					}
 				}
-				errHtml += '<li>' + err.msg + '</li>';
-			} );
-			errHtml += '</ul>';
-			$form.find('.message').html(errHtml).show();
-			if( $form.find('.message ul').html() == '' ) $('#form_error ul').remove(); 
-			window.location = '#' + response.formId;
-		}else{
-			if(response.success){
-				if(response.msg){ 
-					$form.find('.message').removeClass('error').addClass('success');
-					$form.find('.message').html('<ul><li>'+response.msg+'</li></ul>').show();
-					$form.find('.reset').click();
-				}
-				if(response.callback) eval(response.callback);
-				if(response.redirect) window.location = response.redirect;
 			}
+			if(response.callback) eval(response.callback);
+			Page.progress.stop(response.formId);			
+		}else{
+			Page.progress.stop();
 		}
-		Page.progress.stop(response.formId);
 	},
 	clear : function( formId ){
 		var $form = $('#'+formId);
 		$form.find('.invalid').removeClass('invalid');
 		$form.find('input,select,textarea').val('');
-		$form.find('.message').html('').hide();		
+		$form.find('.message').filter(':first').html('').hide();		
 	},
 	data : function( id ){
 		$data = $( '#row-'+id ).find('.colAction span.row-data');
@@ -143,6 +189,7 @@ var Form = {
 };
 
 var Page = {
+	/* Throbber when doing AJAX requests */
 	progress : {
 		start : function(id){
 			if(id){
@@ -172,6 +219,25 @@ var Page = {
 		}
 	},
 	queryStr : {},
+	/* Path to the site root including the language code (if multi-langual site) */
+	root : LC.root + LC.lang,
+	/**
+	 * Performs a smooth page scroll to an anchor on the same page.
+	 */	
+	scroller : function(){
+		$('a[href*=#]:not([href=#])').click(function() {
+			if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
+				var target = $(this.hash);
+				target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+				if (target.length) {
+					$('html,body').animate({
+					  scrollTop: target.offset().top
+					}, 1000);
+					return false;
+				}
+			}
+		});		
+	},
 	/**
 	 * Get the updated query string
 	 */
@@ -270,4 +336,5 @@ $(document).ready( function(){
 	$overlay.height($(window).height());
 	
 	Form.init();
+	Page.scroller();
 } );

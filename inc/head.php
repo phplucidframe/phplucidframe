@@ -61,5 +61,5 @@ $twImage 	= (_meta('twitter:image')) ? _meta('twitter:image') : _img('logo-120x1
 <?php _js('jquery-1.7.1.min.js'); ?>
 <?php _js('jquery-ui-1.8.17.custom.js'); ?>
 <?php _script(); ?>
-<?php _js('core.js'); ?>
+<?php _js('LC.js'); ?>
 <?php _js('site.js'); ?>
