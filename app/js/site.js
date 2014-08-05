@@ -14,12 +14,24 @@ Page.Sidebar = { /* just example */
 	}
 }
 
-Page.Home = function(){ /* just example */
-	/* mapping directory */
-	url : WEB_ROOT + 'home/',
-	/* Initialize the home page */	
-	init : function(){
+Page.Home = { /* just example */
+	url : Page.root + 'home/', /* mapping directory */
+	/* Initialization of home page */
+	init : function(){ 	
+		console.log('This is home page.');
+		console.log(Page.Home.url);	
 	}
+}
+
+Page.Blog = {
+	url : Page.root + 'blog/', /* mapping directory */
+	/* Initialization of home page */
+	init : function(){ 
+		Page.Blog.list();	
+	},
+	list : function(){
+		Page.request( 'list', Page.Blog.url + 'list.php' );
+	}		
 }
 
 $(function(){

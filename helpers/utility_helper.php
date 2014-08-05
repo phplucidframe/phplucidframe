@@ -534,7 +534,7 @@ if(!function_exists('_fnum')){
 }
 /**
  * Format a number in a smarter way, i.e., decimal places are omitted where necessary. 
- * Given the 2 decimal places, the value 5.00 will be shown 5 whereas the value 5.01 will be shown as it is.
+ * For example, given the 2 decimal places, the value 5.00 will be shown 5 whereas the value 5.01 will be shown as it is.
  *
  * @param int 	 $value A number to be formatted
  * @param int	 $decimal The decimal places. Default is 2.
@@ -590,6 +590,44 @@ if(!function_exists('_fdatetime')){
 	function _fdatetime($dateTime){
 		global $lc_dateTimeFormat;
 		return date($lc_dateTimeFormat, strtotime($dateTime));
+	}
+}
+/**
+* Display elapsed time in wording
+* 
+* @param timestamp|string 	$time	The elapsed time in unix timestamp or date/time string
+* @param string 			$format The date/time format to show when 4 days passed	
+* @return string
+*/
+if(!function_exists('_ftimeAgo')){
+	function _ftimeAgo($time, $format = 'M j Y'){
+		$now = time();
+		if(!is_numeric($time)) $time = strtotime($time);
+		
+		$secElapsed = $now - $time;
+		if($secElapsed <= 60){		
+			return _t('just now');
+		}
+		elseif($secElapsed <= 3540){
+			$min = $now - $time;
+			$min = round($min/60);		
+			return _t('%d minutes ago', $min);
+		}
+		elseif($secElapsed <= 3660 ){
+			return _t('1 hour ago');
+		}
+		elseif(date('j-n-y', $now) == date('j-n-y', $time)){
+			return date("g:i a", $time);
+		}
+		elseif(date('j-n-y', mktime(0, 0, 0, date('n', $now),date('j', $now)-1, date('Y', $now))) == date('j-n-y',$time)){
+			return _t('yesterday');	
+		}
+		elseif($secElapsed <= 345600 ){
+			return date('l', $time);
+		}
+		else{
+			return date($format, $time);
+		}
 	}
 }
 /**
