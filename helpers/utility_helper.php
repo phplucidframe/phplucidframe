@@ -466,11 +466,11 @@ function _breadcrumb(){
  *
  * @param string  $str A plain text string to be shorten
  * @param integer $length The character count
- * @param boolean $useDots To append "..." or not
+ * @param boolean $trail To append "..." or not. NULL to not show
  *
  * @return string The shortent text string
  */ 
-function _shorten($str, $length=50, $useDots=false){
+function _shorten($str, $length=50, $trail='...'){
 	$str = strip_tags(trim($str));
 	if(strlen($str) <= $length) return $str;
 	$short = trim(substr($str, 0, $length));
@@ -478,7 +478,7 @@ function _shorten($str, $length=50, $useDots=false){
 	if($lastSpacePos !== false){
 		$short = substr($short, 0, $lastSpacePos);		
 	}
-	if($useDots) $short = rtrim($short, '.').'...';
+	if($trail) $short = rtrim($short, '.').$trail;
 	return $short;
 }
 /**
@@ -534,7 +534,7 @@ if(!function_exists('_fnum')){
 }
 /**
  * Format a number in a smarter way, i.e., decimal places are omitted where necessary. 
- * For example, given the 2 decimal places, the value 5.00 will be shown 5 whereas the value 5.01 will be shown as it is.
+ * Given the 2 decimal places, the value 5.00 will be shown 5 whereas the value 5.01 will be shown as it is.
  *
  * @param int 	 $value A number to be formatted
  * @param int	 $decimal The decimal places. Default is 2.
@@ -571,25 +571,27 @@ if(!function_exists('_fnumReverse')){
  * Format a date
  *
  * @param  string $date A date to be formatted
+ * @param  string $format The date/time format; The config variable will be used if it is not passed
  * @return string The formatted date
  */ 
 if(!function_exists('_fdate')){
-	function _fdate($date){
-		global $lc_dateFormat;
-		if(is_string($date)) return date($lc_dateFormat, strtotime($date));
-		else return date($lc_dateFormat, $date);
+	function _fdate($date, $format=''){
+		if(!$format) $format = _cfg('dateFormat');
+		if(is_string($date)) return date($format, strtotime($date));
+		else return date($format, $date);
 	}
 }
 /**
  * Format a date/time
  *
  * @param 	string $date A date/time to be formatted
+ * @param	string $format The date/time format; The config variable will be used if it is not passed
  * @return 	string The formatted date/time
  */ 
 if(!function_exists('_fdatetime')){
-	function _fdatetime($dateTime){
-		global $lc_dateTimeFormat;
-		return date($lc_dateTimeFormat, strtotime($dateTime));
+	function _fdatetime($dateTime, $format=''){		
+		if(!$format) $format = _cfg('dateTimeFormat');
+		return date($format, strtotime($dateTime));
 	}
 }
 /**
@@ -814,7 +816,7 @@ function _meta($key, $value=''){
 		if(isset($_meta[$key])) return $_meta[$key];
 		else return '';		
 	}else{
-		if(in_array($key, array('og:description', 'twitter:description'))){
+		if(in_array($key, array('description', 'og:description', 'twitter:description'))){
 			$value = trim(substr($value, 0, 200));
 		}
 		$_meta[$key] = $value;
