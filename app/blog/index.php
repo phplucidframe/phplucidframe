@@ -5,6 +5,7 @@
  */
 $pageTitle = _t('Blog (AJAX List & Pagination)');
 
+_meta('description', $pageTitle.': '._cfg('metaDescription'));
 ?>
 <!DOCTYPE html>
 <html>
