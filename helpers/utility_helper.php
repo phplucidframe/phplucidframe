@@ -309,6 +309,40 @@ function _page404(){
 	else _redirect('404');
 }
 /**
+ * Setter for canonical URL if the argument is given and print the canonical link tag if the argument is not given
+ * @param string $url The specific URL
+ * @return void
+ */
+$lc_canonical = '';
+function _canonical($url=NULL){
+	global $lc_canonical;
+	if(!is_null($url)) $lc_canonical = $url;
+	else{
+		return (_cfg('canonical')) ? _cfg('canonical') : _url();
+	}
+}
+/**
+ * Print hreflang for language and regional URLs
+ */
+function _hreflang(){
+	global $lc_languages;
+	if(_multilingual()){ ?>
+	<?php foreach($lc_languages as $hrefLang => $langDesc) {?>
+		<?php 
+		if(_canonical() == _url()){
+			$alternate = _url('', NULL, $hrefLang);
+			$xdefault  = _url('', NULL, false);			
+		}else{
+			$alternate = preg_replace('/\/'._lang().'\b/', '/'.$hrefLang, _canonical());
+			$xdefault  = preg_replace('/\/'._lang().'\b/', '', _canonical());
+		}
+		?>
+		<link rel="alternate" hreflang="<?php echo $hrefLang; ?>" href="<?php echo $alternate; ?>" />
+	<?php } ?>
+	<link rel="alternate" href="<?php echo $xdefault; ?>" hreflang="x-default" />
+	<?php }
+}
+/**
  * Return a component of the current path.
  * When viewing a page at the path "foo/bar", for example, arg(0) returns "foo" and arg(1) returns "bar"
 

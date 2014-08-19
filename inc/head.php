@@ -18,26 +18,8 @@ $twTitle 	= (_meta('twitter:title')) ? _meta('twitter:title') : $lc_siteName;
 $twDesc 	= (_meta('twitter:description')) ? _meta('twitter:description') : $lc_metaDescription;
 $twImage 	= (_meta('twitter:image')) ? _meta('twitter:image') : _img('logo-120x120.jpg');
 ?>
-<?php if(isset($canonical)){ ?>
-<link rel="canonical" href="<?php echo $canonical; ?>" />
-<?php }else{ ?>
-<link rel="canonical" href="<?php echo _url() ; ?>" />
-<?php } ?>
-<?php if(_multilingual()){ ?>
-<?php foreach($lc_languages as $hrefLang => $langDesc) {?>
-	<?php 
-    if(isset($canonical)){
-		$alternate = preg_replace('/\/'._lang().'\b/', '/'.$hrefLang, $canonical);
-		$xdefault  = preg_replace('/\/'._lang().'\b/', '', $canonical);
-	}else{
-		$alternate = _url('', NULL, $hrefLang);
-		$xdefault  = _url('', NULL, false);
-	}
-    ?>
-	<link rel="alternate" hreflang="<?php echo $hrefLang; ?>" href="<?php echo $alternate; ?>" />
-<?php } ?>
-<link rel="alternate" href="<?php echo $xdefault; ?>" hreflang="x-default" />
-<?php } ?>
+<link rel="canonical" href="<?php echo _canonical(); ?>" />
+<?php _hreflang(); ?>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="description" content="<?php echo $lc_metaDescription; ?>" />
 <meta name="keywords" content="<?php echo $lc_metaKeywords; ?>" />
