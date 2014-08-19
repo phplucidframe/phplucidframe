@@ -17,7 +17,7 @@ DirectoryIndex index.php index.html index.htm
 			
 	RewriteRule ^xhr/?(.*) app/index.php [NC,L]
 	
-	RewriteRule ^index.php$ index.php?bootstrap [L]
+	RewriteRule ^index.php$ app/index.php [NC,L]
 	
 	# If the request is not for a valid file
 	RewriteCond %{REQUEST_FILENAME} !-f	

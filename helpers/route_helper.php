@@ -233,6 +233,8 @@ function route_url($path=NULL, $queryStr=array(), $lang=''){
 		else $q .= '&lang=' . $lang;
 	}
 	
+	if(strtolower($path) == 'home') $path = '';
+	
 	if($lc_cleanURL){ 
 		$url .= $path . $q;
 	}else{
