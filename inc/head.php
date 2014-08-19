@@ -1,12 +1,9 @@
 <?php
-$lc_metaDescription = '';
-$lc_metaKeywords 	= '';
-
 if(_meta('description')) 	$lc_metaDescription = _meta('description');
 if(_meta('keywords')) 	 	$lc_metaKeywords = _meta('keywords');
 
 $ogTitle 	= (_meta('og:title')) ? _meta('og:title') : $lc_siteName;
-$ogURL 		= (_meta('og:url')) ? _meta('og:url') : 'http://'.$lc_siteDomain;
+$ogURL 		= (_meta('og:url')) ? _meta('og:url') : _url();
 $ogType 	= (_meta('og:type')) ? _meta('og:type') : 'website';
 $ogImage 	= (_meta('og:image')) ? _meta('og:image') : _img('logo-200x200.jpg');
 $ogDesc 	= (_meta('og:description')) ? _meta('og:description') : $lc_metaDescription;
