@@ -402,8 +402,7 @@ function _title(){
 	$args = func_get_args();
 		
 	if(count($args) == 0){ 
-		echo $lc_siteName;
-		return true;
+		return $lc_siteName;
 	}
 	if(count($args) == 1){
 		if(is_array($args[0])){
@@ -422,10 +421,11 @@ function _title(){
 	else $lc_titleSeparator = ' ';
 	
 	if(count($title)){ 
-		echo implode($lc_titleSeparator, $title);
-		if($lc_siteName) echo ' | '.$lc_siteName;
+		$title = implode($lc_titleSeparator, $title);
+		if($lc_siteName) $title .= ' | '.$lc_siteName;
+		return $title;
 	}
-	else echo $lc_siteName;
+	return $lc_siteName;
 }
 /**
  * Filters elements of an array which have empty values

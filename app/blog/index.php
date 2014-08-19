@@ -9,7 +9,7 @@ $pageTitle = _t('Blog (AJAX List & Pagination)');
 <!DOCTYPE html>
 <html>
 <head>
-	<title><?php _title($pageTitle); ?></title>
+	<title><?php echo _title($pageTitle); ?></title>
 	<?php include( _i('inc/head.php') ); ?>         
 </head>
 <body>

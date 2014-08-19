@@ -9,7 +9,7 @@ include('query.php');
 <!DOCTYPE html>
 <html>
 <head>
-	<title><?php _title(); ?></title>
+	<title><?php echo _title(); ?></title>
 	<?php include( _i('inc/head.php') ); ?>         
 </head>
 <body>
