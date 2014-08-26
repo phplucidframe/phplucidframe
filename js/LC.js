@@ -222,7 +222,7 @@ var Page = {
 	},
 	queryStr : {},
 	/* Path to the site root including the language code (if multi-langual site) */
-	root : LC.root + LC.lang,
+	root : (LC.lang) ? LC.root + LC.lang + '/' : LC.root,
 	/**
 	 * Performs a smooth page scroll to an anchor on the same page.
 	 */	
