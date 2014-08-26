@@ -38,16 +38,16 @@ class Form{
 	
 	/* Form token generation */
 	public static function token(){
-		$token = _encrypt(time());
-		setSession('formToken', $token);
-		echo '<input type="hidden" name="lc_formToken" value="'.$token.'" />';
+		$token = _encrypt(time());		
+		session_set(_cfg('formTokenName'), $token);
+		echo '<input type="hidden" name="lc_formToken_'._cfg('formTokenName').'" value="'.$token.'" />';
 	}
 	
 	/* Form token validation */
 	public static function validate(){
-		if(!isset($_POST['lc_formToken'])) return false;
-		$token 			= _decrypt(getSession('formToken'));		
-		$postedToken 	= _decrypt(_post($_POST['lc_formToken']));
+		if(!isset($_POST['lc_formToken_'._cfg('formTokenName')])) return false;
+		$token 			= _decrypt(session_get(_cfg('formTokenName')));		
+		$postedToken 	= _decrypt(_post($_POST['lc_formToken_'._cfg('formTokenName')]));
 		$result 		= false;
 		# check token first
 		if($token == $postedToken){	

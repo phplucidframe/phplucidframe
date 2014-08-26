@@ -175,7 +175,9 @@ var Form = {
 	clear : function( formId ){
 		var $form = $('#'+formId);
 		$form.find('.invalid').removeClass('invalid');
-		$form.find('input,select,textarea').val('');
+		$form.find('select,textarea').val('');
+		var $inputs = $form.find('input').filter('input:not([name^=lc_formToken])');
+		$inputs.val('');
 		$form.find('.message').filter(':first').html('').hide();		
 	},
 	data : function( id ){

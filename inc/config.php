@@ -113,6 +113,8 @@ $lc_cleanURL = true;
 # It is strongly recommended to change this and use the mhash functions to create a key from a string.
 # If you leave this blank, md5() only will be used for encryption
 $lc_securitySalt = file_get_contents(INC . 'security.salt');
+# $lc_formTokenName - Customize your form token name at your own
+$lc_formTokenName = 'LCFormToken';
 # $lc_obEnabled: output_buffering on/off				
 $lc_obEnabled = true;
 # $lc_titleSeparator - Page title separator
