@@ -34,7 +34,7 @@ function _t($str){
 		return (count($args)) ? vsprintf($str, $args) : $str;
 	}
 		
-	$po = getSession('po');
+	$po = session_get('po');
 	if(!is_array($po)) $po = array();
 	$po[$str] = '';
 	
@@ -55,7 +55,6 @@ function _t($str){
 	}
 			
 	if(isset($translated)) $po[$str] = $translated;
-	//setSession('po', $po);
 	return (count($args)) ? vsprintf($str, $args) : $str;
 }
 /**
@@ -106,7 +105,7 @@ function i18n_load() {
 	}
 
 	# if the respective po file is already parsed
-	if( $translations = getSession("i18n.{$lc_lang}") ){
+	if( $translations = session_get("i18n.{$lc_lang}") ){
 		return $lc_translation[$lc_lang] = $translations;
 	}
 	
@@ -175,6 +174,6 @@ function i18n_load() {
 	$merge[''] = $header;
 	$lc_translation[$lc_lang] = array_merge($merge, $translations);
 	# Store the array of translations in Session
-	setSession("i18n.{$lc_lang}", $lc_translation[$lc_lang]);
+	session_set("i18n.{$lc_lang}", $lc_translation[$lc_lang]);
 	return $lc_translation;
 }

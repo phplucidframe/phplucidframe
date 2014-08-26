@@ -243,7 +243,7 @@ function db_insertId(){
  * @return string 
  */
 function db_insertSlug(){
-	return getSession('lastInsertSlug');
+	return session_get('lastInsertSlug');
 }
 /**
  * Perform a count query on the database and return the count
@@ -346,7 +346,7 @@ if(!function_exists('db_insert')){
 			$slug = db_escapeString($data['slug']);
 			$slug = _slug($slug);
 			$data['slug'] = $slug;
-			setSession('lastInsertSlug', $slug);			
+			session_set('lastInsertSlug', $slug);			
 			$useSlug = false;
 		}
 				
@@ -373,7 +373,7 @@ if(!function_exists('db_insert')){
 		if($lc_useDBAutoFields){
 			if($useSlug){ 
 				$slug = _slug($slug, $table);
-				setSession('lastInsertSlug', $slug);				
+				session_set('lastInsertSlug', $slug);				
 				$values[] = '"'.$slug.'"';
 			}
 			$values[] = '"'.date('Y-m-d H:i:s').'"';
@@ -425,7 +425,7 @@ if(!function_exists('db_update')){
 			$slug = db_escapeString($data['slug']);
 			$slug = _slug($slug);
 			$data['slug'] = $slug;
-			setSession('lastInsertSlug', $slug);			
+			session_set('lastInsertSlug', $slug);			
 			$useSlug = false;
 		}
 						
@@ -455,7 +455,7 @@ if(!function_exists('db_update')){
 			if($lc_useDBAutoFields){
 				if($useSlug){
 					$slug = _slug($slug, $table, $notCondition);
-					setSession('lastInsertSlug', $slug);			
+					session_set('lastInsertSlug', $slug);			
 					$fields[] = 'slug = "'.$slug.'"';
 				}
 				$fields[] = 'updated = "' . date('Y-m-d H:i:s') . '"';

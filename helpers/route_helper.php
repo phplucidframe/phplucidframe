@@ -123,7 +123,7 @@ function route_request() {
 	define('WEB_APP_ROOT', WEB_ROOT . APP_DIR . '/');
 	define('HOME', WEB_ROOT);
 
-	setSession('lang', $lc_lang);
+	session_set('lang', $lc_lang);
 	
 	return $path;
 }

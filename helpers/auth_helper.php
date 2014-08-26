@@ -72,13 +72,13 @@ function auth_namespace(){
  * Get the authenticate user object from session
  */
 function auth_get(){
-	return getSession(auth_namespace(), true);
+	return session_get(auth_namespace(), true);
 }
 /**
  * Set the authenticate user object from session
  */
 function auth_set($sess){
-	setSession(auth_namespace(), $sess, true);	
+	session_set(auth_namespace(), $sess, true);	
 }
 /**
  * Clear the authenticate user object from session
