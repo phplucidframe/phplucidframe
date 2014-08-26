@@ -503,10 +503,14 @@ if(!function_exists('db_delete')){
 		$sql = 'DELETE FROM '.$table.' '.$condition.' LIMIT 1';
 		db_query($sql);
 		$return = ob_get_clean();
-		
-		if($return && db_errorNo() == 1451){ # If there is FK delete RESTRICT constraint
-			$sql = 'UPDATE '.$table.' SET deleted = "'.date('Y-m-d H:i:s').'" '.$condition.' LIMIT 1';
-			return (db_query($sql)) ? true : false;
+		if($return){
+			if(db_errorNo() == 1451){ # If there is FK delete RESTRICT constraint
+				$sql = 'UPDATE '.$table.' SET deleted = "'.date('Y-m-d H:i:s').'" '.$condition.' LIMIT 1';
+				return (db_query($sql)) ? true : false;
+			}else{
+				echo $return;
+				return false;
+			}
 		}
 		if(db_errorNo() == 0) return true;
 		else return false;
