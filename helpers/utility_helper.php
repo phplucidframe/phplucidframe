@@ -909,3 +909,68 @@ function _mail($from, $to, $subject='', $message='', $cc='', $bcc=''){
 				
 	return mail($to, $subject, $message, $headers);
 }
+/**
+ * Get translation strings from the POST array 
+ * and prepare to insert or update into the table according to the specified fields
+ *
+ * @param array  $post The POST array
+ * @param array  $fields The array of field name and input name mapping, e.g., array('fieldName' => 'inputName')
+ * @param string $lang The language code to fetch (if it is not provided, all languages will be fetched)
+ *
+ * @return array The data array
+ */
+function _postTranslationStrings($post, $fields, $lang=NULL){
+	global $lc_defaultLang;
+	global $lc_languages;
+	$data = array();
+	foreach($fields as $key => $name){
+		if($lang){
+			$lcode = _queryLang($lang);
+			if(isset($post[$name.'_'.$lcode])){
+				$data[$key.'_'.$lcode] = $post[$name.'_'.$lcode];
+			}			
+		}else{
+			if(isset($post[$name])) $data[$key.'_'._defaultLang()] = $post[$name];
+			foreach($lc_languages as $lcode => $lname){
+				$lcode = _queryLang($lcode);
+				if(isset($post[$name.'_'.$lcode])){
+					$data[$key.'_'.$lcode] = $post[$name.'_'.$lcode];
+				}
+			}
+		}
+	}
+	return $data;	
+}
+/**
+ * Get translation strings from the query result
+ * and return the array of $i18n[fieldName][lang] = $value
+ *
+ * @param object|array $data The query result
+ * @param array|string $fields The array of field names to get data, e.g., 'fieldName' or array('fieldName1', 'fieldName2')
+ * @param string $lang The language code to fetch (if it is not provided, all languages will be fetched)
+ * 
+ * @return array The array of translation strings
+ */
+function _getTranslationStrings($data, $fields, $lang=NULL){
+	global $lc_defaultLang;
+	global $lc_languages;
+	$data = (array)$data;
+	$i18n = array();
+	if(is_string($fields)) $fields = array($fields);
+	foreach($fields as $name){
+		if($lang){
+			$lcode = _queryLang($lang);
+			if(isset($data[$name.'_'.$lcode])){
+				$i18n[$name.'_i18n'][$lcode] = $data[$name.'_'.$lcode];
+			}			
+		}else{		
+			foreach($lc_languages as $lcode => $lname){
+				$lcode = _queryLang($lcode);
+				if(isset($data[$name.'_'.$lcode])){
+					$i18n[$name.'_i18n'][$lcode] = $data[$name.'_'.$lcode];
+				}
+			}
+		}
+	}
+	return $i18n;	
+}
