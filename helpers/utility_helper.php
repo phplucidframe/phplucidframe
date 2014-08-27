@@ -197,8 +197,33 @@ function _h($text){
  * @return string
  */
 function _lang(){
-	global $lc_lang;
-	return $lc_lang;
+	return _cfg('lang');
+}
+/*
+ * Get the default site language code
+ * @return string
+ */
+function _defaultLang(){
+	return _cfg('defaultLang');
+}
+/**
+ * Get the language array
+ * @param string|array $excepts The exceptional langauges to exclude 
+ * @return array|boolean The filtered language array or FALSE for no multi-language
+ */
+function _langs($excepts=NULL){
+	global $lc_languages;	
+	$langs = array();
+	if($excepts){
+		foreach($lc_languages as $lcode => $lname){
+			if(is_array($excepts) && in_array($lcode, $excepts)) continue;
+			if(is_string($excepts) && $lcode == $excepts) continue;
+			$langs[$lcode] = $lname;
+		}
+	}else{
+		$langs = $lc_languages;
+	}
+	return (count($langs)) ? $langs : false;
 }
 /*
  * Get the current site language code by converting dash (URL-friendly) to underscore (db-friendly)
