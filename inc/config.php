@@ -115,8 +115,6 @@ $lc_cleanURL = true;
 $lc_securitySalt = file_get_contents(INC . 'security.salt');
 # $lc_formTokenName - Customize your form token name at your own
 $lc_formTokenName = 'LCFormToken';
-# $lc_obEnabled: output_buffering on/off				
-$lc_obEnabled = true;
 # $lc_titleSeparator - Page title separator
 $lc_titleSeparator = '-';
 # $lc_breadcrumbSeparator - Breadcrumb separator

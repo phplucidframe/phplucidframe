@@ -19,9 +19,7 @@
  */
 require_once '../inc/bootstrap.php';
 
-if($lc_obEnabled){
-	ob_start('_flush');
-}
+ob_start('_flush');
 
 $q = route_path();
 
@@ -50,6 +48,4 @@ if(!empty($_page) && file_exists($_page)){
 	}
 }
 
-if($lc_obEnabled){
-	ob_end_flush();
-}
+ob_end_flush();
