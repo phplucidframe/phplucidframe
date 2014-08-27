@@ -678,16 +678,21 @@ if(!function_exists('_ftimeAgo')){
  *
  * @param  	mixed 	$msg A message string or Array of message strings
  * @param	string 	$class The CSS class name
- * @param	bool	$return TRUE to return HTML, FALSE to print it directly
+ * @param	bool	$return What is expected to return from this function:
+ *						NULL - no return; just print it
+ *						html - return HTML
+ * @param	string	$display Display the message on the spot or not
  *
  * @return 	string 	The formatted date
  */ 
 if(!function_exists('_msg')){
-	function _msg($msg, $class='error', $return = false){
+	function _msg($msg, $class='error', $return=NULL, $display='display:block'){
 		if(empty($msg)) $html = '';
+		if(empty($class)) $class = 'error';
+		$return = strtolower($return);
 		$html = '<div class="message';
 		if($class) $html .= ' '.$class.'"';
-		$html .= ' style="display:block">';		
+		$html .= ' style="'.$display.'">';		
 		if(is_array($msg)){
 			if(count($msg) > 0){
 				$html .= '<ul>';
@@ -703,8 +708,12 @@ if(!function_exists('_msg')){
 			$html .= $msg;
 		}
 		if($html) $html .= '</div>';
-		if($return) return $html;
-		else echo $html;
+		
+		if($return == 'html' || $return === true){ 
+			return $html;
+		}else{ 
+			echo $html;
+		}
 	}
 }
 /*
