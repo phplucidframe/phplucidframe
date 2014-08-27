@@ -22,23 +22,19 @@
  * @param	string $buffer The ouput buffer
  * @return 	string
  */ 
-function _flush($buffer, $mode){
+function _flush($buffer, $mode){	
 	# Add IE-specific class to the <html> tag
 	$pattern = '/(<html.*class="([^"]*)"[^>]*>)/i';
 	if(preg_match($pattern, $buffer)){
 		$buffer = preg_replace_callback($pattern, '_htmlIEFix', $buffer);	
 	}else{
-		$replace = '<!--[if !IE]> <html$1> <![endif]-->	
-		<!--[if IE 6]> <html$1 class="ie ie6"> <![endif]-->
-		<!--[if IE 7]> <html$1 class="ie ie7"> <![endif]-->
-		<!--[if IE 8]> <html$1 class="ie ie8"> <![endif]-->
-		<!--[if IE 9]> <html$1 class="ie ie9"> <![endif]-->
-		<!--[if gte IE 10]> <html$1 class="ie ie10"> <![endif]-->';
+		$replace = '<!--[if !IE]><!--><html$1 class="'._lang().'"><!--<![endif]-->	
+		<!--[if IE 6]><html$1 class="ie ie6 '._lang().'"><![endif]-->
+		<!--[if IE 7]><html$1 class="ie ie7 '._lang().'"><![endif]-->
+		<!--[if IE 8]><html$1 class="ie ie8 '._lang().'"><![endif]-->
+		<!--[if IE 9]><html$1 class="ie ie9 '._lang().'"><![endif]-->
+		<!--[if gte IE 10]> <html$1 class="ie ie10 '._lang().'"> <![endif]-->';
 		$buffer = preg_replace('/<html([^>]*)>/i', $replace, $buffer);
-	}
-	
-	if(substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')){ 
-		//$buffer = ob_gzhandler($buffer, $mode);
 	}
 	
 	if(function_exists('__flush')) return __flush($buffer, $mode); # run the hook if any
@@ -51,15 +47,17 @@ function _flush($buffer, $mode){
  * @return string
  */ 
 function _htmlIEFix($matches) {
-	$find 	 = 'class="'.$matches[2].'"';
-	$versions = range(6, 10);
-	$html = '<!--[if !IE]> '.$matches[1].' <![endif]-->';
+	$find 	 = 'class="'.$matches[2].'"';	
+	$replace = 'class="'.$matches[2].' '._lang().'"';
+	$tag   	 = str_replace($find, $replace, $matches[1]);	
+	$html 	 = '<!--[if !IE]><!-->'.$tag.'<!--<![endif]-->';	
 	$i = 0;
+	$versions = range(6, 10);
 	foreach($versions as $v){
-		$replace = 'class="'.$matches[2].' ie ie'.$v.'"';	
+		$replace = 'class="'.$matches[2].' ie ie'.$v.' '._lang().'"';	
 		$tag   	 = str_replace($find, $replace, $matches[1]);				
-		if($i == count($versions)-1) $html .= "<!--[if gte IE {$v}]> $tag <![endif]-->\n";		
-		else $html .= "<!--[if IE {$v}]> $tag <![endif]-->\n";	
+		if($i == count($versions)-1) $html .= "<!--[if gte IE {$v}]>$tag<![endif]-->\n";		
+		else $html .= "<!--[if IE {$v}]>$tag<![endif]-->\n";	
 		$i++;
 	}
 	return $html;
