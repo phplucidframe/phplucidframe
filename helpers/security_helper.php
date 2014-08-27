@@ -15,6 +15,17 @@
  */
 
 /**
+ * Check the default security salt to be changed
+ * @access private
+ */
+function security_prerequisite(){
+	$defaultSalt = md5('lucidframe');
+	$salt = file_get_contents(INC . 'security.salt');
+	if(strcmp($salt, $defaultSalt) === 0){
+		_cfg('sitewideWarnings', _t('Change your own security salt hash in the file "/inc/security.salt".'));
+	}
+}
+/**
  * Strips HTML tags in the value to prevent from XSS attack. It should be called for GET values.
  * @param  mixed $value The value which to be stripped.
  * @return mixed the cleaned value

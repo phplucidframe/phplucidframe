@@ -24,15 +24,9 @@ if(!function_exists('auth_create')){
  *
  * @return object The authenticated user object or FALSE on failure
  */
-	function auth_create($id, $data=NULL){
-		global $lc_auth;
-
-		if(!isset($lc_auth['table']) || !isset($lc_auth['fields'])){
-			trigger_error('Define $lc_auth[table] and $lc_auth[fields] in the configuration file.', E_USER_NOTICE);
-			return false;
-		}
-		
-		$auth = auth_get();
+	function auth_create($id, $data=NULL){		
+		$lc_auth = auth_prerequisite();
+		$auth 	 = auth_get();
 		if(!$auth){			
 			$table 		= db_prefix() . str_replace(db_prefix(), '', $lc_auth['table']);
 			$fieldId	= $lc_auth['fields']['id'];
@@ -57,6 +51,23 @@ if(!function_exists('auth_create')){
 			return $auth;
 		}
 		return false;
+	}
+}
+/**
+ * Check and get the authentication configuration settings
+ */
+function auth_prerequisite(){
+	global $lc_siteErrors;
+	db_prerequisite();
+	$auth = _cfg('auth');
+	if($auth['table'] && $auth['fields']['id'] && $auth['fields']['role']){
+		return $auth;
+	}else{
+		$error = new stdClass();
+		$error->message = array(_t('Required to configure $lc_auth in "/inc/config.php". It is not allowed to configure in the application-level file "/app/inc/site.config.php".'));
+		$error->type 	= 'sitewide-message error';	
+		include( _i('inc/site.error.php') );
+		exit;
 	}
 }
 /**
@@ -92,9 +103,9 @@ function auth_clear(){
  * Check if a user is not authenticated
  */
 function auth_isAnonymous(){
-	global $lc_auth;
+	$auth = auth_prerequisite();
+	$field 	 = $auth['fields']['id'];
 	$session = auth_get();
-	$field = $lc_auth['fields']['id'];	
 	if(is_object($session) && $session->$field > 0) return false;
 	else return true;
 }
@@ -114,10 +125,10 @@ if(!function_exists('auth_role')){
  * @return boolean
  */
 	function auth_role($role){
-		global $lc_auth;
 		if(auth_isAnonymous()) return false;
+		$auth  	 = auth_prerequisite();
+		$field 	 = $auth['fields']['role'];
 		$session = auth_get();
-		$field = $lc_auth['fields']['role'];
 		if($session->$field == $role) return true;
 		return false;
 	}

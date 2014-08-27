@@ -191,6 +191,8 @@ var Form = {
 };
 
 var Page = {
+	/* Path to the site root including the language code (if multi-langual site) */
+	root : (LC.lang) ? LC.root + LC.lang + '/' : LC.root,
 	/* Throbber when doing AJAX requests */
 	progress : {
 		start : function(id){
@@ -221,8 +223,42 @@ var Page = {
 		}
 	},
 	queryStr : {},
-	/* Path to the site root including the language code (if multi-langual site) */
-	root : (LC.lang) ? LC.root + LC.lang + '/' : LC.root,
+	/* 
+	 * Initialize the page 
+	 */
+	initialize : function(){
+		// 	overlay and progress message create
+		$overlay = $('body').prepend('<div id="page-loading" />').children(':first').hide();
+		$loading = $overlay.append('<div />').children(':last').attr('id', 'processing');
+		$div = $loading.append('<div />').children(':last');
+		$div.append('<span />').children(':last').html('Processing, please wait...').attr('id', 'line1');
+		
+		$overlay.width($(window).width());
+		$overlay.height($(window).height());
+				
+		Page.scroller();
+		Form.init();
+		Page.showGlobalMessage();
+	},
+	/* 
+	 * Display side-wide global message (if any)
+	 */	
+	showGlobalMessage : function(){
+		var html = '';
+		if(LC.sitewideWarnings.length){			
+			$.each(LC.sitewideWarnings, function(i, msg){
+				html = '<div class="message sitewide-message warning" title="Click to dismiss">';
+				html += '<ul>';
+				html += '<li>' + msg + '</li>';
+				html += '</ul>';
+				html += '</div>';
+				$('body').prepend(html);				
+			});	
+			$('.message.sitewide-message.warning').slideDown().click(function(){
+				$(this).hide();
+			});;
+		}
+	},	
 	/**
 	 * Performs a smooth page scroll to an anchor on the same page.
 	 */	
@@ -327,16 +363,6 @@ var Page = {
 	}
 };
 
-$(document).ready( function(){
-	// 	overlay and progress message create
-	$overlay = $('body').prepend('<div id="page-loading" />').children(':first').hide();
-	$loading = $overlay.append('<div />').children(':last').attr('id', 'processing');
-	$div = $loading.append('<div />').children(':last');
-	$div.append('<span />').children(':last').html('Processing, please wait...').attr('id', 'line1');
-	
-	$overlay.width($(window).width());
-	$overlay.height($(window).height());
-	
-	Form.init();
-	Page.scroller();
+$(document).ready( function(){ 
+	Page.initialize();
 } );

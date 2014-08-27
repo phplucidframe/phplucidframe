@@ -31,6 +31,8 @@ define('CACHE', FILE.'cache/');
 # System configuration variables
 require INC . 'config.php';
 
+$lc_sitewideWarnings = array();
+
 if( !isset($lc_languages) || (isset($lc_languages) && !is_array($lc_languages)) ){
 	$lc_languages = array('en' => 'English');
 }
@@ -188,3 +190,6 @@ require HELPER . 'file_helper.php';
 
 # Global Authentication Object
 $_auth = auth_get();
+
+# Check security prerequisite
+security_prerequisite();

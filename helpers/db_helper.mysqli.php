@@ -71,6 +71,20 @@ function db_collation($namespace='default'){
 	return isset($conf['collation']) ? $conf['collation'] : '';
 }
 /**
+ * Check and get the database configuration settings
+ */
+function db_prerequisite($namespace='default'){	
+	if(db_host($namespace) && db_user($namespace) && db_name($namespace)){
+		return db_config($namespace);
+	}else{
+		$error = new stdClass();
+		$error->message = array(_t('Required to configure $lc_databases in "/inc/config.php". It is not allowed to configure in the application-level file "/app/inc/site.config.php".'));
+		$error->type 	= 'sitewide-message error';		
+		include( _i('inc/site.error.php') );
+		exit;
+	}
+}
+/**
  * Establish a new database connection to the MySQL server
  * @param string $namespace Namespace of the configuration.
  */ 

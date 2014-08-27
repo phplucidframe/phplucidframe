@@ -70,6 +70,7 @@ function _htmlIEFix($matches) {
  * @return void
  */ 
 function _script(){
+	$sitewideWarnings = _cfg('sitewideWarnings');
 	?>
 	<script type="text/javascript">
 		var LC = {};
@@ -86,6 +87,7 @@ function _script(){
 		LC.baseURL 		= '<?php echo _cfg('baseURL'); ?>/';		
 		LC.route		= '<?php echo _r(); ?>';
 		LC.namespace	= '<?php echo LC_NAMESPACE; ?>';
+		LC.sitewideWarnings = <?php echo (json_encode($sitewideWarnings)); ?>;
 		<?php if(function_exists('__script')) __script(); ?>
     </script>
     <?php
@@ -167,14 +169,19 @@ if(!function_exists('_pr')){
 	}
 }
 /**
- * Convenience method to retrieve a config variable without declaration global
+ * Convenience method to get/set a config variable without declaration global
  * within a function
  *
  * @param string $key The config variable name without prefix
+ * $param mixed $value The value to set to the config variable
  * @return mixed The value of the config variable
  */
-function _cfg($key=''){
+function _cfg($key='', $value=''){
 	if(strrpos($key, 'lc_') === 0) $key = substr($key, 3);
+	if(count(func_get_args()) == 2 && $key){ 
+		if(is_array($GLOBALS['lc_'.$key])) $GLOBALS['lc_'.$key][] = $value;
+		else $GLOBALS['lc_'.$key] = $value;
+	}
 	if(isset($GLOBALS['lc_'.$key]) && $GLOBALS['lc_'.$key]) return $GLOBALS['lc_'.$key];
 	return NULL;
 }
