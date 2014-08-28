@@ -259,6 +259,35 @@ var Page = {
 			});;
 		}
 	},	
+	/* 
+	 * Language switcher callback
+	 * @param string lng The language code to be switched
+	 */		
+	languageSwitcher : function(lng){
+		var $lang = LC.lang + '/';
+		var $path = window.location.pathname;
+		if($path.indexOf('/') == 0){ // remove leading slash
+			$path = $path.substr(1);	
+		}
+		
+		// remove baseURL from the URI
+		var baseURL = LC.baseURL;
+		if(LC.baseURL == '/') baseURL = '';
+		var regexp = new RegExp(baseURL);
+		$path = $path.replace(regexp, ''); 
+		
+		// replace language code in URI
+		if($path.indexOf($lang) == 0){
+			var regexp = new RegExp($lang); 
+			$path = $path.replace(regexp, lng + '/');	
+		}else{
+			$path = lng + '/' + $path;
+		}
+					
+		// new URL
+		$url = window.location.protocol + '//' + window.location.host + '/' + baseURL + $path;
+		window.location = $url;		
+	},
 	/**
 	 * Performs a smooth page scroll to an anchor on the same page.
 	 */	
