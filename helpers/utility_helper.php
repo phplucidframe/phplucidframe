@@ -1019,28 +1019,32 @@ function _postTranslationStrings($post, $fields, $lang=NULL){
  * @param array|string $fields The array of field names to get data, e.g., 'fieldName' or array('fieldName1', 'fieldName2')
  * @param string $lang The language code to fetch (if it is not provided, all languages will be fetched)
  * 
- * @return array The array of translation strings
+ * @return array|object The array or object of translation strings
  */
 function _getTranslationStrings($data, $fields, $lang=NULL){
 	global $lc_defaultLang;
 	global $lc_languages;
-	$data = (array)$data;
+	$isObject = is_object($data);
+	$data = (array) $data;
 	$i18n = array();
 	if(is_string($fields)) $fields = array($fields);
 	foreach($fields as $name){
 		if($lang){
 			$lcode = _queryLang($lang);
-			if(isset($data[$name.'_'.$lcode])){
-				$i18n[$name.'_i18n'][$lcode] = $data[$name.'_'.$lcode];
-			}			
+			if(isset($data[$name.'_'.$lcode]) && $data[$name.'_'.$lcode]){
+				$data[$name.'_i18n'] = $data[$name.'_'.$lcode];
+			}else{
+				$data[$name.'_i18n'] = $data[$name];
+			}
 		}else{		
 			foreach($lc_languages as $lcode => $lname){
 				$lcode = _queryLang($lcode);
 				if(isset($data[$name.'_'.$lcode])){
-					$i18n[$name.'_i18n'][$lcode] = $data[$name.'_'.$lcode];
+					$data[$name.'_i18n'][$lcode] = $data[$name.'_'.$lcode];
 				}
 			}
 		}
 	}
-	return $i18n;	
+	if($isObject) $data = (object) $data;
+	return $data;	
 }
