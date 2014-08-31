@@ -200,6 +200,18 @@ function _lang(){
 	return _cfg('lang');
 }
 /*
+ * Get the language to process
+ * Basically, it is useful for admin content management by language
+ * @hook __getLang() at app/helpers/utility_helper.php  
+ * @return string
+ */
+function _getLang(){
+	if(function_exists('__getLang')) return __getLang(); # run the hook if any
+	if(_arg('lang')) $lang = _arg('lang');
+	else $lang = _defaultLang();	
+	return ($lang) ? $lang : _defaultLang();
+}
+/*
  * Get the default site language code
  * @return string
  */
