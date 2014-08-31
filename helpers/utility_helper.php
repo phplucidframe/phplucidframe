@@ -106,9 +106,14 @@ function _js($file){
 	$file = 'js/'.$file;
 	$file = _i($file);
 	if( strpos($file, 'http') === 0 ){
-		echo '<script src="'. $file .'" type="text/javascript"></script>';
+		$fileWithSystemPath = str_replace(WEB_ROOT, ROOT, $file);
+		if(file_exists($fileWithSystemPath)){		
+			echo '<script src="'. $file .'" type="text/javascript"></script>';
+		}
 	}else{
-		echo '<script src="'. WEB_ROOT . 'js/' . $file .'" type="text/javascript"></script>';
+		if(file_exists(ROOT.'js/'.$file)){
+			echo '<script src="'. WEB_ROOT . 'js/' . $file .'" type="text/javascript"></script>';
+		}
 	}
 }
 /**
@@ -127,9 +132,14 @@ function _css($file){
 	$file = 'css/'.$file;
 	$file = _i($file);
 	if( strpos($file, 'http') === 0 ){
-		echo '<link href="'. $file .'" rel="stylesheet" type="text/css" />';
+		$fileWithSystemPath = str_replace(WEB_ROOT, ROOT, $file);
+		if(file_exists($fileWithSystemPath)){
+			echo '<link href="'. $file .'" rel="stylesheet" type="text/css" />';
+		}
 	}else{
-		echo '<link href="'. WEB_ROOT . 'css/' . $file .'" rel="stylesheet" type="text/css" />';
+		if(file_exists(ROOT.'css/'.$file)){
+			echo '<link href="'. WEB_ROOT . 'css/' . $file .'" rel="stylesheet" type="text/css" />';
+		}
 	}
 }
 /**
