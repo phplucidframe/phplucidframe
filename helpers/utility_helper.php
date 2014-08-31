@@ -80,7 +80,7 @@ function _script(){
             var WEB_APP_ROOT = '<?php echo WEB_APP_ROOT; ?>';
 			LC.appRoot = WEB_ROOT;
         <?php } ?>		
-		LC.self 		= '<?php echo _url(); ?>';
+		LC.self 		= '<?php echo _self(); ?>';
 		LC.lang 		= '<?php echo _lang(); ?>';
 		LC.baseURL 		= '<?php echo _cfg('baseURL'); ?>/';		
 		LC.route		= '<?php echo _r(); ?>';
@@ -327,6 +327,18 @@ function _rr(){
  */
 function _url($path=NULL, $queryStr=array(), $lang=''){
 	return route_url($path, $queryStr, $lang);
+}
+/**
+ * Get the absolute URL path
+ * @param array 	$queryStr	Query string as array(
+ *									$value1, // no key here
+ *									'key1' => $value2,
+ *									'key3' => $value3 or array($value3, $value4)
+ *								 )
+ * @param string	$lang		Languague code to be prepended to $path such as "en/foo/bar". It will be useful for site language switch redirect
+ */
+function _self($queryStr=array(), $lang=''){
+	return route_url(NULL, $queryStr, $lang);
 }
 /**
  * Header redirect to a specific location
