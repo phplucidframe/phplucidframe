@@ -193,7 +193,8 @@ function route_url($path=NULL, $queryStr=array(), $lang=''){
 	if($path && is_string($path)){
 		$path = rtrim($path, '/');
 	}else{
-		$path = route_updateQueryStr(route_path(), $queryStr);
+		$r = (_isRewriteRule()) ? REQUEST_URI : route_path();
+		$path = route_updateQueryStr($r, $queryStr);
 	}
 		
 	$q = '';

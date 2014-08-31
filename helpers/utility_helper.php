@@ -275,16 +275,6 @@ function _multilingual(){
 	}
 }
 /*
- * Get the current routing path
- * For example, example.com/foo/bar would return foo/bar
- *	example.com/en/foo/bar would also return foo/bar
- *
- * @return string
- */
-function _r(){
-	return route_path();
-}
-/*
  * Get the server protocol
  * For example, http, https, ftp, etc.
  *
@@ -302,6 +292,28 @@ function _protocol(){
 function _ssl(){
 	$protocol = _protocol();
 	return ($protocol == 'https') ? true : false;
+}
+/*
+ * Get the current routing path
+ * For example, example.com/foo/bar would return foo/bar
+ *	example.com/en/foo/bar would also return foo/bar
+ *  example.com/1/this-is-slug (if accomplished by RewriteRule) would return the underlying physical path 
+ *
+ * @return string
+ */
+function _r(){
+	return route_path();
+}
+/*
+ * The more realistic function to get the current routing path on the address bar
+ * regardless of RewriteRule behine
+ * For example, example.com/foo/bar would return foo/bar
+ *	example.com/en/foo/bar would also return foo/bar
+ *  example.com/1/this-is-slug would return 1/this-is-slug
+ * @return string
+ */
+function _rr(){
+	return (_isRewriteRule()) ? REQUEST_URI : _r();
 }
 /**
  * Get the absolute URL path
@@ -337,6 +349,12 @@ function _redirect($path=NULL, $queryStr=array(), $lang=''){
 function _page404(){
 	if(LC_NAMESPACE) _redirect(LC_NAMESPACE.'/404');
 	else _redirect('404');
+}
+/**
+ * Check if the current routing is a particular URL RewriteRule processing or not
+ */
+function _isRewriteRule(){	
+	return (strcasecmp(REQUEST_URI, _r()) !== 0) ? true : false;
 }
 /**
  * Setter for canonical URL if the argument is given and print the canonical link tag if the argument is not given
@@ -426,6 +444,11 @@ function _arg($index = NULL, $path = NULL) {
 }
 /**
  * Check if the URI has a language code and return it
+ *	matching (for example)
+ *		/LucidFrame/en/....
+ *		/LucidFrame/....
+ *	 	/en/...
+ *		/.... 
  * @return mixed The 2-letter language code if it has one, otherwise return FALSE
  */
 function _getLangInURI(){
@@ -435,11 +458,11 @@ function _getLangInURI(){
 	if( !is_array($lc_languages) ){
 		$lc_languages = array('en' => 'English');
 	}
-		
-	$request_path = urldecode(strtok($_SERVER['REQUEST_URI'], '?'));
-	$request_path = str_replace($lc_baseURL, '', ltrim($request_path, '/'));
-	$request_path = ltrim($request_path, '/');
-	$regex = '/\b('.implode('|', array_keys($lc_languages)).'){1}\b(\/?)/i';
+			
+	$baseURL 	= _cfg('baseURL');
+	$baseURL 	= ($baseURL) ? '\/'.trim($baseURL, '/').'\/' : '\/';
+	$regex 		= '/^'.$baseURL.'\b('.implode('|', array_keys($lc_languages)).'){1}\b(\/?)/i';
+
 	if(preg_match($regex, $_SERVER['REQUEST_URI'], $matches)){
 		return $matches[1];
 	}

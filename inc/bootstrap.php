@@ -46,6 +46,7 @@ $lc_namespace = $request[0];
 # Clean lang code in URL	
 if(array_key_exists($lc_namespace, $lc_languages)){
 	array_shift($request);
+	$requestURI = ltrim(ltrim($requestURI, $lc_namespace), '/'); # clean the language code from URI
 	if(count($request)) $lc_namespace = $request[0];
 	else $lc_namespace = '';
 }
@@ -53,11 +54,14 @@ if(array_key_exists($lc_namespace, $lc_languages)){
 if( !(isset($lc_sites) && is_array($lc_sites) && array_key_exists($lc_namespace, $lc_sites)) ){
 	$lc_namespace = '';
 }
-unset($requestURI);
-unset($request);
 
+# REQUEST_URI excluding the base URL
+define('REQUEST_URI', trim($requestURI, '/'));
 # Namespace according to the site directories
 define('LC_NAMESPACE', $lc_namespace);
+
+unset($requestURI);
+unset($request);
 
 /**
  * File include helper
