@@ -378,11 +378,22 @@ function _redirect($path=NULL, $queryStr=array(), $lang=''){
 	exit;
 }
 /**
- * Header redirect to 404 page
+ * Redirect to 401 page
+ */
+function _page401(){
+	_redirect('401');
+}
+/**
+ * Redirect to 403 page
+ */
+function _page403(){
+	_redirect('403');
+}
+/**
+ * Redirect to 404 page
  */
 function _page404(){
-	if(LC_NAMESPACE) _redirect(LC_NAMESPACE.'/404');
-	else _redirect('404');
+	_redirect('404');
 }
 /**
  * Check if the current routing is a particular URL RewriteRule processing or not

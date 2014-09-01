@@ -39,12 +39,16 @@ if(is_dir($_page)) $_page .= '/index.php';
 
 if(!empty($_page) && file_exists($_page)){ 
 	include $_page;
-}else{ 
-	$_page = route_search();	
-	if($_page){
-		include $_page;		
+}else{
+	if(preg_match('/(.*)(401|403|404){1}$/', $_page, $matches)){ 
+		include( _i('inc/'.$matches[2].'.php') );
 	}else{
-		include( _i('inc/404.php') );
+		$_page = route_search();	
+		if($_page){
+			include $_page;		
+		}else{
+			include( _i('inc/404.php') );
+		}
 	}
 }
 
