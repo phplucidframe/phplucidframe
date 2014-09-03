@@ -352,7 +352,7 @@ if(!function_exists('db_insert')){
 		# Invoke the hook db_insert_[table_name] if any
 		$hook = 'db_insert_' . strtolower($table);
 		if(function_exists($hook)){
-			return call_user_func_array( $hook, array($table, $data) );
+			return call_user_func_array( $hook, array($table, $data, $useSlug) );
 		}
 		
 		# if slug is already provided in the data array, use it
@@ -431,7 +431,7 @@ if(!function_exists('db_update')){
 		# Invoke the hook db_update_[table_name] if any
 		$hook = 'db_update_' . strtolower($table);
 		if(function_exists($hook)){
-			return call_user_func_array( $hook, array($table, $data, $useSlug) );
+			return call_user_func_array( $hook, array($table, $data, $useSlug, $additionalCondition) );
 		}
 
 		# if slug is already provided in the data array, use it
@@ -507,7 +507,7 @@ if(!function_exists('db_delete')){
 		# Invoke the hook db_delete_[table_name] if any
 		$hook = 'db_delete_' . strtolower($table);
 		if(function_exists($hook)){
-			return call_user_func_array( $hook, array($table, $data) );
+			return call_user_func_array( $hook, array($table, $cond) );
 		}
 				
 		$condition = db_condition($cond);
@@ -538,7 +538,7 @@ if(!function_exists('db_delete')){
  *			array(
  *				'fieldName1' 	=> $value1,
  *				'fieldName2 >=' => $value2,
- *				'fieldName3 	=> NULL
+ *				'fieldName3' 	=> NULL
  *			)
  *
  * @return boolean Returns TRUE on success or FALSE on failure 
@@ -551,7 +551,7 @@ if(!function_exists('db_delete_multi')){
 		# Invoke the hook db_delete_[table_name] if any
 		$hook = 'db_delete_multi_' . strtolower($table);
 		if(function_exists($hook)){
-			return call_user_func_array( $hook, array($table, $data) );
+			return call_user_func_array( $hook, array($table, $cond) );
 		}
 		
 		$condition = db_condition($cond);
