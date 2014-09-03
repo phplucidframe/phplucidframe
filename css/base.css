@@ -1,5 +1,17 @@
 @charset  utf-8;
 
+@font-face {
+    font-family: 'zawgyi-oneregular';
+    src: url('../files/fonts/zawgyione/zawgyione-webfont.eot');
+    src: url('../files/fonts/zawgyione/zawgyione-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../files/fonts/zawgyione/zawgyione-webfont.woff') format('woff'),
+         url('../files/fonts/zawgyione/zawgyione-webfont.ttf') format('truetype'),
+         url('../files/fonts/zawgyione/zawgyione-webfont.svg#zawgyi-oneregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
 body {
     font-size: 12px;
     margin: 0;
@@ -8,7 +20,7 @@ body {
 	background: #f1f1f1;
 }
 
-input, button, textarea, select {
+input, button, textarea, select{
     font-family: Arial, Helvetica, sans-serif;
     font-size: 12px;
     margin: 0;
@@ -17,6 +29,7 @@ input, button, textarea, select {
 h1, h2, h3, h4, h5, h6 {
 	margin: 0;
     padding: 10px 0;
+	font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
 }
 
 h1{
@@ -71,7 +84,6 @@ img {
 }
 
 label {
-  padding-left: 2px;
 }
 
 code{
@@ -136,47 +148,65 @@ code.inline{
 /* INPUT ELEMENTS */
 /******************/
 
+input[type=text], input[type=password]{
+	height: 18px;
+}
+
 input[type=text], input[type=password], textarea, select {
     border: 1px #B8B8B8 solid;
-    padding: 3px;
+    padding: 3px 5px;
     background: #fff;
-	-moz-border-radius: 4px;
-	-webkit-border-radius: 4px;
-	border-radius: 4px;	
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;	
 }
 
 input[type=text], input[type=password], textarea, select, .dialog .ui-widget-content {
-    border-top: 1px #666 solid;
-    border-left: 1px #666 solid;
+    border-top: 1px #888 solid;
+    border-left: 1px #888 solid;
     background: #fff;
 	color: #333;
 }
 
+input[type=text].soft, input[type=password].soft, textarea.soft, select.soft{
+	border: 1px #B2B2B2 solid;
+}
+
+input[type=text].large, input[type=password].large
+{
+	padding:3px 10px;
+	height:26px;
+	font-size:14px;
+}
+
+input[type=text].large.full-width, input[type=password].large.full-width
+{
+	width: 93.55%;
+}
+
+select.large
+{
+	padding: 5px;
+	height: 34px;
+	font-size: 14px;
+}
+
+select.large.full-width
+{
+	width: 100%;
+}
+
 textarea {
-    padding: 3px;
 }
 
 select {
+	height: 26px;
     padding: 2px;
 }
 
 .input.disabled {
     color: #333;
     background: #efede0;
-}
-
-input[type=text].gray, input[type=password].gray, textarea.gray
-{
-	background:#f0f0f0;
-	color:#333333;	
-	border:none;	
-	padding:3px 5px;
-	border:1px solid #bbb;		
-}
-
-input[type=text].gray, input[type=password].gray
-{
-	height:25px;	
 }
 
 input.radio {
@@ -215,10 +245,12 @@ label.radio {
 	position: relative;
 	display: inline-block;
 	padding: 7px 12px;
+	min-width: 65px;
 	font-size: 13px;
 	font-weight: bold;
 	color: #333;
 	text-shadow: 0 1px 0 rgba(255,255,255,0.9);
+	text-align: center;
 	white-space: nowrap;
 	vertical-align: middle;
 	cursor: pointer;
@@ -244,6 +276,15 @@ label.radio {
 .button.mini{
 	padding: 4px 10px;
 	font-size: 12px;
+}
+
+.button.large{
+	padding: 10px 20px;
+	font-size: 15px;
+}
+
+.button.full-width{
+	width: 100%;
 }
 
 .button:hover{
@@ -358,6 +399,58 @@ ol li div, ul li div {
 	padding-bottom: 10px;
 }
 
+#top-bar{
+	color: #fff;
+	height: 30px;
+	background: #333 url(../images/logo-22.png) 4px 4px no-repeat;
+	padding-left: 34px;
+	font-size: 11px;
+}
+
+#top-bar a{
+	color: #fff;
+	display:inline-block;
+	margin-top: 7px;
+}
+
+#top-bar a:hover{
+	color: #64B24E;
+}
+
+#top-bar ul{
+	margin: 0;
+	padding: 0;
+	list-style-type: none;	
+	float: right;
+}
+
+#top-bar li{
+	margin: 0;
+	padding: 0;
+	float: left;
+}
+
+#top-bar li a{
+	margin-top: 4px;
+	margin-right: 4px;
+	background-color: #545454;
+	padding:3px 7px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	border: 1px #545454 solid;
+}
+
+#top-bar li a:hover{
+	color: #fff;
+	background-color: #444444;
+}
+
+#top-bar li.greeting{
+	padding-top: 8px;
+	padding-right: 8px;
+}
+
 #header {
 	width: 100%;
     height: 81px;
@@ -435,6 +528,7 @@ ul#menu li a{
 	color: #fff;
 	text-shadow: 0 -1px 0 rgba(0,0,0,0.5);
 	font-size: 13px;
+	line-height: 17px;
 	min-width: 55px;
 	height: 24px; 
 	display: block;
@@ -452,13 +546,13 @@ ul#menu li a.active
 	background-color: #333333;
 }
 
-#header ul.social-icons{
+ul.social-icons{
 	float: right;
+	margin: 0;
 	margin-top: -26px;
 }
 
 ul.social-icons{
-	margin: 0;
 	padding: 0;
 	list-style-type: none;
 }
@@ -491,6 +585,119 @@ ul.social-icons li a.tw{
 
 ul.social-icons li a:hover.tw{
 	background: url('../images/social-icons.gif') -29px -26px no-repeat;
+}
+
+/*************/
+/* MINI-PAGE */
+/*************/
+
+body.mini-page
+{
+	background: #002D00 url(../images/green-bg.png) fixed repeat-x;
+}
+
+.container-box
+{
+	margin:auto;
+	margin-top: 110px;
+	width:455px;
+	/* Needed for IEs box shadow */
+	background-color: rgb(68,68,68); 
+	filter: progid:DXImageTransform.Microsoft.Blur(PixelRadius=5,MakeShadow=true,ShadowOpacity=0.50);
+	-ms-filter: "progid:DXImageTransform.Microsoft.Blur(PixelRadius=5,MakeShadow=true,ShadowOpacity=0.50)";
+	zoom: 1;		
+}
+
+.container-box .box 
+{
+	min-height: 275px;	
+	margin:auto;
+	padding:0 63px 25px;
+	background-color: #E6EEE6;
+	border-radius:5px;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+	-moz-box-shadow: 1px 0 12px 5px rgba(0,0,0,0.6);
+	-webkit-box-shadow: 1px 0 12px 5px rgba(0,0,0,0.6);	
+	box-shadow: 1px 0 12px 5px rgba(0,0,0,0.6);	
+	position: relative; /* This protects the inner element from being blurred for IE box shadow */
+}
+
+.container-box .box h1
+{
+	text-align:center;
+	padding:22px 0;
+	font-weight:normal;	
+}
+
+.container-box .box .logo
+{
+	height: 30px;
+	margin:0;
+	padding: 25px 0 25px;
+	text-align:center;
+}
+
+.container-box .box .form
+{	
+}
+
+.container-box .box .form .row
+{
+	padding-top: 15px;
+}
+
+.container-box .box .form .row label
+{
+	font-size:14px;
+}
+
+.container-box .box .form .entry.pwd{
+	position: relative;
+}
+
+.container-box .box .form .entry.pwd a
+{
+	display:block;
+	width:40px;
+	height:25px;
+	font-size: 15px;
+	padding-top: 7px;
+	background: #ccc;
+	text-align: center;
+	border-left: 1px #b8b8b8 solid;
+	position:absolute;
+	top: 1px;
+	right: 1px;	
+	border-top-right-radius:2px;
+	-moz-border-top-right-radius:2px;
+	-webkit-border-top-right-radius:2px;
+	border-bottom-right-radius:2px;
+	-moz-border-bottom-right-radius:2px;
+	-webkit-border-bottom-right-radius:2px;	
+	background: #f9f9f9; /* Old browsers */
+	background: -moz-linear-gradient(top,  #f9f9f9 0%, #e5e5e5 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f9f9f9), color-stop(100%,#e5e5e5)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #f9f9f9 0%,#e5e5e5 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #f9f9f9 0%,#e5e5e5 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #f9f9f9 0%,#e5e5e5 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  #f9f9f9 0%,#e5e5e5 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f9f9f9', endColorstr='#e5e5e5',GradientType=0 ); /* IE6-9 */	
+}
+
+.container-box .box .form .row .right
+{
+	text-align:right;			
+}
+
+.container-box .box a
+{
+	color:#666;
+	text-shadow:1px 1px 1px #fff;
+}
+
+.container-box .box a:hover{
+	color: #08C;
 }
 
 /*************/
@@ -566,11 +773,19 @@ ul.social-icons li a:hover.tw{
 /* MESSAGES */
 /************/
 
+.sitewide-error-page{
+}
+
 .message {
     min-height: 15px;
     padding: 10px;
     display: none;
     margin-bottom: 3px;
+}
+
+.message.sitewide-message {
+	display: none;
+	margin: 5px;
 }
 
 .message span {
@@ -587,6 +802,11 @@ ul.social-icons li a:hover.tw{
     border: 1px #BE7 solid;
     background-color: #F8FFF0;
     color: #234600;
+}
+
+.message.warning {	
+	border: 1px #FFC494 solid;
+	background-color: #FCF9BF;
 }
 
 .message ul {
@@ -644,6 +864,11 @@ span.invalid {
 
 .table .row {
     padding:5px 0;    
+}
+
+.table .row label{
+	display: inline-block;
+	padding-bottom: 2px;
 }
 
 .table .col.col-50 {
@@ -734,8 +959,9 @@ table.form td.label {
     white-space: nowrap;
 }
 
-table.form td.entry,div.tableForm .entry {
-    padding-top: 9px;
+table.form td.entry, div.tableForm .entry {
+    padding-top: 4px;
+	padding-bottom: 4px;
 }
 
 table.form td.label, div.tableForm .label, 
@@ -789,6 +1015,7 @@ table.form tr.labelOnly td.entry {
 
 div#list {
     clear: both;
+	margin-top: 5px;
 }
 
 table.list {
@@ -827,14 +1054,21 @@ table.list tr.top td {
 
 table.list tr.label td {
     color: #333;
-    background-color: #E6E6E5;
     height: 27px;
     padding: 0 5px;
     vertical-align: middle;
     line-height: normal;
+	background: #f9f9f9; /* Old browsers */
+	background: -moz-linear-gradient(top,  #f9f9f9 0%, #e5e5e5 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f9f9f9), color-stop(100%,#e5e5e5)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #f9f9f9 0%,#e5e5e5 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #f9f9f9 0%,#e5e5e5 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #f9f9f9 0%,#e5e5e5 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  #f9f9f9 0%,#e5e5e5 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f9f9f9', endColorstr='#e5e5e5',GradientType=0 ); /* IE6-9 */	
 }
 
-table.list tr.label td,table.list tr.label td div {
+table.list tr.label td, table.list tr.label td div {
     color: #333;
 }
 
@@ -843,7 +1077,7 @@ table.list tr.groupHeader {
     color: #404040;
 }
 
-table.list tr.normal td,table.dataList tr.oddbar td {
+table.list tr.normal td{
     background: #fff;
 }
 
@@ -888,6 +1122,66 @@ table.list td.center {
 
 table.list td.right {
     text-align: right;
+}
+
+table.list tr td.colAction{
+	text-align:center; 
+	width:16px;
+}
+
+table.list tr td.colAction a,
+table.list tr td.colAction span.disabled,
+div.table .row .left .actions a{
+	display:block;
+	width:16px;
+	height:16px;
+}
+
+table.list tr td.colAction a span,
+div.table .row .actions a span{
+	display:none;
+}
+
+table.list tr td.colAction a.edit,
+div.table .row .actions a.edit{
+	background:url(../images/icons/ico-edit.png) no-repeat;
+}
+
+table.list tr td.colAction a.delete,
+div.table .row .actions a.delete{
+	background:url(../images/icons/ico-delete.png) no-repeat;
+}
+
+table.list tr td.colAction span.edit.disabled,
+div.table .row .actions span.edit.disabled{
+	background:url(../images/icons/ico-edit-disable.png) no-repeat;
+	display:block;
+}
+
+table.list tr td.colAction span.delete.disabled,
+div.table .row .actions span.delete.disabled{
+	background:url(../images/icons/ico-delete-disable.png) no-repeat;
+	display:block;
+}
+
+table.list tr td.indent.first,
+.indent.first {
+	padding-left:20px;
+}
+
+table.list tr td.indent.second,
+.indent.second {
+	padding-left:40px;
+}
+
+.no-record{
+	background: #FCF9BF;
+	border: 1px #FFC494 solid;
+	padding:10px;
+	margin: 5px 0;
+	font-size: 13px;
+	font-weight: bold;
+	line-height: 25px;
 }
 
 /*********/
@@ -1140,8 +1434,7 @@ table.formView.tableView tr.toggle td {
     text-align: left;
 }
 
-.dialog label,.dialog input {
-    display: block;
+.dialog label, .dialog input {
 }
 
 .dialog input.text,.dialog textarea {
@@ -1178,4 +1471,66 @@ table.formView.tableView tr.toggle td {
 
 .validateTips.ui-state-highlight {
     padding: .3em;
+}
+
+/*********************/
+/* LANGUAGE SWITCHER */
+/*********************/
+
+#language-switcher,
+#lang-content-management{
+	float:right;
+	margin-right:10px;
+	margin-bottom: 3px;
+}
+
+#language-switcher{
+	margin-top: -26px;
+	margin-right: 0;
+}
+
+#language-switcher table td.label,
+#lang-content-management table td.label{
+	padding-right:5px;
+}
+
+#language-switcher a,
+#lang-content-management a{
+	display:inline-block;
+	border:2px #fff solid;
+	width:27px;
+	height:19px;	
+}
+
+#language-switcher a span,
+#lang-content-management a span{
+	display:inline-block;
+	border:1px #555 solid;
+	width:25px;
+	height:17px;
+}
+
+#language-switcher a.active, #language-switcher a:hover,
+#lang-content-management a.active, #lang-content-management a:hover{
+	border:2px #555 solid;
+}
+
+#language-switcher a.active span,
+#lang-content-management a.active span{
+	border-color:#fff;
+}
+
+/******/
+/* IE */
+/******/
+
+.ie7 input[type=text], .ie8 input[type=text], 
+.ie7 input[type=password], .ie8 input[type=password], 
+.ie7 textarea, .ie8 textarea{
+	padding-top: 5px;
+}
+
+.ie8 select{
+	padding: 4px;
+	height: auto;
 }

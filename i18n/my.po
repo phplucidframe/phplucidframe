@@ -1,0 +1,53 @@
+msgid ""
+msgstr ""
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Project-Id-Version: LucidFrame\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Sithu K. <cithukyaw@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: my_MM\n"
+"X-Generator: Poedit 1.6.3\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "Welcome"
+msgstr "ႀကိဳဆိုပါသည္"
+
+msgid "Blog"
+msgstr "ဘေလာ့ဂ္"
+
+msgid "Articles"
+msgstr "ေဆာင္းပါးမ်ား"
+
+msgid "Welcome to LucidFrame"
+msgstr "LucidFrame မွႀကိဳဆိုပါသည္"
+
+msgid "Prerequisites"
+msgstr "ကနဦးလိုအပ္ခ်က္မ်ား"
+
+msgid "Read More"
+msgstr "အျပည္အစံုဖတ္မည္"
+
+msgid "Leave a Comment."
+msgstr "သုံးသပ္ခ်က္ေရးခ်င္လွ်င္ ဤေနရာတြင္ ေရးခဲ့ႏိုင္ပါသည္။"
+
+msgid "Name"
+msgstr "အမည္"
+
+msgid "Email"
+msgstr "အီးေမးလ္"
+
+msgid "Re-type Email"
+msgstr "အီးေမးလ္ထပ္ရိုက္ပါ"
+
+msgid "Comment"
+msgstr "သံုးသပ္ခ်က္"
+
+msgid "Post Comment"
+msgstr "သံုးသပ္ခ်က္တင္မည္"
+
+msgid "Cancel"
+msgstr "ျပန္ထြက္မည္"

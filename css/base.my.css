@@ -1,0 +1,33 @@
+@charset "utf-8";
+/* CSS Document for Language my_MM */
+
+@font-face {
+    font-family: 'zawgyi-oneregular';
+    src: url('../files/fonts/zawgyione/zawgyione-webfont.eot');
+    src: url('../files/fonts/zawgyione/zawgyione-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../files/fonts/zawgyione/zawgyione-webfont.woff') format('woff'),
+         url('../files/fonts/zawgyione/zawgyione-webfont.ttf') format('truetype'),
+         url('../files/fonts/zawgyione/zawgyione-webfont.svg#zawgyi-oneregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+.my body, .my{
+	font-family: "zawgyi-oneregular", "Zawgyi-One", Arial, Helvetica, sans-serif;
+}
+
+.my input, input[name$='_my'], input.my, select.my, textarea.my, .my button{
+	font-family: "zawgyi-oneregular", "Zawgyi-One", Arial, Helvetica, sans-serif !important;
+	font-size: 12px !important;
+}
+
+.my h1, .my h2, .my h3, .my h4, .my h5, .my h6 {
+	font-family: "zawgyi-oneregular", "Zawgyi-One", Arial, Helvetica, sans-serif;
+	letter-spacing: 1px;
+}
+
+.my .ui-widget {
+    font-family: "zawgyi-oneregular", "Zawgyi-One", Lucida Grande, Lucida Sans, Arial, sans-serif;
+    font-size: 1.1em;
+}

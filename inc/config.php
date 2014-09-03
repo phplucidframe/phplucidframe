@@ -97,13 +97,14 @@ $lc_sites = array(
 $lc_homeRouting = 'home';
 # $lc_translationEnabled - Enable/Disable language translation
 $lc_translationEnabled = true;
-# $lc_languages: Site languages			
+# $lc_languages: Site languages (leave this blank for single-language site)
 $lc_languages = array(
 	/* 'lang_code' => 'lang_name' */
-	/* 'en' => 'English' */
+	 'en' => 'English',
+	 'my' => 'Myanmar',
 );
 # $lc_defaultLang: Default site language (leave blank for single-language site)
-$lc_defaultLang = '';
+$lc_defaultLang = 'en';
 # $lc_lang: Current selected language
 $lc_lang = $lc_defaultLang;
 # $lc_cleanURL: Enable/Disable clean URL
@@ -126,7 +127,7 @@ $lc_dateTimeFormat = 'd-m-Y h:ia';
 # $lc_pageNumLimit: number of page numbers to be shown in pager		
 $lc_pageNumLimit = 10; 
 # $lc_itemsPerPage: number of items per page in pager				
-$lc_itemsPerPage = 10; 
+$lc_itemsPerPage = 15; 
 # $lc_reqSign: Sign for mandatory fields				
 $lc_reqSign = '<span class="required">*</span>'; 
 # $lc_nullFill: Sign for the empty fields
@@ -141,12 +142,12 @@ $lc_auth = array(
 	'table' => '', // table name, for example, user
 	'fields' => array(
 		'id'	=> '', 	// PK field name, for example, user_id
-		'role'  => ''	// User role field name for example, user_role 
+		'role'  => ''	// User role field name, for example, user_role 
 	),
 	'perms'	=> array() 
 	/* for example
 			array(
-				'guest' => array(), // for example, 'role-name' => array('content-add', 'content-edit', 'content-delte')
+				'editor' => array(), // for example, 'role-name' => array('content-add', 'content-edit', 'content-delte')
 				'admin' => array(),
 			)
 	*/
