@@ -29,3 +29,5 @@ You can also configure the other settings in `\inc\config.php` and `\inc\site.co
 Documentation
 ------
 The complete PDF documentation is on the way, but the quick reference and coding samples are available in the release.
+
+To run and check the sample administration panel, import `sample_db.sql` and then configure your database in `\inc\config.php`. It is accessible through http://www.example.com/admin or http://localhost/LucidFrame/admin. The default sample user is username: `admin` and password: `password`.
