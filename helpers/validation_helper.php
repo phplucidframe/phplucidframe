@@ -430,10 +430,10 @@ function validate_fileMaxHeight($value, $maxHeight){
 function validate_ip($value, $type = 'both') {
 	$type = strtolower($value);
 	$flags = 0;
-	if ($type === 'ipv4') {
+	if ($type === 'v4' || $type === 'ipv4') {
 		$flags = FILTER_FLAG_IPV4;
 	}
-	if ($type === 'ipv6') {
+	if ($type === 'v6' || $type === 'ipv6') {
 		$flags = FILTER_FLAG_IPV6;
 	}
 	return (boolean)filter_var($value, FILTER_VALIDATE_IP, array('flags' => $flags));
