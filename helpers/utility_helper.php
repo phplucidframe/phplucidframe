@@ -373,7 +373,8 @@ function _self($queryStr=array(), $lang=''){
  * @param string 	$lang		Languague code to be prepended to $path such as "en/foo/bar". It will be useful for site language switch redirect 
  */
 function _redirect($path=NULL, $queryStr=array(), $lang=''){
-	$url = route_url($path, $queryStr, $lang);
+	if($path == 'self') $url = _self(NULL, $lang);
+	else $url = route_url($path, $queryStr, $lang);
 	header('Location: ' . $url);
 	exit;
 }
