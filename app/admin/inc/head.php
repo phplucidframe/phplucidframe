@@ -4,7 +4,7 @@
 <?php _css('base.my.css'); ?>
 <?php _css('jquery-ui-theme/custom/jquery-ui.custom.min.css'); ?>
 <?php _js('jquery-1.7.1.min.js'); ?>
-<?php _js('jquery-ui-1.8.17.custom.js'); ?>
+<?php _js('jquery-ui-1.8.17.custom.min.js'); ?>
 <?php _script(); ?>
 <?php _js('LC.js'); ?>
 <?php _js('site.js'); ?>
