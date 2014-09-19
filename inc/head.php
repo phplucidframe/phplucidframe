@@ -35,7 +35,6 @@ $twImage 	= (_meta('twitter:image')) ? _meta('twitter:image') : _img('logo-120x1
 <meta name="twitter:image" content="<?php echo $twImage; ?>">
 
 <link rel="shortcut icon" href="<?php echo _img('favicon.ico'); ?>" type="image/x-icon" />
-<?php _css('jquery.ui.css'); ?>
 <?php _css('base.css'); ?>
 <?php _css('base.'._lang().'.css'); ?>
 <?php _js('jquery-1.7.1.min.js'); ?>
