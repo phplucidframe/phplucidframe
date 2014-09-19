@@ -15,7 +15,7 @@ Page.Sidebar = { /* just example */
 }
 
 Page.Home = { /* just example */
-	url : Page.root + 'home/', /* mapping directory */
+	url : Page.url('home'), /* mapping directory */
 	/* Initialization of home page */
 	init : function(){ 	
 		console.log('This is home page.');
@@ -24,7 +24,7 @@ Page.Home = { /* just example */
 }
 
 Page.Blog = {
-	url : Page.root + 'blog/', /* mapping directory */
+	url : Page.url('blog'), /* mapping directory */
 	/* Initialization of home page */
 	init : function(){ 
 		Page.Blog.list();	

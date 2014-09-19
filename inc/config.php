@@ -88,10 +88,11 @@ $lc_siteDomain = $_SERVER['HTTP_HOST'];
 # $lc_baseURL: No trailing slash (only if it is located in a sub-directory)
 # Leave blank if it is located in the document root
 $lc_baseURL = 'LucidFrame';
-# $lc_sites: consider sub-directories as addtional site roots
+# $lc_sites: consider sub-directories as additional site roots and namespaces
 $lc_sites = array(	
 	'admin' => 'admin',
-	/* 'virtual_folder_name' => 'physical_folder_name_directly_under_app_directory */
+	/* 'virtual_folder_name (namespace)'  => 'physical_folder_name_directly_under_app_directory */
+	/* you could also set 'lc-admin' => 'admin', then you can access http://localhost/LucidFrame/lc-admin */
 );
 # $lc_homeRouting: Home page routing; if it is not set, default is 'home'
 $lc_homeRouting = 'home';

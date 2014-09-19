@@ -85,7 +85,8 @@ function _script(){
 		LC.baseURL 		= '<?php echo _cfg('baseURL'); ?>/';		
 		LC.route		= '<?php echo _r(); ?>';
 		LC.namespace	= '<?php echo LC_NAMESPACE; ?>';
-		LC.sitewideWarnings = <?php echo (json_encode($sitewideWarnings)); ?>;
+		LC.sites		= <?php echo (json_encode(_cfg('sites'))); ?>;
+		LC.sitewideWarnings = <?php echo (json_encode($sitewideWarnings)); ?>;		
 		<?php if(function_exists('__script')) __script(); ?>
     </script>
     <?php

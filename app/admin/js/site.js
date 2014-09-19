@@ -1,12 +1,12 @@
 Page.Post = {
 	Setup : {
-		url : Page.root + 'admin/post/setup/', /* mapping directory */
+		url : Page.url('admin/post/setup'), /* mapping directory */
 		/* Initialize the page */
 		init : function(mode){						
 		}
 	},
 	List : {
-		url : Page.root + 'admin/post/list/', /* mapping directory */
+		url : Page.url('admin/post/list'), /* mapping directory */
 		queryStr : {},
 		/* Initialize the page */
 		init : function(lang){
@@ -30,7 +30,7 @@ Page.Post = {
 			});
 			
 			$( "#btnNew" ).click(function(){
-				window.location = Page.root + 'admin/post/setup';
+				window.location = Page.url('admin/post/setup');
 			});				
 		},
 		remove : function( id ){
@@ -59,7 +59,7 @@ Page.Post = {
 }
 
 Page.Category = { 
-	url : Page.root + 'admin/category/', /* mapping directory */
+	url : Page.url('admin/category'), /* mapping directory */
 	/* Initialize the Category page */
 	init : function(){
 		/* Load list */
@@ -143,16 +143,16 @@ Page.Category = {
 
 Page.User = {
 	Setup : {
-		url : Page.root + 'admin/user/setup/', /* mapping directory */
+		url : Page.url('admin/user/setup'), /* mapping directory */
 		/* Initialize the page */
 		init : function(){	
 			$( "#btnCancel" ).click(function(){
-				window.location = Page.root + 'admin/user/list';
+				window.location = Page.url('admin/user/list');
 			});								
 		}		
 	},
 	List : {
-		url : Page.root + 'admin/user/list/', /* mapping directory */
+		url : Page.url('admin/user/list'), /* mapping directory */
 		/* Initialize the page */
 		init : function(){
 			/* Load list */
@@ -187,7 +187,7 @@ Page.User = {
 				}			
 			});
 			$( "#btnNew" ).click(function(){
-				window.location = Page.root + 'admin/user/setup';
+				window.location = Page.url('admin/user/setup');
 			});					
 		},
 		/* Load the list */

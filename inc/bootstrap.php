@@ -103,7 +103,7 @@ function _i($file, $recursive=true){
 		else $needle = '';
 	}
 	
-	if(isset($lc_sites) && is_array($lc_sites) && count($lc_sites)){						
+	if(isset($lc_sites) && is_array($lc_sites) && count($lc_sites)){
 		if( LC_NAMESPACE == '' || !array_key_exists(LC_NAMESPACE, $lc_sites)){
 		# Find in APP_ROOT -> ROOT
 			$folders = array(
@@ -114,7 +114,7 @@ function _i($file, $recursive=true){
 		}elseif(array_key_exists(LC_NAMESPACE, $lc_sites)){
 		# Find in SUB-DIR -> APP_ROOT -> ROOT
 			$folders = array(
-				APP_ROOT.LC_NAMESPACE.'/'	=> $appRoot . LC_NAMESPACE . '/', 
+				APP_ROOT.$lc_sites[LC_NAMESPACE].'/'	=> $appRoot . $lc_sites[LC_NAMESPACE] . '/', 
 				APP_ROOT 		 			=> $appRoot, 
 				ROOT 			 			=> $root
 			);

@@ -108,7 +108,7 @@ var Form = {
 		
 		var $action = $form.attr('action');
 		if(!$action){
-			$form.attr('action', LC.self + '/action.php');
+			$form.attr('action', Page.url(LC.route) + 'action.php');
 		}
 					
 		if( $form.find('input[type=file]').size() ){
@@ -258,7 +258,20 @@ var Page = {
 				$(this).hide();
 			});;
 		}
-	},	
+	},
+	/* 
+	 * Get the absolute URL path
+	 * @param string path The route path
+	 */	
+	url : function(path){
+		path = path.replace(/^\/|\/$/g, ''); // trim the trailing slash
+		var $seg = path.split('/');		
+		if(typeof LC.sites == 'object' && LC.namespace in LC.sites){ // array_key_exists
+			$seg[0] = LC.namespace;
+			path = $seg.join('/');
+		}
+		return Page.root + path + '/';
+	},
 	/* 
 	 * Language switcher callback
 	 * @param string lng The language code to be switched

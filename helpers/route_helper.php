@@ -135,7 +135,18 @@ function route_request() {
 function route_search(){
 	$q 		= route_path();
 	$seg 	= explode('/', $q);
-	$count 	= sizeof($seg);
+	$count 	= sizeof($seg);	
+	$sites 	= _cfg('sites');
+	
+	if($seg[0] == LC_NAMESPACE && is_array($sites) && array_key_exists(LC_NAMESPACE, $sites)){
+		$seg[0] = $sites[LC_NAMESPACE];
+	}
+
+	if(preg_match('/(\.php){1}$/i', $q)){
+		$path = implode('/', $seg);
+		if(file_exists($path)) return $path;		
+	}
+	
 	$append	= array('/index.php', '.php');
 	for($i=$count; $i>0; $i--){
 		# try to look for
@@ -215,11 +226,10 @@ function route_url($path=NULL, $queryStr=array(), $lang=''){
 			}
 		}
 	}
-	
-	$namespace = current(explode('/', $path));
-	if(is_array($lc_sites) && array_key_exists($namespace, $lc_sites)){		
-		$path = str_replace($namespace, $lc_sites[$namespace], $path);
-		$path = ltrim($path, '/');
+
+	if(is_array($lc_sites) && array_key_exists(LC_NAMESPACE, $lc_sites)){
+		$regex = '/\b^('.$lc_sites[LC_NAMESPACE].'){1}\b/i';
+		$path = preg_replace($regex, LC_NAMESPACE, $path);
 	}
 	
 	# If URI contains the language code, force to include it in the URI
