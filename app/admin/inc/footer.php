@@ -1,6 +1,6 @@
 <?php
 /**
- * Footer template file 
+ * Footer template file
  */
 ?>
 			</div> <!-- .container -->
@@ -13,6 +13,6 @@
                 </div>
 				<div id="slogan">The way you love, The way you code.</div>
              </div>
-        </div>		
+        </div>
 	</div> <!-- #page-container -->
 </div> <!-- #wrapper -->

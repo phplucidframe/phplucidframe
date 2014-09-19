@@ -2,8 +2,8 @@
 $success = false;
 if(sizeof($_POST)){
 	$post = _post($_POST);
-	extract($post);	
-	
+	extract($post);
+
 	$validations = array(
 		'txtFullName' => array(
 			'caption' 	=> _t('Full Name'),
@@ -17,8 +17,8 @@ if(sizeof($_POST)){
 			'parameters'=> array($hidEditId),
 			'messages'	=> array(
 				'validate_checkDuplicateUsername' => _t('Username already exists. Please try another one.')
-			)			
-		),		
+			)
+		),
 		'txtEmail' => array(
 			'caption' 	=> _t('Email'),
 			'value' 	=> $txtEmail,
@@ -44,8 +44,8 @@ if(sizeof($_POST)){
 			)
 		);
 	}
-	
-	if(Validation::check($validations) == true){		
+
+	if(Validation::check($validations) == true){
 		if($hidEditId){
 			$data = array(
 				'uid'		=> $hidEditId,
@@ -77,7 +77,7 @@ if(sizeof($_POST)){
 		if($success){
 			Form::set('success', true);
 			Form::set('redirect', _url('admin/user/list'));
-		}		
+		}
 	}else{
 		Form::set('error', Validation::$errors);
 	}

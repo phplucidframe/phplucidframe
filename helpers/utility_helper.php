@@ -9,26 +9,26 @@
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @package     LC.helpers 
+ * @package		LC.helpers
  * @author		Sithu K. <cithukyaw@gmail.com>
- * @license     http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license		http://www.opensource.org/licenses/mit-license.php MIT License
  */
- 
+
 /**
  * @access	private
  * ob_start callback function to output buffer
- * It also adds the conditional IE comments and class (ie6,...ie10..) to <html> 
- * @hook 	__flush() at app/helpers/utility_helper.php 
+ * It also adds the conditional IE comments and class (ie6,...ie10..) to <html>
+ * @hook 	__flush() at app/helpers/utility_helper.php
  * @param	string $buffer The ouput buffer
  * @return 	string
- */ 
-function _flush($buffer, $mode){	
+ */
+function _flush($buffer, $mode){
 	# Add IE-specific class to the <html> tag
 	$pattern = '/(<html.*class="([^"]*)"[^>]*>)/i';
 	if(preg_match($pattern, $buffer)){
-		$buffer = preg_replace_callback($pattern, '_htmlIEFix', $buffer);	
+		$buffer = preg_replace_callback($pattern, '_htmlIEFix', $buffer);
 	}else{
-		$replace = '<!--[if !IE]><!--><html$1 class="'._lang().'"><!--<![endif]-->	
+		$replace = '<!--[if !IE]><!--><html$1 class="'._lang().'"><!--<![endif]-->
 		<!--[if IE 6]><html$1 class="ie ie6 '._lang().'"><![endif]-->
 		<!--[if IE 7]><html$1 class="ie ie7 '._lang().'"><![endif]-->
 		<!--[if IE 8]><html$1 class="ie ie8 '._lang().'"><![endif]-->
@@ -36,37 +36,37 @@ function _flush($buffer, $mode){
 		<!--[if gte IE 10]> <html$1 class="ie ie10 '._lang().'"> <![endif]-->';
 		$buffer = preg_replace('/<html([^>]*)>/i', $replace, $buffer);
 	}
-	
+
 	if(function_exists('__flush')) return __flush($buffer, $mode); # run the hook if any
 	return $buffer;
 }
 /**
- * @access private 
+ * @access private
  * This function is a callback for preg_replace_callback()
- * It adds the conditional IE comments and class (ie6,...ie10..) to <html> 
+ * It adds the conditional IE comments and class (ie6,...ie10..) to <html>
  * @return string
- */ 
+ */
 function _htmlIEFix($matches) {
-	$find 	 = 'class="'.$matches[2].'"';	
+	$find 	 = 'class="'.$matches[2].'"';
 	$replace = 'class="'.$matches[2].' '._lang().'"';
-	$tag   	 = str_replace($find, $replace, $matches[1]);	
-	$html 	 = '<!--[if !IE]><!-->'.$tag.'<!--<![endif]-->';	
+	$tag   	 = str_replace($find, $replace, $matches[1]);
+	$html 	 = '<!--[if !IE]><!-->'.$tag.'<!--<![endif]-->';
 	$i = 0;
 	$versions = range(6, 10);
 	foreach($versions as $v){
-		$replace = 'class="'.$matches[2].' ie ie'.$v.' '._lang().'"';	
-		$tag   	 = str_replace($find, $replace, $matches[1]);				
-		if($i == count($versions)-1) $html .= "<!--[if gte IE {$v}]>$tag<![endif]-->\n";		
-		else $html .= "<!--[if IE {$v}]>$tag<![endif]-->\n";	
+		$replace = 'class="'.$matches[2].' ie ie'.$v.' '._lang().'"';
+		$tag   	 = str_replace($find, $replace, $matches[1]);
+		if($i == count($versions)-1) $html .= "<!--[if gte IE {$v}]>$tag<![endif]-->\n";
+		else $html .= "<!--[if IE {$v}]>$tag<![endif]-->\n";
 		$i++;
 	}
 	return $html;
-} 
+}
 /**
  * Declare global JS variables
  * @hook __script() at app/helpers/utility_helper.php
  * @return void
- */ 
+ */
 function _script(){
 	$sitewideWarnings = _cfg('sitewideWarnings');
 	?>
@@ -79,14 +79,14 @@ function _script(){
         <?php if(WEB_APP_ROOT){ ?>
             var WEB_APP_ROOT = '<?php echo WEB_APP_ROOT; ?>';
 			LC.appRoot = WEB_ROOT;
-        <?php } ?>		
+        <?php } ?>
 		LC.self 		= '<?php echo _self(); ?>';
 		LC.lang 		= '<?php echo _lang(); ?>';
-		LC.baseURL 		= '<?php echo _cfg('baseURL'); ?>/';		
+		LC.baseURL 		= '<?php echo _cfg('baseURL'); ?>/';
 		LC.route		= '<?php echo _r(); ?>';
 		LC.namespace	= '<?php echo LC_NAMESPACE; ?>';
 		LC.sites		= <?php echo (json_encode(_cfg('sites'))); ?>;
-		LC.sitewideWarnings = <?php echo (json_encode($sitewideWarnings)); ?>;		
+		LC.sitewideWarnings = <?php echo (json_encode($sitewideWarnings)); ?>;
 		<?php if(function_exists('__script')) __script(); ?>
     </script>
     <?php
@@ -103,12 +103,12 @@ function _js($file){
 	if( strpos($file, 'http') === 0 ){
 		echo '<script src="'. $file .'" type="text/javascript"></script>';
 		return;
-	}	
+	}
 	$file = 'js/'.$file;
 	$file = _i($file);
 	if( strpos($file, 'http') === 0 ){
 		$fileWithSystemPath = str_replace(WEB_ROOT, ROOT, $file);
-		if(file_exists($fileWithSystemPath)){		
+		if(file_exists($fileWithSystemPath)){
 			echo '<script src="'. $file .'" type="text/javascript"></script>';
 		}
 	}else{
@@ -123,7 +123,7 @@ function _js($file){
  * @param string $file An absolute file path or file name only
  *		The file name only will be prepended the folder name css/ and it will be looked in every sub-sites "css" folder
  *
- * @return void 
+ * @return void
  */
 function _css($file){
 	if( strpos($file, 'http') === 0 ){
@@ -148,7 +148,7 @@ function _css($file){
  *
  * @param string $file An image file name only (no need directory path)
  *
- * @return void 
+ * @return void
  */
 function _img($file){
 	return WEB_ROOT . 'images/' . $file;
@@ -157,9 +157,9 @@ function _img($file){
 if(!function_exists('_pr')){
 /**
  * Convenience method for print_r.
- * Displays information about a variable in a way that's readable by humans. 
+ * Displays information about a variable in a way that's readable by humans.
  * If given a string, integer or float, the value itself will be printed. If given an array, values will be presented in a format that shows keys and elements.
- * 
+ *
  * @param $input mixed The variable to debug
  * @param $pre boolean True to print using <pre>, otherwise False
  *
@@ -167,9 +167,9 @@ if(!function_exists('_pr')){
  */
 	function _pr($input, $pre=true){
 		if($pre) echo '<pre>';
-		if(is_array($input) || is_object($input)){ 
-			print_r($input); 
-		}else{ 
+		if(is_array($input) || is_object($input)){
+			print_r($input);
+		}else{
 			if(is_bool($input)) var_dump($input);
 			else echo $input;
 			if($pre == false) echo '<br>';
@@ -187,7 +187,7 @@ if(!function_exists('_pr')){
  */
 function _cfg($key='', $value=''){
 	if(strrpos($key, 'lc_') === 0) $key = substr($key, 3);
-	if(count(func_get_args()) == 2 && $key){ 
+	if(count(func_get_args()) == 2 && $key){
 		if(is_array($GLOBALS['lc_'.$key])) $GLOBALS['lc_'.$key][] = $value;
 		else $GLOBALS['lc_'.$key] = $value;
 	}
@@ -200,7 +200,7 @@ function _cfg($key='', $value=''){
  * @param string $text Text to wrap through htmlspecialchars.
  * @return string Wrapped text
  */
-function _h($text){		  
+function _h($text){
 	return htmlspecialchars(stripslashes($text), ENT_QUOTES); # ENT_QUOTES will convert both double and single quotes.
 }
 /*
@@ -213,13 +213,13 @@ function _lang(){
 /*
  * Get the language to process
  * Basically, it is useful for admin content management by language
- * @hook __getLang() at app/helpers/utility_helper.php  
+ * @hook __getLang() at app/helpers/utility_helper.php
  * @return string
  */
 function _getLang(){
 	if(function_exists('__getLang')) return __getLang(); # run the hook if any
 	if(_arg('lang')) $lang = _arg('lang');
-	else $lang = _defaultLang();	
+	else $lang = _defaultLang();
 	return ($lang) ? $lang : _defaultLang();
 }
 /*
@@ -231,11 +231,11 @@ function _defaultLang(){
 }
 /**
  * Get the language array
- * @param string|array $excepts The exceptional langauges to exclude 
+ * @param string|array $excepts The exceptional langauges to exclude
  * @return array|boolean The filtered language array or FALSE for no multi-language
  */
 function _langs($excepts=NULL){
-	global $lc_languages;	
+	global $lc_languages;
 	$langs = array();
 	if($excepts){
 		foreach($lc_languages as $lcode => $lname){
@@ -255,7 +255,7 @@ function _langs($excepts=NULL){
 function _queryLang($lang=NULL){
 	global $lc_lang;
 	if(!$lang) $lang = $lc_lang;
-	return str_replace('-', '_', $lang);	
+	return str_replace('-', '_', $lang);
 }
 /*
  * Get the current site language code by converting underscore (db-friendly) to dash (URL-friendly)
@@ -264,7 +264,7 @@ function _queryLang($lang=NULL){
 function _urlLang($lang=NULL){
 	global $lc_lang;
 	if(!$lang) $lang = $lc_lang;
-	return str_replace('_', '-', $lang);	
+	return str_replace('_', '-', $lang);
 }
 /*
  * Get the default site language code by converting dash to underscore
@@ -272,7 +272,7 @@ function _urlLang($lang=NULL){
  */
 function _defaultQueryLang(){
 	global $lc_defaultLang;
-	return str_replace('-', '_', $lc_defaultLang);	
+	return str_replace('-', '_', $lc_defaultLang);
 }
 /*
  * Get the current site language name of the given language code
@@ -282,7 +282,7 @@ function _defaultQueryLang(){
 function _langName($lang=''){
 	if(!_multilingual()) return '';
 	global $lc_languages;
-	$lang = str_replace('_', '-', $lang);	
+	$lang = str_replace('_', '-', $lang);
 	if(isset($lc_languages[$lang])) return $lc_languages[$lang];
 	else return $lc_languages[_cfg('defaultLang')];
 }
@@ -292,7 +292,7 @@ function _langName($lang=''){
  */
 function _multilingual(){
 	if(_cfg('languages')){
-		return (count(_cfg('languages')) > 1) ? true : false; 
+		return (count(_cfg('languages')) > 1) ? true : false;
 	}else{
 		return false;
 	}
@@ -304,7 +304,7 @@ function _multilingual(){
  * @return string
  */
 function _protocol(){
-	$protocol = current(explode('/', $_SERVER['SERVER_PROTOCOL']));	
+	$protocol = current(explode('/', $_SERVER['SERVER_PROTOCOL']));
 	return strtolower($protocol);
 }
 /*
@@ -320,7 +320,7 @@ function _ssl(){
  * Get the current routing path
  * For example, example.com/foo/bar would return foo/bar
  *	example.com/en/foo/bar would also return foo/bar
- *  example.com/1/this-is-slug (if accomplished by RewriteRule) would return the underlying physical path 
+ *  example.com/1/this-is-slug (if accomplished by RewriteRule) would return the underlying physical path
  *
  * @return string
  */
@@ -371,7 +371,7 @@ function _self($queryStr=array(), $lang=''){
  *									'key1' => $value2,
  *									'key3' => $value3 or array($value3, $value4)
  *							 	)
- * @param string 	$lang		Languague code to be prepended to $path such as "en/foo/bar". It will be useful for site language switch redirect 
+ * @param string 	$lang		Languague code to be prepended to $path such as "en/foo/bar". It will be useful for site language switch redirect
  */
 function _redirect($path=NULL, $queryStr=array(), $lang=''){
 	if($path == 'self') $url = _self(NULL, $lang);
@@ -400,7 +400,7 @@ function _page404(){
 /**
  * Check if the current routing is a particular URL RewriteRule processing or not
  */
-function _isRewriteRule(){	
+function _isRewriteRule(){
 	return (strcasecmp(REQUEST_URI, _r()) !== 0) ? true : false;
 }
 /**
@@ -423,10 +423,10 @@ function _hreflang(){
 	global $lc_languages;
 	if(_multilingual()){ ?>
 	<?php foreach($lc_languages as $hrefLang => $langDesc) {?>
-		<?php 
+		<?php
 		if(_canonical() == _url()){
 			$alternate = _url('', NULL, $hrefLang);
-			$xdefault  = _url('', NULL, false);			
+			$xdefault  = _url('', NULL, false);
 		}else{
 			$alternate = preg_replace('/\/'._lang().'\b/', '/'.$hrefLang, _canonical());
 			$xdefault  = preg_replace('/\/'._lang().'\b/', '', _canonical());
@@ -452,11 +452,11 @@ function _hreflang(){
  *   not found. If called without arguments, it returns an array containing all
  *   the components of the current path.
  */
-function _arg($index = NULL, $path = NULL) {		
+function _arg($index = NULL, $path = NULL) {
 	if(isset($_GET[$index])){
 		return _get($_GET[$index]);
-	}	
-	
+	}
+
 	if(is_null($path)) $path = route_path();
 	$arguments = explode('/', $path);
 
@@ -486,7 +486,7 @@ function _arg($index = NULL, $path = NULL) {
 	elseif(is_null($index)){
 		return explode('/', str_replace('/-', '/', $path));
 	}
-	
+
 	return '';
 }
 /**
@@ -495,17 +495,17 @@ function _arg($index = NULL, $path = NULL) {
  *		/LucidFrame/en/....
  *		/LucidFrame/....
  *	 	/en/...
- *		/.... 
+ *		/....
  * @return mixed The 2-letter language code if it has one, otherwise return FALSE
  */
 function _getLangInURI(){
 	global $lc_baseURL;
 	global $lc_languages;
-	
+
 	if( !is_array($lc_languages) ){
 		$lc_languages = array('en' => 'English');
 	}
-			
+
 	$baseURL 	= _cfg('baseURL');
 	$baseURL 	= ($baseURL) ? '\/'.trim($baseURL, '/').'\/' : '\/';
 	$regex 		= '/^'.$baseURL.'\b('.implode('|', array_keys($lc_languages)).'){1}\b(\/?)/i';
@@ -534,27 +534,27 @@ function _title(){
 	global $lc_siteName;
 	global $lc_titleSeparator;
 	$args = func_get_args();
-		
-	if(count($args) == 0){ 
+
+	if(count($args) == 0){
 		return $lc_siteName;
 	}
 	if(count($args) == 1){
 		if(is_array($args[0])){
-			$args = _filterArrayEmpty($args[0]); 
+			$args = _filterArrayEmpty($args[0]);
 			$title = $args;
-		}else{ 
+		}else{
 			$title = ($args[0]) ? array($args[0]) : array();
 		}
 	}else{
 		$args = _filterArrayEmpty($args);
 		$title = $args;
 	}
-	
+
 	$lc_titleSeparator = trim($lc_titleSeparator);
 	if($lc_titleSeparator) $lc_titleSeparator = ' '.$lc_titleSeparator.' ';
 	else $lc_titleSeparator = ' ';
-	
-	if(count($title)){ 
+
+	if(count($title)){
 		$title = implode($lc_titleSeparator, $title);
 		if($lc_siteName) $title .= ' | '.$lc_siteName;
 		return $title;
@@ -603,14 +603,14 @@ function _breadcrumb(){
  * @param boolean $trail To append "..." or not. NULL to not show
  *
  * @return string The shortent text string
- */ 
+ */
 function _shorten($str, $length=50, $trail='...'){
 	$str = strip_tags(trim($str));
 	if(strlen($str) <= $length) return $str;
 	$short = trim(substr($str, 0, $length));
-	$lastSpacePos = strrpos($short, ' ');	
+	$lastSpacePos = strrpos($short, ' ');
 	if($lastSpacePos !== false){
-		$short = substr($short, 0, $lastSpacePos);		
+		$short = substr($short, 0, $lastSpacePos);
 	}
 	if($trail) $short = rtrim($short, '.').$trail;
 	return $short;
@@ -623,7 +623,7 @@ function _shorten($str, $length=50, $trail='...'){
  * @param string $lastGlue The glue string between the last two elements
  *
  * @return string The formatted text string
- */ 
+ */
 if(!function_exists('_fstr')){
 	function _fstr($value, $glue=', ', $lastGlue='and'){
 		global $lc_nullFill;
@@ -649,7 +649,7 @@ if(!function_exists('_fstr')){
  * @param string $unit The unit appended to the number (optional)
  *
  * @return string The formatted number
- */ 
+ */
 if(!function_exists('_fnum')){
 	function _fnum($value, $decimals=2, $unit=''){
 		global $lc_nullFill;
@@ -667,7 +667,7 @@ if(!function_exists('_fnum')){
 	}
 }
 /**
- * Format a number in a smarter way, i.e., decimal places are omitted where necessary. 
+ * Format a number in a smarter way, i.e., decimal places are omitted where necessary.
  * Given the 2 decimal places, the value 5.00 will be shown 5 whereas the value 5.01 will be shown as it is.
  *
  * @param int 	 $value A number to be formatted
@@ -675,14 +675,14 @@ if(!function_exists('_fnum')){
  * @param string $unit The unit appended to the number (optional)
  *
  * @return string The formatted number
- */ 
+ */
 if(!function_exists('_fnumSmart')){
 	function _fnumSmart($value, $decimals=2, $unit=''){
 		global $lc_nullFill;
 		$value = _fnum($value, $decimals, $unit);
-		$v = explode('.', $value);		
+		$v = explode('.', $value);
 		if($decimals > 0 && isset($v[1])){
-			if(preg_match('/0{'.$decimals.'}/i', $v[1])){ 
+			if(preg_match('/0{'.$decimals.'}/i', $v[1])){
 				$value = $v[0];
 			}
 		}
@@ -694,7 +694,7 @@ if(!function_exists('_fnumSmart')){
  *
  * @param  mixed $num A number to remove the formatting
  * @return mixed The number
- */ 
+ */
 
 if(!function_exists('_fnumReverse')){
 	function _fnumReverse($num){
@@ -707,7 +707,7 @@ if(!function_exists('_fnumReverse')){
  * @param  string $date A date to be formatted
  * @param  string $format The date/time format; The config variable will be used if it is not passed
  * @return string The formatted date
- */ 
+ */
 if(!function_exists('_fdate')){
 	function _fdate($date, $format=''){
 		if(!$format) $format = _cfg('dateFormat');
@@ -721,32 +721,32 @@ if(!function_exists('_fdate')){
  * @param 	string $date A date/time to be formatted
  * @param	string $format The date/time format; The config variable will be used if it is not passed
  * @return 	string The formatted date/time
- */ 
+ */
 if(!function_exists('_fdatetime')){
-	function _fdatetime($dateTime, $format=''){		
+	function _fdatetime($dateTime, $format=''){
 		if(!$format) $format = _cfg('dateTimeFormat');
 		return date($format, strtotime($dateTime));
 	}
 }
 /**
 * Display elapsed time in wording
-* 
+*
 * @param timestamp|string 	$time	The elapsed time in unix timestamp or date/time string
-* @param string 			$format The date/time format to show when 4 days passed	
+* @param string 			$format The date/time format to show when 4 days passed
 * @return string
 */
 if(!function_exists('_ftimeAgo')){
 	function _ftimeAgo($time, $format = 'M j Y'){
 		$now = time();
 		if(!is_numeric($time)) $time = strtotime($time);
-		
+
 		$secElapsed = $now - $time;
-		if($secElapsed <= 60){		
+		if($secElapsed <= 60){
 			return _t('just now');
 		}
 		elseif($secElapsed <= 3540){
 			$min = $now - $time;
-			$min = round($min/60);		
+			$min = round($min/60);
 			return _t('%d minutes ago', $min);
 		}
 		elseif($secElapsed <= 3660 ){
@@ -756,7 +756,7 @@ if(!function_exists('_ftimeAgo')){
 			return date("g:i a", $time);
 		}
 		elseif(date('j-n-y', mktime(0, 0, 0, date('n', $now),date('j', $now)-1, date('Y', $now))) == date('j-n-y',$time)){
-			return _t('yesterday');	
+			return _t('yesterday');
 		}
 		elseif($secElapsed <= 345600 ){
 			return date('l', $time);
@@ -777,7 +777,7 @@ if(!function_exists('_ftimeAgo')){
  * @param	string	$display Display the message on the spot or not
  *
  * @return 	string 	The formatted date
- */ 
+ */
 if(!function_exists('_msg')){
 	function _msg($msg, $class='error', $return=NULL, $display='display:block'){
 		if(empty($msg)) $html = '';
@@ -785,7 +785,7 @@ if(!function_exists('_msg')){
 		$return = strtolower($return);
 		$html = '<div class="message';
 		if($class) $html .= ' '.$class.'"';
-		$html .= ' style="'.$display.'">';		
+		$html .= ' style="'.$display.'">';
 		if(is_array($msg)){
 			if(count($msg) > 0){
 				$html .= '<ul>';
@@ -793,7 +793,7 @@ if(!function_exists('_msg')){
 					if(is_string($m)) $html .= '<li>'.$m.'</li>';
 					elseif(is_array($msg) && isset($m['msg'])) $html .= '<li>'.$m['msg'].'</li>';
 				}
-				$html .= '</ul>';				
+				$html .= '</ul>';
 			}else{
 				$html = '';
 			}
@@ -801,10 +801,10 @@ if(!function_exists('_msg')){
 			$html .= $msg;
 		}
 		if($html) $html .= '</div>';
-		
-		if($return == 'html' || $return === true){ 
+
+		if($return == 'html' || $return === true){
 			return $html;
-		}else{ 
+		}else{
 			echo $html;
 		}
 	}
@@ -836,19 +836,19 @@ function _filesize($file, $digits = 2, $sizes = array("MB","KB","B")) {
 if(!function_exists('_randomCode')){
 /**
  * Generate a random string from the given array of letters.
- * @param	int 	$length	The length of required random string 
+ * @param	int 	$length	The length of required random string
  * @param	array 	$letters Array of letters from which randomized string is derived from. Default is a to z and 0 to 9.
  * @return	string 	Random string of requried length
- */ 
+ */
 	function _randomCode($length=5, $letters = array()){
 		# Letters & Numbers for default
-		if ( sizeof($letters) == 0 ) { 
+		if ( sizeof($letters) == 0 ) {
 			$letters = array_merge(range(0, 9), range('a', 'z'));
 		}
-		
-		shuffle($letters); # Shuffle letters	
+
+		shuffle($letters); # Shuffle letters
 		$randArr = array_splice($letters, 0, $length);
-		
+
 		return implode('', $randArr);
 	}
 }
@@ -856,7 +856,7 @@ if(!function_exists('_randomCode')){
 if(!function_exists('_slug')){
 /**
  * Generate a slug of human-readable keywords
- * 
+ *
  * @param string 		$string 	Text to slug
  * @param string 		$table 		Table name to check in. If it is empty, no check in the table
  * @param string|array	$condition 	Condition to append table check-in, e.g, 'fieldName != value' or array('fieldName !=' => value)
@@ -867,21 +867,21 @@ if(!function_exists('_slug')){
 		$specChars = array('`','~','!','@','#','$','%','\^','&','*','(',')','=','+','x','{','}','[',']',':',';',"'",'"','<','>','\\','|','?','/',',');
 		$table 	= ltrim($table, db_prefix());
 		$slug 	= strtolower(trim($string));
-		$slug 	= trim($slug, '-');	
+		$slug 	= trim($slug, '-');
 		# clear special characters
 		$slug 	= preg_replace('/(&amp;|&quot;|&#039;|&lt;|&gt;)/i', '', $slug);
-		$slug 	= str_replace($specChars, '', $slug); 
+		$slug 	= str_replace($specChars, '', $slug);
 		$slug 	= str_replace(array(' ', '.'), '-', $slug);
-		
+
 		if(is_array($condition)){
 			$condition = db_condition($condition);
 		}
-		
+
 		while(1 && $table){
 			$sql = 'SELECT slug FROM '.$table.' WHERE slug = ":alias"';
 			if($condition) $sql .= ' AND '.$condition;
 			if($result = db_query($sql, array(':alias' => $slug))){
-				if(db_numRows($result) == 0) break;			
+				if(db_numRows($result) == 0) break;
 				$segments = explode('-', $slug);
 				if( sizeof($segments) > 1 && is_numeric($segments[sizeof($segments)-1]) ){
 					$index = array_pop($segments);
@@ -889,12 +889,12 @@ if(!function_exists('_slug')){
 				}else{
 					$index = 1;
 				}
-				$segments[] = $index;			
+				$segments[] = $index;
 				$slug = implode('-', $segments);
 			}
 		}
 		$slug = preg_replace('/[\-]+/', '-', $slug);
-		return trim($slug, '-');	
+		return trim($slug, '-');
 	}
 }
 /**
@@ -910,11 +910,11 @@ function _sqlDate($date, $givenFormat='dmy', $separator='-'){
 	$dt 	= explode($separator, $date);
 	$format = str_split($givenFormat);
 	$ft 	= array_flip($format);
-	
+
 	$y = $dt[$ft['y']];
 	$m = $dt[$ft['m']];
 	$d = $dt[$ft['d']];
-	
+
 	if(checkdate($m, $d, $y)){
 		return $y.'-'.$m.'-'.$d;
 	}else{
@@ -957,7 +957,7 @@ function _meta($key, $value=''){
 	$value = trim($value);
 	if(empty($value)){
 		if(isset($_meta[$key])) return $_meta[$key];
-		else return '';		
+		else return '';
 	}else{
 		if(in_array($key, array('description', 'og:description', 'twitter:description'))){
 			$value = trim(substr($value, 0, 200));
@@ -969,27 +969,27 @@ function _meta($key, $value=''){
  * Simple mail helper function
  *
  * @param string $from 		The sender of the mail
- * @param string $to 		The receiver or receivers of the mail 
- * @param string $subject 	Subject of the email to be sent. 
+ * @param string $to 		The receiver or receivers of the mail
+ * @param string $subject 	Subject of the email to be sent.
  * @param string $message 	Message to be sent
- * @param string $cc 		The CC receiver or receivers of the mail 
- * @param string $bcc 		The Bcc receiver or receivers of the mail  
- * 	The formatting of $from, $to, $cc and $bcc must comply with RFC 2822. Some examples are: 
- * 		user@example.com 
- * 		user@example.com, anotheruser@example.com 
- * 		User <user@example.com> 
- * 		User <user@example.com>, Another User <anotheruser@example.com>  
- *  
+ * @param string $cc 		The CC receiver or receivers of the mail
+ * @param string $bcc 		The Bcc receiver or receivers of the mail
+ * 	The formatting of $from, $to, $cc and $bcc must comply with RFC 2822. Some examples are:
+ * 		user@example.com
+ * 		user@example.com, anotheruser@example.com
+ * 		User <user@example.com>
+ * 		User <user@example.com>, Another User <anotheruser@example.com>
+ *
  * @return boolean Returns TRUE if the mail was successfully accepted for delivery, FALSE otherwise
  */
 function _mail($from, $to, $subject='', $message='', $cc='', $bcc=''){
-	$charset = mb_detect_encoding($message);	
+	$charset = mb_detect_encoding($message);
 	$message = nl2br(stripslashes($message));
-	
-	$EEOL = PHP_EOL; //"\n";	
-	$headers  = 'From: ' . $from . $EEOL;	
+
+	$EEOL = PHP_EOL; //"\n";
+	$headers  = 'From: ' . $from . $EEOL;
 	$headers .= 'MIME-Version: 1.0' . $EEOL;
-	$headers .= 'Content-type: text/html; charset=' . $charset  . $EEOL;	
+	$headers .= 'Content-type: text/html; charset=' . $charset  . $EEOL;
 	$headers .= 'Reply-To: ' . $from . $EEOL;
 	$headers .= 'Return-Path:'.$from . $EEOL;
 	if($cc){
@@ -999,11 +999,11 @@ function _mail($from, $to, $subject='', $message='', $cc='', $bcc=''){
 		$headers .= 'Bcc: ' . $bcc . $EEOL;
 	}
 	$headers .= 'X-Mailer: PHP';
-				
+
 	return mail($to, $subject, $message, $headers);
 }
 /**
- * Get translation strings from the POST array 
+ * Get translation strings from the POST array
  * and prepare to insert or update into the table according to the specified fields
  *
  * @param array  $post The POST array
@@ -1021,7 +1021,7 @@ function _postTranslationStrings($post, $fields, $lang=NULL){
 			$lcode = _queryLang($lang);
 			if(isset($post[$name.'_'.$lcode])){
 				$data[$key.'_'.$lcode] = $post[$name.'_'.$lcode];
-			}			
+			}
 		}else{
 			if(isset($post[$name])) $data[$key.'_'._defaultLang()] = $post[$name];
 			foreach($lc_languages as $lcode => $lname){
@@ -1032,7 +1032,7 @@ function _postTranslationStrings($post, $fields, $lang=NULL){
 			}
 		}
 	}
-	return $data;	
+	return $data;
 }
 /**
  * Get translation strings from the query result
@@ -1041,7 +1041,7 @@ function _postTranslationStrings($post, $fields, $lang=NULL){
  * @param object|array $data The query result
  * @param array|string $fields The array of field names to get data, e.g., 'fieldName' or array('fieldName1', 'fieldName2')
  * @param string $lang The language code to fetch (if it is not provided, all languages will be fetched)
- * 
+ *
  * @return array|object The array or object of translation strings
  */
 function _getTranslationStrings($data, $fields, $lang=NULL){
@@ -1059,7 +1059,7 @@ function _getTranslationStrings($data, $fields, $lang=NULL){
 			}else{
 				$data[$name.'_i18n'] = $data[$name];
 			}
-		}else{		
+		}else{
 			foreach($lc_languages as $lcode => $lname){
 				$lcode = _queryLang($lcode);
 				if(isset($data[$name.'_'.$lcode])){
@@ -1069,5 +1069,5 @@ function _getTranslationStrings($data, $fields, $lang=NULL){
 		}
 	}
 	if($isObject) $data = (object) $data;
-	return $data;	
+	return $data;
 }

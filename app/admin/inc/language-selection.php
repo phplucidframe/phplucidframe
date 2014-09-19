@@ -8,7 +8,7 @@ if(auth_isAdmin()){
             <td>
 				<?php
 				$lang = _getLang();
-                foreach($lc_languages as $lcode => $lname){										
+                foreach($lc_languages as $lcode => $lname){
 					$class = ($lang == $lcode) ? 'active' : '';
 					$url = _url(NULL, array('lang' => $lcode));
                 ?>
@@ -20,7 +20,7 @@ if(auth_isAdmin()){
                 ?>
     		</td>
 		</tr>
-	</table>                  
+	</table>
 </div>
 <?php
 }

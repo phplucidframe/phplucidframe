@@ -3,41 +3,39 @@
 /* RESPONSIVE */
 /**************/
 @media screen and min-width 680px {
-    
 
 }
 
 @media screen and max-width 680px {
-    body {
-        font-size: 11px;
-    }
-    
-    textarea {
-        display: block;
-    }
-    
-    table.form td {
-        display: block;
-    }
-    
-    table.form td.labelSeperator {
-        display: none;
-        border: none;
-    }
-    
-    table.form td.entry {
-        padding-left: 0;
-        padding-top: 2px;
-        min-height: 22px;
-    }
-    
-    #overlay #processing,#page-loading #processing {
-        left: 10%;
-    }
+	body {
+		font-size: 11px;
+	}
+
+	textarea {
+		display: block;
+	}
+
+	table.form td {
+		display: block;
+	}
+
+	table.form td.labelSeperator {
+		display: none;
+		border: none;
+	}
+
+	table.form td.entry {
+		padding-left: 0;
+		padding-top: 2px;
+		min-height: 22px;
+	}
+
+	#overlay #processing,#page-loading #processing {
+		left: 10%;
+	}
 
 }
 
 @media screen and max-width 380px {
-   
 
 }

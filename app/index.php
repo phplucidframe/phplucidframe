@@ -9,11 +9,11 @@
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @package     LC.app 
+ * @package     LC.app
  * @author		Sithu K. <cithukyaw@gmail.com>
  * @license     http://www.opensource.org/licenses/mit-license.php MIT License
  */
- 
+
 /*
  * Request Collector
  */
@@ -35,17 +35,17 @@ if(!file_exists($_page)){
 }
 
 # if it is a directory, it should have index.php
-if(is_dir($_page)) $_page .= '/index.php'; 
+if(is_dir($_page)) $_page .= '/index.php';
 
-if(!empty($_page) && file_exists($_page)){ 
+if(!empty($_page) && file_exists($_page)){
 	include $_page;
 }else{
-	if(preg_match('/(.*)(401|403|404){1}$/', $_page, $matches)){ 
+	if(preg_match('/(.*)(401|403|404){1}$/', $_page, $matches)){
 		include( _i('inc/'.$matches[2].'.php') );
 	}else{
-		$_page = route_search();	
+		$_page = route_search();
 		if($_page){
-			include $_page;		
+			include $_page;
 		}else{
 			include( _i('inc/404.php') );
 		}

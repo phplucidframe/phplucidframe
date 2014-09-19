@@ -15,6 +15,6 @@ $pageTitle = _t('Categories');
 </html>
 <script language="javascript">
 $(function(){
-	Page.Category.init();								
+	Page.Category.init();
 });
 </script>

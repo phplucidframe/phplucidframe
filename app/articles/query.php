@@ -20,7 +20,7 @@ $pager->calculate();
 
 $sql = 'SELECT * FROM '.db_prefix().' post
 		ORDER BY post.title DESC
-		LIMIT '.$pager->get('offset').', '.$pager->get('itemsPerPage');		
+		LIMIT '.$pager->get('offset').', '.$pager->get('itemsPerPage');
 if($result = db_query($sql))
 	if(db_numRows($result)){
 		# render HTML here
@@ -45,7 +45,7 @@ $articles[] = array(
 );
 $articles[] = array(
 	'title' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-	'slug'	=> 'php-micro-application-development-framework', 
+	'slug'	=> 'php-micro-application-development-framework',
 	'body' 	=> 'Quisque varius sapien eget lorem feugiat vel dictum neque semper. Duis consequat nisl vitae risus adipiscing aliquam. Suspendisse vehicula egestas blandit. In laoreet molestie est. Donec rhoncus sodales ligula vitae fringilla. Mauris congue blandit metus eu eleifend. Cras gravida, nisi at euismod malesuada, justo massa adipiscing nisl, porttitor tristique urna ipsum id lacus. Nullam a leo neque, eget pulvinar urna. Suspendisse fringilla ante vitae nisi ultricies vestibulum. Donec id libero quis orci blandit placerat. '
 );
 $totalRecords = count($articles);

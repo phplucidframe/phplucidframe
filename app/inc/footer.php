@@ -1,6 +1,6 @@
 <?php
 /**
- * Footer template file 
+ * Footer template file
  */
 ?>
 			</div> <!-- .container -->
@@ -12,10 +12,10 @@
                     <span id="right"><?php echo _cfg('siteName'); ?></span>
                 </div>
 				<ul class="social-icons">
-					<li><a href="https://facebook.com" class="fb" target="_blank">Facebook</a></li>		
+					<li><a href="https://facebook.com" class="fb" target="_blank">Facebook</a></li>
 					<li><a href="https://twitter.com" class="tw" target="_blank">Twitter</a></li>
 				</ul>
              </div>
-        </div>		
+        </div>
 	</div> <!-- #page-container -->
 </div> <!-- #wrapper -->

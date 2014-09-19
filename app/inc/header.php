@@ -1,16 +1,16 @@
 <?php
 /**
- * Header template file 
+ * Header template file
  */
 ?>
 <div id="wrapper">
 	<div id="page-container">
         <div id="header">
         	<div class="container clearfix">
-        		<a href="<?php echo _url('home'); ?>" id="logo">LucidFrame</a>                
+        		<a href="<?php echo _url('home'); ?>" id="logo">LucidFrame</a>
                 <div id="language-switcher">
 				<?php
-                foreach($lc_languages as $lcode => $lname){										
+                foreach($lc_languages as $lcode => $lname){
 					$class = (_lang() == $lcode) ? 'active' : '';
 					$url = _self(NULL, $lcode);
                 ?>
@@ -19,8 +19,8 @@
                     </a>
                 <?php
                 }
-                ?> 
-                </div>              
+                ?>
+                </div>
                 <ul id="menu" class="clearfix">
                 	<li>
 						<a href="<?php echo _url('home'); ?>" <?php if(_arg(0) == 'home') echo 'class="active"'; ?>><?php echo _t('Welcome'); ?></a>
@@ -33,7 +33,7 @@
 					</li>
                     <li>
 						<a href="https://github.com/cithukyaw/LucidFrame/releases" target="_blank">Download</a>
-					</li>                    					
+					</li>
                     <li>
 						<a href="https://github.com/cithukyaw/LucidFrame" target="_blank">GitHub</a>
 					</li>

@@ -1,7 +1,7 @@
 <?php
 auth_prerequisite();
 $pageTitle = _t('Sign In');
-?> 
+?>
 <!DOCTYPE html>
 <html lang="<?php echo _lang(); ?>">
 <head>

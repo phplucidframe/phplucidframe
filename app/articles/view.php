@@ -1,6 +1,6 @@
 <?php
 /**
- * The view.php (required) is a visual output representation to user using data provided by query.php. 
+ * The view.php (required) is a visual output representation to user using data provided by query.php.
  * It generally should contain HTML between <body> and </body>.
  */
 ?>
@@ -27,10 +27,10 @@ if(count($articles)){
 	</div>
 	<?php
 }else{
-	?>	
+	?>
 	<div class="noRecord"><?php echo _t('There is no record.'); ?></div>
 	<?php
-}	
+}
 ?>
 
 <?php include( _i('inc/footer.php') ); ?>

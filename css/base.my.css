@@ -2,14 +2,14 @@
 /* CSS Document for Language my_MM */
 
 @font-face {
-    font-family: 'zawgyi-oneregular';
-    src: url('../files/fonts/zawgyione/zawgyione-webfont.eot');
-    src: url('../files/fonts/zawgyione/zawgyione-webfont.eot?#iefix') format('embedded-opentype'),
-         url('../files/fonts/zawgyione/zawgyione-webfont.woff') format('woff'),
-         url('../files/fonts/zawgyione/zawgyione-webfont.ttf') format('truetype'),
-         url('../files/fonts/zawgyione/zawgyione-webfont.svg#zawgyi-oneregular') format('svg');
-    font-weight: normal;
-    font-style: normal;
+	font-family: 'zawgyi-oneregular';
+	src: url('../files/fonts/zawgyione/zawgyione-webfont.eot');
+	src: url('../files/fonts/zawgyione/zawgyione-webfont.eot?#iefix') format('embedded-opentype'),
+		 url('../files/fonts/zawgyione/zawgyione-webfont.woff') format('woff'),
+		 url('../files/fonts/zawgyione/zawgyione-webfont.ttf') format('truetype'),
+		 url('../files/fonts/zawgyione/zawgyione-webfont.svg#zawgyi-oneregular') format('svg');
+	font-weight: normal;
+	font-style: normal;
 
 }
 

@@ -43,7 +43,7 @@ $requestURI = ltrim($requestURI, '/');
 $request 	= explode('/', $requestURI);
 $lc_namespace = $request[0];
 
-# Clean lang code in URL	
+# Clean lang code in URL
 if(array_key_exists($lc_namespace, $lc_languages)){
 	array_shift($request);
 	$requestURI = ltrim(ltrim($requestURI, $lc_namespace), '/'); # clean the language code from URI
@@ -76,7 +76,7 @@ function _i($file, $recursive=true){
 	global $lc_baseURL;
 	global $lc_sites;
 	global $lc_languages;
-		
+
 	$ext = strtolower(substr($file, strrpos($file, '.')+1)); # get the file extension
 	if( in_array($ext, array('js', 'css')) ){
 		$appRoot = WEB_APP_ROOT;
@@ -87,39 +87,39 @@ function _i($file, $recursive=true){
 		$root 	 = ROOT;
 		$clientFile = false;
 	}
-	
+
 	if( !is_array($lc_languages) ){
 		$lc_languages = array('en' => 'English');
 	}
-				
+
 	$requestURI = trim(ltrim($_SERVER['REQUEST_URI'], '/'.$lc_baseURL)); # /base-dir/path/to/sub/dir to path/to/sub/dir
 	$request 	= explode('/', $requestURI);
-	
+
 	$needle = $request[0];
-	# Clean lang code in URL	
+	# Clean lang code in URL
 	if(array_key_exists($needle, $lc_languages)){
 		array_shift($request);
 		if(count($request)) $needle = $request[0];
 		else $needle = '';
 	}
-	
+
 	if(isset($lc_sites) && is_array($lc_sites) && count($lc_sites)){
 		if( LC_NAMESPACE == '' || !array_key_exists(LC_NAMESPACE, $lc_sites)){
 		# Find in APP_ROOT -> ROOT
 			$folders = array(
-				APP_ROOT 	=> $appRoot, 
+				APP_ROOT 	=> $appRoot,
 				ROOT 		=> $root
 			);
-			
+
 		}elseif(array_key_exists(LC_NAMESPACE, $lc_sites)){
 		# Find in SUB-DIR -> APP_ROOT -> ROOT
 			$folders = array(
-				APP_ROOT.$lc_sites[LC_NAMESPACE].'/'	=> $appRoot . $lc_sites[LC_NAMESPACE] . '/', 
-				APP_ROOT 		 			=> $appRoot, 
+				APP_ROOT.$lc_sites[LC_NAMESPACE].'/'	=> $appRoot . $lc_sites[LC_NAMESPACE] . '/',
+				APP_ROOT 		 			=> $appRoot,
 				ROOT 			 			=> $root
 			);
 		}
-		
+
 		# $key is for file_exists()
 		# $value is for include() or <script> or <link>
 		foreach($folders as $key => $value){
@@ -129,9 +129,9 @@ function _i($file, $recursive=true){
 				return $fileWithPath;
 			}
 			if($recursive == false) break;
-		}	
+		}
 	}
-	
+
 	if(strstr($_SERVER['PHP_SELF'], APP_DIR)){
 		if(is_file($file) && file_exists($file)){
 			return $file;
@@ -147,7 +147,7 @@ function _i($file, $recursive=true){
 if(isset($lc_databases['default']) && is_array($lc_databases['default']) && $lc_databases['default']['engine']){
 	if( $file = _i( 'helpers/db_helper.php', false) ) include $file;
 	require HELPER . 'db_helper.'.$lc_databases['default']['engine'].'.php';
-	
+
 	if(db_host() && db_user() && db_name()){
 		# Start DB connection
 		db_connect();

@@ -2,7 +2,7 @@
 /**
  * All custom authentication helper functions specific to the site should be defined here.
  */
- 
+
 /**
  * Check if the current logged-in user is master administrator or not
  */

@@ -3,7 +3,7 @@ $get = _get($_GET);
 
 # Count query for the pager
 $rowCount = 0;
-$sql = 'SELECT COUNT(*) AS count FROM '.db_prefix().'category 
+$sql = 'SELECT COUNT(*) AS count FROM '.db_prefix().'category
 		WHERE deleted IS NULL';
 $rowCount = db_count($sql);
 
@@ -23,7 +23,7 @@ $sql = 'SELECT c.* FROM '.db_prefix().'category AS c
 		WHERE deleted IS NULL
 		ORDER BY catName
 		LIMIT '.$pager->get('offset').', '.$pager->get('itemsPerPage');
-	
+
 if($result = db_query($sql)){
 	if(db_numRows($result)){
 		$langs = _langs(_defaultLang());
@@ -40,7 +40,7 @@ if($result = db_query($sql)){
                 <td>
 					<span>Name</span>
 					<?php if(_langName($lcode)){ ?>
-                    <label class="lang">(<?php echo _langName($lcode); ?>)</label> 
+                    <label class="lang">(<?php echo _langName($lcode); ?>)</label>
                     <?php } ?>
                 </td>
                 <?php } ?>
@@ -54,7 +54,7 @@ if($result = db_query($sql)){
 			);
 			# Get translations for other languages
 			$i18n = (array) _getTranslationStrings($row, 'catName');
-			$data = array_merge($data, $i18n);			
+			$data = array_merge($data, $i18n);
 		?>
 			<tr id="row-<?php echo $row->catId; ?>">
                 <td class="tableLeft colAction">
@@ -74,15 +74,15 @@ if($result = db_query($sql)){
 				<?php if($langs){ ?>
                     <?php foreach($langs as $lcode => $lname){ ?>
                     <td class="colName <?php echo $lcode; ?>">
-                    	<?php 
+                    	<?php
 						$lcode = _queryLang($lcode);
 						if(isset($i18n['catName_i18n'][$lcode])) echo $i18n['catName_i18n'][$lcode];
 						else echo '&nbsp;';
 						?>
                     </td>
                     <?php } ?>
-                <?php } ?>                
-			</tr>			
+                <?php } ?>
+			</tr>
 		<?php
 		}
 	?>

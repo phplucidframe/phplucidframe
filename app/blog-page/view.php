@@ -1,6 +1,6 @@
 <?php
 /**
- * The view.php (required) is a visual output representation to user using data provided by query.php. 
+ * The view.php (required) is a visual output representation to user using data provided by query.php.
  * It generally should contain HTML between <body> and </body>.
  */
 ?>
@@ -40,7 +40,7 @@
 				<td class="entry">
 					<input type="text" name="txtConfirmEmail" size="50" value="" />
 				</td>
-			</tr>			
+			</tr>
 			<tr>
 				<td class="label"><?php echo _t('Comment')._cfg('reqSign'); ?></td>
 				<td class="labelSeparator">:</td>
@@ -49,12 +49,12 @@
 				</td>
 			</tr>
 			<tr>
-				<td colspan="2"></td>			
+				<td colspan="2"></td>
 				<td class="entry">
 					<input type="submit" name="btnSubmit" value="<?php echo _t('Post Comment'); ?>" class="button green" />
 					<a href="<?php echo _url('blog'); ?>" class="button black"><?php echo _t('Cancel'); ?></a>
 				</td>
-			</tr>						
+			</tr>
 		</table>
 		<?php Form::token(); ?>
 	</form>

@@ -9,9 +9,9 @@
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @package     LC.helpers 
+ * @package		LC.helpers
  * @author		Sithu K. <cithukyaw@gmail.com>
- * @license     http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license		http://www.opensource.org/licenses/mit-license.php MIT License
  */
 $_route_paths = array();
 
@@ -26,7 +26,7 @@ function route_init(){
 	if (!isset($_SERVER['SERVER_PROTOCOL']) || ($_SERVER['SERVER_PROTOCOL'] != 'HTTP/1.0' && $_SERVER['SERVER_PROTOCOL'] != 'HTTP/1.1')) {
 		$_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.0';
 	}
-	
+
 	if (isset($_SERVER['HTTP_HOST'])) {
 		// As HTTP_HOST is user input, ensure it only contains characters allowed
 		// in hostnames. See RFC 952 (and RFC 2181).
@@ -63,29 +63,29 @@ function route_request() {
 	global $lc_languages;
 	global $lc_lang;
 	global $lc_cleanURL;
-		
+
 	if(_getLangInURI() === false){
 		$lc_lang = $lang = _cfg('defaultLang');
 	}
-	
+
 	if (isset($_GET[ROUTE]) && is_string($_GET[ROUTE])) {
 		// This is a request with a ?route=foo/bar query string.
 		$path = $_GET[ROUTE];
 		if(isset($_GET['lang']) && $_GET['lang']){
 			$lang = strip_tags(urldecode($_GET['lang']));
 			$lang = rtrim($lang, '/');
-			if( array_key_exists($lang, $lc_languages) ){ 
+			if( array_key_exists($lang, $lc_languages) ){
 				$lc_lang = $lang;
 			}
 		}
 	}
 	elseif (isset($_SERVER['REQUEST_URI'])) {
 		// This request is either a clean URL, or 'index.php', or nonsense.
-		// Extract the path from REQUEST_URI.		
+		// Extract the path from REQUEST_URI.
 		$request_path = urldecode(strtok($_SERVER['REQUEST_URI'], '?'));
 		$request_path = str_replace($lc_baseURL, '', ltrim($request_path, '/'));
 		$request_path = ltrim($request_path, '/');
-		
+
 		$lang = _getLangInURI();
 		if($lang){
 			$lc_lang = $lang;
@@ -96,7 +96,7 @@ function route_request() {
 		}else{
 			$path = trim($request_path);
 		}
-		
+
 		// If the path equals the script filename, either because 'index.php' was
 		// explicitly provided in the URL, or because the server added it to
 		// $_SERVER['REQUEST_URI'] even when it wasn't provided in the URL (some
@@ -114,9 +114,9 @@ function route_request() {
 	// assigned to $_GET[ROUTE] with a slash. Moreover we can always have a trailing
 	// slash in place, hence we need to normalize $_GET[ROUTE].
 	$path = trim($path, '/');
-		
+
 	$protocol = current(explode('/', $_SERVER['SERVER_PROTOCOL']));
-	$base = strtolower($protocol) . '://' . $_SERVER['HTTP_HOST']; 
+	$base = strtolower($protocol) . '://' . $_SERVER['HTTP_HOST'];
 	if($lc_baseURL) $base .= '/' . $lc_baseURL;
 
 	define('WEB_ROOT', $base.'/');
@@ -124,7 +124,7 @@ function route_request() {
 	define('HOME', WEB_ROOT);
 
 	session_set('lang', $lc_lang);
-	
+
 	return $path;
 }
 /**
@@ -135,18 +135,18 @@ function route_request() {
 function route_search(){
 	$q 		= route_path();
 	$seg 	= explode('/', $q);
-	$count 	= sizeof($seg);	
+	$count 	= sizeof($seg);
 	$sites 	= _cfg('sites');
-	
+
 	if($seg[0] == LC_NAMESPACE && is_array($sites) && array_key_exists(LC_NAMESPACE, $sites)){
 		$seg[0] = $sites[LC_NAMESPACE];
 	}
 
 	if(preg_match('/(\.php){1}$/i', $q)){
 		$path = implode('/', $seg);
-		if(file_exists($path)) return $path;		
+		if(file_exists($path)) return $path;
 	}
-	
+
 	$append	= array('/index.php', '.php');
 	for($i=$count; $i>0; $i--){
 		# try to look for
@@ -180,36 +180,36 @@ function route_create($path=''){
  * Return the absolute URL path appended the query string if necessary
  *
  * @param $path string Routing path such as "foo/bar"; NULL for the current path
- * @param $queryStr	array Query string as 
+ * @param $queryStr	array Query string as
  *		array(
  *			$value1,
  *			'key1' => $value2,
  *			'key3' => $value3 or array($value3, $value4)
  *		)
- * @param $lang string Languague code to be prepended to $path such as "en/foo/bar". 
- *		It will be useful for site language switch redirect 
+ * @param $lang string Languague code to be prepended to $path such as "en/foo/bar".
+ *		It will be useful for site language switch redirect
  */
 function route_url($path=NULL, $queryStr=array(), $lang=''){
 	global $lc_cleanURL;
 	global $lc_translationEnabled;
 	global $lc_sites;
-	
+
 	if($lang === false) $forceExcludeLangInURL = true;
 	else $forceExcludeLangInURL = false;
 
 	if(strtolower($path) == 'home'){
 		if(isset($GLOBALS['lc_homeRouting']) && $GLOBALS['lc_homeRouting']) $path = $GLOBALS['lc_homeRouting'];
 	}
-				
+
 	if($path && is_string($path)){
 		$path = rtrim($path, '/');
 	}else{
 		$r = (_isRewriteRule()) ? REQUEST_URI : route_path();
 		$path = route_updateQueryStr($r, $queryStr);
 	}
-		
+
 	$q = '';
-	if($queryStr && is_array($queryStr) && count($queryStr)){		
+	if($queryStr && is_array($queryStr) && count($queryStr)){
 		foreach($queryStr as $key => $value){
 			if(is_array($value)){
 				$v = array_map('urlencode', $value);
@@ -231,22 +231,22 @@ function route_url($path=NULL, $queryStr=array(), $lang=''){
 		$regex = '/\b^('.$lc_sites[LC_NAMESPACE].'){1}\b/i';
 		$path = preg_replace($regex, LC_NAMESPACE, $path);
 	}
-	
+
 	# If URI contains the language code, force to include it in the URI
 	$l = _getLangInURI();
 	if(empty($lang) && $l){
 		$lang = $l;
-	}	
-	
+	}
+
 	$url = WEB_ROOT;
-	if($lang && $lc_translationEnabled && !$forceExcludeLangInURL){ 
+	if($lang && $lc_translationEnabled && !$forceExcludeLangInURL){
 		if($lc_cleanURL) $url .= $lang.'/';
 		else $q .= '&lang=' . $lang;
 	}
-	
+
 	if(strtolower($path) == 'home') $path = '';
-	
-	if($lc_cleanURL){ 
+
+	if($lc_cleanURL){
 		$url .= $path . $q;
 	}else{
 		$url .= $path . '?' . ltrim($q, '&');
@@ -259,7 +259,7 @@ function route_url($path=NULL, $queryStr=array(), $lang=''){
  * Update the route path with the given query string
  *
  * @param $path	string The route path which may contain the query string
- * @param $queryStr	array Query string as 
+ * @param $queryStr	array Query string as
  *		array(
  *			$value1,
  *			'key1' => $value2,
@@ -269,7 +269,7 @@ function route_url($path=NULL, $queryStr=array(), $lang=''){
  */
 function route_updateQueryStr($path, &$queryStr=array()){
 	global $lc_cleanURL;
-	if(count($queryStr)){ 
+	if(count($queryStr)){
 		if($lc_cleanURL){ # For clean URLs like /path/query/str/-key/value
 			foreach($queryStr as $key => $value){
 				$route = _arg($key, $path);
@@ -288,7 +288,7 @@ function route_updateQueryStr($path, &$queryStr=array()){
 					}
 				}else{ # if the key could not be retrieved from URI, skip it
 					continue;
-				}	
+				}
 				if(preg_match($regex, $path)){ # find the key in URI
 					if(is_array($value)){
 						$v = array_map('urlencode', $value);

@@ -7,7 +7,7 @@ if(auth_isAnonymous()){
 $timestamp = _arg(2);
 if($timestamp){
 	if($timestamp == $_auth->timestamp){
-		# Normal logout process		
+		# Normal logout process
 		auth_clear();
 		flash_set( _t('You have signed out successfully.') );
 		_redirect('admin/login');

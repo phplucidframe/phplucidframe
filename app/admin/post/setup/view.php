@@ -25,7 +25,7 @@
                     if($resultCat){
                         while($row = db_fetchObject($resultCat)){
 							$row = _getTranslationStrings($row, 'catName', $lang);
-							$selected = ($row->catId == $post->catId) ? 'selected="selected"' : '';							
+							$selected = ($row->catId == $post->catId) ? 'selected="selected"' : '';
                         ?>
                             <option value="<?php echo $row->catId; ?>" <?php echo $selected; ?>><?php echo $row->catName_i18n; ?></option>
                         <?php
@@ -47,5 +47,5 @@
         </div>
         <?php Form::token(); ?>
     </form>
-</div>      
+</div>
 <?php include( _i('inc/footer.php') ); ?>

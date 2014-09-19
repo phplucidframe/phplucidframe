@@ -20,17 +20,17 @@ $pager->set('imagePath', WEB_ROOT.'images/pager/');
 $pager->set('ajax', true);
 $pager->calculate();
 
-$sql = "SELECT a.postId, a.slug, a.postTitle, a.postTitle_".$lang." postTitle_i18n, a.postBody, a.postBody_".$lang." postBody_i18n, 
+$sql = "SELECT a.postId, a.slug, a.postTitle, a.postTitle_".$lang." postTitle_i18n, a.postBody, a.postBody_".$lang." postBody_i18n,
 				u.uid, a.created, u.fullName, c.catName, c.catName_".$lang." catName_i18n
 		FROM ".db_prefix()."post a
 		JOIN ".db_prefix()."category c USING(catId)
-		JOIN ".db_prefix()."user as u USING(uid)				
+		JOIN ".db_prefix()."user as u USING(uid)
 		{$condition}
 		ORDER BY u.uid DESC
 		LIMIT ".$pager->get('offset').", ".$pager->get('itemsPerPage');
 $result = db_query($sql);
 	$lang = _urlLang($lang);
-	
+
 if($result){
 	if(db_numRows($result)){
 	?>
@@ -43,32 +43,32 @@ if($result){
             </td>
             <td><?php echo _t('Author'); ?></td>
             <td><?php echo _t('Category'); ?></td>
-            <td><?php echo _t('Date') ?></td>  
-			
+            <td><?php echo _t('Date') ?></td>
+
 		</tr>
 		<?php
 		while($row = db_fetchObject($result)){
 			$row->postTitle = ($row->postTitle_i18n) ? $row->postTitle_i18n : $row->postTitle;
 			$row->postBody 	= ($row->postBody_i18n) ? $row->postBody_i18n : $row->postBody;
 			$row->catName 	= ($row->catName_i18n) ? $row->catName_i18n : $row->catName;
-			?> 
+			?>
 			<tr id="row-<?php echo $row->postId; ?>">
                 <td class="tableLeft colAction">
                     <a href="<?php echo _url('admin/post/setup', array($row->postId, 'lang' => $lang)); ?>" class="edit" title="Edit" >
                         <span><?php echo _t('Edit'); ?></span>
-                    </a>               
+                    </a>
 	            </td>
                 <td class="colAction">
 	                <a href="#" class="delete" title="Delete" onclick="Page.Post.List.remove(<?php echo $row->postId; ?>)">
 	                   	<span><?php echo _t('Delete'); ?></span>
-	                </a>                    
-                </td>   
-				<td class="colTitle <?php echo $lang; ?>"><?php echo $row->postTitle;?></td> 
+	                </a>
+                </td>
+				<td class="colTitle <?php echo $lang; ?>"><?php echo $row->postTitle;?></td>
                 <td class=""><?php echo $row->fullName; ?></td>
                 <td class="<?php echo $lang; ?>"><?php echo $row->catName; ?></td>
-                <td class=""><?php echo _fdateTime($row->created); ?></td>               
-			</tr>			
-			<?php	 
+                <td class=""><?php echo _fdateTime($row->created); ?></td>
+			</tr>
+			<?php
 		}
 	?>
 	</table>

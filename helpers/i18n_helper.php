@@ -9,37 +9,37 @@
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @package     LC.helpers 
+ * @package		LC.helpers
  * @author		Sithu K. <cithukyaw@gmail.com>
- * @license     http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license		http://www.opensource.org/licenses/mit-license.php MIT License
  */
- 
+
 /**
  * Translation helper
  * Return a translated string if one is found; Otherwise, the submitted message.
  * @param $str	(string) string to translate
  * @param 		(mixed)  multiple arguments in function
- * @return mixed translated string 
+ * @return mixed translated string
  */
 function _t($str){
 	global $lc_lang;
-	global $lc_translation;	
+	global $lc_translation;
 	global $lc_translationEnabled;
-		
+
 	$args 	= func_get_args();
-	$str  	= array_shift($args);	
+	$str  	= array_shift($args);
 	$str 	= trim($str);
 
 	if($lc_translationEnabled == false){
 		return (count($args)) ? vsprintf($str, $args) : $str;
 	}
-		
+
 	$po = session_get('po');
 	if(!is_array($po)) $po = array();
 	$po[$str] = '';
-	
+
 	if(isset($lc_translation[$lc_lang])){
-		/*		
+		/*
 		if( isset($lc_translation[$lc_lang][$str]) && !empty($lc_translation[$lc_lang][$str]) ){
 			$translated = $lc_translation[$lc_lang][$str];
 			if(is_array($translated)) $str = $translated[0];
@@ -51,9 +51,9 @@ function _t($str){
 			$translated = $lc_translation[$lc_lang][$lowerStr];
 			if(is_array($translated)) $str = $translated[0];
 			else $str = $translated;
-		}		
+		}
 	}
-			
+
 	if(isset($translated)) $po[$str] = $translated;
 	return (count($args)) ? vsprintf($str, $args) : $str;
 }
@@ -67,7 +67,7 @@ function _t($str){
 function _tc($fileName, $args=array()){
 	global $lc_defaultLang;
 	global $lc_lang;
-	
+
 	$langs = array($lc_lang, $lc_defaultLang);
 	foreach($langs as $lng){
 		$file = I18N . 'ctn/' . $lng . '/' . $fileName . '.' . $lng;
@@ -76,7 +76,7 @@ function _tc($fileName, $args=array()){
 			if(count($args)){
 				foreach($args as $key => $value){
 					$regex = '/'.$key.'\b/i';
-					$content = preg_replace($regex, $value, $content);				
+					$content = preg_replace($regex, $value, $content);
 				}
 			}
 			return $content;
@@ -93,14 +93,14 @@ function i18n_load() {
 	global $lc_lang;
 	global $lc_translation;
 	global $lc_translationEnabled;
-	
+
 	if($lc_translationEnabled == false) return false;
-	
-	$filename = I18N . $lc_lang.'.po';	
+
+	$filename = I18N . $lc_lang.'.po';
 	if(!file_exists($filename)) return false;
 	# Open the po file
 	if (!$file = fopen($filename, 'r')) {
-		deleteSession("i18n.{$lc_lang}");		
+		deleteSession("i18n.{$lc_lang}");
 		return false;
 	}
 
@@ -108,7 +108,7 @@ function i18n_load() {
 	if( $translations = session_get("i18n.{$lc_lang}") ){
 		return $lc_translation[$lc_lang] = $translations;
 	}
-	
+
 	# parse the file
 	deleteSession("i18n.{$lc_lang}");
 

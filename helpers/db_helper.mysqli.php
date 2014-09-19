@@ -9,11 +9,11 @@
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @package     LC.helpers 
+ * @package		LC.helpers
  * @author		Sithu K. <cithukyaw@gmail.com>
- * @license     http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license		http://www.opensource.org/licenses/mit-license.php MIT License
  */
- 
+
 /** @type array It contains the built and executed queries through out the script execuation */
 global $db_builtQueries;
 $db_builtQueries = array();
@@ -28,11 +28,11 @@ function db_config($namespace='default'){
 		die('Database configuration error!');
 	}
 	return $GLOBALS['lc_databases'][$namespace];
-} 
+}
 /**
  * Return the database host name of the given namespace
- * @param string $namespace Namespace of the configuration. 
- */ 
+ * @param string $namespace Namespace of the configuration.
+ */
 function db_host($namespace='default'){
 	$conf = db_config($namespace);
 	return $conf['host'];
@@ -40,7 +40,7 @@ function db_host($namespace='default'){
 /**
  * Return the database name of the given namespace
  * @param string $namespace Namespace of the configuration.
- */ 
+ */
 function db_name($namespace='default'){
 	$conf = db_config($namespace);
 	if(!isset($conf['database'])) die('Database name is not set.');
@@ -48,7 +48,7 @@ function db_name($namespace='default'){
 }
 /**
  * Return the database user name of the given namespace
- */ 
+ */
 function db_user($namespace='default'){
 	$conf = db_config($namespace);
 	if(!isset($conf['username'])) die('Database username is not set.');
@@ -57,7 +57,7 @@ function db_user($namespace='default'){
 /**
  * Return the database table prefix of the given namespace
  * @param string $namespace Namespace of the configuration.
- */ 
+ */
 function db_prefix($namespace='default'){
 	$conf = $GLOBALS['lc_databases'][$namespace];
 	return isset($conf['prefix']) ? $conf['prefix'] : '';
@@ -65,7 +65,7 @@ function db_prefix($namespace='default'){
 /**
  * Return the database collation of the given namespace
  * @param string $namespace Namespace of the configuration.
- */ 
+ */
 function db_collation($namespace='default'){
 	$conf = db_config($namespace);
 	return isset($conf['collation']) ? $conf['collation'] : '';
@@ -73,13 +73,13 @@ function db_collation($namespace='default'){
 /**
  * Check and get the database configuration settings
  */
-function db_prerequisite($namespace='default'){	
+function db_prerequisite($namespace='default'){
 	if(db_host($namespace) && db_user($namespace) && db_name($namespace)){
 		return db_config($namespace);
 	}else{
 		$error = new stdClass();
 		$error->message = array(_t('Required to configure $lc_databases in "/inc/config.php". It is not allowed to configure in the application-level file "/app/inc/site.config.php".'));
-		$error->type 	= 'sitewide-message error';		
+		$error->type 	= 'sitewide-message error';
 		include( _i('inc/site.error.php') );
 		exit;
 	}
@@ -87,7 +87,7 @@ function db_prerequisite($namespace='default'){
 /**
  * Establish a new database connection to the MySQL server
  * @param string $namespace Namespace of the configuration.
- */ 
+ */
 function db_connect($namespace='default'){
 	global $_conn;
 	global $_db;
@@ -97,8 +97,8 @@ function db_connect($namespace='default'){
 	if (!$_conn) {
 		die('Not connected mysqli!');
 	}
-    # Force MySQL to use the UTF-8 character set. Also set the collation, if a certain one has been set; 
-	# otherwise, MySQL defaults to 'utf8_general_ci' # for UTF-8.		
+    # Force MySQL to use the UTF-8 character set. Also set the collation, if a certain one has been set;
+	# otherwise, MySQL defaults to 'utf8_general_ci' # for UTF-8.
 	if (!db_setCharset('utf8')){
 		printf("Error loading character set utf8: %s", mysqli_error($_conn));
 	}
@@ -131,34 +131,34 @@ function db_setCharset($charset){
  *			':placeholder2' => $value2
  *		)
  *
- * @return boolean Returns TRUE on success or FALSE on failure 
+ * @return boolean Returns TRUE on success or FALSE on failure
  */
 function db_query($sql, $args=array()){
 	global $_conn;
 	global $db_builtQueries;
-	
+
 	if(count($args)){
 		foreach($args as $key => $value){
 			if(is_array($value)){
 				$value = array_map('db_escapeStringMulti', $value);
 				$value = implode(',', $value);
 				$regex = '/'.$key.'\b/i';
-				$sql = preg_replace($regex, $value, $sql);				
+				$sql = preg_replace($regex, $value, $sql);
 			}else{
 				$regex = '/'.$key.'\b/i';
 				$sql = preg_replace($regex, db_escapeString($value), $sql);
-			} 
-		}		
+			}
+		}
 	}
-	
+
 	$db_builtQueries[] = $sql;
-	
+
 	if($result = mysqli_query($_conn, $sql)){
 		return $result;
 	}else{
 		echo 'Invalid query: ' . db_error();
 		return false;
-	}	
+	}
 }
 /**
  * Get the last executed SQL string or one of the executed SQL strings by prividing the index
@@ -173,7 +173,7 @@ function db_queryStr(){
 	return (isset($db_builtQueries[$index])) ? $db_builtQueries[$index] : '';
 }
 /**
- * Escapes special characters in a string for use in a SQL statement, taking into account the current charset of the connection 
+ * Escapes special characters in a string for use in a SQL statement, taking into account the current charset of the connection
  *
  * @param  string $str An escaped string
  * @return string
@@ -184,7 +184,7 @@ function db_escapeString($str){
 		return mysqli_real_escape_string($_conn, stripslashes($str));
 	}else{
 		return mysqli_real_escape_string($_conn, $str);
-	}	
+	}
 }
 /**
  * @access privte
@@ -222,7 +222,7 @@ function db_numRows($result){
 /**
  * Fetch a result row as an associative, a numeric array, or both
  * @param  MySQLi result resource
- * @return An array that corresponds to the fetched row or NULL if there are no more rows for the resultset represented by the result parameter. 
+ * @return An array that corresponds to the fetched row or NULL if there are no more rows for the resultset represented by the result parameter.
  */
 function db_fetchArray($result){
 	return mysqli_fetch_array($result);
@@ -230,7 +230,7 @@ function db_fetchArray($result){
 /**
  * Fetch a result row as an associative array
  * @param  MySQLi result resource
- * @return An associative array that corresponds to the fetched row or NULL if there are no more rows. 
+ * @return An associative array that corresponds to the fetched row or NULL if there are no more rows.
  */
 function db_fetchAssoc($result){
 	return mysqli_fetch_assoc($result);
@@ -238,15 +238,15 @@ function db_fetchAssoc($result){
 /**
  * Returns the current row of a result set as an object
  * @param  MySQLi result resource
- * @return an object that corresponds to the fetched row or NULL if there are no more rows in resultset. 
+ * @return an object that corresponds to the fetched row or NULL if there are no more rows in resultset.
  */
 function db_fetchObject($result){
 	return mysqli_fetch_object($result);
 }
 /**
  * Returns the auto generated id used in the last query
- * @return  The value of the AUTO_INCREMENT field that was updated by the previous query. 
- *			Returns zero if there was no previous query on the connection or if the query did not update an AUTO_INCREMENT value. 
+ * @return  The value of the AUTO_INCREMENT field that was updated by the previous query.
+ *			Returns zero if there was no previous query on the connection or if the query did not update an AUTO_INCREMENT value.
  */
 function db_insertId(){
 	global $_conn;
@@ -254,7 +254,7 @@ function db_insertId(){
 }
 /**
  * Returns the generated slug used in the last query
- * @return string 
+ * @return string
  */
 function db_insertSlug(){
 	return session_get('lastInsertSlug');
@@ -275,7 +275,7 @@ function db_count($sql, $args=array()){
 	if($result = db_fetch($sql, $args)){
 		return $result;
 	}
-	return 0;	
+	return 0;
 }
 /**
  * Perform a query on the database and return the first field value only.
@@ -300,11 +300,11 @@ function db_fetch($sql, $args=array()){
 			return $row[0];
 		}
 	}
-	return false;	
+	return false;
 }
 /**
  * Perform a query on the database and return the first result row as object
- * It adds the LIMIT 1 clause if the query has no record limit 
+ * It adds the LIMIT 1 clause if the query has no record limit
  * This is useful for one-row fetching. No need explicit db_query() call as this invokes it internally.
  *
  * @param string $sql The SQL query string
@@ -319,13 +319,13 @@ function db_fetch($sql, $args=array()){
 function db_fetchResult($sql, $args=array()){
 	if( ! preg_match('/LIMIT\s+[0-9]{1,}\b/i', $sql) ){
 		$sql .= ' LIMIT 1';
-	}	
+	}
 	if($result = db_query($sql, $args)){
 		if($row = db_fetchObject($result)){
 			return $row;
 		}
 	}
-	return false;	
+	return false;
 }
 /**
  * Handy MYSQL insert operation
@@ -337,33 +337,33 @@ function db_fetchResult($sql, $args=array()){
  *						'fieldName1' => $fieldValue1,
  *						'fieldName2' => $fieldValue2
  *					)
- * $param boolean $useSlug True to include the slug field or False to not exclude it 
- * @return boolean Returns TRUE on success or FALSE on failure 
+ * $param boolean $useSlug True to include the slug field or False to not exclude it
+ * @return boolean Returns TRUE on success or FALSE on failure
  */
 if(!function_exists('db_insert')){
 	function db_insert($table, $data=array(), $useSlug=true){
 		if(count($data) == 0) return;
 		global $_conn;
 		global $lc_useDBAutoFields;
-		
+
 		$table = ltrim($table, db_prefix());
 		$table = db_prefix().$table;
-		
+
 		# Invoke the hook db_insert_[table_name] if any
 		$hook = 'db_insert_' . strtolower($table);
 		if(function_exists($hook)){
 			return call_user_func_array( $hook, array($table, $data, $useSlug) );
 		}
-		
+
 		# if slug is already provided in the data array, use it
 		if(array_key_exists( 'slug', $data )){
 			$slug = db_escapeString($data['slug']);
 			$slug = _slug($slug);
 			$data['slug'] = $slug;
-			session_set('lastInsertSlug', $slug);			
+			session_set('lastInsertSlug', $slug);
 			$useSlug = false;
 		}
-				
+
 		$fields = array_keys($data);
 		$data   = array_values($data);
 		if($lc_useDBAutoFields){
@@ -373,11 +373,11 @@ if(!function_exists('db_insert')){
 		}
 		$sqlFields = implode(', ', $fields);
 		$values = array();
-		$i = 0;		
-		
+		$i = 0;
+
 		# escape the data
 		foreach($data as $val){
-			if($i == 0 && $useSlug){ 
+			if($i == 0 && $useSlug){
 				$slug = db_escapeString($val);
 			}
 			if(is_null($val)) $values[] = 'NULL';
@@ -385,16 +385,16 @@ if(!function_exists('db_insert')){
 			$i++;
 		}
 		if($lc_useDBAutoFields){
-			if($useSlug){ 
+			if($useSlug){
 				$slug = _slug($slug, $table);
-				session_set('lastInsertSlug', $slug);				
+				session_set('lastInsertSlug', $slug);
 				$values[] = '"'.$slug.'"';
 			}
 			$values[] = '"'.date('Y-m-d H:i:s').'"';
 			$values[] = '"'.date('Y-m-d H:i:s').'"';
-		}	
+		}
 		$sqlValues = implode(', ', $values);
-		
+
 		$sql = 'INSERT INTO '.$table.' ('.$sqlFields.')
 				VALUES ( '.$sqlValues.' )';
 		return db_query($sql);
@@ -416,18 +416,18 @@ if(!function_exists('db_insert')){
  *								array(
  *									'fieldName1' 		=> $value1,
  *									'fieldName2' 		=> $value2
- *								) 
- * @return boolean Returns TRUE on success or FALSE on failure 
+ *								)
+ * @return boolean Returns TRUE on success or FALSE on failure
  */
 if(!function_exists('db_update')){
 	function db_update($table, $data=array(), $useSlug=true, $additionalCondition=array()){
 		if(count($data) == 0) return;
 		global $_conn;
 		global $lc_useDBAutoFields;
-		
+
 		$table 	= ltrim($table, db_prefix());
 		$table 	= db_prefix().$table;
-		
+
 		# Invoke the hook db_update_[table_name] if any
 		$hook = 'db_update_' . strtolower($table);
 		if(function_exists($hook)){
@@ -439,10 +439,10 @@ if(!function_exists('db_update')){
 			$slug = db_escapeString($data['slug']);
 			$slug = _slug($slug);
 			$data['slug'] = $slug;
-			session_set('lastInsertSlug', $slug);			
+			session_set('lastInsertSlug', $slug);
 			$useSlug = false;
 		}
-						
+
 		$fields = array();
 		$slug 	= '';
 		$condition = '';
@@ -452,8 +452,8 @@ if(!function_exists('db_update')){
 			if($i == 0){ # $data[0] is PK
 				$condition = array($field => db_escapeString($value)); # for PK condition
 				$notCondition = array("$field !=" => db_escapeString($value));
-			}else{	
-				if(is_null($value)) $fields[] = $field . ' = NULL';		
+			}else{
+				if(is_null($value)) $fields[] = $field . ' = NULL';
 				else $fields[] = $field . ' = "' . db_escapeString($value) . '"';
 			}
 			if($i == 1 && $useSlug == true){ # $data[1] is slug
@@ -461,7 +461,7 @@ if(!function_exists('db_update')){
 			}
 			$i++;
 		}
-		
+
 		if($condition){ # must have condition
 			if(count($additionalCondition)){
 				$condition = array_merge($condition, $additionalCondition);
@@ -469,16 +469,16 @@ if(!function_exists('db_update')){
 			if($lc_useDBAutoFields){
 				if($useSlug){
 					$slug = _slug($slug, $table, $notCondition);
-					session_set('lastInsertSlug', $slug);			
+					session_set('lastInsertSlug', $slug);
 					$fields[] = 'slug = "'.$slug.'"';
 				}
 				$fields[] = 'updated = "' . date('Y-m-d H:i:s') . '"';
 			}
 			$fields = implode(', ', $fields);
-			
-			if($condition) $condition = db_condition($condition);			
-					
-			$sql = 'UPDATE ' . $table . ' SET ' . $fields . ' 
+
+			if($condition) $condition = db_condition($condition);
+
+			$sql = 'UPDATE ' . $table . ' SET ' . $fields . '
 					WHERE ' . $condition . ' LIMIT 1';
 			return db_query($sql);
 		}else{
@@ -487,7 +487,7 @@ if(!function_exists('db_update')){
 	}
 }
 /**
- * Handy MYSQL delete operation for single record. 
+ * Handy MYSQL delete operation for single record.
  * It checks FK delete RESTRICT constraint, then SET deleted if it cannot be deleted
  *
  * @param string $table Table name without prefix
@@ -497,7 +497,7 @@ if(!function_exists('db_update')){
  *			'fieldName2 >=' => $value2,
  *			'fieldName3 	=> NULL
  *		)
- * @return boolean Returns TRUE on success or FALSE on failure 
+ * @return boolean Returns TRUE on success or FALSE on failure
  */
 if(!function_exists('db_delete')){
 	function db_delete($table, $cond=array()){
@@ -509,10 +509,10 @@ if(!function_exists('db_delete')){
 		if(function_exists($hook)){
 			return call_user_func_array( $hook, array($table, $cond) );
 		}
-				
+
 		$condition = db_condition($cond);
 		if($condition) $condition = ' WHERE '.$condition;
-		
+
 		ob_start(); # to capture error return
 		$sql = 'DELETE FROM '.$table.' '.$condition.' LIMIT 1';
 		db_query($sql);
@@ -541,7 +541,7 @@ if(!function_exists('db_delete')){
  *				'fieldName3' 	=> NULL
  *			)
  *
- * @return boolean Returns TRUE on success or FALSE on failure 
+ * @return boolean Returns TRUE on success or FALSE on failure
  */
 if(!function_exists('db_delete_multi')){
 	function db_delete_multi($table, $cond=array()){
@@ -553,12 +553,12 @@ if(!function_exists('db_delete_multi')){
 		if(function_exists($hook)){
 			return call_user_func_array( $hook, array($table, $cond) );
 		}
-		
+
 		$condition = db_condition($cond);
 		if($condition) $condition = ' WHERE '.$condition;
-						
+
 		ob_start(); # to capture error return
-		$sql = 'DELETE FROM ' . $table . $condition;		
+		$sql = 'DELETE FROM ' . $table . $condition;
 		db_query($sql);
 		$return = ob_get_clean();
 
@@ -583,7 +583,7 @@ if(!function_exists('db_delete_multi')){
  * @return string The built condition WHERE clause
  */
 function db_condition($cond=array(), $type='AND'){
-	if(!is_array($cond)) return '';	
+	if(!is_array($cond)) return '';
 	$type 		= strtoupper($type);
 	$condition 	= array();
 	$operators 	= array('=', '>=', '<=', '>', '<', '!=', '<>');
@@ -595,7 +595,7 @@ function db_condition($cond=array(), $type='AND'){
 		if(preg_match($regexp, $field, $matches)){
 			$opr 	= $matches[3];
 			$field 	= trim(str_replace($opr, '', $field));
-		}			
+		}
 		if(is_string($value)) $condition[] = $field . ' ' . $opr . ' "' . db_escapeString($value) . '"';
 		elseif(is_null($value)) $condition[] = $field . ' IS NULL';
 		else $condition[] = $field . ' ' . $opr . ' ' . db_escapeString($value);
@@ -638,7 +638,7 @@ function db_conditionOR($cond=array()){
  * @return array The condition array, for example
  *			array(
  *				'value'  => $value,
- *				'exp >=' => $exp, 
+ *				'exp >=' => $exp,
  *				'field 	 => $field
  *			)
  */

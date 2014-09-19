@@ -2,7 +2,7 @@
 $success = false;
 if(sizeof($_POST)){
 	$post = _post($_POST);
-	extract($post);	
+	extract($post);
 	if(isset($action) && $action == 'delete' && isset($hidDeleteId) && $hidDeleteId){
 		# DELETE
 		if( db_delete('user', array('uid' => $hidDeleteId)) ){

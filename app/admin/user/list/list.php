@@ -20,12 +20,12 @@ $pager->set('imagePath', WEB_ROOT.'images/adm/pager/');
 $pager->set('ajax', true);
 $pager->calculate();
 
-$sql = "SELECT u.* FROM ".db_prefix()."user as u 
+$sql = "SELECT u.* FROM ".db_prefix()."user as u
 		{$condition}
 		ORDER BY role, fullName
 		LIMIT ".$pager->get('offset').", ".$pager->get('itemsPerPage');
 $result = db_query($sql, $args);
-	
+
 if($result){
 	if(db_numRows($result)){
 	?>
@@ -34,8 +34,8 @@ if($result){
         	<td class="tableLeft" colspan="2"><?php echo _t('Actions'); ?></td>
 			<td><?php echo _t('Full Name') ?></td>
 			<td><?php echo _t('Username') ?></td>
-			<td><?php echo _t('Email') ?></td>            
-           	<td><?php echo _t('User Role') ?></td>     
+			<td><?php echo _t('Email') ?></td>
+           	<td><?php echo _t('User Role') ?></td>
 		</tr>
 		<?php
 		while($row = db_fetchObject($result)){
@@ -43,7 +43,7 @@ if($result){
 			$edit = true;
 			$delete = true;
 			$action = '';
-		?> 
+		?>
 			<tr id="row-<?php echo $row->usrId; ?>">
                 <td class="tableLeft colAction">
 					<?php if ($row->isMaster) { ?>
@@ -62,11 +62,11 @@ if($result){
                 	<?php if ($delete): ?>
 	                	<a href="#" class="delete" title="Delete" onclick="Page.User.List.remove(<?php echo $row->uid; ?>)">
 	                    	<span><?php echo _t('Delete'); ?></span>
-	                    </a>	                    
+	                    </a>
 	                <?php else: ?>
 	                    <span class="delete disabled" <?php echo $action; ?>></span>
                 	<?php endif ?>
-                </td>		                
+                </td>
 				<td class="colFullName">
                 	<div class="overflow"><?php echo $row->fullName; ?></div>
                 </td>
@@ -79,7 +79,7 @@ if($result){
                 <td class="colRole">
                     <?php echo ucfirst($row->role); ?>
                 </td>
-			</tr>			
+			</tr>
 		<?php
 		}
 	?>

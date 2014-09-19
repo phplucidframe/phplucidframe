@@ -10,7 +10,7 @@ if($id){
 }else{
 	if($lang != _defaultLang()) _redirect('admin/post/setup/', NULL, _defaultLang());
 }
-		
+
 include('query.php');
 ?>
 <!DOCTYPE html>

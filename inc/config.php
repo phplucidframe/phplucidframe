@@ -10,7 +10,7 @@ ini_set('display_startup_errors',1);
 # Don't escape quotes when reading files from the database, disk, etc.
 ini_set('magic_quotes_runtime', '0');
 
-# session.save_path defines the argument which is passed to the save handler. 
+# session.save_path defines the argument which is passed to the save handler.
 # If you choose the default files handler, this is the path where the files are created. Defaults to /tmp
 //ini_set('session.save_path', FILE . 'sessions/');
 
@@ -44,13 +44,13 @@ ini_set('session.gc_maxlifetime', 86400); 	# 24 hours
  */
 ini_set('session.cookie_lifetime', 86400); 	# 24 hours
 /**
- * Set the maximum amount of memory in bytes that a script is allowed to allocate. 
+ * Set the maximum amount of memory in bytes that a script is allowed to allocate.
  * This helps prevent poorly written scripts for eating up all available memory on a server
  */
 ini_set('memory_limit', '256M');
 /**
- * Set the maximum time in seconds a script is allowed to run before it is terminated by the parser. 
- * This helps prevent poorly written scripts from tying up the server. The default setting is 30. 
+ * Set the maximum time in seconds a script is allowed to run before it is terminated by the parser.
+ * This helps prevent poorly written scripts from tying up the server. The default setting is 30.
 */
 ini_set('max_execution_time', 36000);
 
@@ -81,15 +81,15 @@ $lc_databases = array(
 	)
 );
 
-# $lc_siteName: Site Name 		
-$lc_siteName = 'LucidFrame'; 
+# $lc_siteName: Site Name
+$lc_siteName = 'LucidFrame';
 # $lc_siteDomain: Site Domain Name
 $lc_siteDomain = $_SERVER['HTTP_HOST'];
 # $lc_baseURL: No trailing slash (only if it is located in a sub-directory)
 # Leave blank if it is located in the document root
 $lc_baseURL = 'LucidFrame';
 # $lc_sites: consider sub-directories as additional site roots and namespaces
-$lc_sites = array(	
+$lc_sites = array(
 	'admin' => 'admin',
 	/* 'virtual_folder_name (namespace)'  => 'physical_folder_name_directly_under_app_directory */
 	/* you could also set 'lc-admin' => 'admin', then you can access http://localhost/LucidFrame/lc-admin */
@@ -110,7 +110,7 @@ $lc_defaultLang = 'en';
 $lc_lang = $lc_defaultLang;
 # $lc_cleanURL: Enable/Disable clean URL
 $lc_cleanURL = true;
-# $lc_securitySalt: the key with which the data will be encrypted 
+# $lc_securitySalt: the key with which the data will be encrypted
 # default hash string is located at ./inc/security.salt
 # It is strongly recommended to change this and use the mhash functions to create a key from a string.
 # If you leave this blank, md5() only will be used for encryption
@@ -121,31 +121,31 @@ $lc_formTokenName = 'LCFormToken';
 $lc_titleSeparator = '-';
 # $lc_breadcrumbSeparator - Breadcrumb separator
 $lc_breadcrumbSeparator = '&raquo;';
-# $lc_dateFormat: Date format	
+# $lc_dateFormat: Date format
 $lc_dateFormat = 'd-m-Y';
-# $lc_dateTimeFormat: Date Time format			
+# $lc_dateTimeFormat: Date Time format
 $lc_dateTimeFormat = 'd-m-Y h:ia';
-# $lc_pageNumLimit: number of page numbers to be shown in pager		
-$lc_pageNumLimit = 10; 
-# $lc_itemsPerPage: number of items per page in pager				
-$lc_itemsPerPage = 15; 
-# $lc_reqSign: Sign for mandatory fields				
-$lc_reqSign = '<span class="required">*</span>'; 
+# $lc_pageNumLimit: number of page numbers to be shown in pager
+$lc_pageNumLimit = 10;
+# $lc_itemsPerPage: number of items per page in pager
+$lc_itemsPerPage = 15;
+# $lc_reqSign: Sign for mandatory fields
+$lc_reqSign = '<span class="required">*</span>';
 # $lc_nullFill: Sign for the empty fields
-$lc_nullFill = '<span class="nullFill">-</span>'; 
+$lc_nullFill = '<span class="nullFill">-</span>';
 # $lc_useDBAutoFields: Whether use DB auto field such as slug, created, updated, deleted, etc. or not
-$lc_useDBAutoFields = true;	
+$lc_useDBAutoFields = true;
 /*
  * Auth Module Configuration
- */			
+ */
 # $lc_auth: configuration for the user authentication
-$lc_auth = array(						
+$lc_auth = array(
 	'table' => '', // table name, for example, user
 	'fields' => array(
 		'id'	=> '', 	// PK field name, for example, user_id
-		'role'  => ''	// User role field name, for example, user_role 
+		'role'  => ''	// User role field name, for example, user_role
 	),
-	'perms'	=> array() 
+	'perms'	=> array()
 	/* for example
 			array(
 				'editor' => array(), // for example, 'role-name' => array('content-add', 'content-edit', 'content-delte')

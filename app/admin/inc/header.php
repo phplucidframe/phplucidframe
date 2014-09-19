@@ -1,6 +1,6 @@
 <?php
 /**
- * Header template file 
+ * Header template file
  */
 ?>
 <div id="wrapper">
@@ -11,7 +11,7 @@
             	<li class="greeting">Hello, <?php echo $_auth->fullName; ?></li>
             	<li>
                 	<a href="<?php echo _url('admin/user/setup/', array($_auth->uid)); ?>"><?php echo _t('Edit My Account'); ?></a>
-                </li>            
+                </li>
             	<li>
                 	<a href="#"><?php echo _t('Change Password'); ?></a>
                 </li>
@@ -26,7 +26,7 @@
                 <ul id="menu" class="clearfix">
                 	<li>
 						<a href="<?php echo _url('admin/post'); ?>" <?php if(_arg(1) == 'post') echo 'class="active"'; ?>><?php echo _t('Posts'); ?></a>
-					</li>                
+					</li>
                 	<li>
 						<a href="<?php echo _url('admin/category'); ?>" <?php if(_arg(1) == 'category') echo 'class="active"'; ?>><?php echo _t('Categories'); ?></a>
 					</li>

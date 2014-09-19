@@ -6,5 +6,5 @@
 $lc_translationEnabled = true;
 # $lc_cleanURL: Enable/Disable clean URL
 $lc_cleanURL = true;
-# $lc_itemsPerPage: number of items per page in pager				
+# $lc_itemsPerPage: number of items per page in pager
 $lc_itemsPerPage = 20;

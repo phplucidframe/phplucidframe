@@ -9,20 +9,20 @@
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @package     LC.helpers 
+ * @package		LC.helpers
  * @author		Sithu K. <cithukyaw@gmail.com>
- * @license     http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license		http://www.opensource.org/licenses/mit-license.php MIT License
  */
- 
+
 class Form{
-	
+
 	private static $id;
 	private static $error 	= array();
 	private static $success = false;
 	private static $message = '';
 	private static $redirect = '';
 	private static $callback = '';
-	
+
 	public static function init(){
 		self::$id 		= '';
 		self::$error 	= array();
@@ -31,41 +31,41 @@ class Form{
 		self::$redirect = '';
 		self::$callback = '';
 	}
-	
+
 	public static function set($key, $value=''){
 		self::$$key = $value;
 	}
-	
+
 	/* Form token generation */
 	public static function token(){
-		$token = _encrypt(time());		
+		$token = _encrypt(time());
 		session_set(_cfg('formTokenName'), $token);
 		echo '<input type="hidden" name="lc_formToken_'._cfg('formTokenName').'" value="'.$token.'" />';
 	}
-	
+
 	/* Form token validation */
 	public static function validate(){
 		if(!isset($_POST['lc_formToken_'._cfg('formTokenName')])) return false;
-		$token 			= _decrypt(session_get(_cfg('formTokenName')));		
+		$token 			= _decrypt(session_get(_cfg('formTokenName')));
 		$postedToken 	= _decrypt(_post($_POST['lc_formToken_'._cfg('formTokenName')]));
 		$result 		= false;
 		# check token first
-		if($token == $postedToken){	
+		if($token == $postedToken){
 			# check referer if it is requesting in the same site
 			if($_SERVER['HTTP_REFERER'] && _cfg('siteDomain')){
-				$parsedURL = parse_url($_SERVER['HTTP_REFERER']);				
+				$parsedURL = parse_url($_SERVER['HTTP_REFERER']);
 				if( strcasecmp(_cfg('siteDomain'), $parsedURL['host']) == 0 ){
-					$result = true;					
+					$result = true;
 				}
-			}				
-		}		
+			}
+		}
 		if($result == false){
 			Validation::addError('', _t('Error occured during form submission. Please refresh the page to try again.'));
 			return false;
 		}
 		return true;
 	}
-	
+
 	/* Respond AJAX Form */
 	public static function respond($formId, $errors=NULL){
 		self::$id = $formId;
@@ -77,7 +77,7 @@ class Form{
 			# if no error message and no other message, no need to respond
 			if(count(self::$error) == 0 && empty(self::$message)) return;
 		}
-		
+
 		if(sizeof(self::$error)){
 			$errorStr = json_encode(self::$error);
 		}else{
@@ -86,28 +86,28 @@ class Form{
 
 		if( $ajaxResponse ){
 		?>
-            var response = {
-                'formId' 	: '<?php echo self::$id; ?>',
-                'success' 	: <?php echo (self::$success) ? 1 : 0; ?>,
-                'error' 	: <?php echo $errorStr; ?>,
-                'msg' 		: "<?php echo addslashes(self::$message); ?>",
-                'redirect' 	: '<?php echo self::$redirect; ?>',
-                'callback' 	: '<?php echo self::$callback; ?>'
-            };        
-        <?php
-		}else{			
+			var response = {
+				'formId' 	: '<?php echo self::$id; ?>',
+				'success' 	: <?php echo (self::$success) ? 1 : 0; ?>,
+				'error' 	: <?php echo $errorStr; ?>,
+				'msg' 		: "<?php echo addslashes(self::$message); ?>",
+				'redirect' 	: '<?php echo self::$redirect; ?>',
+				'callback' 	: '<?php echo self::$callback; ?>'
+			};
+		<?php
+		}else{
 		?>
-        <script type="text/javascript">
-        	Form.submitHandler({
-                'formId' 	: '<?php echo self::$id; ?>',
-                'success' 	: <?php echo (self::$success) ? 1 : 0; ?>,
-                'error' 	: <?php echo $errorStr; ?>,
-                'msg' 		: "<?php echo addslashes(self::$message); ?>",
-                'redirect' 	: '<?php echo self::$redirect; ?>',
-                'callback' 	: '<?php echo self::$callback; ?>'
-            });
+		<script type="text/javascript">
+			Form.submitHandler({
+				'formId' 	: '<?php echo self::$id; ?>',
+				'success' 	: <?php echo (self::$success) ? 1 : 0; ?>,
+				'error' 	: <?php echo $errorStr; ?>,
+				'msg' 		: "<?php echo addslashes(self::$message); ?>",
+				'redirect' 	: '<?php echo self::$redirect; ?>',
+				'callback' 	: '<?php echo self::$callback; ?>'
+			});
 		</script>
-        <?php 
+        <?php
 		}
 	}
 }

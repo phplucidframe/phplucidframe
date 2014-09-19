@@ -1,6 +1,6 @@
 <?php
 /**
- * The index.php (required) serves as the front controller for the requested page, 
+ * The index.php (required) serves as the front controller for the requested page,
  * initializing the base resources needed to run the page
  */
 $get 	= _get($_GET);

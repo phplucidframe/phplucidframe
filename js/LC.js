@@ -8,38 +8,38 @@
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @package     LC.js 
+ * @package		LC.js
  * @author		Sithu K. <cithukyaw@gmail.com>
- * @license     http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license		http://www.opensource.org/licenses/mit-license.php MIT License
  */
 var Form = {
 	init: function(){
-		Form.placeholderIE();		
+		Form.placeholderIE();
 		$forms = $('form');
 		$.each( $forms, function(){
-			var $form = $(this);			
-			if($form.hasClass('no-ajax')) return; // normal form submission			
+			var $form = $(this);
+			if($form.hasClass('no-ajax')) return; // normal form submission
 			// Add a hidden input and a reset button
 			$form.append('<input type="hidden" name="submitButton" class="submitButton" />');
-			$form.append('<input type="reset" class="reset" style="display:none;width:0;height:0" />');			
+			$form.append('<input type="reset" class="reset" style="display:none;width:0;height:0" />');
 			// submit buttons: class="submit"
 			var btns = $form.find('.submit');
 			if(btns.size()){
 				// if the form has no type=submit button and the form has a class "default-submit", make form submit when pressing "Enter" in any textbox
-				if( $form.find('[type=submit]').size() == 0 && $form.hasClass('default-submit') ){	
+				if( $form.find('[type=submit]').size() == 0 && $form.hasClass('default-submit') ){
 					$form.find('input[type=text],input[type=password]').keyup(function(e){
 						if(e.keyCode == 13) $form.submit();
 					});
-				}				
+				}
 				$.each( btns, function(){ // buttons that have the class "submit"
 					// The submit button click
 					$(this).bind('click', function(){
 						$form.find('input.submitButton').val($(this).attr('name'));
-						if( $(this).attr('type') == 'button' ){							
+						if( $(this).attr('type') == 'button' ){
 							$form.submit();
 						}
 					});
-				});		
+				});
 			}
 			// submit buttons: type="submit"
 			$.each( $form.find('[type=submit]'), function(){
@@ -47,17 +47,17 @@ var Form = {
 					$form.find('input.submitButton').val($(this).attr('name'));
 				});
 			} );
-			
+
 			// form submit handler init
-			$form.submit( function(e){			   
-				Form.submitForm($form.attr('id'), e);							
-				return false;		
+			$form.submit( function(e){
+				Form.submitForm($form.attr('id'), e);
+				return false;
 			} );
 
 			if( !$form.hasClass('no-focus') ){ // sometimes a page is long and the form is at the bottom of the page, no need to focus it.
 				// focus on the first input
-				if($form.find('input[type=text]').size()) $form.find('input[type=text]').filter(':first').focus();	
-				else if($form.find('textarea').size()) $form.find('textarea').filter(':first').focus();	
+				if($form.find('input[type=text]').size()) $form.find('input[type=text]').filter(':first').focus();
+				else if($form.find('textarea').size()) $form.find('textarea').filter(':first').focus();
 			}
 		});
 		// jquery ui button theme
@@ -67,7 +67,7 @@ var Form = {
 			changeMonth: true,
 			changeYear: true,
 			dateFormat: 'dd-mm-yy'
-		});									
+		});
 	},
 	/* IE placeholder attribute fix */
 	placeholderIE : function(){
@@ -80,7 +80,7 @@ var Form = {
 					input.removeClass('placeholder');
 				}
 			});
-			
+
 			$inputs.blur(function() {
 				var input = $(this);
 				if (input.val() == '' || input.val() == input.attr('placeholder')) {
@@ -88,7 +88,7 @@ var Form = {
 					input.val(input.attr('placeholder'));
 				}
 			}).blur();
-			
+
 			$inputs.parents('form').submit(function() {
 				$(this).find('[placeholder]').each(function() {
 					var input = $(this);
@@ -96,30 +96,30 @@ var Form = {
 						input.val('');
 					}
 				})
-			}).addClass('no-focus'); // no focus on the first element of the form.			
-		}		
+			}).addClass('no-focus'); // no focus on the first element of the form.
+		}
 	},
 	submitForm : function(formId, e){
 		var $form = $('#'+formId);
 		var $message = $form.find('.message').filter(':first');
 		$message.html('').hide();
-		$form.find('.message.success').filter(':first').removeClass('success').addClass('error');				
+		$form.find('.message.success').filter(':first').removeClass('success').addClass('error');
 		$form.find('.invalid').removeClass('invalid');
-		
+
 		var $action = $form.attr('action');
 		if(!$action){
 			$form.attr('action', Page.url(LC.route) + 'action.php');
 		}
-					
+
 		if( $form.find('input[type=file]').size() ){
 			Page.progress.start();
 			eval('document.' + formId + '.submit()');
 			return true;
 		}
-				
-		var url = $form.attr('action'); // which URL to be posted; captured from form action attribute		
-		var values 	= $form.serialize(); // encode a set of form elements as a string for submission	
-		
+
+		var url = $form.attr('action'); // which URL to be posted; captured from form action attribute
+		var values 	= $form.serialize(); // encode a set of form elements as a string for submission
+
 		$.ajax({
 			type: "POST",
 			url: url,
@@ -136,8 +136,8 @@ var Form = {
 			var $message = $form.find('.message').filter(':first');
 			if(response.error){
 				var errHtml = '<ul>';
-				$.each( response.error, function(i, err){ 			
-					if(err.htmlID){ 
+				$.each( response.error, function(i, err){
+					if(err.htmlID){
 						if(err.htmlID.indexOf('[]') != -1){
 							err.htmlID = err.htmlID.replace(/\[\]/, '');
 							$form.find('#'+err.htmlID).find('input,select,textarea').addClass('invalid');
@@ -148,26 +148,26 @@ var Form = {
 					}
 					errHtml += '<li>' + err.msg + '</li>';
 				} );
-				errHtml += '</ul>';			
+				errHtml += '</ul>';
 				$message.html(errHtml).show();
 				$message.removeClass('error').addClass('error');
-				if( $message.find('ul').html() == '' ) $('#form_error ul').remove(); 
+				if( $message.find('ul').html() == '' ) $('#form_error ul').remove();
 				window.location = '#' + response.formId;
 			}else{
 				if(response.success){
-					if(response.msg){ 
+					if(response.msg){
 						$message.removeClass('error').addClass('success');
-						$message.html('<ul><li>'+response.msg+'</li></ul>').show();					
-					}								
+						$message.html('<ul><li>'+response.msg+'</li></ul>').show();
+					}
 					if(response.redirect) window.location = response.redirect;
-					else{ 
+					else{
 						$form.find('.reset').click();
 						window.location = '#' + response.formId;
 					}
 				}
 			}
 			if(response.callback) eval(response.callback);
-			Page.progress.stop(response.formId);			
+			Page.progress.stop(response.formId);
 		}else{
 			Page.progress.stop();
 		}
@@ -178,12 +178,12 @@ var Form = {
 		$form.find('select,textarea').val('');
 		var $inputs = $form.find('input').filter('input:not([name^=lc_formToken])');
 		$inputs.val('');
-		$form.find('.message').filter(':first').html('').hide();		
+		$form.find('.message').filter(':first').html('').hide();
 	},
 	data : function( id ){
 		$data = $( '#row-'+id ).find('.colAction span.row-data');
 		if($data.size()){
-			eval('var $row = ' + $( '#row-'+id ).find('.colAction span.row-data').text() );	
+			eval('var $row = ' + $( '#row-'+id ).find('.colAction span.row-data').text() );
 			return $row;
 		}
 		return false;
@@ -217,14 +217,14 @@ var Page = {
 		 * Register a custom throbber
 		 * @param id		(string) HTML container ID for the request
 		 * @param callback  (object) The callback must be a functional object like { start: function(){}, stop: function(){} }
-		*/		
+		*/
 		register : function(id, callback){
 			Page.throbber[id] = callback;
 		}
 	},
 	queryStr : {},
-	/* 
-	 * Initialize the page 
+	/*
+	 * Initialize the page
 	 */
 	initialize : function(){
 		// 	overlay and progress message create
@@ -232,78 +232,78 @@ var Page = {
 		$loading = $overlay.append('<div />').children(':last').attr('id', 'processing');
 		$div = $loading.append('<div />').children(':last');
 		$div.append('<span />').children(':last').html('Processing, please wait...').attr('id', 'line1');
-		
+
 		$overlay.width($(window).width());
 		$overlay.height($(window).height());
-				
+
 		Page.scroller();
 		Form.init();
 		Page.showGlobalMessage();
 	},
-	/* 
+	/*
 	 * Display side-wide global message (if any)
-	 */	
+	 */
 	showGlobalMessage : function(){
 		var html = '';
-		if(LC.sitewideWarnings && LC.sitewideWarnings.length){			
+		if(LC.sitewideWarnings && LC.sitewideWarnings.length){
 			$.each(LC.sitewideWarnings, function(i, msg){
 				html = '<div class="message sitewide-message warning" title="Click to dismiss">';
 				html += '<ul>';
 				html += '<li>' + msg + '</li>';
 				html += '</ul>';
 				html += '</div>';
-				$('body').prepend(html);				
-			});	
+				$('body').prepend(html);
+			});
 			$('.message.sitewide-message.warning').slideDown().click(function(){
 				$(this).hide();
 			});;
 		}
 	},
-	/* 
+	/*
 	 * Get the absolute URL path
 	 * @param string path The route path
-	 */	
+	 */
 	url : function(path){
 		path = path.replace(/^\/|\/$/g, ''); // trim the trailing slash
-		var $seg = path.split('/');		
+		var $seg = path.split('/');
 		if(typeof LC.sites == 'object' && LC.namespace in LC.sites){ // array_key_exists
 			$seg[0] = LC.namespace;
 			path = $seg.join('/');
 		}
 		return Page.root + path + '/';
 	},
-	/* 
+	/*
 	 * Language switcher callback
 	 * @param string lng The language code to be switched
-	 */		
+	 */
 	languageSwitcher : function(lng){
 		var $lang = LC.lang + '/';
 		var $path = window.location.pathname;
 		if($path.indexOf('/') == 0){ // remove leading slash
-			$path = $path.substr(1);	
+			$path = $path.substr(1);
 		}
-		
+
 		// remove baseURL from the URI
 		var baseURL = LC.baseURL;
 		if(LC.baseURL == '/') baseURL = '';
 		var regexp = new RegExp(baseURL);
-		$path = $path.replace(regexp, ''); 
-		
+		$path = $path.replace(regexp, '');
+
 		// replace language code in URI
 		if($path.indexOf($lang) == 0){
-			var regexp = new RegExp($lang); 
-			$path = $path.replace(regexp, lng + '/');	
+			var regexp = new RegExp($lang);
+			$path = $path.replace(regexp, lng + '/');
 		}else{
 			$path = lng + '/' + $path;
 		}
-					
+
 		// new URL
 		$url = window.location.protocol + '//' + window.location.host + '/' + baseURL + $path;
-		window.location = $url;		
+		window.location = $url;
 	},
 	/**
 	 * Performs a smooth page scroll to an anchor on the same page.
-	 */	
+	 */
 	scroller : function(){
 		$('a[href*=#]:not([href=#])').click(function() {
 			if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
@@ -316,7 +316,7 @@ var Page = {
 					return false;
 				}
 			}
-		});		
+		});
 	},
 	/**
 	 * Get the updated query string
@@ -341,7 +341,7 @@ var Page = {
 		if(typeof params != 'undefined'){
 			p = params;
 		}
-		
+
 		var $type = 'GET';
 		var $html = true;
 		if(id.toUpperCase() == 'POST' || id.toUpperCase() == 'GET'){
@@ -356,7 +356,7 @@ var Page = {
 			url: url,
 			data: p,
 			cache: false,
-			success: function(response){ 
+			success: function(response){
 				if(typeof callback != 'undefined'){
 					callback();
 				}else{
@@ -364,7 +364,7 @@ var Page = {
 						var $rsp = response.split('[script]');
 						var html = $rsp[0];
 						if(html) $('#'+id).html(html);
-						if( $rsp.length > 1 ){ 
+						if( $rsp.length > 1 ){
 							var $js = $rsp[1];
 							eval($js);
 						}
@@ -374,7 +374,7 @@ var Page = {
 						eval(response);
 					}
 					// afterRequest callback
-					if(Page.afterRequest) Page.afterRequest();					
+					if(Page.afterRequest) Page.afterRequest();
 				}
 				// hide overlay
 				Page.progress.stop(id);
@@ -384,7 +384,7 @@ var Page = {
 	/**
 	 * Pager helper
 	 * @param id	(string) HTML container ID for the list to be paginated
-	*/	
+	*/
 	pager : function(id){
 		var $pager = $('#'+id).find('.pagerTable a');
 		if($pager.size()){
@@ -394,9 +394,7 @@ var Page = {
 					var $page = $(a).attr('rel');
 					$(a).attr('href', '#').click(function(){
 						// attach with the existing query string
-						//if(typeof Page.queryStr['_'+id].page != 'undefined') 
 						Page.queryStr['_'+id].page = $page;
-						//else Page.queryStr.page = $page;
 						Page.request(id, $url, Page.queryStr['_'+id]);
 					});
 				}
@@ -405,6 +403,6 @@ var Page = {
 	}
 };
 
-$(document).ready( function(){ 
+$(document).ready( function(){
 	Page.initialize();
 } );

@@ -9,17 +9,17 @@
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @package     LC.helpers 
+ * @package		LC.helpers
  * @author		Sithu K. <cithukyaw@gmail.com>
- * @license     http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license		http://www.opensource.org/licenses/mit-license.php MIT License
  */
- 
+
 /**
  * Set a message or value in Session using a name
  *
  * @param $name string The session variable name to store the value
  *		It can be a value separated by period, eg., user.name will be ['user']['name']
- * @param mixed 	$value The value to be stored. 
+ * @param mixed 	$value The value to be stored.
  * @param boolean 	$serialize The value is to be serialized or not
  *
  * @return void
@@ -47,7 +47,7 @@ function setSession($name, $value='', $serialize=false){
 }
 /**
  * Get a message or value of the given name from Session
- * 
+ *
  * @param string $name 	The session variable name to retrieve its value
  						It can be a value separated by period, eg., user.name will be ['user']['name']
  * @param boolean $unserialize The value is to be unserialized or not
@@ -77,7 +77,7 @@ function getSession($name, $unserialize=false){
 }
 /**
  * Delete a message or value of the given name from Session
- * 
+ *
  * @param string $name The session variable name to delete its value
  * @return void
  */
@@ -97,13 +97,13 @@ function deleteSession($name){
 		eval($code);
 	}else{
 		if(isset($_SESSION[S_PREFIX . $name])) unset($_SESSION[S_PREFIX . $name]);
-	}	
+	}
 }
 
 if(!function_exists('flash_set')){
 /**
  * Set the flash message in session
- * This function is overwritable from the custom helpers/session_helper.php 
+ * This function is overwritable from the custom helpers/session_helper.php
  *
  * @param string $msg The message to be shown
  * @param string $name The optional session name to store the message
@@ -120,12 +120,12 @@ if(!function_exists('setFlash')){
 /**
  * Alias of flash_set()
  * Set the flash message in session
- * This function is overwritable from the custom helpers/session_helper.php 
+ * This function is overwritable from the custom helpers/session_helper.php
  */
 	function setFlash($msg, $name='', $class='success'){
 		$msg = '<span class="'.$class.'">'.$msg.'</span>';
 		$msg = '<div class="message '.$class.'" style="display:block;"><ul><li>'.$msg.'</li></ul></div>';
-		
+
 		if($name) $_SESSION[S_PREFIX.'flashMessage'][$name] = $msg;
 		else $_SESSION[S_PREFIX.'flashMessage'] = $msg;
 	}

@@ -9,9 +9,9 @@
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @package     LC.helpers 
+ * @package		LC.helpers
  * @author		Sithu K. <cithukyaw@gmail.com>
- * @license     http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license		http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
 define('FILE_RESIZE_WIDTH', 'width');
@@ -19,22 +19,22 @@ define('FILE_RESIZE_HEIGHT', 'height');
 define('FILE_RESIZE_BOTH', 'both');
 
 class File{
-		
+
 	private $uniqueId;
 	private $dimensions;
 	private $uploadPath;
 	private $extensions;
 	private $resize = FILE_RESIZE_BOTH;
 	private $fileNameBased;
-	
+
 	public function File(){
 		$this->extensions = array('jpg', 'jpeg', 'png', 'gif');
 	}
-	
+
 	public function set($key, $value){
 		$this->$key = $value;
 	}
-	
+
 	public function getFileNameBased(){
 		return $this->fileNameBased;
 	}
@@ -45,22 +45,22 @@ class File{
 	 * @param 		(array) Array of the uploaded files, for example,
 	 *						uploaded[dimension] = file-name for image files or uploaded[] = file-name for other files
 	 */
-	public function upload($file){		
+	public function upload($file){
 		$fileName 		= stripslashes($file['name']);
 		$uploadedFile 	= $file['tmp_name'];
 		$info 			= pathinfo($fileName);
 		$extension 		= strtolower($info['extension']);
 		$uploaded 		= false;
 		$path 			= $this->uploadPath;
-		
-		if($fileName && $uploadedFile){			
-			
+
+		if($fileName && $uploadedFile){
+
 			if( !(is_array($this->dimensions) && count($this->dimensions)) ){
 				$newFileName = $this->getNewFileName($fileName);
 				if(move_uploaded_file($uploadedFile, $path . $newFileName)){
 					$uploaded = array($newFileName);
-				}			
-			}else{				
+				}
+			}else{
 				if($extension == "jpg" || $extension == "jpeg" ){
 					$img = imagecreatefromjpeg($uploadedFile);
 				}elseif($extension == "png"){
@@ -68,14 +68,14 @@ class File{
 				}elseif($extension == "gif"){
 					$img = imagecreatefromgif($uploadedFile);
 				}
-				
+
 				if( isset($img) && $img ){
-					$uploaded = array();			
+					$uploaded = array();
 					foreach($this->dimensions as $dimension){
 						$resize = explode('x', $dimension);
 						$resizeWidth 	= $resize[0];
 						$resizeHeight 	= $resize[1];
-						
+
 						if($this->resize == FILE_RESIZE_WIDTH){
 							$tmp = File::resizeImageWidth($img, $uploadedFile, $resizeWidth);
 						}elseif($this->resize == FILE_RESIZE_HEIGHT){
@@ -85,23 +85,23 @@ class File{
 						}
 
 						$newFileName = $this->getNewFileName($fileName, $resizeWidth);
-						
-						if($extension == "gif"){				
+
+						if($extension == "gif"){
 							imagegif($tmp, $path . $newFileName);
 						}elseif($extension == "png"){
 							imagepng($tmp, $path . $newFileName);
 						}else{
 							imagejpeg($tmp, $path . $newFileName, 100);
 						}
-						
+
 						imagedestroy($tmp);
 						$uploaded[$dimension] = $newFileName;
 					}
 					if($img) imagedestroy($img);
-				}									
+				}
 			}
 		}
-		return $uploaded;		
+		return $uploaded;
 	}
 	/**
 	 * Get a new file name, e.g., original-file-name-[imageWidth]-[uniqueId].ext
@@ -114,46 +114,46 @@ class File{
 		$uniqueId = $this->getUniqueId();
 		# get the suffix
 		$suffix = '';
-		if($width) $suffix .= '-' . $width;		
+		if($width) $suffix .= '-' . $width;
 		$suffix .= '-' . $uniqueId;
 		# clean spaces and periods and replace with dashes
 		$justName = str_replace(array(' ', '.'), '-', $info['filename']);
 		$justName = preg_replace('/[\-]+/', '-', $justName);
 		$justName = preg_replace("/['\"]+/", '', $justName);
-		$fileName = $justName . $suffix . '.' . $info['extension'];		
+		$fileName = $justName . $suffix . '.' . $info['extension'];
 		$this->fileNameBased = $justName . '-' . $uniqueId . $info['extension'];
-		return $fileName;	
+		return $fileName;
 	}
 	/**
-	 * Get a unique id string from the property $uniqueId or generate a random 5-letters string	 
+	 * Get a unique id string from the property $uniqueId or generate a random 5-letters string
 	 */
 	private function getUniqueId(){
 		if($this->uniqueId) return $this->uniqueId;
-		else return substr(md5(time()), 0, 5); 
+		else return substr(md5(time()), 0, 5);
 	}
 	/**
 	 * Resize an image to a desired width and height by given width
-	 * @param $img		(resource) 
+	 * @param $img		(resource)
 	 * @param $file		(string) the image file
 	 * @param $newWidth	(string) the new width to resize
-	 */		
+	 */
 	public static function resizeImageWidth(&$img, $file, $newWidth){
-		list($width, $height) = getimagesize($file);	
+		list($width, $height) = getimagesize($file);
 		$newHeight = ($height/$width) * $newWidth;
-		$tmp = imagecreatetruecolor($newWidth, $newHeight);	
+		$tmp = imagecreatetruecolor($newWidth, $newHeight);
 		imagecopyresampled($tmp, $img, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
 		return $tmp;
 	}
 	/**
 	 * Resize an image to a desired width and height by given height
-	 * @param $img		(resource) 
+	 * @param $img		(resource)
 	 * @param $file		(string) the image file
 	 * @param $newHeight(string) the new height to resize
-	 */		
+	 */
 	public static function resizeImageHeight(&$img, $file, $newHeight){
-		list($width, $height) = getimagesize($file);	
+		list($width, $height) = getimagesize($file);
 		$newWidth = ($width/$height) * $newHeight;
-		$tmp = imagecreatetruecolor($newWidth, $newHeight);	
+		$tmp = imagecreatetruecolor($newWidth, $newHeight);
 		imagecopyresampled($tmp, $img, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
 		return $tmp;
 	}
@@ -166,24 +166,24 @@ class File{
 	 * @param $newHeight integer The new height to resize
 	 *
 	 * @return resource Returns an image identifier
-	 */		
+	 */
 	public static function resizeImage(&$img, $file, $newWidth, $newHeight){
 		list($width, $height) = getimagesize($file);
-		
-		$scale = min($newWidth/$width, $newHeight/$height);	
+
+		$scale = min($newWidth/$width, $newHeight/$height);
 		# If the image is larger than the max shrink it
 		if ($scale < 1) {
 			# new width for the image
 			$newWidth = floor($scale * $width);
 			# new heigth for the image
-			$newHeight = floor($scale * $height);							
-		}else{ 
-		# if the image is small than than the resized width and height			
+			$newHeight = floor($scale * $height);
+		}else{
+		# if the image is small than than the resized width and height
 			$newWidth = $width;
 			$newHeight = $height;
 		}
-						
-		$tmp = imagecreatetruecolor($newWidth, $newHeight);	
+
+		$tmp = imagecreatetruecolor($newWidth, $newHeight);
 		imagecopyresampled($tmp, $img, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
 		return $tmp;
 	}
@@ -195,10 +195,10 @@ class File{
 	 * @param $imgWidth	 integer The actual image width in pixel
 	 * @param $imgHeight integer The actual image height in pixel
 	 * @param $desiredWidth	 integer The desired image width in pixel
-	 * @param $desiredHeight integer The desired image height in pixel	 
+	 * @param $desiredHeight integer The desired image height in pixel
 	 *
 	 * @return string The <img> tag
-	 */		
+	 */
 	public static function img($fileName, $caption, $imgWidth, $imgHeight, $desiredWidth=0, $desiredHeight=0, $attributes=array()){
 		if($imgWidth > $desiredWidth || $imgHeight > $desiredHeight){ # scale down
 			if($desiredWidth == 0 && $desiredHeight > 0){ # resized to height
@@ -209,20 +209,18 @@ class File{
 			elseif($desiredWidth > 0 && $desiredHeight == 0){ # resized to width
 				$desiredHeight = floor(($imgHeight/$imgWidth) * $desiredWidth);
 				$imgWidth 		= $desiredWidth;
-				$imgHeight 		= $desiredHeight;				
+				$imgHeight 		= $desiredHeight;
 			}
-			elseif($desiredWidth > 0 && $desiredHeight > 0){ # resized both						
-				$scale = min($desiredWidth/$imgWidth, $desiredHeight/$imgHeight);	
-				//echo '....'.$scale;				
+			elseif($desiredWidth > 0 && $desiredHeight > 0){ # resized both
+				$scale = min($desiredWidth/$imgWidth, $desiredHeight/$imgHeight);
 				# new width for the image
 				$imgWidth  = floor($scale * $imgWidth);
 				# new heigth for the image
-				$imgHeight = floor($scale * $imgHeight);				
+				$imgHeight = floor($scale * $imgHeight);
 				if($imgWidth < $desiredWidth || $imgHeight < $desiredHeight){
-					//echo $imgWidth.'x'.$imgHeight; echo ' --- ';
 					$wDiff = $desiredWidth - $imgWidth;
 					$hDiff = $desiredHeight - $desiredWidth;
-					if($wDiff > $hDiff){ # resize to width						
+					if($wDiff > $hDiff){ # resize to width
 						$imgHeight = floor(($imgHeight/$imgWidth) * $desiredWidth);
 						$imgWidth  = $desiredWidth;
 					}else{ # resize to height
@@ -232,8 +230,7 @@ class File{
 				}
 			}
 		}
-		//echo $imgWidth.'x'.$imgHeight; echo ' --- ';
-		//echo $desiredWidth.'x'.$desiredHeight;
+
 		$style = '';
 		if($imgWidth > $desiredWidth){
 			$marginH = floor(($imgWidth - $desiredWidth)/2);
@@ -251,8 +248,8 @@ class File{
 		$attributes['title'] 	= _h($caption);
 		$attributes['width'] 	= $imgWidth;
 		$attributes['height'] 	= $imgHeight;
-		$attributes['style'] 	= $style;	
-			
+		$attributes['style'] 	= $style;
+
 		$attrHTML = '';
 		foreach($attributes as $key => $value){
 			$attrHTML .= ' ' . $key . '="' . $value .'"';

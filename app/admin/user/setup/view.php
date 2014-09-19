@@ -1,10 +1,10 @@
 <?php include( _i('inc/header.php') ); ?>
 <div class="block full-width">
-	<h3><?php echo _t($pageTitle); ?></h3> 
+	<h3><?php echo _t($pageTitle); ?></h3>
 	<div class="content-box">
 		<form method="post" name="frmUser" id="frmUser" action="<?php echo _url('admin/user/setup/action.php'); ?>">
 			<input type="hidden" name="hidEditId" id="hidEditId" value="<?php echo $id; ?>" />
-			<div class="message error"></div>    
+			<div class="message error"></div>
 			<table cellpadding="0" cellspacing="0" class="form">
 				<tr>
 					<td class="label"><?php echo _t('Full Name').$lc_reqSign; ?></td>
@@ -28,7 +28,7 @@
 						<td class="label"><?php echo _t('Confirm Password').$lc_reqSign; ?></td>
 						<td class="labelSeperator">:</td>
 						<td class="entry">
-	                    	<input type="password" name="txtConfirmPwd" id="txtConfirmPwd" size="30" />	                        
+	                    	<input type="password" name="txtConfirmPwd" id="txtConfirmPwd" size="30" />
 	                    </td>
 					</tr>
 				<?php endif ?>
@@ -46,7 +46,7 @@
                             <option value="admin" <?php if($user->role == 'admin') echo 'selected="selected"'; ?>>Administrator</option>
                         </select>
                     </td>
-				</tr>                
+				</tr>
 				<tr>
 					<td colspan="2">
 					<td class="entry">
@@ -56,8 +56,8 @@
 				</tr>
 			</table>
             <?php Form::token(); ?>
-		</form>           
+		</form>
 	</div>
 	<div id="block-foot"></div>
-</div>         
+</div>
 <?php include( _i('inc/footer.php') ); ?>

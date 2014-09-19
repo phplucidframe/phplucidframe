@@ -17,13 +17,13 @@ $lc_siteSenderEmail 	= "{$lc_siteName} <noreply@{$lc_siteDomain}>";
 
 # $lc_auth: configuration for the user authentication
 # This overrides $lc_auth in /inc/config.php, but you could configure it in config.php without defining here
-$lc_auth = array(						
+$lc_auth = array(
 	'table' => 'user', // table name, for example, user
 	'fields' => array(
 		'id'	=> 'uid', 	// PK field name, for example, user_id
-		'role'  => 'role'	// User role field name for example, user_role 
+		'role'  => 'role'	// User role field name for example, user_role
 	),
-	'perms'	=> array() 
+	'perms'	=> array()
 	/* for example
 			array(
 				'editor' => array(), // for example, 'role-name' => array('content-add', 'content-edit', 'content-delte')
