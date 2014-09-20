@@ -1,17 +1,15 @@
 <?php
-/**
- * PHP 5
+/*
+ * This file is part of the PHPLucidFrame library.
+ * Core utility for pagination
  *
- * LucidFrame : Simple & Flexible PHP Development
- * Copyright (c), LucidFrame.
  *
- * Licensed under The MIT License
- * For full copyright and license information, please see the LICENSE.txt
- * Redistributions of files must retain the above copyright notice.
+ * Copyright (c), PHPLucidFrame.
+ * @author Sithu K. <cithukyaw@gmail.com>
  *
- * @package		LC.helpers
- * @author		Sithu K. <cithukyaw@gmail.com>
- * @license		http://www.opensource.org/licenses/mit-license.php MIT License
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.txt
+ * @license	http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
 class Pager{
