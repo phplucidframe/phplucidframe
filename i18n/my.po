@@ -14,40 +14,40 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 
 msgid "Welcome"
-msgstr "ႀကိဳဆိုပါသည္"
+msgstr "ကြိုဆိုပါသည်"
 
 msgid "Blog"
-msgstr "ဘေလာ့ဂ္"
+msgstr "ဘလော့ဂ်"
 
 msgid "Articles"
-msgstr "ေဆာင္းပါးမ်ား"
+msgstr "ဆောင်းပါးများ"
 
 msgid "Welcome to LucidFrame"
-msgstr "LucidFrame မွႀကိဳဆိုပါသည္"
+msgstr "LucidFrame ကြိုဆိုပါသည်"
 
 msgid "Prerequisites"
-msgstr "ကနဦးလိုအပ္ခ်က္မ်ား"
+msgstr "ကနဦးလိုအပ်ချက်များ"
 
 msgid "Read More"
-msgstr "အျပည္အစံုဖတ္မည္"
+msgstr "အပြည့်အစုံဖတ်မည်"
 
 msgid "Leave a Comment."
-msgstr "သုံးသပ္ခ်က္ေရးခ်င္လွ်င္ ဤေနရာတြင္ ေရးခဲ့ႏိုင္ပါသည္။"
+msgstr "သုံးသပ်ချက်ရေးချင်လျှင် ဤနေရာတွင် ရေးခဲ့နိုင်ပါသည်။"
 
 msgid "Name"
-msgstr "အမည္"
+msgstr "အမည်"
 
 msgid "Email"
-msgstr "အီးေမးလ္"
+msgstr "အီးမေးလ်"
 
 msgid "Re-type Email"
-msgstr "အီးေမးလ္ထပ္ရိုက္ပါ"
+msgstr "အီးမေးလ်ထပ်ရိုက်ပါ"
 
 msgid "Comment"
-msgstr "သံုးသပ္ခ်က္"
+msgstr "သုံးသပ်ချက်"
 
 msgid "Post Comment"
-msgstr "သံုးသပ္ခ်က္တင္မည္"
+msgstr "သုံးသပ်ချက်"
 
 msgid "Cancel"
-msgstr "ျပန္ထြက္မည္"
+msgstr "ပြန်ထွက်မည်"

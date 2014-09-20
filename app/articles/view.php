@@ -16,7 +16,7 @@ if(count($articles)){
 		<p class="article">
 			<h5><a href="<?php echo _url('blog', array($id, $a->slug)); ?>"><?php echo $a->title; ?></a></h5>
 			<p><?php echo $a->body; ?></p>
-			<p><a href="<?php echo _url('blog', array($id, $a->slug)); ?>" class="button mini green">Read More</a></p>
+			<p><a href="<?php echo _url('blog', array($id, $a->slug)); ?>" class="button mini green"><?php echo _t('Read More'); ?></a></p>
 		</p>
 	<?php
 	}

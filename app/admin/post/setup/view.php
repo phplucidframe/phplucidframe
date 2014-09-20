@@ -37,7 +37,7 @@
         </div>
         <div class="row">
             <label><?php echo _t('Body').' ('._langName($lang).')'.$lc_reqSign; ?></label>
-            <div><textarea id="txtBody" name="txtBody" cols="175" rows="15" class="<?php echo $lang; ?>"><?php echo $post->postBody; ?></textarea></div>
+            <div><textarea id="txtBody" name="txtBody" cols="130" rows="15" class="<?php echo $lang; ?>"><?php echo $post->postBody; ?></textarea></div>
         </div>
         <div class="row">
             <button type="submit" class="submit button green" id="btnSave" name="btnSave"><?php echo _t('Save'); ?></button>

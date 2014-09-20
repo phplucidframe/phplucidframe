@@ -24,7 +24,7 @@ if(sizeof($_POST)){
 	);
 
 	if(Form::validate() && Validation::check($validations) == true){
-		if($hidEditId){
+		if($hidEditId){ # edit
 			$data = array(
 				'postId' 	=> $hidEditId,
 				'postTitle_'.$hidLang => $txtTitle,
@@ -45,10 +45,10 @@ if(sizeof($_POST)){
 				$data['slug'] = $postSlug;
 			}
 
-			if(db_update('post', $data)){
+			if(db_update('post', $data, $slug=false)){
 				$success = true;
 			}
-		}else{
+		}else{ # new
 			$data = array(
 				'postTitle' => $txtTitle,
 				'postBody' 	=> $txtBody,
