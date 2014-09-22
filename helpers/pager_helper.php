@@ -24,13 +24,21 @@ class Pager{
 	private $offset 		= 0;		# The calculated offset for the page
 	private $enabled 		= true;		# The page is enabled or not
 	private $htmlTag		= '<table>';# HTML tag for the pagination display; default is <table>. <ul> and <div> are also allowed.
+	/** @var int The customized query string name for "page" */
+	private $pageQueryStr	= 'page';
 	private $parentOpenTag;
 	private $parentCloseTag;
 	private $childTag;
 	private $result;					# The array of calculated result pages and offset
 
-	public function Pager($page=1){
-		$this->page = $page;
+	/**
+	 * Constructor
+	 * @param string $pageQueryStr The customized page query string name
+	 */
+	public function Pager($pageQueryStr=''){
+		if($pageQueryStr) $this->pageQueryStr = $pageQueryStr;
+		$page = _arg($this->pageQueryStr);
+		$this->page = ( $page ) ? $page : 1;		
 	}
 	/**
 	 * Setter functions for the properties
@@ -50,23 +58,23 @@ class Pager{
 	 * Setter functions for the property "htmlTag"
 	 * @param string $value The HTML tag - <table>, <ul> or <div>
 	 */
-	public function setHtmlTag($value='<table>'){
-		if(!in_array($value, array('<table>','<ul>', '<div>'))){
+	private function setHtmlTag($tag='<table>'){
+		if(!in_array($tag, array('<table>','<ul>', '<div>'))){
 			$this->htmlTag = '<table>';
 		}
 		switch($this->htmlTag){
 			case '<table>':
-				$this->parentOpenTag 	= '<table class="pagerTable" border="0" cellpadding="0" cellspacing="0"><tr>';
+				$this->parentOpenTag 	= '<table class="pager" border="0" cellpadding="0" cellspacing="0"><tr>';
 				$this->parentCloseTag 	= '</tr></table>';
 				$this->childTag = 'td';
 				break;
 			case '<ul>':
-				$this->parentOpenTag 	= '<ul class="pagerTable">';
+				$this->parentOpenTag 	= '<ul class="pager">';
 				$this->parentCloseTag 	= '</ul>';
 				$this->childTag = 'li';
 				break;
 			case '<div>':
-				$this->parentOpenTag 	= '<div class="pagerTable">';
+				$this->parentOpenTag 	= '<div class="pager">';
 				$this->parentCloseTag 	= '</div>';
 				$this->childTag = 'div';
 				break;
@@ -199,7 +207,7 @@ class Pager{
 				<?php if($ajax){ ?>
 					<a href="<?php echo _url($url); ?>" rel="<?php echo $firstPageNo; ?>">
 				<?php }else{ ?>
-					<a href="<?php echo _url($url, array('page' => $firstPageNo)); ?>">
+					<a href="<?php echo _url($url, array($this->pageQueryStr => $firstPageNo)); ?>">
 				<?php } ?>
 					<?php if($imagePath){ ?>
 						<img border="0" src="<?php echo $imagePath; ?>start.png" />
@@ -227,7 +235,7 @@ class Pager{
 				<?php if($ajax){ ?>
 					<a href="<?php echo _url($url); ?>" rel="<?php echo $prePageNo; ?>">
 				<?php }else{ ?>
-					<a href="<?php echo _url($url, array('page' => $prePageNo)); ?>">
+					<a href="<?php echo _url($url, array($this->pageQueryStr => $prePageNo)); ?>">
 				<?php } ?>
 					<?php if($imagePath){ ?>
 						<img border="0" src="<?php echo $imagePath; ?>previous.png" />
@@ -259,7 +267,7 @@ class Pager{
 					<?php if($ajax){ ?>
 						<a href="<?php echo _url($url); ?>" rel="<?php echo $oneBeforePage; ?>"><?php echo $oneBeforePage; ?></a>
 					<?php }else{ ?>
-						<a href="<?php echo _url($url, array('page' => $oneBeforePage)); ?>"><?php echo $oneBeforePage; ?></a>
+						<a href="<?php echo _url($url, array($this->pageQueryStr => $oneBeforePage)); ?>"><?php echo $oneBeforePage; ?></a>
 					<?php } ?>
 					</span>
 				<?php
@@ -276,7 +284,7 @@ class Pager{
 					<?php if($ajax){ ?>
 						<a href="<?php echo _url($url); ?>" rel="<?php echo $oneAfterPage; ?>"><?php echo $oneAfterPage; ?></a>
 					<?php }else{ ?>
-						<a href="<?php echo _url($url, array('page' => $oneAfterPage)); ?>"><?php echo $oneAfterPage; ?></a>
+						<a href="<?php echo _url($url, array($this->pageQueryStr => $oneAfterPage)); ?>"><?php echo $oneAfterPage; ?></a>
 					<?php } ?>
 					</span>
 					<?
@@ -292,7 +300,7 @@ class Pager{
 				<?php if($ajax){ ?>
 					<a href="<?php echo _url($url); ?>" rel="<?php echo $nextPageNo; ?>">
 				<?php }else{ ?>
-					<a href="<?php echo _url($url, array('page' => $nextPageNo)); ?>">
+					<a href="<?php echo _url($url, array($this->pageQueryStr => $nextPageNo)); ?>">
 				<?php } ?>
 					<?php if($imagePath){ ?>
 						<img border="0" src="<?php echo $imagePath; ?>next.png" />
@@ -326,7 +334,7 @@ class Pager{
 				<?php if($ajax){ ?>
 					<a href="<?php echo _url($url); ?>" rel="<?php echo $lastPageNo; ?>">
 				<?php }else{ ?>
-					<a href="<?php echo _url($url, array('page' => $lastPageNo)); ?>">
+					<a href="<?php echo _url($url, array($this->pageQueryStr => $lastPageNo)); ?>">
 				<?php } ?>
 					<?php if($imagePath){ ?>
 						<img border="0" src="<?php echo $imagePath; ?>end.png" />

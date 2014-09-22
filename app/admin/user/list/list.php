@@ -10,9 +10,7 @@ $sql = 'SELECT COUNT(*) AS count FROM '.db_prefix().'user u' . $condition;
 $rowCount = db_count($sql, $args);
 
 # Prerequisite for the Pager
-$page = ( isset($get['page']) ) ? $get['page'] : 1;
 $pager = new Pager();
-$pager->set('page', $page);
 $pager->set('itemsPerPage', $lc_itemsPerPage);
 $pager->set('pageNumLimit', $lc_pageNumLimit);
 $pager->set('total', $rowCount);
@@ -84,7 +82,7 @@ if($result){
 		}
 	?>
 	</table>
-	<div class="pager"><?php echo $pager->display(); ?></div>
+	<div class="pager-container"><?php echo $pager->display(); ?></div>
 	<?php
 	}else{
 	?>	<div class="no-record"><?php echo _t("You don't have any user! %sLet's go create a new user!%s", '<a href="'._url('admin/user/setup').'">', '</a>'); ?></div>

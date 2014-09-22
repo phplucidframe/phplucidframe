@@ -57,9 +57,7 @@ $blog[] = array(
 $totalRecords = count($blog);
 
 # Prerequisite for the Pager
-$page = ( isset($get['page']) ) ? $get['page'] : 1;
 $pager = new Pager();
-$pager->set('page', $page);
 $pager->set('itemsPerPage', $lc_itemsPerPage=2);
 $pager->set('pageNumLimit', $lc_pageNumLimit);
 $pager->set('total', $totalRecords);
@@ -82,9 +80,9 @@ if(count($blog)){
 	<?php
 	}
 	?>
-	<div class="pager clearfix">
+	<div class="pager-container clearfix">
 		<?php echo $pager->display(); ?>
-		<div class="pagerRecords"><?php echo _t('Total %d records', $totalRecords); ?></div>
+		<div class="pager-records"><?php echo _t('Total %d records', $totalRecords); ?></div>
 	</div>
 	<?php
 }else{

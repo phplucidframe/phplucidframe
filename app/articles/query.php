@@ -47,10 +47,7 @@ $articles[] = array(
 $totalRecords = count($articles);
 
 # Prerequisite for the Pager
-$page = _arg('page');
-$page = ( $page ) ? $page : 1;
 $pager = new Pager();
-$pager->set('page', $page);
 $pager->set('itemsPerPage', $lc_itemsPerPage=2);
 $pager->set('pageNumLimit', $lc_pageNumLimit);
 $pager->set('total', $totalRecords);

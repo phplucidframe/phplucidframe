@@ -1176,20 +1176,48 @@ table.list tr td.indent.second,
 /* PAGER */
 /*********/
 
-.pager {
+.pager-container {
     margin-bottom: 5px;
 }
 
-.pager table tr td {
+.pager-container .pager{
+	float: left;
+}
+
+.pager-container .pager-records{
+	float: right;
+}
+
+.pager{
+	padding: 0;
+	margin: 0;
+}
+
+table.pager tr td{
     padding: 2px 3px;
 }
 
-.pager table tr td.pages a,.pager table tr td.pages span.currentPage {
+div.pager div{
+	display:inline-block;
+	padding: 2px 2px;
+}
+
+ul.pager{
+	list-style-type: none;
+}
+
+ul.pager li{
+	display:inline-block;
+	padding: 2px 2px;
+}
+
+.pager .pages a,
+.pager .pages span.currentPage {
     padding: 1px 5px;
     background: #ccc;
 }
 
-.pager table tr td.pages a {
+.pager .pages a {
     background: #F3F3F3;
     border-color: #AAA;
     border-style: solid;
@@ -1201,8 +1229,8 @@ table.list tr td.indent.second,
     border-radius: 4px;
 }
 
-.pager table tr td.pages span.currentPage,
-.pager table tr td.pages a:hover {
+.pager .pages span.currentPage,
+.pager .pages a:hover {
     background: #777;
     border: 1px #555 solid;
     color: #FFF;
@@ -1211,12 +1239,16 @@ table.list tr td.indent.second,
     border-radius: 4px;
 }
 
-.pager table{
-	float: left;
+.pager .first-enabled{
 }
 
-.pager .pagerRecords{
-	float: right;
+.pager .prev-enabled{
+}
+
+.pager .first-disabled{
+}
+
+.pager .next-disabled{
 }
 
 /**************/

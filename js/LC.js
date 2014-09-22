@@ -386,7 +386,7 @@ var Page = {
 	 * @param id	(string) HTML container ID for the list to be paginated
 	*/
 	pager : function(id){
-		var $pager = $('#'+id).find('.pagerTable a');
+		var $pager = $('#'+id).find('.pager a');
 		if($pager.size()){
 			$.each($pager, function(i, a){
 				if($(a).attr('rel')){ // ajax pager

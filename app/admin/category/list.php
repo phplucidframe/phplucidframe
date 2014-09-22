@@ -8,9 +8,7 @@ $sql = 'SELECT COUNT(*) AS count FROM '.db_prefix().'category
 $rowCount = db_count($sql);
 
 # Prerequisite for the Pager
-$page = ( isset($get['page']) ) ? $get['page'] : 1;
 $pager = new Pager();
-$pager->set('page', $page);
 $pager->set('itemsPerPage', $lc_itemsPerPage);
 $pager->set('pageNumLimit', $lc_pageNumLimit);
 $pager->set('total', $rowCount);
@@ -87,7 +85,7 @@ if($result = db_query($sql)){
 		}
 	?>
 	</table>
-	<div class="pager"><?php echo $pager->display(); ?></div>
+	<div class="pager-container"><?php echo $pager->display(); ?></div>
 	<?php
 	}else{
 	?>	<div class="no-record"><?php echo _t('There is no item found. Click "Add New Category" to add a new category.'); ?></div>
