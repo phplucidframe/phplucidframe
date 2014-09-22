@@ -8,6 +8,8 @@
 
 <h3><?php echo $pageTitle; ?></h3>
 <?php
+// if($result){
+// 	while($a = db_fetchObject($result))){
 if(count($articles)){
 	foreach($articles as $id => $a){
 		$id++;

@@ -17,7 +17,7 @@ $totalRecords = db_count($sql);
 $page = ( isset($get['page']) ) ? $get['page'] : 1;
 $pager = new Pager();
 $pager->set('page', $page);
-$pager->set('itemsPerPage', $lc_itemsPerPage=2);
+$pager->set('itemsPerPage', $lc_itemsPerPage);
 $pager->set('pageNumLimit', $lc_pageNumLimit);
 $pager->set('total', $totalRecords);
 $pager->set('imagePath', WEB_ROOT.'images/pager/');

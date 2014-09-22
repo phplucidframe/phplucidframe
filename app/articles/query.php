@@ -11,21 +11,17 @@ $page = _arg('page');
 $page = ( $page ) ? $page : 1;
 $pager = new Pager();
 $pager->set('page', $page);
-$pager->set('itemsPerPage', $lc_itemsPerPage=2);
+$pager->set('itemsPerPage', $lc_itemsPerPage);
 $pager->set('pageNumLimit', $lc_pageNumLimit);
 $pager->set('total', $totalRecords);
 $pager->set('imagePath', WEB_ROOT.'images/pager/');
-$pager->set('ajax', true);
+$pager->set('ajax', false);
 $pager->calculate();
 
 $sql = 'SELECT * FROM '.db_prefix().' post
 		ORDER BY post.title DESC
 		LIMIT '.$pager->get('offset').', '.$pager->get('itemsPerPage');
-if($result = db_query($sql))
-	if(db_numRows($result)){
-		# render HTML here
-	}
-}
+$result = db_query($sql);
 
 //// you could use the above similar code for the actual querying from db
 //// the below is a sample code to render the simulated data

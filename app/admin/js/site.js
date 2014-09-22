@@ -38,18 +38,17 @@ Page.Post = {
 			$('#dialog-confirm').dialog( 'open' );
 		},
 		/* Do delete action upon confirm OK */
-		doDelete : function(){
-			Page.progress.start();
-			$.ajax({
-				type: "POST",
-				url: Page.Post.List.url + 'action.php',
-				dataType: 'script',
-				data: {
+		doDelete : function(){			
+			Page.request("POST", // type
+				Page.Post.List.url + 'action.php', // page to post
+				{ // data to post
 					hidDeleteId: $('#hidDeleteId').val(),
 					action: 'delete'
 				},
-				success: Form.submitHandler
-			});
+				function(){ // callback
+					Page.Post.List.list();
+				}
+			);
 		},
 		list : function(lang){
 			Page.Post.List.queryStr = { lang: lang }
@@ -127,17 +126,16 @@ Page.Category = {
 	},
 	/* Do delete action upon confirm OK */
 	doDelete : function(){
-		Page.progress.start();
-		$.ajax({
-			type: "POST",
-			url: Page.Category.url + 'action.php',
-			dataType: 'script',
-			data: {
+		Page.request("POST", // type
+			Page.Category.url + 'action.php', // page to post
+			{ // data to post
 				hidDeleteId: $('#hidDeleteId').val(),
 				action: 'delete'
 			},
-			success: Form.submitHandler
-		});
+			function(){ // callback
+				Page.Category.list();
+			}
+		);
 	}
 };
 
@@ -192,7 +190,8 @@ Page.User = {
 		},
 		/* Load the list */
 		list : function(param){
-			$('#dialog-area').dialog( 'close' );
+			$('#dialog-confirm').dialog( 'close' );
+			$('#dialog-warning').dialog( 'close' );
 			Page.request( 'list', Page.User.List.url + 'list.php', param );
 		},
 		/* Launch the dialog to confirm an entry delete */
@@ -206,17 +205,16 @@ Page.User = {
 		},
 		/* Do delete action upon confirm OK */
 		doDelete : function(){
-			Page.progress.start();
-			$.ajax({
-				type: "POST",
-				url: Page.User.List.url + 'action.php',
-				dataType: 'script',
-				data: {
+			Page.request("POST", // type
+				Page.User.List.url + 'action.php', // page to post
+				{ // data to post
 					hidDeleteId: $('#hidDeleteId').val(),
 					action: 'delete'
 				},
-				success: Form.submitHandler
-			});
+				function(){ // callback
+					Page.User.List.list();
+				}
+			);
 		}
 	}
 }

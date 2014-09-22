@@ -5,7 +5,7 @@ if(sizeof($_POST)){
 	extract($post);
 
 	if(isset($action) && $action == 'delete' && isset($hidDeleteId) && $hidDeleteId){
-		# DELETE
+		# DELETE category
 		if( db_delete('category', array('catId' => $hidDeleteId)) ){
 			$success = true;
 		}

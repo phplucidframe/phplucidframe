@@ -16,7 +16,7 @@ $pager->set('page', $page);
 $pager->set('itemsPerPage', $lc_itemsPerPage);
 $pager->set('pageNumLimit', $lc_pageNumLimit);
 $pager->set('total', $rowCount);
-$pager->set('imagePath', WEB_ROOT.'images/adm/pager/');
+$pager->set('imagePath', WEB_ROOT.'images/pager/');
 $pager->set('ajax', true);
 $pager->calculate();
 

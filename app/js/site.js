@@ -25,7 +25,7 @@ Page.Home = { /* just example */
 
 Page.Blog = {
 	url : Page.url('blog'), /* mapping directory */
-	/* Initialization of home page */
+	/* Initialization of the blog page */
 	init : function(){
 		Page.Blog.list();
 	},

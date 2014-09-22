@@ -1,18 +1,12 @@
 <?php
-$success = false;
+/**
+ * DELETE user
+ */
 if(sizeof($_POST)){
 	$post = _post($_POST);
 	extract($post);
 	if(isset($action) && $action == 'delete' && isset($hidDeleteId) && $hidDeleteId){
 		# DELETE
-		if( db_delete('user', array('uid' => $hidDeleteId)) ){
-			$success = true;
-		}
+		db_delete('user', array('uid' => $hidDeleteId));
 	}
-}
-
-if($success){
-?>
-Page.User.List.list();
-<?php
 }
