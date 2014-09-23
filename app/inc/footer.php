@@ -12,8 +12,7 @@
                     <span id="right"><?php echo _cfg('siteName'); ?></span>
                 </div>
 				<ul class="social-icons">
-					<li><a href="https://facebook.com" class="fb" target="_blank">Facebook</a></li>
-					<li><a href="https://twitter.com" class="tw" target="_blank">Twitter</a></li>
+					<li><a href="http://goo.gl/O68JZ2" class="fb" target="_blank">Facebook</a></li>
 				</ul>
              </div>
         </div>
