@@ -1,47 +1,65 @@
 <?php
-/*
+/**
  * This file is part of the PHPLucidFrame library.
  * Core utility and class required for file processing system
  *
- *
- * Copyright (c), PHPLucidFrame.
- * @author Sithu K. <cithukyaw@gmail.com>
+ * @package		LC\Helpers\File
+ * @since		PHPLucidFrame v 1.0.0
+ * @copyright	Copyright (c), PHPLucidFrame.
+ * @author 		Sithu K. <cithukyaw@gmail.com>
+ * @license		http://www.opensource.org/licenses/mit-license.php MIT License
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.txt
- * @license	http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
-define('FILE_RESIZE_WIDTH', 'width');
-define('FILE_RESIZE_HEIGHT', 'height');
-define('FILE_RESIZE_BOTH', 'both');
-
+/**
+ * This class is part of the PHPLucidFrame library.
+ * Helper for file processing system
+ */
 class File{
-
+	/** @var string The uniqued string ID to append to the file name */
 	private $uniqueId;
+	/** @var array The dimension to be created for image upload */
 	private $dimensions;
+	/** @var string The upload directory path */
 	private $uploadPath;
+	/** @var array The allowed file extensions */
 	private $extensions;
+	/** @var const Type of file resize */
 	private $resize = FILE_RESIZE_BOTH;
+	/** @var string The file name generated */
 	private $fileNameBased;
 
+	/**
+	 * Constructor
+	 */
 	public function File(){
 		$this->extensions = array('jpg', 'jpeg', 'png', 'gif');
 	}
-
+	/**
+	 * Setter for the class properties
+	 * @param string $key The property name
+	 * @param mixed $value The value to be set
+	 * @return void
+	 */
 	public function set($key, $value){
 		$this->$key = $value;
 	}
-
+	/**
+	 * Getter for the file name generated
+	 */
 	public function getFileNameBased(){
 		return $this->fileNameBased;
 	}
 	/**
 	 * Move the uploaded file into the given directory.
 	 * If the uploaded file is image, this will create the various images according to the given $dimension
-	 * @param $file	(array) the uploaded file information from $_FILES['xxx']
-	 * @param 		(array) Array of the uploaded files, for example,
-	 *						uploaded[dimension] = file-name for image files or uploaded[] = file-name for other files
+	 *
+	 * @param array $file The uploaded file information from $_FILES['xxx']
+	 * @param array Th array of the uploaded files,
+	 *				for example,
+	 *				uploaded[dimension] = file-name for image files or uploaded[] = file-name for other files
 	 */
 	public function upload($file){
 		$fileName 		= stripslashes($file['name']);
@@ -104,8 +122,11 @@ class File{
 	/**
 	 * Get a new file name, e.g., original-file-name-[imageWidth]-[uniqueId].ext
 	 * Spaces and periods in the original file names are replaced with dashes.
-	 * @param $file		(string) the uploaded file name
-	 * @param $width 	(int) The image width if the uploaded file is image, otherwise 0
+	 *
+	 * @param string $file The uploaded file name
+	 * @param int $width The image width if the uploaded file is image, otherwise 0
+	 *
+	 * @return string The file name
 	 */
 	private function getNewFileName($file, $width=0){
 		$info = pathinfo($file);
@@ -124,6 +145,7 @@ class File{
 	}
 	/**
 	 * Get a unique id string from the property $uniqueId or generate a random 5-letters string
+	 * @return string
 	 */
 	private function getUniqueId(){
 		if($this->uniqueId) return $this->uniqueId;
@@ -131,9 +153,12 @@ class File{
 	}
 	/**
 	 * Resize an image to a desired width and height by given width
-	 * @param $img		(resource)
-	 * @param $file		(string) the image file
-	 * @param $newWidth	(string) the new width to resize
+	 *
+	 * @param resource $img The image resource identifier
+	 * @param string $file The image file name
+	 * @param int $newWidth The new width to resize
+	 *
+	 * @return resource An image resource identifier on success, FALSE on errors
 	 */
 	public static function resizeImageWidth(&$img, $file, $newWidth){
 		list($width, $height) = getimagesize($file);
@@ -144,9 +169,12 @@ class File{
 	}
 	/**
 	 * Resize an image to a desired width and height by given height
-	 * @param $img		(resource)
-	 * @param $file		(string) the image file
-	 * @param $newHeight(string) the new height to resize
+	 *
+	 * @param resource $img The image resource identifier
+	 * @param string $file The image file name
+	 * @param int $newHeight The new height to resize
+	 *
+	 * @return resource An image resource identifier on success, FALSE on errors
 	 */
 	public static function resizeImageHeight(&$img, $file, $newHeight){
 		list($width, $height) = getimagesize($file);
@@ -158,12 +186,12 @@ class File{
 	/**
 	 * Resize an image to a desired width and height by given width and height
 	 *
-	 * @param $img		 The GD image resource
-	 * @param $file		 string The image file
-	 * @param $newWidth	 integer The new width to resize
-	 * @param $newHeight integer The new height to resize
+	 * @param resource $img The image resource identifier
+	 * @param string $file The image file name
+	 * @param int $newWidth The new width to resize
+	 * @param int $newHeight The new height to resize
 	 *
-	 * @return resource Returns an image identifier
+	 * @return resource An image resource identifier on success, FALSE on errors
 	 */
 	public static function resizeImage(&$img, $file, $newWidth, $newHeight){
 		list($width, $height) = getimagesize($file);
@@ -188,12 +216,13 @@ class File{
 	/**
 	 * Display an image fitting into the desired dimension
 	 *
-	 * @param $fileName string The file name with an absolute web path
-	 * @param $caption string The image caption
-	 * @param $imgWidth	 integer The actual image width in pixel
-	 * @param $imgHeight integer The actual image height in pixel
-	 * @param $desiredWidth	 integer The desired image width in pixel
-	 * @param $desiredHeight integer The desired image height in pixel
+	 * @param string $fileName The file name with an absolute web path
+	 * @param string $caption The image caption
+	 * @param int $imgWidth The actual image width in pixel
+	 * @param int $imgHeight The actual image height in pixel
+	 * @param int $desiredWidth The desired image width in pixel
+	 * @param int $desiredHeight The desired image height in pixel
+	 * @param array $attributes The HTML attributes in array like key => value
 	 *
 	 * @return string The <img> tag
 	 */
@@ -255,3 +284,16 @@ class File{
 		return '<img '.$attrHTML.' />';
 	}
 }
+
+/**
+ * @ignore Flag for image resize to the fitted dimension to the given dimension
+ */
+define('FILE_RESIZE_BOTH', 'both');
+/**
+ * @ignore Flag for image resize to the given height, but width is aspect ratio of the height
+ */
+define('FILE_RESIZE_HEIGHT', 'height');
+/**
+ * @ignore Flag for image resize to the given width, but height is aspect ratio of the width
+ */
+define('FILE_RESIZE_WIDTH', 'width');

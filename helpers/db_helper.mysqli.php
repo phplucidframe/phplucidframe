@@ -1,15 +1,16 @@
 <?php
-/*
+/**
  * This file is part of the PHPLucidFrame library.
  * Core utility for the database layer. Basic functioning of the database system.
  *
- *
- * Copyright (c), PHPLucidFrame.
- * @author Sithu K. <cithukyaw@gmail.com>
+ * @package		LC\Helpers\Database
+ * @since		PHPLucidFrame v 1.0.0
+ * @copyright	Copyright (c), PHPLucidFrame.
+ * @author 		Sithu K. <cithukyaw@gmail.com>
+ * @license		http://www.opensource.org/licenses/mit-license.php MIT License
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.txt
- * @license	http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
 /** @type array It contains the built and executed queries through out the script execuation */
@@ -17,9 +18,9 @@ global $db_builtQueries;
 $db_builtQueries = array();
 
 /**
- * @access private
+ * @internal
  * Return the database configuration of the given namespace
- * @param string $namespace Namespace of the configuration.
+ * @param string $namespace Namespace of the configuration to read from
  */
 function db_config($namespace='default'){
 	if(!isset($GLOBALS['lc_databases'][$namespace])){
@@ -29,7 +30,7 @@ function db_config($namespace='default'){
 }
 /**
  * Return the database host name of the given namespace
- * @param string $namespace Namespace of the configuration.
+ * @param string $namespace Namespace of the configuration to read from
  */
 function db_host($namespace='default'){
 	$conf = db_config($namespace);
@@ -37,7 +38,7 @@ function db_host($namespace='default'){
 }
 /**
  * Return the database name of the given namespace
- * @param string $namespace Namespace of the configuration.
+ * @param string $namespace Namespace of the configuration to read from
  */
 function db_name($namespace='default'){
 	$conf = db_config($namespace);
@@ -46,6 +47,7 @@ function db_name($namespace='default'){
 }
 /**
  * Return the database user name of the given namespace
+ * @param string $namespace Namespace of the configuration to read from
  */
 function db_user($namespace='default'){
 	$conf = db_config($namespace);
@@ -54,7 +56,7 @@ function db_user($namespace='default'){
 }
 /**
  * Return the database table prefix of the given namespace
- * @param string $namespace Namespace of the configuration.
+ * @param string $namespace Namespace of the configuration to read from
  */
 function db_prefix($namespace='default'){
 	$conf = $GLOBALS['lc_databases'][$namespace];
@@ -62,14 +64,16 @@ function db_prefix($namespace='default'){
 }
 /**
  * Return the database collation of the given namespace
- * @param string $namespace Namespace of the configuration.
+ * @param string $namespace Namespace of the configuration to read from
  */
 function db_collation($namespace='default'){
 	$conf = db_config($namespace);
 	return isset($conf['collation']) ? $conf['collation'] : '';
 }
 /**
+ * @internal
  * Check and get the database configuration settings
+ * @param string $namespace Namespace of the configuration to read from
  */
 function db_prerequisite($namespace='default'){
 	if(db_host($namespace) && db_user($namespace) && db_name($namespace)){
@@ -185,7 +189,8 @@ function db_escapeString($str){
 	}
 }
 /**
- * @access privte
+ * @internal
+ *
  * Quote and return the value if it is string; otherwise return as it is
  * This is used for array_map()
  */
@@ -211,7 +216,7 @@ function db_errorNo(){
 }
 /**
  * Gets the number of rows in a result
- * @param  MySQLi result resource
+ * @param  resource $result MySQLi result resource
  * @return int Returns the number of rows in the result set.
  */
 function db_numRows($result){
@@ -219,31 +224,31 @@ function db_numRows($result){
 }
 /**
  * Fetch a result row as an associative, a numeric array, or both
- * @param  MySQLi result resource
- * @return An array that corresponds to the fetched row or NULL if there are no more rows for the resultset represented by the result parameter.
+ * @param  resource $result MySQLi result resource
+ * @return array An array that corresponds to the fetched row or NULL if there are no more rows for the resultset represented by the result parameter.
  */
 function db_fetchArray($result){
 	return mysqli_fetch_array($result);
 }
 /**
  * Fetch a result row as an associative array
- * @param  MySQLi result resource
- * @return An associative array that corresponds to the fetched row or NULL if there are no more rows.
+ * @param  resource $result MySQLi result resource
+ * @return array An associative array that corresponds to the fetched row or NULL if there are no more rows.
  */
 function db_fetchAssoc($result){
 	return mysqli_fetch_assoc($result);
 }
 /**
  * Returns the current row of a result set as an object
- * @param  MySQLi result resource
- * @return an object that corresponds to the fetched row or NULL if there are no more rows in resultset.
+ * @param  resource $result MySQLi result resource
+ * @return object An object that corresponds to the fetched row or NULL if there are no more rows in resultset.
  */
 function db_fetchObject($result){
 	return mysqli_fetch_object($result);
 }
 /**
  * Returns the auto generated id used in the last query
- * @return  The value of the AUTO_INCREMENT field that was updated by the previous query.
+ * @return  int The value of the AUTO_INCREMENT field that was updated by the previous query.
  *			Returns zero if there was no previous query on the connection or if the query did not update an AUTO_INCREMENT value.
  */
 function db_insertId(){
@@ -252,7 +257,7 @@ function db_insertId(){
 }
 /**
  * Returns the generated slug used in the last query
- * @return string
+ * @return string The last inserted slug
  */
 function db_insertSlug(){
 	return session_get('lastInsertSlug');
@@ -277,8 +282,9 @@ function db_count($sql, $args=array()){
 }
 /**
  * Perform a query on the database and return the first field value only.
- * It adds the LIMIT 1 clause if the query has no record limit
- * This will be useful for COUNT(), MAX(), MIN() queries
+ *
+ * It adds the `LIMIT 1` clause if the query has no record limit
+ * This will be useful for `COUNT()`, `MAX()`, `MIN()` queries
  *
  * @param string $sql The SQL query string
  * @param array $args The array of placeholders and their values
@@ -302,8 +308,9 @@ function db_fetch($sql, $args=array()){
 }
 /**
  * Perform a query on the database and return the first result row as object
- * It adds the LIMIT 1 clause if the query has no record limit
- * This is useful for one-row fetching. No need explicit db_query() call as this invokes it internally.
+ *
+ * It adds the `LIMIT 1` clause if the query has no record limit
+ * This is useful for one-row fetching. No need explicit `db_query()` call as this invokes it internally.
  *
  * @param string $sql The SQL query string
  * @param array $args The array of placeholders and their values
@@ -325,6 +332,8 @@ function db_fetchResult($sql, $args=array()){
 	}
 	return false;
 }
+
+if(!function_exists('db_insert')){
 /**
  * Handy MYSQL insert operation
  *
@@ -335,10 +344,9 @@ function db_fetchResult($sql, $args=array()){
  *						'fieldName1' => $fieldValue1,
  *						'fieldName2' => $fieldValue2
  *					)
- * $param boolean $useSlug True to include the slug field or False to not exclude it
+ * @param boolean $useSlug True to include the slug field or False to not exclude it
  * @return boolean Returns TRUE on success or FALSE on failure
  */
-if(!function_exists('db_insert')){
 	function db_insert($table, $data=array(), $useSlug=true){
 		if(count($data) == 0) return;
 		global $_conn;
@@ -398,6 +406,8 @@ if(!function_exists('db_insert')){
 		return db_query($sql);
 	}
 }
+
+if(!function_exists('db_update')){
 /**
  * Handy MYSQL update operation
  *
@@ -409,15 +419,14 @@ if(!function_exists('db_insert')){
  *									'fieldName1' 		=> $value1,
  *									'fieldName2' 		=> $value2
  *								)
- * $param boolean $useSlug True to include the slug field or False to not exclude it
- * $param array $addtionalCondition The addtional conditions for the UPDATE query, for example,
+ * @param boolean $useSlug True to include the slug field or False to not exclude it
+ * @param array $additionalCondition The addtional conditions for the UPDATE query, for example,
  *								array(
  *									'fieldName1' 		=> $value1,
  *									'fieldName2' 		=> $value2
  *								)
  * @return boolean Returns TRUE on success or FALSE on failure
  */
-if(!function_exists('db_update')){
 	function db_update($table, $data=array(), $useSlug=true, $additionalCondition=array()){
 		if(count($data) == 0) return;
 		global $_conn;
@@ -484,6 +493,8 @@ if(!function_exists('db_update')){
 		}
 	}
 }
+
+if(!function_exists('db_delete')){
 /**
  * Handy MYSQL delete operation for single record.
  * It checks FK delete RESTRICT constraint, then SET deleted if it cannot be deleted
@@ -497,7 +508,6 @@ if(!function_exists('db_update')){
  *		)
  * @return boolean Returns TRUE on success or FALSE on failure
  */
-if(!function_exists('db_delete')){
 	function db_delete($table, $cond=array()){
 		$table = ltrim($table, db_prefix());
 		$table = db_prefix().$table;
@@ -528,6 +538,7 @@ if(!function_exists('db_delete')){
 		else return false;
 	}
 }
+if(!function_exists('db_delete_multi')){
 /**
  * Handy MYSQL delete operation for multiple records
  *
@@ -541,7 +552,6 @@ if(!function_exists('db_delete')){
  *
  * @return boolean Returns TRUE on success or FALSE on failure
  */
-if(!function_exists('db_delete_multi')){
 	function db_delete_multi($table, $cond=array()){
 		$table = ltrim($table, db_prefix());
 		$table = db_prefix().$table;
@@ -631,8 +641,13 @@ function db_conditionOR($cond=array()){
 	return db_condition($cond, 'OR');
 }
 /**
+ * @internal
+ *
  * Build the SQL expression like SUM, MAX, AVG, etc
  *
+ * @param string $field The field name
+ * @param mixed $value The value for the field
+ * @param string $exp The SQL expression
  * @return array The condition array, for example
  *			array(
  *				'value'  => $value,
@@ -640,7 +655,7 @@ function db_conditionOR($cond=array()){
  *				'field 	 => $field
  *			)
  */
-function db_exp($value, $exp=''){
+function db_exp($field, $value, $exp=''){
 	if($exp) $field = strtoupper($field) . '(' . $value . ')';
 	else $field = '';
 	return array(

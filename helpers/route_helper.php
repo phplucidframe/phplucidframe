@@ -1,21 +1,22 @@
 <?php
-/*
+/**
  * This file is part of the PHPLucidFrame library.
  * Core utility for system routing
  *
- *
- * Copyright (c), PHPLucidFrame.
- * @author Sithu K. <cithukyaw@gmail.com>
+ * @package		LC\Helpers\Routing
+ * @since		PHPLucidFrame v 1.0.0
+ * @copyright	Copyright (c), PHPLucidFrame.
+ * @author 		Sithu K. <cithukyaw@gmail.com>
+ * @license		http://www.opensource.org/licenses/mit-license.php MIT License
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.txt
- * @license	http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
 $_route_paths = array();
 
 /**
- * @access private
+ * @internal
  * Initialize URL routing
  */
 function route_init(){
@@ -50,7 +51,8 @@ function route_init(){
 	$_GET[ROUTE] = route_request();
 }
 /**
- * @access private
+ * @internal
+ *
  * Returns the requested URL path of the page being viewed.
  * Examples:
  * - http://example.com/foo/bar returns "foo/bar".
@@ -118,8 +120,17 @@ function route_request() {
 	$base = strtolower($protocol) . '://' . $_SERVER['HTTP_HOST'];
 	if($lc_baseURL) $base .= '/' . $lc_baseURL;
 
+	/**
+	 * @ignore Path to the web root
+	 */
 	define('WEB_ROOT', $base.'/');
+	/**
+	 * @ignore
+	 */
 	define('WEB_APP_ROOT', WEB_ROOT . APP_DIR . '/');
+	/**
+	 * @ignore Path to the home page
+	 */
 	define('HOME', WEB_ROOT);
 
 	session_set('lang', $lc_lang);
@@ -158,8 +169,11 @@ function route_search(){
 	}
 	return false;
 }
-/*
+/**
  * Get the routing path
+ *
+ * Alias `_r()`
+ * @return string
  */
 function route_path(){
 	$path = '';
@@ -168,7 +182,8 @@ function route_path(){
 	}
 	return $path;
 }
-/*
+/**
+ * @internal
  * Define the custom routing path
  */
 function route_create($path=''){
@@ -177,6 +192,8 @@ function route_create($path=''){
 }
 /**
  * Return the absolute URL path appended the query string if necessary
+ *
+ * Alias `_url()`
  *
  * @param $path string Routing path such as "foo/bar"; NULL for the current path
  * @param $queryStr	array Query string as
@@ -187,6 +204,8 @@ function route_create($path=''){
  *		)
  * @param $lang string Languague code to be prepended to $path such as "en/foo/bar".
  *		It will be useful for site language switch redirect
+ * @return string
+ *
  */
 function route_url($path=NULL, $queryStr=array(), $lang=''){
 	global $lc_cleanURL;

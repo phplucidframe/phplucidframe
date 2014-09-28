@@ -1,24 +1,26 @@
 <?php
-/*
+/**
  * This file is part of the PHPLucidFrame library.
  * Core utility for general purpose functions.
  *
- *
- * Copyright (c), PHPLucidFrame.
- * @author Sithu K. <cithukyaw@gmail.com>
+ * @package		LC\Helpers\Utility
+ * @since		PHPLucidFrame v 1.0.0
+ * @copyright	Copyright (c), PHPLucidFrame.
+ * @author 		Sithu K. <cithukyaw@gmail.com>
+ * @license		http://www.opensource.org/licenses/mit-license.php MIT License
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.txt
- * @license	http://www.opensource.org/licenses/mit-license.php MIT License 
  */
 
-
 /**
- * @access	private
+ * @internal
+ *
  * ob_start callback function to output buffer
  * It also adds the conditional IE comments and class (ie6,...ie10..) to <html>
  * @hook 	__flush() at app/helpers/utility_helper.php
- * @param	string $buffer The ouput buffer
+ * @param	string $buffer The output buffer
+ *
  * @return 	string
  */
 function _flush($buffer, $mode){
@@ -40,7 +42,8 @@ function _flush($buffer, $mode){
 	return $buffer;
 }
 /**
- * @access private
+ * @internal
+ *
  * This function is a callback for preg_replace_callback()
  * It adds the conditional IE comments and class (ie6,...ie10..) to <html>
  * @return string
@@ -64,6 +67,7 @@ function _htmlIEFix($matches) {
 /**
  * Declare global JS variables
  * @hook __script() at app/helpers/utility_helper.php
+ *
  * @return void
  */
 function _script(){
@@ -99,13 +103,13 @@ function _script(){
  * @return void
  */
 function _js($file){
-	if( strpos($file, 'http') === 0 ){
+	if( preg_match('/^http+/', $file) ){
 		echo '<script src="'. $file .'" type="text/javascript"></script>';
 		return;
 	}
 	$file = 'js/'.$file;
 	$file = _i($file);
-	if( strpos($file, 'http') === 0 ){
+	if( preg_match('/^http+/', $file) ){
 		$fileWithSystemPath = str_replace(WEB_ROOT, ROOT, $file);
 		if(file_exists($fileWithSystemPath)){
 			echo '<script src="'. $file .'" type="text/javascript"></script>';
@@ -125,13 +129,13 @@ function _js($file){
  * @return void
  */
 function _css($file){
-	if( strpos($file, 'http') === 0 ){
+	if( preg_match('/^http+/', $file) ){
 		echo '<link href="'. $file .'" rel="stylesheet" type="text/css" />';
 		return;
 	}
 	$file = 'css/'.$file;
 	$file = _i($file);
-	if( strpos($file, 'http') === 0 ){
+	if( preg_match('/^http+/', $file) ){
 		$fileWithSystemPath = str_replace(WEB_ROOT, ROOT, $file);
 		if(file_exists($fileWithSystemPath)){
 			echo '<link href="'. $file .'" rel="stylesheet" type="text/css" />';
@@ -146,7 +150,6 @@ function _css($file){
  * Get the absolute image file name
  *
  * @param string $file An image file name only (no need directory path)
- *
  * @return void
  */
 function _img($file){
@@ -181,7 +184,7 @@ if(!function_exists('_pr')){
  * within a function
  *
  * @param string $key The config variable name without prefix
- * $param mixed $value The value to set to the config variable
+ * @param mixed $value The value to set to the config variable
  * @return mixed The value of the config variable
  */
 function _cfg($key='', $value=''){
@@ -196,24 +199,25 @@ function _cfg($key='', $value=''){
 /**
  * Convenience method for htmlspecialchars.
  *
- * @param string $text Text to wrap through htmlspecialchars.
- * @return string Wrapped text
+ * @param string $string The string being converted
+ * @return string The converted string
  */
-function _h($text){
-	return htmlspecialchars(stripslashes($text), ENT_QUOTES); # ENT_QUOTES will convert both double and single quotes.
+function _h($string){
+	return htmlspecialchars(stripslashes($string), ENT_QUOTES); # ENT_QUOTES will convert both double and single quotes.
 }
-/*
+/**
  * Get the current site language code
- * @return string
+ * @return string The language code
  */
 function _lang(){
 	return _cfg('lang');
 }
-/*
+/**
  * Get the language to process
+ * Read "lang" from query string; if it is not found, get the default language code
  * Basically, it is useful for admin content management by language
  * @hook __getLang() at app/helpers/utility_helper.php
- * @return string
+ * @return string The language code
  */
 function _getLang(){
 	if(function_exists('__getLang')) return __getLang(); # run the hook if any
@@ -221,15 +225,15 @@ function _getLang(){
 	else $lang = _defaultLang();
 	return ($lang) ? $lang : _defaultLang();
 }
-/*
+/**
  * Get the default site language code
- * @return string
+ * @return string The default site language code
  */
 function _defaultLang(){
 	return _cfg('defaultLang');
 }
 /**
- * Get the language array
+ * Get array of the defined languages
  * @param string|array $excepts The exceptional langauges to exclude
  * @return array|boolean The filtered language array or FALSE for no multi-language
  */
@@ -247,36 +251,41 @@ function _langs($excepts=NULL){
 	}
 	return (count($langs)) ? $langs : false;
 }
-/*
+/**
  * Get the current site language code by converting dash (URL-friendly) to underscore (db-friendly)
- * @return string
+ * @param string $lang The language code (optional - if not provided, the current language code will be used)
+ * @return string The language code
  */
 function _queryLang($lang=NULL){
 	global $lc_lang;
 	if(!$lang) $lang = $lc_lang;
 	return str_replace('-', '_', $lang);
 }
-/*
+/**
  * Get the current site language code by converting underscore (db-friendly) to dash (URL-friendly)
- * @return string
+ * @param string $lang The language code (optional - if not provided, the current language code will be used)
+ * @return string The language code
  */
 function _urlLang($lang=NULL){
 	global $lc_lang;
 	if(!$lang) $lang = $lc_lang;
 	return str_replace('_', '-', $lang);
 }
-/*
+/**
  * Get the default site language code by converting dash to underscore
- * @return string
+ * @return string The language code
  */
 function _defaultQueryLang(){
 	global $lc_defaultLang;
 	return str_replace('-', '_', $lc_defaultLang);
 }
-/*
+/**
  * Get the current site language name of the given language code
- * If no given code, return the default language name
- * @return string
+ * If the site is multilingual, return empty
+ * If no given code, return the language name of the default language code
+ *
+ * @param string $lang The language code (optional - if not provided, the default language code from $lc_defaultLang will be used)
+ * @return string The language name as per defined in /inc/config.php
  */
 function _langName($lang=''){
 	if(!_multilingual()) return '';
@@ -285,7 +294,7 @@ function _langName($lang=''){
 	if(isset($lc_languages[$lang])) return $lc_languages[$lang];
 	else return $lc_languages[_cfg('defaultLang')];
 }
-/*
+/**
  * Get the current site is multi-lingual or not
  * @return boolean
  */
@@ -296,17 +305,17 @@ function _multilingual(){
 		return false;
 	}
 }
-/*
+/**
  * Get the server protocol
  * For example, http, https, ftp, etc.
  *
- * @return string
+ * @return string The protocol - http, https, ftp, etc.
  */
 function _protocol(){
 	$protocol = current(explode('/', $_SERVER['SERVER_PROTOCOL']));
 	return strtolower($protocol);
 }
-/*
+/**
  * Check SSL or not
  *
  * @return boolean TRUE if https otherwise FALSE
@@ -315,24 +324,25 @@ function _ssl(){
 	$protocol = _protocol();
 	return ($protocol == 'https') ? true : false;
 }
-/*
+/**
  * Get the current routing path
  * For example, example.com/foo/bar would return foo/bar
  *	example.com/en/foo/bar would also return foo/bar
  *  example.com/1/this-is-slug (if accomplished by RewriteRule) would return the underlying physical path
  *
- * @return string
+ * @return string The route path starting from the site root
  */
 function _r(){
 	return route_path();
 }
-/*
- * The more realistic function to get the current routing path on the address bar
- * regardless of RewriteRule behine
- * For example, example.com/foo/bar would return foo/bar
- *	example.com/en/foo/bar would also return foo/bar
- *  example.com/1/this-is-slug would return 1/this-is-slug
- * @return string
+/**
+ * The more realistic function to get the current routing path on the address bar regardless of RewriteRule behind
+ *
+ * For example, `example.com/foo/bar` would return `foo/bar`
+ *	`example.com/en/foo/bar` would also return `foo/bar`
+ *  `example.com/1/this-is-slug` would return `1/this-is-slug`
+ *
+ * @return string The route path starting from the site root
  */
 function _rr(){
 	return (_isRewriteRule()) ? REQUEST_URI : _r();
@@ -340,24 +350,28 @@ function _rr(){
 /**
  * Get the absolute URL path
  * @param string 	$path		Routing path such as "foo/bar"; NULL for the current path
- * @param array 	$queryStr	Query string as array(
+ * @param array 	$queryStr	Query string as
+ *								array(
  *									$value1, // no key here
  *									'key1' => $value2,
  *									'key3' => $value3 or array($value3, $value4)
  *								 )
-  * @param string	$lang		Languague code to be prepended to $path such as "en/foo/bar". It will be useful for site language switch redirect
+ * @param string	$lang		Languague code to be prepended to $path such as "en/foo/bar". It will be useful for site language switch redirect
+ * @return void
  */
 function _url($path=NULL, $queryStr=array(), $lang=''){
 	return route_url($path, $queryStr, $lang);
 }
 /**
  * Get the absolute URL path
- * @param array 	$queryStr	Query string as array(
+ * @param array 	$queryStr	Query string as
+ *								array(
  *									$value1, // no key here
  *									'key1' => $value2,
  *									'key3' => $value3 or array($value3, $value4)
  *								 )
  * @param string	$lang		Languague code to be prepended to $path such as "en/foo/bar". It will be useful for site language switch redirect
+ * @return void
  */
 function _self($queryStr=array(), $lang=''){
 	return route_url(NULL, $queryStr, $lang);
@@ -365,12 +379,14 @@ function _self($queryStr=array(), $lang=''){
 /**
  * Header redirect to a specific location
  * @param string 	$path		Routing path such as "foo/bar"; NULL for the current path
- * @param array 	$queryStr	Query string as array(
+ * @param array 	$queryStr	Query string as
+ *								array(
  *									$value1, // no key here
  *									'key1' => $value2,
  *									'key3' => $value3 or array($value3, $value4)
  *							 	)
  * @param string 	$lang		Languague code to be prepended to $path such as "en/foo/bar". It will be useful for site language switch redirect
+ * @return void
  */
 function _redirect($path=NULL, $queryStr=array(), $lang=''){
 	if($path == 'self') $url = _self(NULL, $lang);
@@ -380,34 +396,39 @@ function _redirect($path=NULL, $queryStr=array(), $lang=''){
 }
 /**
  * Redirect to 401 page
+ * @return void
  */
 function _page401(){
 	_redirect('401');
 }
 /**
  * Redirect to 403 page
+ * @return void
  */
 function _page403(){
 	_redirect('403');
 }
 /**
  * Redirect to 404 page
+ * @return void
  */
 function _page404(){
 	_redirect('404');
 }
 /**
  * Check if the current routing is a particular URL RewriteRule processing or not
+ * @return boolean
  */
 function _isRewriteRule(){
 	return (strcasecmp(REQUEST_URI, _r()) !== 0) ? true : false;
 }
+
+$lc_canonical = '';
 /**
  * Setter for canonical URL if the argument is given and print the canonical link tag if the argument is not given
  * @param string $url The specific URL
  * @return void
  */
-$lc_canonical = '';
 function _canonical($url=NULL){
 	global $lc_canonical;
 	if(!is_null($url)) $lc_canonical = $url;
@@ -417,6 +438,7 @@ function _canonical($url=NULL){
 }
 /**
  * Print hreflang for language and regional URLs
+ * @return void
  */
 function _hreflang(){
 	global $lc_languages;
@@ -439,17 +461,16 @@ function _hreflang(){
 /**
  * Return a component of the current path.
  * When viewing a page at the path "foo/bar", for example, arg(0) returns "foo" and arg(1) returns "bar"
-
+ *
  * @param $index
  *   The index of the component, where each component is separated by a '/'
  *   (forward-slash), and where the first component has an index of 0 (zero).
  * @param $path
  *   A path to break into components. Defaults to the path of the current page.
  *
- * @return
- *   The component specified by $index, or NULL if the specified component was
- *   not found. If called without arguments, it returns an array containing all
- *   the components of the current path.
+ * @return mixed
+ *   The component specified by $index, or NULL if the specified component was not found.
+ *   If called without arguments, it returns an array containing all the components of the current path.
  */
 function _arg($index = NULL, $path = NULL) {
 	if(isset($_GET[$index])){
@@ -489,13 +510,14 @@ function _arg($index = NULL, $path = NULL) {
 	return '';
 }
 /**
- * Check if the URI has a language code and return it
- *	matching (for example)
- *		/LucidFrame/en/....
- *		/LucidFrame/....
- *	 	/en/...
- *		/....
- * @return mixed The 2-letter language code if it has one, otherwise return FALSE
+ * Check if the URI has a language code and return it when it matches
+ *
+ * (for example)
+ * - /LucidFrame/en/....
+ * - /LucidFrame/....
+ * - /en/...
+ * - /....
+ * @return mixed The language code if it has one, otherwise return FALSE
  */
 function _getLangInURI(){
 	global $lc_baseURL;
@@ -517,8 +539,8 @@ function _getLangInURI(){
 /**
  * Validate that a hostname (for example $_SERVER['HTTP_HOST']) is safe.
  *
- * @param 	string $host The host name
- * @return 	boolean TRUE if only containing valid characters, or FALSE otherwise.
+ * @param string $host The host name
+ * @return boolean TRUE if only containing valid characters, or FALSE otherwise.
  */
 function _validHost($host) {
   return preg_match('/^\[?(?:[a-zA-Z0-9-:\]_]+\.?)+$/', $host);
@@ -526,10 +548,10 @@ function _validHost($host) {
 /**
  * Get the page title glued by a separator
  *
- * @param 	string|array
+ * @param 	string|array $args multiple arguments
  * @return 	string The formatted page title
  */
-function _title(){
+function _title(/*[mixed $args [, mixed $... ]]*/){
 	global $lc_siteName;
 	global $lc_titleSeparator;
 	$args = func_get_args();
@@ -582,10 +604,10 @@ function _notEmpty($value){
 /**
  * Generate breadcrumb by a separator
  *
- * @param 	string|array
- * @return 	string The formatted page title
+ * @param string|array $args Array of strings or multiple string arguments
+ * @return string The formatted breadcrumb
  */
-function _breadcrumb(){
+function _breadcrumb(/*[mixed $args [, mixed $... ]]*/){
 	global $lc_breadcrumbSeparator;
 	$args = func_get_args();
 	if(!$lc_breadcrumbSeparator) $lc_breadcrumbSeparator = '&raquo;';
@@ -614,6 +636,8 @@ function _shorten($str, $length=50, $trail='...'){
 	if($trail) $short = rtrim($short, '.').$trail;
 	return $short;
 }
+
+if(!function_exists('_fstr')){
 /**
  * Format a string
  *
@@ -623,7 +647,6 @@ function _shorten($str, $length=50, $trail='...'){
  *
  * @return string The formatted text string
  */
-if(!function_exists('_fstr')){
 	function _fstr($value, $glue=', ', $lastGlue='and'){
 		global $lc_nullFill;
 		if(!is_array($value)){
@@ -640,16 +663,17 @@ if(!function_exists('_fstr')){
 		}
 	}
 }
+
+if(!function_exists('_fnum')){
 /**
  * Format a number
  *
- * @param int 	 $value A number to be formatted
- * @param int	 $decimal The decimal places. Default is 2.
+ * @param int $value A number to be formatted
+ * @param int $decimals The decimal places. Default is 2.
  * @param string $unit The unit appended to the number (optional)
  *
  * @return string The formatted number
  */
-if(!function_exists('_fnum')){
 	function _fnum($value, $decimals=2, $unit=''){
 		global $lc_nullFill;
 		if($value === ''){
@@ -665,17 +689,18 @@ if(!function_exists('_fnum')){
 		return $value;
 	}
 }
+
+if(!function_exists('_fnumSmart')){
 /**
  * Format a number in a smarter way, i.e., decimal places are omitted where necessary.
  * Given the 2 decimal places, the value 5.00 will be shown 5 whereas the value 5.01 will be shown as it is.
  *
- * @param int 	 $value A number to be formatted
- * @param int	 $decimal The decimal places. Default is 2.
+ * @param int $value A number to be formatted
+ * @param int $decimals The decimal places. Default is 2.
  * @param string $unit The unit appended to the number (optional)
  *
  * @return string The formatted number
  */
-if(!function_exists('_fnumSmart')){
 	function _fnumSmart($value, $decimals=2, $unit=''){
 		global $lc_nullFill;
 		$value = _fnum($value, $decimals, $unit);
@@ -688,53 +713,56 @@ if(!function_exists('_fnumSmart')){
 		return $value;
 	}
 }
+
+if(!function_exists('_fnumReverse')){
 /**
  * Remove the number formatting (e.g., thousand separator) from the given number
  *
  * @param  mixed $num A number to remove the formatting
  * @return mixed The number
  */
-
-if(!function_exists('_fnumReverse')){
 	function _fnumReverse($num){
 		return str_replace(',', '', $num);
 	}
 }
+
+if(!function_exists('_fdate')){
 /**
  * Format a date
  *
  * @param  string $date A date to be formatted
- * @param  string $format The date/time format; The config variable will be used if it is not passed
+ * @param  string $format The date format; The config variable will be used if it is not passed
  * @return string The formatted date
  */
-if(!function_exists('_fdate')){
 	function _fdate($date, $format=''){
 		if(!$format) $format = _cfg('dateFormat');
 		if(is_string($date)) return date($format, strtotime($date));
 		else return date($format, $date);
 	}
 }
+
+if(!function_exists('_fdatetime')){
 /**
  * Format a date/time
  *
- * @param 	string $date A date/time to be formatted
+ * @param 	string $dateTime A date/time to be formatted
  * @param	string $format The date/time format; The config variable will be used if it is not passed
  * @return 	string The formatted date/time
  */
-if(!function_exists('_fdatetime')){
 	function _fdatetime($dateTime, $format=''){
 		if(!$format) $format = _cfg('dateTimeFormat');
 		return date($format, strtotime($dateTime));
 	}
 }
-/**
-* Display elapsed time in wording
-*
-* @param timestamp|string 	$time	The elapsed time in unix timestamp or date/time string
-* @param string 			$format The date/time format to show when 4 days passed
-* @return string
-*/
+
 if(!function_exists('_ftimeAgo')){
+/**
+ * Display elapsed time in wording
+ *
+ * @param timestamp|string 	$time	The elapsed time in unix timestamp or date/time string
+ * @param string 			$format The date/time format to show when 4 days passed
+ * @return string
+ */
 	function _ftimeAgo($time, $format = 'M j Y'){
 		$now = time();
 		if(!is_numeric($time)) $time = strtotime($time);
@@ -765,6 +793,8 @@ if(!function_exists('_ftimeAgo')){
 		}
 	}
 }
+
+if(!function_exists('_msg')){
 /**
  * Print or return the message formatted with HTML
  *
@@ -777,7 +807,6 @@ if(!function_exists('_ftimeAgo')){
  *
  * @return 	string 	The formatted date
  */
-if(!function_exists('_msg')){
 	function _msg($msg, $class='error', $return=NULL, $display='display:block'){
 		if(empty($msg)) $html = '';
 		if(empty($class)) $class = 'error';
@@ -808,11 +837,13 @@ if(!function_exists('_msg')){
 		}
 	}
 }
-/*
+/**
  * Find the size of the given file.
- * @param string 	$file File name or path to a file
- * @param int 		$precision Digits to display after decimal
+ *
+ * @param string 	$file The file name (file must exist)
+ * @param int 		$digits Number of precisions
  * @param array		$sizes Array of size units, e.g., array("TB","GB","MB","KB","B"). Default is array("MB","KB","B")
+ *
  * @return string|bool Size (B, KiB, MiB, GiB, TiB, PiB, EiB, ZiB, YiB) or boolean
  */
 function _filesize($file, $digits = 2, $sizes = array("MB","KB","B")) {
@@ -860,7 +891,7 @@ if(!function_exists('_slug')){
  * @param string 		$table 		Table name to check in. If it is empty, no check in the table
  * @param string|array	$condition 	Condition to append table check-in, e.g, 'fieldName != value' or array('fieldName !=' => value)
  *
- * @return string The slug
+ * @return string The generated slug
  */
 	function _slug($string, $table='', $condition=NULL){
 		$specChars = array('`','~','!','@','#','$','%','\^','&','*','(',')','=','+','x','{','}','[',']',':',';',"'",'"','<','>','\\','|','?','/',',');
@@ -949,7 +980,7 @@ $_meta = array();
  *
  * @param  string $key 		The <meta> tag name
  * @param  string $value 	If the value is empty, this is a Getter fuction; otherwise Setter function
- * @return string The content
+ * @return void
  */
 function _meta($key, $value=''){
 	global $_meta;

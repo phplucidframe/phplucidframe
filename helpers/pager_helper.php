@@ -1,35 +1,53 @@
 <?php
-/*
+/**
  * This file is part of the PHPLucidFrame library.
  * Core utility for pagination
  *
- *
- * Copyright (c), PHPLucidFrame.
- * @author Sithu K. <cithukyaw@gmail.com>
+ * @package		LC\Helpers\Pagination
+ * @since		PHPLucidFrame v 1.0.0
+ * @copyright	Copyright (c), PHPLucidFrame.
+ * @author 		Sithu K. <cithukyaw@gmail.com>
+ * @license		http://www.opensource.org/licenses/mit-license.php MIT License
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.txt
- * @license	http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
+/**
+ * This class is part of the PHPLucidFrame library.
+ * Helper for pagination
+ */
 class Pager{
-
-	private $page 			= 1;		# The current page no.
-	private $itemsPerPage 	= 15;		# No. of items per page to display
-	private $pageNumLimit 	= 5;		# How many page no. to show in the pagination
-	private $imagePath 		= '';		# The absolute image directory path where the navigaion arrow images reside
-	private $ajax 			= false;	# AJAX pager or not
-	private $url 			= '';		# The URL to request if it is different than the current URL; it must be relative to APP ROOT
-	private $total 			= 0;		# Total number of records for the pager
-	private $offset 		= 0;		# The calculated offset for the page
-	private $enabled 		= true;		# The page is enabled or not
-	private $htmlTag		= '<table>';# HTML tag for the pagination display; default is <table>. <ul> and <div> are also allowed.
+	/** @var int The current page no. */
+	private $page 			= 1;
 	/** @var int The customized query string name for "page" */
 	private $pageQueryStr	= 'page';
+	/** @var int No. of items per page to display */
+	private $itemsPerPage 	= 15;
+	/** @var int How many page no. to show in the pagination */
+	private $pageNumLimit 	= 5;
+	/** @var string The absolute image directory path where the navigaion arrow images reside */
+	private $imagePath 		= '';
+	/** @var boolean AJAX pager or not */
+	private $ajax 			= false;
+	/** @var string The URL to request if it is different than the current URL; it must be relative to APP ROOT */
+	private $url 			= '';
+	/** @var int Total number of records for the pager */
+	private $total 			= 0;
+	/** @var int The calculated offset for the page */
+	private $offset 		= 0;
+	/** @var boolean The page is enabled or not */
+	private $enabled 		= true;
+	/** @var string HTML tag for the pagination display; default is <table>. <ul> and <div> are also allowed. */
+	private $htmlTag		= '<table>';
+	/** @var string HTML tag for internal use */
 	private $parentOpenTag;
+	/** @var string HTML tag for internal use */
 	private $parentCloseTag;
+	/** @var string HTML tag for internal use */
 	private $childTag;
-	private $result;					# The array of calculated result pages and offset
+	/** @var array The array of calculated result pages and offset */
+	private $result;
 
 	/**
 	 * Constructor
@@ -38,10 +56,12 @@ class Pager{
 	public function Pager($pageQueryStr=''){
 		if($pageQueryStr) $this->pageQueryStr = $pageQueryStr;
 		$page = _arg($this->pageQueryStr);
-		$this->page = ( $page ) ? $page : 1;		
+		$this->page = ( $page ) ? $page : 1;
 	}
 	/**
 	 * Setter functions for the properties
+	 * @param string $key The property name
+	 * @param mixed $value The value to be set to the property
 	 */
 	public function set($key, $value=''){
 		if(isset($this->$key)) $this->$key = $value;
@@ -49,14 +69,18 @@ class Pager{
 	}
 	/**
 	 * Getter functions for the properties
+	 * @param string $key The property name
+	 * @return mixed The value of the property
 	 */
 	public function get($key){
 		if(isset($this->$key)) return $this->$key;
 		return '';
 	}
 	/**
+	 * @internal
 	 * Setter functions for the property "htmlTag"
 	 * @param string $value The HTML tag - <table>, <ul> or <div>
+	 * @return void
 	 */
 	private function setHtmlTag($tag='<table>'){
 		if(!in_array($tag, array('<table>','<ul>', '<div>'))){
@@ -81,11 +105,27 @@ class Pager{
 		}
 	}
 	/**
-	 * Pager calculation function. Before calling this function, the following property must be set:
-	 * 	$page
-	 * 	$itemsPerPage
-	 * 	$pageNumLimit
-	 * 	$total
+	 * Pager calculation function
+	 *
+	 * Before calling this function, the following property must be set:
+	 * - $page
+	 * - $itemsPerPage
+	 * - $pageNumLimit
+	 * - $total
+	 *
+	 * @return array The array of the offsets
+	 *					Array(
+	 *						[offset] => xx
+	 *						[thisPage] => xx
+	 *						[beforePages] => Array()
+	 *						[afterPages] => Array()
+	 *						[firstPageEnable] => xx
+	 *						[prePageEnable] => xx
+	 *						[nextPageNo] => xx
+	 *						[nextPageEnable] => xx
+	 *						[lastPageNo] => xx
+	 *						[lastPageEnable] => xx
+	 *					)
 	 */
 	public function calculate(){
 

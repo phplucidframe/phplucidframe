@@ -1,15 +1,16 @@
 <?php
-/*
+/**
  * This file is part of the PHPLucidFrame library.
  * Core utility for user authentication system
  *
- *
- * Copyright (c), PHPLucidFrame.
- * @author Sithu K. <cithukyaw@gmail.com>
+ * @package		LC\Helpers\Authentication
+ * @since		PHPLucidFrame v 1.0.0
+ * @copyright	Copyright (c), PHPLucidFrame.
+ * @author 		Sithu K. <cithukyaw@gmail.com>
+ * @license		http://www.opensource.org/licenses/mit-license.php MIT License
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.txt
- * @license	http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
 if(!function_exists('auth_create')){
@@ -78,13 +79,14 @@ function auth_namespace(){
 	return $name;
 }
 /**
- * Get the authenticate user object from session
+ * Get the authenticate user object from Session
  */
 function auth_get(){
 	return session_get(auth_namespace(), true);
 }
 /**
- * Set the authenticate user object from session
+ * Set the authenticate user object to Session
+ * @param object $sess The authentication object
  */
 function auth_set($sess){
 	session_set(auth_namespace(), $sess, true);

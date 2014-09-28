@@ -1,15 +1,16 @@
 <?php
-/*
+/**
  * This file is part of the PHPLucidFrame library.
  * Core utility for input validation
  *
- *
- * Copyright (c), PHPLucidFrame.
- * @author Sithu K. <cithukyaw@gmail.com>
+ * @package		LC\Helpers\Validation
+ * @since		PHPLucidFrame v 1.0.0
+ * @copyright	Copyright (c), PHPLucidFrame.
+ * @author 		Sithu K. <cithukyaw@gmail.com>
+ * @license		http://www.opensource.org/licenses/mit-license.php MIT License
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.txt
- * @license	http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
 $_validation_messages = array(
@@ -48,9 +49,8 @@ $_validation_messages = array(
 );
 /**
  * Checks that a string contains something other than whitespace
- * Returns true if string contains something other than whitespace
- * @param string|array $value Value to check
- * @return boolean Success
+ * @param mixed $value The value being checked
+ * @return boolean TRUE if the value contains something other than whitespace, FALSE otherwise
  */
 function validate_mandatory($value){
 	if(is_array($value) && empty($value['name'])) return false; # file upload
@@ -63,7 +63,7 @@ function validate_mandatory($value){
 /**
  * Check one of the fields is required
  * @param array $value The array of values to check
- * @return boolean
+ * @return boolean TRUE if one of the fields are not empty, FALSE otherwise
  */
 function validate_mandatoryOne($value){
 	if(is_array($value)){
@@ -79,8 +79,8 @@ function validate_mandatoryOne($value){
 }
 /**
  * Check all of the fields are not empty
- * @param array $value The array of values to check
- * @return boolean
+ * @param array $value The array of values being checked
+ * @return boolean TRUE if all of the fields are not empty, FALSE otherwise
  */
 function validate_mandatoryAll($value){
 	if(is_array($value)){
@@ -95,8 +95,8 @@ function validate_mandatoryAll($value){
 }
 /**
  * Check a string or number is zero or not
- * @param $value	(string) value to check
- * @return boolean 	true for non-zero, false for zero
+ * @param string $value The value being checked
+ * @return boolean TRUE for non-zero, FALSE otherwise
  */
 function validate_notAllowZero($value){
 	$value = trim($value);
@@ -104,8 +104,8 @@ function validate_notAllowZero($value){
 }
 /**
  * Checks that a string contains only integer or letters
- * @param $value	(mixed) Value to check
- * @return boolean 	true if string contains only integer or letters
+ * @param mixed $value The value being checked
+ * @return boolean 	TRUE if the value contains only integer or letters, FALSE otherwise
  */
 function validate_alphaNumeric($value){
 	if(empty($value)) return true;
@@ -113,8 +113,8 @@ function validate_alphaNumeric($value){
 }
 /**
  * Checks that a string contains only integer, letters or spaces
- * @param $value	(mixed) Value to check
- * @return boolean 	true if string contains only integer, letters or spaces
+ * @param mixed $value The value being checked
+ * @return boolean TRUE if the value contains only integer, letters or spaces, FALSE otherwise
  */
 function validate_alphaNumericSpace($value){
 	if(empty($value)) return true;
@@ -122,8 +122,8 @@ function validate_alphaNumericSpace($value){
 }
 /**
  * Checks that a string contains only integer, letters or dashes
- * @param $value	(mixed) Value to check
- * @return boolean 	true if string contains only integer, letters or dashes
+ * @param mixed $value The value being checked
+ * @return boolean 	TRUE if the value contains only integer, letters or dashes, FALSE otherwise
  */
 function validate_alphaNumericDash($value){
 	if(empty($value)) return true;
@@ -131,16 +131,16 @@ function validate_alphaNumericDash($value){
 }
 /**
  * Checks if a value is numeric.
- * @param 	$value (string) Value to check
- * @return 	boolean Success
+ * @param mixed $value The value being checked
+ * @return 	boolean TRUE if var is a number or a numeric string, FALSE otherwise.
  */
 function validate_numeric($value) {
 	return is_numeric($value);
 }
 /**
  * Checks if the value contains numbers and dashes
- * @param 	$value (string) Value to check
- * @return 	boolean Success
+ * @param mixed $value The value being checked
+ * @return 	boolean TRUE if the value contains numbers and dashes only, FALSE otherwise
  */
 function validate_numericDash($value){
 	if(is_numeric($value) && strlen($value) == 1) return true;
@@ -149,8 +149,8 @@ function validate_numericDash($value){
 }
 /**
  * Checks if the value contains numbers and spaces
- * @param 	$value (string) Value to check
- * @return 	boolean Success
+ * @param string $value The value being checked
+ * @return boolean TRUE if the value contains numbers and spaces only, FALSE otherwise
  */
 function validate_numericSpace($value){
 	if(is_numeric($value) && strlen($value) == 1) return true;
@@ -159,8 +159,8 @@ function validate_numericSpace($value){
 }
 /**
  * Checks if the value does not contain special characters
- * @param 	$value (string) Value to check
- * @return 	boolean Success
+ * @param mixed $value The value being checked
+ * @return boolean TRUE if the value does not contain special characters, FALSE otherwise
  */
 function validate_username($value){
 	if(empty($value)) return true;
@@ -168,8 +168,8 @@ function validate_username($value){
 }
 /**
  * Checks if a value is a positive integer starting from 1, 2, 3, and so on. No decimal
- * @param 	$value (string) Value to check
- * @return 	boolean TRUE on success or FALSE on failure
+ * @param mixed $value The value being checked
+ * @return 	boolean TRUE if the value is natural number, FALSE otherwise
  * @see 	http://en.wikipedia.org/wiki/Natural_number
  *			http://math.about.com/od/mathhelpandtutorials/a/Understanding-Classification-Of-Numbers.htm
  */
@@ -180,8 +180,8 @@ function validate_naturalNumber($value){
 }
 /**
  * Checks if a value is a positive integer starting from 0, 1, 2, 3, and so on. No decimal.
- * @param 	$value (string) Value to check
- * @return 	boolean TRUE on success or FALSE on failure
+ * @param mixed $value The value being checked
+ * @return 	boolean TRUE if the value is whole number, FALSE otherwise
  * @see 	http://math.about.com/od/mathhelpandtutorials/a/Understanding-Classification-Of-Numbers.htm
  */
 function validate_wholeNumber($value){
@@ -191,8 +191,8 @@ function validate_wholeNumber($value){
 }
 /**
  * Checks if a value is a positive or negative integer.
- * @param 	$value (string) Value to check
- * @return 	boolean TRUE on success or FALSE on failure
+ * @param mixed $value The value being checked
+ * @return 	boolean TRUE if the value is integer, FALSE otherwise
  * @see 	http://math.about.com/od/mathhelpandtutorials/a/Understanding-Classification-Of-Numbers.htm
  */
 function validate_integer($value){
@@ -202,8 +202,8 @@ function validate_integer($value){
 }
 /**
  * Checks if a value is an integer AND decimal.
- * @param 	$value (string) Value to check
- * @return 	boolean TRUE on success or FALSE on failure
+ * @param mixed $value The value being checked
+ * @return 	boolean TRUE if the value is rational number, FALSE otherwise
  * @see 	http://math.about.com/od/mathhelpandtutorials/a/Understanding-Classification-Of-Numbers.htm
  */
 function validate_rationalNumber($value){
@@ -213,8 +213,8 @@ function validate_rationalNumber($value){
 }
 /**
  * Checks if a value is a positive integer AND decimal
- * @param 	$value (string) Value to check
- * @return 	boolean TRUE on success or FALSE on failure
+ * @param mixed $value The value being checked
+ * @return 	boolean TRUE if the value is positive rational number, FALSE otherwise
  * @see 	http://math.about.com/od/mathhelpandtutorials/a/Understanding-Classification-Of-Numbers.htm
  */
 function validate_positiveRationalNumber($value){
@@ -224,8 +224,8 @@ function validate_positiveRationalNumber($value){
 }
 /**
  * Validates for an email address.
- * @param $value	(string) value to check
- * @return boolean Success
+ * @param mixed $value The value being checked
+ * @return boolean TRUE if the value is a valid email address, FALSE otherwise
  */
 function validate_email($value){
 	$value = trim($value);
@@ -234,8 +234,8 @@ function validate_email($value){
 }
 /**
  * Checks if the value is a valid domain (alpha-numeric and dash only)
- * @param 	$value (string) Value to check
- * @return 	boolean Success
+ * @param mixed $value The value being checked
+ * @return boolean TRUE if the value has letters, numbers and dashes only, FALSE otherwise
  */
 function validate_domain($value){
 	if(empty($value)) return true;
@@ -243,8 +243,8 @@ function validate_domain($value){
 }
 /**
  * Validates for a valid absolute web address
- * @param $value	(string) value to check
- * @return boolean Success
+ * @param mixed $value The value being checked
+ * @return boolean TRUE if the value is a valid absolute web address, FALSE otherwise
  */
 function validate_url($value){
 	if(empty($value)) return true;
@@ -281,9 +281,9 @@ function validate_url($value){
 }
 /**
  * Checks that a string length is greater than the specific length.
- * @param $value	(string) value to check for length
- * @param $min 		(int) minimum length in range (inclusive)
- * @return boolean Success
+ * @param mixed $value The value being checked
+ * @param int $min The minimum length to meet (inclusive)
+ * @return boolean if the character length of the value meets the specified minimum length, FALSE otherwise
  */
 function validate_minLength($value, $min) {
 	$length = mb_strlen($value);
@@ -291,9 +291,9 @@ function validate_minLength($value, $min) {
 }
 /**
  * Checks that a string length is  less than the specific length.
- * @param $value	(string) value to check for length
- * @param $max		(int) maximum length in range (inclusive)
- * @return boolean Success
+ * @param mixed $value The value being checked
+ * @param int $max The maximum length to meet (inclusive)
+ * @return boolean if the character length of the value meets the specified maximum length, FALSE otherwise
  */
 function validate_maxLength($value, $max) {
 	$length = mb_strlen($value);
@@ -301,50 +301,51 @@ function validate_maxLength($value, $max) {
 }
 /**
  * Checks that a number is greater than the specific number.
- * @param $value	(int/float) value to check for length
- * @param $min 		(int/float) minimum value in range (inclusive)
- * @return boolean Success
+ * @param int/float $value The value being checked
+ * @param int/float $min The minimum value to meet (inclusive)
+ * @return boolean if the value is equal to or greater than the specific minimum number, FALSE otherwise
  */
 function validate_min($value, $min) {
 	return ($value >= $min);
 }
 /**
  * Checks that a number is less than the specific number.
- * @param $value	(int/float) value to check for length
- * @param $max		(int/float) maximum value in range (inclusive)
- * @return boolean Success
+ * @param int/float $value The value being checked
+ * @param int/float $max The maximum value to meet (inclusive)
+ * @return boolean if the value is equal to or less than the specific maximum number, FALSE otherwise
  */
 function validate_max($value, $max) {
 	return ($value <= $max);
 }
 /**
  * Checks that a number is within a specified range.
- * Returns true is the number matches value min, max, or between min and max
- * @param $value	(string) value to check
- * @param $min 		(integer) minimum value in range (inclusive)
- * @param $max 		(integer) Maximum value in range (inclusive)
- * @return boolean Success
+ * @param int/float $value The value being checked
+ * @param int/float $min The minimum value in range (inclusive)
+ * @param int/float $max The maximum value in range (inclusive)
+ * @return boolean TRUE if the number is within the specified range, FALSE otherwise
  */
 function validate_between($value, $min, $max) {
 	return ($value >= $min && $value <= $max);
 }
 /**
  * Used when a custom regular expression is needed.
- * @param $value	(mixed) value to check with the regular expression.
- * @param $regex 	(string) a valid regular expression
- * @return boolean Success
+ * Searches the value for a match to the regular expression given in pattern.
+ * @param  mixed	$value		The value being checked
+ * @param  string	$pattern 	The pattern to search for, as a string
+ * @return mixed  1 if the pattern matches given value, 0 if it does not, or FALSE if an error occurred.
+ * @see http://php.net/manual/en/function.preg-match.php
  */
-function validate_custom($value, $regex){
+function validate_custom($value, $pattern){
 	if (empty($value) && $value != '0') {
 		return true;
 	}
-	return preg_match($regex, $value);
+	return preg_match($pattern, $value);
 }
 /**
  * Validation of image file upload for allowed file extensions
- * @param $value		(array) $_FILES array
- * @param $extensions	(array) Array of file extensions such as array('jpg', 'jpeg', 'png', 'gif')
- * @return boolean 		true on success; false on failure
+ * @param array $value The $_FILES array
+ * @param array $extensions	The Array of file extensions such as array('jpg', 'jpeg', 'png', 'gif')
+ * @return boolean TRUE if the uploaded file extension is allowed according to the given extensions, FALSE otherwise
  */
 function validate_fileExtension($value, $extensions = array('jpg', 'jpeg', 'png', 'gif')){
 	if(!is_array($value)) return true;
@@ -356,9 +357,9 @@ function validate_fileExtension($value, $extensions = array('jpg', 'jpeg', 'png'
 }
 /**
  * Validation of maximum file upload size
- * @param $value		(array) $_FILES array
- * @param $maxSize		(array) max file size in MB
- * @return boolean 		true on success; false on failure
+ * @param array $value The $_FILES array
+ * @param int $maxSize The maximum file size in MB
+ * @return boolean TRUE if the uploaded file does not exceed the given file size, FALSE otherwise
  */
 function validate_fileMaxSize($value, $maxSize = NULL) {
 	if(!is_array($value)) return true;
@@ -369,10 +370,11 @@ function validate_fileMaxSize($value, $maxSize = NULL) {
 }
 /**
  * Validation of image file upload for max width and max height
- * @param $value		(array) $_FILES array
- * @param $maxWidth		(int) Maximum image width in pixels
- * @param $maxHeight	(int) Maximum image height in pixels
- * @return boolean 		true on success; false on failure
+ * @param array $value The $_FILES array
+ * @param int $maxWidth	The maximum image width in pixels
+ * @param int $maxHeight The maximum image height in pixels
+ * @return boolean TRUE if the image uploaded dimension does not exceed the given max width and height,
+ *					FALSE otherwise
  */
 function validate_fileMaxDimension($value, $maxWidth, $maxHeight){
 	if(!is_array($value)) return true;
@@ -383,23 +385,25 @@ function validate_fileMaxDimension($value, $maxWidth, $maxHeight){
 }
 /**
  * Validation of image file upload for exact width and height
- * @param $value		(array) $_FILES array
- * @param $maxWidth		(int) Image width in pixels
- * @param $maxHeight	(int) Image height in pixels
- * @return boolean 		true on success; false on failure
+ * @param array $value The $_FILES array
+ * @param int $width The image width in pixels
+ * @param int $height The mage height in pixels
+ * @return boolean TRUE if the image uploaded dimension same as the given max width and height,
+ *					FALSE otherwise
  */
-function validate_fileExactDimension($value, $maxWidth, $maxHeight){
+function validate_fileExactDimension($value, $width, $height){
 	if(!is_array($value)) return true;
 	if(!file_exists($value['tmp_name'])) return true;
-	list($width, $height) = getimagesize($value['tmp_name']);
-	if($width == $maxWidth && $height == $maxHeight) return true;
+	list($w, $h) = getimagesize($value['tmp_name']);
+	if($w == $width && $h == $height) return true;
 	return false;
 }
 /**
  * Validation of image file upload for max width only
- * @param $value		(array) $_FILES array
- * @param $maxWidth		(int) Maximum image width in pixels
- * @return boolean 		true on success; false on failure
+ * @param array $value The $_FILES array
+ * @param int $maxWidth	The maximum image width in pixels
+ * @return boolean TRUE if the uploaded image does not exceed the maximum width allowed,
+ *					FALSE otherwise
  */
 function validate_fileMaxWidth($value, $maxWidth){
 	if(!is_array($value)) return true;
@@ -409,9 +413,10 @@ function validate_fileMaxWidth($value, $maxWidth){
 }
 /**
  * Validation of image file upload for max height only
- * @param $value		(array) $_FILES array
- * @param $maxHeight	(int) Maximum image height in pixels
- * @return boolean 		true on success; false on failure
+ * @param array $value The $_FILES array
+ * @param int $maxHeight The maximum image height in pixels
+ * @return boolean TRUE if the uploaded image does not exceed the maximum height allowed,
+ *					FALSE otherwise
  */
 function validate_fileMaxHeight($value, $maxHeight){
 	if(!is_array($value)) return true;
@@ -421,9 +426,9 @@ function validate_fileMaxHeight($value, $maxHeight){
 }
 /**
  * Validation of an IP address.
- * @param $value	(string) The string to test.
- * @param $type 	(string) The IP Protocol version to validate against; ipv4 or ipv6
- * @return boolean 	TRUE on success; FALSE on failure
+ * @param string $value	The value being checked
+ * @param string $type The IP protocol version to validate against IPv4 or IPv6
+ * @return boolean TRUE on success; FALSE on failure
  */
 function validate_ip($value, $type = 'both') {
 	$type = strtolower($value);
@@ -437,12 +442,35 @@ function validate_ip($value, $type = 'both') {
 	return (boolean)filter_var($value, FILTER_VALIDATE_IP, array('flags' => $flags));
 }
 
+/**
+ * This class is part of the PHPLucidFrame library.
+ * Form validation helper
+ */
 class Validation{
 
-	public 	static $messages;
+	/** @var array The array of the error messages upon validation */
 	public 	static $errors = array();
-	public 	static $batchRules = array('mandatoryOne', 'mandatoryAll');
+	/** @var array The array of default error messages */
+	private	static $messages;
+	/** @var array The array of the rules for group of inputs validation */
+	private	static $batchRules = array('mandatoryOne', 'mandatoryAll');
 
+	/**
+	 * @internal
+	 */
+	public static function set($key, $value=''){
+		self::$$key = $value;
+	}
+	/**
+	 * Check all inputs according to the validation rules provided
+	 *
+	 * @param array $validations The array of the validation rules
+	 * @param string $type The return form of the error message:
+	 *						"multi" to return all error messages occurred
+	 *						"single" to return the first error message occurred
+	 *
+	 * @return void
+	 */
 	public static function check($validations, $type='multi'){
 		Form::init();
 
@@ -597,7 +625,9 @@ class Validation{
 		} # foreach($validations as $id => $v)
 		return (count(self::$errors)) ? false : true;
 	}
-
+	/**
+	 * @internal
+	 */
 	private static function setError($id, $rule, $element){
 		$caption = $element['caption'];
 		$msg 	 = ( isset(self::$messages[$rule]) ) ? self::$messages[$rule] : self::$messages['default'];
@@ -618,8 +648,11 @@ class Validation{
 	}
 	/**
 	 * Add an external error messsage
-	 * @param $id	(string) HTML ID
-	 * @param $msg	(string) Error message to show
+	 *
+	 * @param string $id HTML ID
+	 * @param string $msg The error message to show
+	 *
+	 * @return void
 	 */
 	public static function addError($id, $msg){
 		self::$errors[] = array(
@@ -629,4 +662,4 @@ class Validation{
 	}
 }
 
-Validation::$messages = $_validation_messages;
+Validation::set('messages', $_validation_messages);

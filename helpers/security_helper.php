@@ -1,20 +1,21 @@
 <?php
-/*
+/**
  * This file is part of the PHPLucidFrame library.
  * Core utility for input sanitizing, data escaping, CSRF protection and XSS prevention
  *
- *
- * Copyright (c), PHPLucidFrame.
- * @author Sithu K. <cithukyaw@gmail.com>
+ * @package		LC\Helpers\Security
+ * @since		PHPLucidFrame v 1.0.0
+ * @copyright	Copyright (c), PHPLucidFrame.
+ * @author 		Sithu K. <cithukyaw@gmail.com>
+ * @license		http://www.opensource.org/licenses/mit-license.php MIT License
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.txt
- * @license	http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
 /**
+ * @internal
  * Check the default security salt to be changed
- * @access private
  */
 function security_prerequisite(){
 	$defaultSalt = md5('lucidframe');
@@ -25,8 +26,8 @@ function security_prerequisite(){
 }
 /**
  * Strips HTML tags in the value to prevent from XSS attack. It should be called for GET values.
- * @param  mixed $value The value which to be stripped.
- * @return mixed the cleaned value
+ * @param  mixed $get The value or The array of values being stripped.
+ * @return mixed The cleaned value
  */
 function _get($get){
 	if(is_array($get)){
@@ -47,7 +48,7 @@ function _get($get){
 }
 /**
  * Strips HTML tags in the value to prevent from XSS attack. It should be called for POST values.
- * @param  mixed $value The value which to be stripped.
+ * @param  mixed $post The value or The array of values being stripped.
  * @return mixed the cleaned value
  */
 function _post($post){
@@ -72,8 +73,8 @@ function _post($post){
 }
 /**
  * Strips javascript tags in the value to prevent from XSS attack
- * @param 	mixed $value the value which to be stripped.
- * @return 	mixed the cleaned value
+ * @param mixed $value The value or The array of values being stripped.
+ * @return mixed the cleaned value
  */
 function _xss($value){
 	if(is_object($value)) return $value;

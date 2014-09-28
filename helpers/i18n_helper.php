@@ -1,25 +1,28 @@
 <?php
-/*
+/**
  * This file is part of the PHPLucidFrame library.
  * Core utility for internationalization
  *
- *
- * Copyright (c), PHPLucidFrame.
- * @author Sithu K. <cithukyaw@gmail.com>
+ * @package		LC\Helpers\Internationalization
+ * @since		PHPLucidFrame v 1.0.0
+ * @copyright	Copyright (c), PHPLucidFrame.
+ * @author 		Sithu K. <cithukyaw@gmail.com>
+ * @license		http://www.opensource.org/licenses/mit-license.php MIT License
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.txt
- * @license	http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
 /**
  * Translation helper
- * Return a translated string if one is found; Otherwise, the submitted message.
- * @param $str	(string) string to translate
- * @param 		(mixed)  multiple arguments in function
- * @return mixed translated string
+ * It returns a translated string if it is found; Otherwise, the given string itself
+ *
+ * @param string $str The string being translated
+ * @param mixed $args The multiple arguments to be substituted in the string
+ *
+ * @return string The translated string
  */
-function _t($str){
+function _t($str /*[, mixed $args [, mixed $... ]]*/){
 	global $lc_lang;
 	global $lc_translation;
 	global $lc_translationEnabled;
@@ -37,12 +40,6 @@ function _t($str){
 	$po[$str] = '';
 
 	if(isset($lc_translation[$lc_lang])){
-		/*
-		if( isset($lc_translation[$lc_lang][$str]) && !empty($lc_translation[$lc_lang][$str]) ){
-			$translated = $lc_translation[$lc_lang][$str];
-			if(is_array($translated)) $str = $translated[0];
-			else $str = $translated;
-		}*/
 		# check with lowercase
 		$lowerStr = strtolower($str);
 		if( isset($lc_translation[$lc_lang][$lowerStr]) && !empty($lc_translation[$lc_lang][$lowerStr]) ){
@@ -60,6 +57,7 @@ function _t($str){
  * Example, i18n/ctn/en/about.en
  *
  * @param string $fileName The file name
+ * @param mixed $args The arrya of arguments to be substituted in the string
  * @return string The translation content
  */
 function _tc($fileName, $args=array()){
@@ -83,9 +81,11 @@ function _tc($fileName, $args=array()){
 	return '';
 }
 /**
+ * @internal
+ *
  * Loads the text .po file and returns array of translations
  * @param string $filename Text .po file to load
- * @return mixed Array of translations on success or false on failure
+ * @return mixed Array of translations on success or FALSE on failure
  */
 function i18n_load() {
 	global $lc_lang;

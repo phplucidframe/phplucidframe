@@ -1,26 +1,38 @@
 <?php
-/*
+/**
  * This file is part of the PHPLucidFrame library.
  * Core utility for AJAX form handling and form validation
  *
- *
- * Copyright (c), PHPLucidFrame.
- * @author Sithu K. <cithukyaw@gmail.com>
+ * @package		LC\Helpers\Form
+ * @since		PHPLucidFrame v 1.0.0
+ * @copyright	Copyright (c), PHPLucidFrame.
+ * @author 		Sithu K. <cithukyaw@gmail.com>
+ * @license		http://www.opensource.org/licenses/mit-license.php MIT License
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.txt
- * @license	http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
+/**
+ * This class is part of the PHPLucidFrame library.
+ * Helper for AJAX form handling and form validation
+ */
 class Form{
-
+	/** @var string The HTML form ID */
 	private static $id;
+	/** @var array The error messages and their associated HTML ID */
 	private static $error 	= array();
+	/** @var boolean TRUE/FALSE for form valiation success */
 	private static $success = false;
+	/** @var string The form message */
 	private static $message = '';
+	/** @var string URL to be redirect upon form submission completed */
 	private static $redirect = '';
+	/** @var string The Javascript callback function to be invoked upon form submission completed */
 	private static $callback = '';
-
+	/**
+	 * Constructor
+	 */
 	public static function init(){
 		self::$id 		= '';
 		self::$error 	= array();
@@ -29,19 +41,28 @@ class Form{
 		self::$redirect = '';
 		self::$callback = '';
 	}
-
+	/**
+	 * Setter for the class properties
+	 * @param string $key The property name
+	 * @param mixed $value The value to be set
+	 * @return void
+	 */
 	public static function set($key, $value=''){
 		self::$$key = $value;
 	}
-
-	/* Form token generation */
+	/**
+	 * Form token generation
+	 * @return void
+	 */
 	public static function token(){
 		$token = _encrypt(time());
 		session_set(_cfg('formTokenName'), $token);
 		echo '<input type="hidden" name="lc_formToken_'._cfg('formTokenName').'" value="'.$token.'" />';
 	}
-
-	/* Form token validation */
+	/**
+	 * Form token validation
+	 * @return void
+	 */
 	public static function validate(){
 		if(!isset($_POST['lc_formToken_'._cfg('formTokenName')])) return false;
 		$token 			= _decrypt(session_get(_cfg('formTokenName')));
@@ -63,8 +84,12 @@ class Form{
 		}
 		return true;
 	}
-
-	/* Respond AJAX Form */
+	/**
+	 * AJAX form responder
+	 * @param string $formId The HTML form ID
+	 * @param array $errors The array of the errors (it is used only for generic form processing)
+	 * @return void
+	 */
 	public static function respond($formId, $errors=NULL){
 		self::$id = $formId;
 		$errorStr = '';
