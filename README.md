@@ -1,9 +1,21 @@
 What is LucidFrame
 ============
-LucidFrame is a mini application development framework - a toolkit for PHP developers. It provides logical structure and several helper utilities for web application development.
+PHPLucidFrame (a.k.a LucidFrame) is a mini application development framework - a toolkit for PHP developers. It provides logical structure and several helper utilities for web application development.
 It uses a module architecture to make complex application development simplified.
 
 LucidFrame is simple, fast and easy to install. The minimum requirements are a web server and a copy of LucidFrame.
+
+Zero configuration - just configure your database setting and you are ready to go. No complex JSON or XML or YAML or vHost configuration.
+
+Although it is stated as mini framework, it supports a wide range of web application development features: 
+
+- Datatase access API  
+- Security control  
+- URL routing  
+- Validation helpers  
+- Internationalization & Localization  
+- User authentication API  
+- Ajax  
 
 Prerequisites
 ------
