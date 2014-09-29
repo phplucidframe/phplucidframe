@@ -148,7 +148,7 @@ $lc_auth = array(
 	'perms'	=> array()
 	/* for example
 			array(
-				'editor' => array(), // for example, 'role-name' => array('content-add', 'content-edit', 'content-delte')
+				'editor' => array(), // for example, 'role-name' => array('content-add', 'content-edit', 'content-delete')
 				'admin' => array(),
 			)
 	*/

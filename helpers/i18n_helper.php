@@ -57,7 +57,7 @@ function _t($str /*[, mixed $args [, mixed $... ]]*/){
  * Example, i18n/ctn/en/about.en
  *
  * @param string $fileName The file name
- * @param mixed $args The arrya of arguments to be substituted in the string
+ * @param mixed $args The array of arguments to be substituted in the string
  * @return string The translation content
  */
 function _tc($fileName, $args=array()){
