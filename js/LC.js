@@ -321,15 +321,29 @@ var Page = {
 		});
 	},
 	/**
-	 * Get the updated query string
+	 * Set the updated query string
+	 * @param string id The ID related to the Ajax request
+	 * @param string key The query string key
+	 * @param mixed value The value for the query string
 	 */
-	getQueryStr : function(id, key, value){
+	setQueryStr : function(id, key, value){
 		if(typeof Page.queryStr['_'+id] != 'undefined' && key){
 			eval("Page.queryStr._"+id+"."+key+" = value;");
+		}
+		return null;
+	},
+	/**
+	 * Get the updated query string
+	 * @param string id The ID related to the Ajax request
+	 * @param string key The query string key
+	 * @return mixed
+	 */
+	getQueryStr : function(id, key){
+		if(typeof Page.queryStr['_'+id] != 'undefined' && key){
 			return Page.queryStr['_'+id];
 		}
-		return {};
-	},
+		return null;
+	},	
 	/**
 	 * Ajax request helper
 	 * @param id	(string) HTML container ID or GET/POST for no HTML response
