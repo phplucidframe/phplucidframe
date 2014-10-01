@@ -1,17 +1,16 @@
-Page.Post = {
+LC.Page.Post = {
 	Setup : {
-		url : Page.url('admin/post/setup'), /* mapping directory */
+		url : LC.Page.url('admin/post/setup'), /* mapping directory */
 		/* Initialize the page */
 		init : function(mode){
 		}
 	},
 	List : {
-		url : Page.url('admin/post/list'), /* mapping directory */
+		url : LC.Page.url('admin/post/list'), /* mapping directory */
 		queryStr : {},
 		/* Initialize the page */
 		init : function(lang){
-			//Page.Post.List.queryStr.lang = LC.lang;
-			Page.Post.List.list(lang);
+			LC.Page.Post.List.list(lang);
 			/* delete confirmation */
 			$( "#dialog-confirm" ).dialog({
 				modal: true,
@@ -21,7 +20,7 @@ Page.Post = {
 				buttons: {
 					OK: function() {
 						$(this).dialog( "close" );
-						Page.Post.List.doDelete();
+						LC.Page.Post.List.doDelete();
 					},
 					Cancel: function(){
 						$(this).dialog( "close" );
@@ -30,7 +29,7 @@ Page.Post = {
 			});
 
 			$( "#btnNew" ).click(function(){
-				window.location = Page.url('admin/post/setup');
+				window.location = LC.Page.url('admin/post/setup');
 			});
 		},
 		remove : function( id ){
@@ -39,30 +38,30 @@ Page.Post = {
 		},
 		/* Do delete action upon confirm OK */
 		doDelete : function(){			
-			Page.request("POST", // type
-				Page.Post.List.url + 'action.php', // page to post
+			LC.Page.request("POST", // type
+				LC.Page.Post.List.url + 'action.php', // page to post
 				{ // data to post
 					hidDeleteId: $('#hidDeleteId').val(),
 					action: 'delete'
 				},
 				function(){ // callback
-					Page.Post.List.list();
+					LC.Page.Post.List.list();
 				}
 			);
 		},
 		list : function(lang){
-			Page.Post.List.queryStr = { lang: lang }
-			Page.request( 'list', Page.Post.List.url + 'list.php', Page.Post.List.queryStr );
+			LC.Page.Post.List.queryStr = { lang: lang }
+			LC.Page.request( 'list', LC.Page.Post.List.url + 'list.php', LC.Page.Post.List.queryStr );
 		}
 	}
 }
 
-Page.Category = {
-	url : Page.url('admin/category'), /* mapping directory */
+LC.Page.Category = {
+	url : LC.Page.url('admin/category'), /* mapping directory */
 	/* Initialize the Category page */
 	init : function(){
 		/* Load list */
-		Page.Category.list();
+		LC.Page.Category.list();
 		/* delete confirmation */
 		$( "#dialog-confirm" ).dialog({
 			modal: true,
@@ -72,7 +71,7 @@ Page.Category = {
 			buttons: {
 				OK: function() {
 					$(this).dialog( "close" );
-					Page.Category.doDelete();
+					LC.Page.Category.doDelete();
 				},
 				Cancel: function(){
 					$(this).dialog( "close" );
@@ -89,23 +88,23 @@ Page.Category = {
 		});
 
 		$( "#btnNew" ).click(function(){
-			Page.Category.create();
+			LC.Page.Category.create();
 		});
 	},
 	/* Load the list */
 	list : function(param){
 		$('#dialog-category').dialog( 'close' );
-		Page.request( 'list', Page.Category.url + 'list.php', param );
+		LC.Page.request( 'list', LC.Page.Category.url + 'list.php', param );
 	},
 	/* Launch the dialog to create a new entry */
 	create : function(){
-		Form.clear('frmCategory');
+		LC.Form.clear('frmCategory');
 		$('#dialog-category').dialog( 'open' );
 	},
 	/* Launch the dialog to edit an existing entry */
 	edit : function( id ){
-		Form.clear('frmCategory');
-		var $data = Form.data( id );
+		LC.Form.clear('frmCategory');
+		var $data = LC.Form.data( id );
 		if($data){
 			var $form = $('#frmCategory');
 			$form.find('#hidEditId').val( id );
@@ -126,35 +125,35 @@ Page.Category = {
 	},
 	/* Do delete action upon confirm OK */
 	doDelete : function(){
-		Page.request("POST", // type
-			Page.Category.url + 'action.php', // page to post
+		LC.Page.request("POST", // type
+			LC.Page.Category.url + 'action.php', // page to post
 			{ // data to post
 				hidDeleteId: $('#hidDeleteId').val(),
 				action: 'delete'
 			},
 			function(){ // callback
-				Page.Category.list();
+				LC.Page.Category.list();
 			}
 		);
 	}
 };
 
-Page.User = {
+LC.Page.User = {
 	Setup : {
-		url : Page.url('admin/user/setup'), /* mapping directory */
+		url : LC.Page.url('admin/user/setup'), /* mapping directory */
 		/* Initialize the page */
 		init : function(){
 			$( "#btnCancel" ).click(function(){
-				window.location = Page.url('admin/user/list');
+				window.location = LC.Page.url('admin/user/list');
 			});
 		}
 	},
 	List : {
-		url : Page.url('admin/user/list'), /* mapping directory */
+		url : LC.Page.url('admin/user/list'), /* mapping directory */
 		/* Initialize the page */
 		init : function(){
 			/* Load list */
-			Page.User.List.list();
+			LC.Page.User.List.list();
 			/* delete confirmation */
 			$( "#dialog-confirm" ).dialog({
 				modal: true,
@@ -164,7 +163,7 @@ Page.User = {
 				buttons: {
 					OK: function() {
 						$(this).dialog( "close" );
-						Page.User.List.doDelete();
+						LC.Page.User.List.doDelete();
 					},
 					Cancel: function(){
 						$(this).dialog( "close" );
@@ -185,14 +184,14 @@ Page.User = {
 				}
 			});
 			$( "#btnNew" ).click(function(){
-				window.location = Page.url('admin/user/setup');
+				window.location = LC.Page.url('admin/user/setup');
 			});
 		},
 		/* Load the list */
 		list : function(param){
 			$('#dialog-confirm').dialog( 'close' );
 			$('#dialog-warning').dialog( 'close' );
-			Page.request( 'list', Page.User.List.url + 'list.php', param );
+			LC.Page.request( 'list', LC.Page.User.List.url + 'list.php', param );
 		},
 		/* Launch the dialog to confirm an entry delete */
 		remove : function( id ){
@@ -205,14 +204,14 @@ Page.User = {
 		},
 		/* Do delete action upon confirm OK */
 		doDelete : function(){
-			Page.request("POST", // type
-				Page.User.List.url + 'action.php', // page to post
+			LC.Page.request("POST", // type
+				LC.Page.User.List.url + 'action.php', // page to post
 				{ // data to post
 					hidDeleteId: $('#hidDeleteId').val(),
 					action: 'delete'
 				},
 				function(){ // callback
-					Page.User.List.list();
+					LC.Page.User.List.list();
 				}
 			);
 		}

@@ -46,7 +46,7 @@ if($result){
                 <td class="tableLeft colAction">
 					<?php if ($row->isMaster) { ?>
                         <?php $delete = false; ?>
-                        <?php $action = 'onclick="Page.User.List.warning()"'; ?>
+                        <?php $action = 'onclick="LC.Page.User.List.warning()"'; ?>
                     <?php } ?>
                 	<?php if ($edit) { ?>
 	                    <a href="<?php echo _url('admin/user/setup',array($row->uid)); ?>" class="edit" title="Edit" >
@@ -58,7 +58,7 @@ if($result){
 	            </td>
                 <td class="colAction">
                 	<?php if ($delete): ?>
-	                	<a href="#" class="delete" title="Delete" onclick="Page.User.List.remove(<?php echo $row->uid; ?>)">
+	                	<a href="#" class="delete" title="Delete" onclick="LC.Page.User.List.remove(<?php echo $row->uid; ?>)">
 	                    	<span><?php echo _t('Delete'); ?></span>
 	                    </a>
 	                <?php else: ?>

@@ -57,7 +57,7 @@ if($result){
                     </a>
 	            </td>
                 <td class="colAction">
-	                <a href="#" class="delete" title="Delete" onclick="Page.Post.List.remove(<?php echo $row->postId; ?>)">
+	                <a href="#" class="delete" title="Delete" onclick="LC.Page.Post.List.remove(<?php echo $row->postId; ?>)">
 	                   	<span><?php echo _t('Delete'); ?></span>
 	                </a>
                 </td>

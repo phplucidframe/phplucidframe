@@ -24,6 +24,6 @@ include('query.php');
 </html>
 <script type="text/javascript">
 $(function(){
-	Page.User.Setup.init();
+	LC.Page.User.Setup.init();
 });
 </script>

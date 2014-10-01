@@ -189,6 +189,8 @@ var Form = {
 		return false;
 	}
 };
+// Add under the namespace "LC"
+LC.Form = Form;
 
 var Page = {
 	/* Path to the site root including the language code (if multi-langual site) */
@@ -403,6 +405,9 @@ var Page = {
 	}
 };
 
+// Add under the namespace "LC"
+LC.Page = Page;
+
 $(document).ready( function(){
-	Page.initialize();
+	LC.Page.initialize();
 } );

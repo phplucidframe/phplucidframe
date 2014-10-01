@@ -121,7 +121,7 @@ class Form{
 		}else{
 		?>
 		<script type="text/javascript">
-			Form.submitHandler({
+			LC.Form.submitHandler({
 				'formId' 	: '<?php echo self::$id; ?>',
 				'success' 	: <?php echo (self::$success) ? 1 : 0; ?>,
 				'error' 	: <?php echo $errorStr; ?>,

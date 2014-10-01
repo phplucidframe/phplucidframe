@@ -25,5 +25,5 @@ include('query.php');
 </body>
 </html>
 <script type="text/javascript">
-	Page.Post.Setup.init();
+	LC.Page.Post.Setup.init();
 </script>

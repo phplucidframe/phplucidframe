@@ -57,12 +57,12 @@ if($result = db_query($sql)){
 			<tr id="row-<?php echo $row->catId; ?>">
                 <td class="tableLeft colAction">
                 	<span class="row-data" style="display:none"><?php echo json_encode($data); ?></span>
-                	<a href="javascript:" class="edit" title="Edit" onclick="Page.Category.edit(<?php echo $row->catId; ?>)">
+                	<a href="javascript:" class="edit" title="Edit" onclick="LC.Page.Category.edit(<?php echo $row->catId; ?>)">
                     	<span><?php echo _t('Edit'); ?></span>
                     </a>
                 </td>
                 <td class="colAction">
-                	<a href="#" class="delete" title="Delete" onclick="Page.Category.remove(<?php echo $row->catId; ?>)">
+                	<a href="#" class="delete" title="Delete" onclick="LC.Page.Category.remove(<?php echo $row->catId; ?>)">
                     	<span><?php echo _t('Delete'); ?></span>
                     </a>
                 </td>

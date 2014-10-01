@@ -1,39 +1,39 @@
 // JavaScript Document
-Page.init = function(){ /* just example */
-	Page.Language.init();
-	Page.Sidebar.init();
+LC.Page.init = function(){ /* just example */
+	LC.Page.Language.init();
+	LC.Page.Sidebar.init();
 }
 
-Page.Language = { /* just example */
+LC.Page.Language = { /* just example */
 	init : function(){
 	}
 }
 
-Page.Sidebar = { /* just example */
+LC.Page.Sidebar = { /* just example */
 	init : function(){
 	}
 }
 
-Page.Home = { /* just example */
-	url : Page.url('home'), /* mapping directory */
+LC.Page.Home = { /* just example */
+	url : LC.Page.url('home'), /* mapping directory */
 	/* Initialization of home page */
 	init : function(){
 		console.log('This is home page.');
-		console.log(Page.Home.url);
+		console.log(LC.Page.Home.url);
 	}
 }
 
-Page.Blog = {
-	url : Page.url('blog'), /* mapping directory */
+LC.Page.Blog = {
+	url : LC.Page.url('blog'), /* mapping directory */
 	/* Initialization of the blog page */
 	init : function(){
-		Page.Blog.list();
+		LC.Page.Blog.list();
 	},
 	list : function(){
-		Page.request( 'list', Page.Blog.url + 'list.php' );
+		LC.Page.request( 'list', LC.Page.Blog.url + 'list.php' );
 	}
 }
 
 $(function(){
-	Page.init();
+	LC.Page.init();
 });

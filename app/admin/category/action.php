@@ -49,7 +49,7 @@ if(sizeof($_POST)){
 	}
 	if($success){
 		Form::set('success', true);
-		Form::set('callback', 'Page.Category.list()'); # Ajax callback
+		Form::set('callback', 'LC.Page.Category.list()'); # Ajax callback
 	}
 }
 Form::respond('frmCategory'); # Ajax response

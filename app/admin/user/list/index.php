@@ -16,6 +16,6 @@ $pageTitle = _t('Users');
 </html>
 <script type="text/javascript">
 $(function(){
-	Page.User.List.init();
+	LC.Page.User.List.init();
 });
 </script>
