@@ -208,9 +208,9 @@ var Form = {
 	 * Get the embedded JSON form data
 	 */	
 	data : function( id ){
-		$data = $( '#row-'+id ).find('.colAction span.row-data');
+		$data = $( '#row-'+id ).find('.row-data');
 		if($data.size()){
-			eval('var $row = ' + $( '#row-'+id ).find('.colAction span.row-data').text() );
+			eval('var $row = ' + $data.text() );
 			return $row;
 		}
 		return false;
