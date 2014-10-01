@@ -13,6 +13,11 @@
  * @license		http://www.opensource.org/licenses/mit-license.php MIT License
  */
 var Form = {
+	/** 
+	 * @internal
+	 * LC.Form.init()
+	 * Initialize the forms for Ajax
+	 */	
 	init: function(){
 		Form.placeholderIE();
 		$forms = $('form');
@@ -69,7 +74,11 @@ var Form = {
 			dateFormat: 'dd-mm-yy'
 		});
 	},
-	/* IE placeholder attribute fix */
+	/** 
+	 * @internal
+	 * LC.Form.placeholderIE()
+	 * IE placeholder attribute fix 
+	 */
 	placeholderIE : function(){
 		if($.browser.msie && $.browser.version <= 8.0 ){
 			$inputs = $('[placeholder]');
@@ -99,6 +108,11 @@ var Form = {
 			}).addClass('no-focus'); // no focus on the first element of the form.
 		}
 	},
+	/**
+	 * @internal
+	 * LC.Form.submitform()
+	 * Ajax form submission
+	 */	
 	submitForm : function(formId, e){
 		var $form = $('#'+formId);
 		var $message = $form.find('.message').filter(':first');
@@ -129,6 +143,11 @@ var Form = {
 		});
 		Page.progress.start(formId);
 	},
+	/**
+	 * @internal
+	 * LC.Form.submitHandler()
+	 * Ajax form submit handling
+	 */		
 	submitHandler : function(){
 		if(arguments.length == 1) response = arguments[0];
 		if(typeof response == 'object'){
@@ -172,6 +191,10 @@ var Form = {
 			Page.progress.stop();
 		}
 	},
+	/**
+	 * LC.Form.clear()
+	 * Clear the form values and form messages
+	 */ 
 	clear : function( formId ){
 		var $form = $('#'+formId);
 		$form.find('.invalid').removeClass('invalid');
@@ -180,6 +203,10 @@ var Form = {
 		$inputs.val('');
 		$form.find('.message').filter(':first').html('').hide();
 	},
+	/**
+	 * LC.Form.data()
+	 * Get the embedded JSON form data
+	 */	
 	data : function( id ){
 		$data = $( '#row-'+id ).find('.colAction span.row-data');
 		if($data.size()){
@@ -217,8 +244,8 @@ var Page = {
 	throbber : {
 		/**
 		 * Register a custom throbber
-		 * @param id		(string) HTML container ID for the request
-		 * @param callback  (object) The callback must be a functional object like { start: function(){}, stop: function(){} }
+		 * @param string id	HTML container ID for the request
+		 * @param object callback The callback must be a functional object like { start: function(){}, stop: function(){} }
 		*/
 		register : function(id, callback){
 			Page.throbber[id] = callback;
@@ -226,6 +253,8 @@ var Page = {
 	},
 	queryStr : {},
 	/*
+	 * @internal
+	 * LC.Page.initialize()
 	 * Initialize the page
 	 */
 	initialize : function(){
@@ -304,6 +333,7 @@ var Page = {
 		window.location = $url;
 	},
 	/**
+	 * @internal
 	 * Performs a smooth page scroll to an anchor on the same page.
 	 */
 	scroller : function(){
@@ -346,10 +376,10 @@ var Page = {
 	},	
 	/**
 	 * Ajax request helper
-	 * @param id	(string) HTML container ID or GET/POST for no HTML response
-	 * @param url	(strong) URL to request
-	 * @param param (object) optional literal parameters
-	 * @param callback (function) optional callback function to execute
+	 * @param string id	HTML container ID or GET/POST for no HTML response
+	 * @param string url URL to request
+	 * @param object param Query string to URL (optional)
+	 * @param function callback Callback function to execute (optional)
 	*/
 	request : function(id, url, params, callback){
 		Page.progress.start(id);
@@ -399,7 +429,7 @@ var Page = {
 	},
 	/**
 	 * Pager helper
-	 * @param id	(string) HTML container ID for the list to be paginated
+	 * @param string id HTML container ID for the list to be paginated
 	*/
 	pager : function(id){
 		var $pager = $('#'+id).find('.pager a');
