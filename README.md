@@ -1,11 +1,11 @@
 What is LucidFrame
 ============
 PHPLucidFrame (a.k.a LucidFrame) is a mini application development framework - a toolkit for PHP developers. It provides logical structure and several helper utilities for web application development.
-It uses a module architecture to make complex application development simplified.
+It uses a module architecture to make complex application development simplified. LucidFrame is simple, fast and easy to install. The minimum requirements are a web server and a copy of LucidFrame.
 
-LucidFrame is simple, fast and easy to install. The minimum requirements are a web server and a copy of LucidFrame.
+Zero configuration - just configure your database setting and you are ready to go. No complex JSON, XML, YAML or vHost configuration.
 
-Zero configuration - just configure your database setting and you are ready to go. No complex JSON or XML or YAML or vHost configuration.
+No template engine to eliminate overhead of template processing and to save your storage from template cache files.
 
 Although it is stated as mini framework, it supports a wide range of web application development features: 
 
@@ -43,4 +43,4 @@ Documentation
 ------
 [The complete documentation](http://goo.gl/p72Aqq) in PDF is on the way, but the quick reference and coding samples are available in the release.
 
-To run and check the sample administration panel, import `sample_db.sql` and then configure your database in `\inc\config.php`. It is accessible through http://www.example.com/admin or http://localhost/LucidFrame/admin. The default sample user is username: `admin` and password: `password`.
+To run and check the sample administration panel, get `sample_db.sql` in [the release](https://github.com/cithukyaw/LucidFrame/releases) and import it. Then configure your database in `\inc\config.php`. It is accessible through http://www.example.com/admin or http://localhost/LucidFrame/admin. The default sample user is username: `admin` and password: `password`.
