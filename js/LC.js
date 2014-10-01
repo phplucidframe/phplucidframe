@@ -66,7 +66,7 @@ var Form = {
 			}
 		});
 		// jquery ui button theme
-		$('button.jqbutton').button();
+		$('.jqbutton').button();
 		// datepicker initialize
 		$( ".datepicker" ).datepicker({
 			changeMonth: true,
