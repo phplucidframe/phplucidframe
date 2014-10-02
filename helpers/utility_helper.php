@@ -75,14 +75,14 @@ function _script(){
 	?>
 	<script type="text/javascript">
 		var LC = {};
-        <?php if(WEB_ROOT){ ?>
-            var WEB_ROOT = '<?php echo WEB_ROOT; ?>';
+		<?php if(WEB_ROOT){ ?>
+			var WEB_ROOT = '<?php echo WEB_ROOT; ?>';
 			LC.root = WEB_ROOT;
-        <?php } ?>
-        <?php if(WEB_APP_ROOT){ ?>
-            var WEB_APP_ROOT = '<?php echo WEB_APP_ROOT; ?>';
+		<?php } ?>
+		<?php if(WEB_APP_ROOT){ ?>
+			var WEB_APP_ROOT = '<?php echo WEB_APP_ROOT; ?>';
 			LC.appRoot = WEB_ROOT;
-        <?php } ?>
+		<?php } ?>
 		LC.self 		= '<?php echo _self(); ?>';
 		LC.lang 		= '<?php echo _lang(); ?>';
 		LC.baseURL 		= '<?php echo _cfg('baseURL'); ?>/';
@@ -90,9 +90,30 @@ function _script(){
 		LC.namespace	= '<?php echo LC_NAMESPACE; ?>';
 		LC.sites		= <?php echo (json_encode(_cfg('sites'))); ?>;
 		LC.sitewideWarnings = <?php echo (json_encode($sitewideWarnings)); ?>;
-		<?php if(function_exists('__script')) __script(); ?>
-    </script>
-    <?php
+		<?php
+		if(function_exists('__script')) __script();
+		$jsVars = _cfg('jsVars');
+		if(count($jsVars)){
+			foreach($jsVars as $name => $val){
+				if(is_array($val)) echo 'LC.'.$name.' = '.json_encode($val).';';
+				elseif(is_numeric($val)) echo 'LC.'.$name.' = '.$val.';';
+				else echo 'LC.'.$name.' = "'.$val.'";';
+			}
+		}
+		?>
+	</script>
+	<?php
+}
+
+$lc_jsVars = array();
+/**
+ * Passing values from PHP to Javascript with "LC.vars"
+ * @param string $name The JS variable name
+ * @param mixed $value The value for the JS variable
+ */
+function _addvar($name, $value=''){
+	global $lc_jsVars;
+	$lc_jsVars[$name] = $value;
 }
 /**
  * JS file include helper
