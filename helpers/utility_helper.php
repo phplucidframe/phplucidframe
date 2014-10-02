@@ -197,6 +197,21 @@ function _cfg($key='', $value=''){
 	return NULL;
 }
 /**
+ * Convenience method to get/set a global variable
+ *
+ * @param string $key The global variable name
+ * @param mixed $value The value to set to the global variable
+ * @return mixed The value of the global variable
+ */
+function _g($key, $value=''){
+	if(count(func_get_args()) == 2 && $key){
+		if(isset($GLOBALS[$key]) && is_array($GLOBALS[$key])) $GLOBALS[$key][] = $value;
+		else $GLOBALS[$key] = $value;
+	}
+	if(isset($GLOBALS[$key]) && $GLOBALS[$key]) return $GLOBALS[$key];
+	return NULL;
+}
+/**
  * Convenience method for htmlspecialchars.
  *
  * @param string $string The string being converted
