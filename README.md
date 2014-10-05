@@ -41,6 +41,7 @@ You can also configure the other settings in `\inc\config.php` and `\inc\site.co
 
 Documentation
 ------
-[The complete documentation](http://goo.gl/p72Aqq) in PDF is on the way, but the quick reference and coding samples are available in the release.
+[The complete PDF documentation](https://github.com/cithukyaw/LucidFrame/releases) can be downloaded in the release page.  
+The quick reference and coding samples are also available in the release.
 
 To run and check the sample administration panel, get `sample_db.sql` in [the release](https://github.com/cithukyaw/LucidFrame/releases) and import it. Then configure your database in `\inc\config.php`. It is accessible through http://www.example.com/admin or http://localhost/LucidFrame/admin. The default sample user is username: `admin` and password: `password`.
