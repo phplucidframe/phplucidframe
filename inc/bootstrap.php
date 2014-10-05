@@ -19,8 +19,8 @@ define('INC', ROOT.'inc/');
 define('HELPER', ROOT.'helpers/');
 # path to i18n/ folder
 define('I18N', ROOT.'i18n/');
-# path to vendors/ folder
-define('VENDOR', ROOT.'vendors/');
+# path to vendor/ folder
+define('VENDOR', ROOT.'vendor/');
 # path to business/ folder
 define('BUSINESS', ROOT.'business/');
 # path to files/ folder
@@ -175,7 +175,7 @@ if( $file = _i( 'inc/site.config.php', false) ) include $file;
 
 define('CSS', WEB_ROOT.'css/');
 define('JS', WEB_ROOT.'js/');
-define('WEB_VENDOR', WEB_ROOT.'vendors/');
+define('WEB_VENDOR', WEB_ROOT.'vendor/');
 
 if( $file = _i( 'helpers/validation_helper.php', false) ) include $file;
 require HELPER . 'validation_helper.php';

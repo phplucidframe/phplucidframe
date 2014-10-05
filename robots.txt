@@ -28,7 +28,7 @@ Disallow: /images
 Disallow: /inc
 Disallow: /js
 Disallow: /tests
-Disallow: /vendors
+Disallow: /vendor
 Disallow: /xhr
 # Files
 Disallow: /LICENSE.txt
