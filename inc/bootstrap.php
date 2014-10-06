@@ -103,15 +103,17 @@ function _i($file, $recursive=true){
 		else $needle = '';
 	}
 
-	if(isset($lc_sites) && is_array($lc_sites) && count($lc_sites)){
-		if( LC_NAMESPACE == '' || !array_key_exists(LC_NAMESPACE, $lc_sites)){
-		# Find in APP_ROOT -> ROOT
-			$folders = array(
-				APP_ROOT 	=> $appRoot,
-				ROOT 		=> $root
-			);
+	if( LC_NAMESPACE == '' ){
+	# Find in APP_ROOT -> ROOT
+		$folders = array(
+			APP_ROOT 	=> $appRoot,
+			ROOT 		=> $root
+		);
 
-		}elseif(array_key_exists(LC_NAMESPACE, $lc_sites)){
+	}
+		
+	if(isset($lc_sites) && is_array($lc_sites) && count($lc_sites)){
+		if(array_key_exists(LC_NAMESPACE, $lc_sites)){
 		# Find in SUB-DIR -> APP_ROOT -> ROOT
 			$folders = array(
 				APP_ROOT.$lc_sites[LC_NAMESPACE].'/'	=> $appRoot . $lc_sites[LC_NAMESPACE] . '/',
@@ -119,25 +121,26 @@ function _i($file, $recursive=true){
 				ROOT 			 			=> $root
 			);
 		}
-
-		# $key is for file_exists()
-		# $value is for include() or <script> or <link>
-		foreach($folders as $key => $value){
-			$fileWithPath = $key . $file;
-			if( is_file($fileWithPath) && file_exists($fileWithPath) ){
-				$fileWithPath = $value . $file;
-				return $fileWithPath;
-			}
-			if($recursive == false) break;
-		}
 	}
-
+	
+	# $key is for file_exists()
+	# $value is for include() or <script> or <link>
+	foreach($folders as $key => $value){
+		$fileWithPath = $key . $file;
+		if( is_file($fileWithPath) && file_exists($fileWithPath) ){
+			$fileWithPath = $value . $file;
+			return $fileWithPath;
+		}
+		if($recursive == false) break;
+	}	
+	
 	if(strstr($_SERVER['PHP_SELF'], APP_DIR)){
 		if(is_file($file) && file_exists($file)){
 			return $file;
-		}elseif($recursive == true){
-			return $root . $file;
 		}
+		if($recursive == true){
+			return $root . $file;
+		}		
 	}else{
 		return '';
 	}
