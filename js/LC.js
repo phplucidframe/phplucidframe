@@ -66,13 +66,15 @@ var Form = {
 			}
 		});
 		// jquery ui button theme
-		$('.jqbutton').button();
+		if(typeof $('.jqbutton').button != 'undefined') $('.jqbutton').button();
 		// datepicker initialize
-		$( ".datepicker" ).datepicker({
-			changeMonth: true,
-			changeYear: true,
-			dateFormat: 'dd-mm-yy'
-		});
+		if(typeof $('.datepicker').button != 'undefined'){ 
+			$( ".datepicker" ).datepicker({
+				changeMonth: true,
+				changeYear: true,
+				dateFormat: 'dd-mm-yy'
+			});
+		}
 	},
 	/** 
 	 * @internal
