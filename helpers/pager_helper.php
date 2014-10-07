@@ -242,160 +242,130 @@ class Pager{
 			echo $this->parentOpenTag;
 			# first
 			if($firstPageEnable){
-			?>
-				<?php echo '<'.$this->childTag.' class="first-enabled">'; ?>
-				<?php if($ajax){ ?>
-					<a href="<?php echo _url($url); ?>" rel="<?php echo $firstPageNo; ?>">
-				<?php }else{ ?>
-					<a href="<?php echo _url($url, array($this->pageQueryStr => $firstPageNo)); ?>">
-				<?php } ?>
-					<?php if($imagePath){ ?>
-						<img border="0" src="<?php echo $imagePath; ?>start.png" />
-					<?php }else{ ?>
-						<label><?php echo _t('First'); ?></label>
-					<?php } ?>
-					</a>
-				<?php echo '</'.$this->childTag.'>'; ?>
-			<?php
+				echo '<'.$this->childTag.' class="first-enabled">';
+				if($ajax){
+					echo '<a href="'._url($url).'" rel="'.$firstPageNo.'">';
+				}else{
+					echo '<a href="'._url($url, array($this->pageQueryStr => $firstPageNo)).'">';
+				}
+				if($imagePath){
+					echo '<img border="0" src="'.$imagePath.'start.png" />';
+				}else{
+					echo '<label>'._t('First').'</label>';
+				}
+				echo '</a>';
+				echo '</'.$this->childTag.'>';
 			}else{
-			?>
-				<?php echo '<'.$this->childTag.' class="first-disabled">'; ?>
-				<?php if($imagePath){ ?>
-					<img border="0" src="<?php echo $imagePath; ?>start_disabled.png" />
-				<?php }else{ ?>
-					<label><?php echo _t('First'); ?></label>
-				<?php } ?>
-				<?php echo '</'.$this->childTag.'>'; ?>
-			<?php
+				echo '<'.$this->childTag.' class="first-disabled">';
+				if($imagePath){
+					echo '<img border="0" src="'.$imagePath.'start_disabled.png" />';
+				}else{
+					echo '<label>'._t('First').'</label>';
+				}
+				echo '</'.$this->childTag.'>';
 			}
 			# prev
 			if($prePageEnable){
-			?>
-				<?php echo '<'.$this->childTag.' class="prev-enabled">'; ?>
-				<?php if($ajax){ ?>
-					<a href="<?php echo _url($url); ?>" rel="<?php echo $prePageNo; ?>">
-				<?php }else{ ?>
-					<a href="<?php echo _url($url, array($this->pageQueryStr => $prePageNo)); ?>">
-				<?php } ?>
-					<?php if($imagePath){ ?>
-						<img border="0" src="<?php echo $imagePath; ?>previous.png" />
-					<?php }else{ ?>
-						<label><?php echo _t('&laquo; Prev'); ?></label>
-					<?php } ?>
-					</a>
-				<?php echo '</'.$this->childTag.'>'; ?>
-			<?php
+				echo '<'.$this->childTag.' class="prev-enabled">';
+				if($ajax){
+					echo '<a href="'._url($url).'" rel="'.$prePageNo.'">';
+				}else{
+					echo '<a href="'._url($url, array($this->pageQueryStr => $prePageNo)).'">';
+				}
+				if($imagePath){
+					echo '<img border="0" src="'.$imagePath.'previous.png" />';
+				}else{
+					echo '<label>'._t('&laquo; Prev').'</label>';
+				}
+				echo '</a>';
+				echo '</'.$this->childTag.'>';
 			}else{
-			?>
-				<?php echo '<'.$this->childTag.' class="prev-disabled">'; ?>
-				<?php if($imagePath){ ?>
-					<img border="0" src="<?php echo $imagePath; ?>previous_disabled.png" />
-				<?php }else{ ?>
-					<label><?php echo _t('&laquo; Prev'); ?></label>
-				<?php } ?>
-				<?php echo '</'.$this->childTag.'>'; ?>
-			<?php
+				echo '<'.$this->childTag.' class="prev-disabled">';
+				if($imagePath){
+					echo '<img border="0" src="'.$imagePath.'previous_disabled.png" />';
+				}else{
+					echo '<label>'._t('&laquo; Prev').'</label>';
+				}
+				echo '</'.$this->childTag.'>';
 			}
-			?>
-			<?php echo '<'.$this->childTag.' class="pages">'; ?>
-			<?php
-				# before pages
-				if(isset($beforePages) && $beforePages){
-					foreach($beforePages as $oneBeforePage){
-				?>
-					<span>
-					<?php if($ajax){ ?>
-						<a href="<?php echo _url($url); ?>" rel="<?php echo $oneBeforePage; ?>"><?php echo $oneBeforePage; ?></a>
-					<?php }else{ ?>
-						<a href="<?php echo _url($url, array($this->pageQueryStr => $oneBeforePage)); ?>"><?php echo $oneBeforePage; ?></a>
-					<?php } ?>
-					</span>
-				<?php
+			echo '<'.$this->childTag.' class="pages">';
+
+			# before pages
+			if(isset($beforePages) && $beforePages){
+				foreach($beforePages as $oneBeforePage){
+					echo '<span>';
+					if($ajax){
+						echo '<a href="'._url($url).'" rel="'.$oneBeforePage.'">'.$oneBeforePage.'</a>';
+					}else{
+						echo '<a href="'._url($url, array($this->pageQueryStr => $oneBeforePage)).'">'.$oneBeforePage.'</a>';
+					}
+					echo '</span>';
 				}
 			}
-			?>
-				<span class="currentPage"><?php echo $thisPage; ?></span>
-			<?php
+			echo '<span class="currentPage">'.$thisPage.'</span>';
+
 			# after pages
 			if(isset($afterPages) && $afterPages){
 				foreach($afterPages as $oneAfterPage){
-					?>
-					<span>
-					<?php if($ajax){ ?>
-						<a href="<?php echo _url($url); ?>" rel="<?php echo $oneAfterPage; ?>"><?php echo $oneAfterPage; ?></a>
-					<?php }else{ ?>
-						<a href="<?php echo _url($url, array($this->pageQueryStr => $oneAfterPage)); ?>"><?php echo $oneAfterPage; ?></a>
-					<?php } ?>
-					</span>
-					<?
+					echo '<span>';
+					if($ajax){
+						echo '<a href="'._url($url).'" rel="'.$oneAfterPage.'">'.$oneAfterPage.'</a>';
+					}else{
+						echo '<a href="'._url($url, array($this->pageQueryStr => $oneAfterPage)).'">'.$oneAfterPage.'</a>';
+					}
+					echo '</span>';
 				}
 			}
-			?>
-			<?php echo '</'.$this->childTag.'>'; ?>
-			<?php
+			echo '</'.$this->childTag.'>';
+
 			# next
 			if($nextPageEnable){
-				?>
-				<?php echo '<'.$this->childTag.' class="next-enabled">'; ?>
-				<?php if($ajax){ ?>
-					<a href="<?php echo _url($url); ?>" rel="<?php echo $nextPageNo; ?>">
-				<?php }else{ ?>
-					<a href="<?php echo _url($url, array($this->pageQueryStr => $nextPageNo)); ?>">
-				<?php } ?>
-					<?php if($imagePath){ ?>
-						<img border="0" src="<?php echo $imagePath; ?>next.png" />
-					<?php }else{ ?>
-						<label><?php echo _t('Next &raquo;'); ?></label>
-					<?php } ?>
-					</a>
-				<?php
+				echo '<'.$this->childTag.' class="next-enabled">';
+				if($ajax){
+					echo '<a href="'._url($url).'" rel="'.$nextPageNo.'">';
+				}else{
+					echo '<a href="'._url($url, array($this->pageQueryStr => $nextPageNo)).'">';
+				}
+				if($imagePath){
+					echo '<img border="0" src="'.$imagePath.'next.png" />';
+				}else{
+					echo '<label>'._t('Next &raquo;').'</label>';
+				}
+				echo '</a>';
 				echo '</'.$this->childTag.'>';
-				?>
-			<?php
 			}else{
-				?>
-				<?php
 				echo '<'.$this->childTag.' class="next-disabled">';
-				?>
-				<?php if($imagePath){ ?>
-					<img border="0" src="<?php echo $imagePath; ?>next_disabled.png" />
-				<?php }else{ ?>
-					<label><?php echo _t('Next &raquo;'); ?></label>
-				<?php } ?>
-				<?php echo '</'.$this->childTag.'>'; ?>
-				<?php
+				if($imagePath){
+					echo '<img border="0" src="'.$imagePath.'next_disabled.png" />';
+				}else{
+					echo '<label>'._t('Next &raquo;').'</label>';
+				}
+				echo '</'.$this->childTag.'>';
 			}
+
 			# last
 			if($lastPageEnable){
-				?>
-				<?php
 				echo '<'.$this->childTag.' class="last-enabled">';
-				?>
-				<?php if($ajax){ ?>
-					<a href="<?php echo _url($url); ?>" rel="<?php echo $lastPageNo; ?>">
-				<?php }else{ ?>
-					<a href="<?php echo _url($url, array($this->pageQueryStr => $lastPageNo)); ?>">
-				<?php } ?>
-					<?php if($imagePath){ ?>
-						<img border="0" src="<?php echo $imagePath; ?>end.png" />
-					<?php }else{ ?>
-						<label><?php echo _t('Last'); ?></label>
-					<?php } ?>
-					</a>
-				<?php echo '</'.$this->childTag.'>'; ?>
-				<?php
+				if($ajax){
+					echo '<a href="'._url($url).'" rel="'.$lastPageNo.'">';
+				}else{
+					echo '<a href="'._url($url, array($this->pageQueryStr => $lastPageNo)).'">';
+				}
+				if($imagePath){
+					echo '<img border="0" src="'.$imagePath.'end.png" />';
+				}else{
+					echo '<label>'._t('Last').'</label>';
+				}
+				echo '</a>';
+				echo '</'.$this->childTag.'>';
 			}else{
-				?>
-				<?php
-				echo '<'.$this->childTag.' class="last-disabled">';
-				?>
-				<?php if($imagePath){ ?>
-					<img border="0" src="<?php echo $imagePath; ?>end_disabled.png" />
-				<?php }else{ ?>
-					<label><?php echo _t('Last'); ?></label>
-				<?php } ?>
-				<?php echo '</'.$this->childTag.'>'; ?>
-				<?php
+				'<'.$this->childTag.' class="last-disabled">';
+				if($imagePath){
+					echo '<img border="0" src="'.$imagePath.'end_disabled.png" />';
+				}else{
+					echo '<label>'._t('Last').'</label>';
+				}
+				echo '</'.$this->childTag.'>';
 			}
 
 			echo $this->parentCloseTag;
