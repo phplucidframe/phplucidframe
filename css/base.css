@@ -1215,6 +1215,7 @@ ul.pager li{
 .pager .pages span.currentPage {
     padding: 1px 5px;
     background: #ccc;
+	margin:0 1px;
 }
 
 .pager .pages a {
