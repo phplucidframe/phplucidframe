@@ -1,43 +1,43 @@
 @charset  utf-8;
 
 body {
-    font-size: 12px;
-    margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	margin: 0;
+	font-family: Arial, Helvetica, sans-serif;
 	color: #333;
 	background: #f1f1f1;
 }
 
 input, button, textarea, select{
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 12px;
-    margin: 0;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	margin: 0;
 }
 
 h1, h2, h3, h4, h5, h6 {
 	margin: 0;
-    padding: 10px 0;
+	padding: 10px 0;
 	font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
 }
 
 h1{
-    font-size: 26px;
+	font-size: 26px;
 }
 
 h2{
-    font-size: 24px;
+	font-size: 24px;
 	padding: 8px 0;
 }
 
 h3
 {
-    font-size: 22px;
+	font-size: 22px;
 	padding: 6px 0;
 }
 
 h4
 {
-    font-size: 20px;
+	font-size: 20px;
 	padding: 4px 0;
 }
 
@@ -52,15 +52,15 @@ h6{
 }
 
 p {
-    text-align: justify;
-    padding: 7px 0;
-    line-height: 20px;
+	text-align: justify;
+	padding: 7px 0;
+	line-height: 20px;
 	margin: 0;
 }
 
 a, a:visited, a:hover {
-    text-decoration: none;
-    color: #0077cc;
+	text-decoration: none;
+	color: #0077cc;
 }
 
 a:hover{
@@ -68,7 +68,7 @@ a:hover{
 }
 
 img {
-    border: none;
+	border: none;
 }
 
 label {
@@ -93,35 +93,35 @@ code.inline{
 }
 
 .clear {
-    clear: both;
+	clear: both;
 }
 
 .clearfix:before,
 .clearfix:after {
-    content: "";
-    display: table;
+	content: "";
+	display: table;
 }
 
 .clearfix:after {
-    clear: both;
+	clear: both;
 }
 
 .clearfix {
-    zoom: 1; /* For IE 6/7 (trigger hasLayout) */
+	zoom: 1; /* For IE 6/7 (trigger hasLayout) */
 }
 
 .required {
-    color: #C30;
-    text-shadow: 2px 2px 3px #AAA;
-    padding-left: 3px;
+	color: #C30;
+	text-shadow: 2px 2px 3px #AAA;
+	padding-left: 3px;
 }
 
 .right {
-    text-align: right;
+	text-align: right;
 }
 
 .center {
-    text-align: center;
+	text-align: center;
 }
 
 .indent.first{
@@ -141,18 +141,18 @@ input[type=text], input[type=password]{
 }
 
 input[type=text], input[type=password], textarea, select {
-    border: 1px #B8B8B8 solid;
-    padding: 3px 5px;
-    background: #fff;
+	border: 1px #B8B8B8 solid;
+	padding: 3px 5px;
+	background: #fff;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
 }
 
 input[type=text], input[type=password], textarea, select, .dialog .ui-widget-content {
-    border-top: 1px #888 solid;
-    border-left: 1px #888 solid;
-    background: #fff;
+	border-top: 1px #888 solid;
+	border-left: 1px #888 solid;
+	background: #fff;
 	color: #333;
 }
 
@@ -189,40 +189,40 @@ textarea {
 
 select {
 	height: 26px;
-    padding: 2px;
+	padding: 2px;
 }
 
 .input.disabled {
-    color: #333;
-    background: #efede0;
+	color: #333;
+	background: #efede0;
 }
 
 input.radio {
 }
 
 input.datepicker {
-    background: url(../images/calendar.png) top right no-repeat;
+	background: url(../images/calendar.png) top right no-repeat;
 }
 
 .row input.datepicker {
-    background: none;
+	background: none;
 }
 
 #ui-datepicker-div {
-    -moz-box-shadow: 0 2px 4px 0 rgba(0,0,0,0.3);
-    -webkit-box-shadow: 0 2px 4px 0 rgba(0,0,0,0.3);
-    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.3);
-    border: 1px #666 solid;
+	-moz-box-shadow: 0 2px 4px 0 rgba(0,0,0,0.3);
+	-webkit-box-shadow: 0 2px 4px 0 rgba(0,0,0,0.3);
+	box-shadow: 0 2px 4px 0 rgba(0,0,0,0.3);
+	border: 1px #666 solid;
 }
 
 input[type=radio],input[type=checkbox] {
-    margin-right: 0;
-    margin-top: 2px;
+	margin-right: 0;
+	margin-top: 2px;
 }
 
 label.radio {
-    display: inline-block;
-    padding-right: 5px;
+	display: inline-block;
+	padding-right: 5px;
 }
 
 /**********/
@@ -346,17 +346,17 @@ label.radio {
 /*********/
 
 ol,ul {
-    margin: 0;
-    padding-top: 10px;
-    padding-bottom: 10px;
+	margin: 0;
+	padding-top: 10px;
+	padding-bottom: 10px;
 }
 
 ol li,ul li {
-    padding: 5px 0 5px;
+	padding: 5px 0 5px;
 }
 
 ol li div, ul li div {
-    line-height: 20px;
+	line-height: 20px;
 }
 
 /**********/
@@ -364,11 +364,11 @@ ol li div, ul li div {
 /**********/
 
 #wrapper {
-    height: 100%;
+	height: 100%;
 }
 
 #page-container {
-    margin: 0 auto;
+	margin: 0 auto;
 	background: #fff;
 }
 
@@ -441,14 +441,14 @@ ol li div, ul li div {
 
 #header {
 	width: 100%;
-    height: 81px;
+	height: 81px;
 	background: #f1f1f1;
 	border-bottom: 2px #eeeeee solid;
 	padding-top: 10px;
 }
 
 #logo {
-    display: block;
+	display: block;
 	text-indent: -10000px;
 	width: 231px;
 	height: 30px;
@@ -739,22 +739,22 @@ body.mini-page
 .thumbnail.thumbnail-311 a,
 .thumbnail.thumbnail-311 .img
 {
-    width: 303px;
-    height: 197px;
+	width: 303px;
+	height: 197px;
 }
 
 .thumbnail.thumbnail-432 a,
 .thumbnail.thumbnail-432 .img
 {
-    width: 432px;
-    height: 280px;
+	width: 432px;
+	height: 280px;
 }
 
 .thumbnail.thumbnail-440 a,
 .thumbnail.thumbnail-440 .img
 {
-    width: 440px;
-    height: 300px;
+	width: 440px;
+	height: 300px;
 }
 
 /************/
@@ -765,10 +765,10 @@ body.mini-page
 }
 
 .message {
-    min-height: 15px;
-    padding: 10px;
-    display: none;
-    margin-bottom: 3px;
+	min-height: 15px;
+	padding: 10px;
+	display: none;
+	margin-bottom: 3px;
 }
 
 .message.sitewide-message {
@@ -777,19 +777,19 @@ body.mini-page
 }
 
 .message span {
-    display: block;
+	display: block;
 }
 
 .message.error {
-    color: #8C2E0B;
-    background: #FEF5F1;
-    border: 1px #ED541D solid;
+	color: #8C2E0B;
+	background: #FEF5F1;
+	border: 1px #ED541D solid;
 }
 
 .message.success {
-    border: 1px #BE7 solid;
-    background-color: #F8FFF0;
-    color: #234600;
+	border: 1px #BE7 solid;
+	background-color: #F8FFF0;
+	color: #234600;
 }
 
 .message.warning {
@@ -798,31 +798,31 @@ body.mini-page
 }
 
 .message ul {
-    margin-bottom: 0;
-    padding: 0;
-    margin-left: 20px;
-    list-style: square;
+	margin-bottom: 0;
+	padding: 0;
+	margin-left: 20px;
+	list-style: square;
 }
 
 .message ul li {
-    line-height: 18px;
-    padding: 0;
+	line-height: 18px;
+	padding: 0;
 }
 
 input.invalid, select.invalid, textarea.invalid, .invalid {
-    border: 1px solid #CD0A0A !important;
-    color: #CD0A0A !important;
+	border: 1px solid #CD0A0A !important;
+	color: #CD0A0A !important;
 }
 
 span.invalid {
-    border: none;
+	border: none;
 }
 
 .info {
-    padding-top: 8px;
-    padding-bottom: 8px;
-    font-weight: 700;
-    font-size: 13px;
+	padding-top: 8px;
+	padding-bottom: 8px;
+	font-weight: 700;
+	font-size: 13px;
 }
 
 /*************/
@@ -837,8 +837,8 @@ span.invalid {
 .table .title .col,
 .table .row .col
 {
-    float: left;
-    padding: 3px;
+	float: left;
+	padding: 3px;
 }
 
 .table .row .col.col1{
@@ -851,7 +851,7 @@ span.invalid {
 }
 
 .table .row {
-    padding:5px 0;
+	padding:5px 0;
 }
 
 .table .row label{
@@ -860,43 +860,43 @@ span.invalid {
 }
 
 .table .col.col-50 {
-    width: 50px;
+	width: 50px;
 }
 
 .table .col.col-60 {
-    width: 60px;
+	width: 60px;
 }
 
 .table .col.col-70 {
-    width: 70px;
+	width: 70px;
 }
 
 .table .col.col-90 {
-    width: 90px;
+	width: 90px;
 }
 
 .table .col.col-100 {
-    width: 100px;
+	width: 100px;
 }
 
 .table .col.col-110 {
-    width: 110px;
+	width: 110px;
 }
 
 .table .col.col-120 {
-    width: 120px;
+	width: 120px;
 }
 
 .table .col.col-130 {
-    width: 130px;
+	width: 130px;
 }
 
 .table .col.col-140 {
-    width: 142px;
+	width: 142px;
 }
 
 .table .col.col-145 {
-    width: 145px;
+	width: 145px;
 }
 
 .table .col.col-302
@@ -923,13 +923,13 @@ span.invalid {
 
 .table .row .col a
 {
-    padding: 5px;
+	padding: 5px;
 	display:block;
 }
 
 .table .row .col a:hover
 {
-    text-decoration: none;
+	text-decoration: none;
 }
 
 /********/
@@ -940,15 +940,15 @@ table.form {
 }
 
 table.form td {
-    vertical-align: top;
+	vertical-align: top;
 }
 
 table.form td.label {
-    white-space: nowrap;
+	white-space: nowrap;
 }
 
 table.form td.entry, div.tableForm .entry {
-    padding-top: 4px;
+	padding-top: 4px;
 	padding-bottom: 4px;
 }
 
@@ -956,45 +956,45 @@ table.form td.label, div.tableForm .label,
 table.form td.labelSeperator, table.form td.labelSeparator,
 div.tableForm .labelSeperator, div.tableForm .labelSeparator
 table.form td.nextLabel {
-    padding-top: 9px;
+	padding-top: 9px;
 }
 
 table.form td.nextLabel {
-    padding-left: 5px;
+	padding-left: 5px;
 }
 
 table.form td.entry,
 table.form td.labelSeperator, table.form td.labelSeparator {
-    padding-left: 5px;
+	padding-left: 5px;
 }
 
 table.form td.labelSeperator, table.form td.labelSeparator {
-    width: 1px;
+	width: 1px;
 }
 
 /* labelOnly */
 table.form tr.labelOnly td {
-    padding-bottom: 3px;
+	padding-bottom: 3px;
 }
 
 table.form tr.labelOnly td.label {
-    padding-top: 9px;
+	padding-top: 9px;
 }
 
 table.form tr.labelOnly td.entry {
-    padding-top: 9px;
+	padding-top: 9px;
 }
 
 .combined-field {
-    float: left;
+	float: left;
 }
 
 .combined-field.sep {
-    padding: 3px 4px 4px;
+	padding: 3px 4px 4px;
 }
 
 .req {
-    padding-left: 3px;
+	padding-left: 3px;
 }
 
 /********/
@@ -1002,50 +1002,50 @@ table.form tr.labelOnly td.entry {
 /********/
 
 div#list {
-    clear: both;
+	clear: both;
 	margin-top: 5px;
 }
 
 table.list {
-    width: 100%;
-    border-right: 1px #999 solid;
-    border-top: 1px #999 solid;
-    border-bottom: 1px solid #999;
-    background-color: #fff;
+	width: 100%;
+	border-right: 1px #999 solid;
+	border-top: 1px #999 solid;
+	border-bottom: 1px solid #999;
+	background-color: #fff;
 }
 
 table.list tfoot {
-    display: none;
+	display: none;
 }
 
 table.list tr td {
-    cursor: default;
-    empty-cells: show;
-    vertical-align: top;
-    line-height: normal;
-    border-top: 1px #cdcdcd solid;
-    border-left: 1px #cdcdcd solid;
-    padding: 3px 5px;
+	cursor: default;
+	empty-cells: show;
+	vertical-align: top;
+	line-height: normal;
+	border-top: 1px #cdcdcd solid;
+	border-left: 1px #cdcdcd solid;
+	padding: 3px 5px;
 }
 
 table.list tr.label td {
-    border-top: medium none;
+	border-top: medium none;
 }
 
 table.list tr td.tableLeft {
-    border-left: 1px solid #999;
+	border-left: 1px solid #999;
 }
 
 table.list tr.top td {
-    border-top: none;
+	border-top: none;
 }
 
 table.list tr.label td {
-    color: #333;
-    height: 27px;
-    padding: 0 5px;
-    vertical-align: middle;
-    line-height: normal;
+	color: #333;
+	height: 27px;
+	padding: 0 5px;
+	vertical-align: middle;
+	line-height: normal;
 	background: #f9f9f9; /* Old browsers */
 	background: -moz-linear-gradient(top,  #f9f9f9 0%, #e5e5e5 100%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f9f9f9), color-stop(100%,#e5e5e5)); /* Chrome,Safari4+ */
@@ -1057,59 +1057,59 @@ table.list tr.label td {
 }
 
 table.list tr.label td, table.list tr.label td div {
-    color: #333;
+	color: #333;
 }
 
 table.list tr.groupHeader {
-    font-family: 'Arial Rounded MT bold', Arial, Helvetica, sans-serif;
-    color: #404040;
+	font-family: 'Arial Rounded MT bold', Arial, Helvetica, sans-serif;
+	color: #404040;
 }
 
 table.list tr.normal td{
-    background: #fff;
+	background: #fff;
 }
 
 table.list tr.toggle td {
-    background: #e9eef2;
+	background: #e9eef2;
 }
 
 table.list tr.highlight td {
-    color: #333;
-    background-color: #66CCCC;
+	color: #333;
+	background-color: #66CCCC;
 }
 
 table.list tr td.caution {
-    color: red;
+	color: red;
 }
 
 table.list tr.unread td {
-    font-weight: 700;
+	font-weight: 700;
 }
 
 table.list tr.foot {
-    background: #D9D9D9;
+	background: #D9D9D9;
 }
 
 table.list tr td.colSelect {
-    border-left: 1px solid #999;
+	border-left: 1px solid #999;
 }
 
 table.list tr.group td {
-    background: #5c7f9b;
-    color: #fff;
+	background: #5c7f9b;
+	color: #fff;
 }
 
 table.list td div.overflow {
-    overflow: hidden;
-    white-space: nowrap;
+	overflow: hidden;
+	white-space: nowrap;
 }
 
 table.list td.center {
-    text-align: center;
+	text-align: center;
 }
 
 table.list td.right {
-    text-align: right;
+	text-align: right;
 }
 
 table.list tr td.colAction{
@@ -1177,7 +1177,7 @@ table.list tr td.indent.second,
 /*********/
 
 .pager-container {
-    margin-bottom: 5px;
+	margin-bottom: 5px;
 }
 
 .pager-container .pager{
@@ -1194,7 +1194,7 @@ table.list tr td.indent.second,
 }
 
 table.pager tr td{
-    padding: 2px 3px;
+	padding: 2px 3px;
 }
 
 div.pager div{
@@ -1213,31 +1213,31 @@ ul.pager li{
 
 .pager .pages a,
 .pager .pages span.currentPage {
-    padding: 1px 5px;
-    background: #ccc;
+	padding: 1px 5px;
+	background: #ccc;
 	margin:0 1px;
 }
 
 .pager .pages a {
-    background: #F3F3F3;
-    border-color: #AAA;
-    border-style: solid;
-    border-width: 1px;
-    color: #000;
-    text-decoration: none;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
-    border-radius: 4px;
+	background: #F3F3F3;
+	border-color: #AAA;
+	border-style: solid;
+	border-width: 1px;
+	color: #000;
+	text-decoration: none;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
 }
 
 .pager .pages span.currentPage,
 .pager .pages a:hover {
-    background: #777;
-    border: 1px #555 solid;
-    color: #FFF;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
-    border-radius: 4px;
+	background: #777;
+	border: 1px #555 solid;
+	color: #FFF;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
 }
 
 .pager .first-enabled{
@@ -1257,122 +1257,122 @@ ul.pager li{
 /**************/
 
 table.formView td {
-    padding-bottom: 3px;
-    vertical-align: top;
+	padding-bottom: 3px;
+	vertical-align: top;
 }
 
 table.formView td.label {
-    padding-top: 6px;
-    white-space: nowrap;
+	padding-top: 6px;
+	white-space: nowrap;
 }
 
 table.formView td.labelSeperator,
 table.formView td.labelSeparator {
-    padding-top: 6px;
-    padding-left: 5px;
+	padding-top: 6px;
+	padding-left: 5px;
 }
 
 table.formView td.entry {
-    padding-top: 6px;
-    padding-left: 5px;
-    word-wrap: break-word;
+	padding-top: 6px;
+	padding-left: 5px;
+	word-wrap: break-word;
 }
 
 table.formView td.entry div {
-    word-wrap: break-word;
+	word-wrap: break-word;
 }
 
 table.formView.tableView {
-    border: 1px #999 solid;
+	border: 1px #999 solid;
 }
 
 table.formView.tableView tr td {
-    padding: 5px;
-    text-align: center;
-    text-transform: uppercase;
+	padding: 5px;
+	text-align: center;
+	text-transform: uppercase;
 }
 
 table.formView.tableView .label {
-    padding-top: 5px;
-    border-right: 1px #999 solid;
-    font-weight: 700;
+	padding-top: 5px;
+	border-right: 1px #999 solid;
+	font-weight: 700;
 }
 
 table.formView.tableView tr td.labelSeperator {
-    border: 1px #999 solid;
-    border-width: 0 1px;
-    padding-top: 5px;
+	border: 1px #999 solid;
+	border-width: 0 1px;
+	padding-top: 5px;
 }
 
 table.formView.tableView tr.head td {
-    background: #3E9CFF;
-    font-weight: 700;
-    border-bottom: 1px #999 solid;
-    text-align: center;
-    font-size: 13px;
-    text-transform: none;
+	background: #3E9CFF;
+	font-weight: 700;
+	border-bottom: 1px #999 solid;
+	text-align: center;
+	font-size: 13px;
+	text-transform: none;
 }
 
 table.formView.tableView tr.foot td {
-    border-top: 1px #999 solid;
+	border-top: 1px #999 solid;
 }
 
 table.formView.tableView tr.foot td.left {
-    text-align: left;
+	text-align: left;
 }
 
 table.formView.tableView tr.foot td.right {
-    text-align: right;
+	text-align: right;
 }
 
 table.formView.tableView tr.normal td {
-    background: #ECF7FD;
+	background: #ECF7FD;
 }
 
 table.formView.tableView tr.toggle td {
-    background: #DBEDFF;
+	background: #DBEDFF;
 }
 
 .formView {
-    margin-bottom: 5px;
+	margin-bottom: 5px;
 }
 
 .formView .line {
-    line-height: 17px;
+	line-height: 17px;
 }
 
 .formView .line label {
-    padding: 0;
-    padding-right: 3px;
-    font-weight: 700;
+	padding: 0;
+	padding-right: 3px;
+	font-weight: 700;
 }
 
 .formView .line span {
-    padding-right: 15px;
+	padding-right: 15px;
 }
 
 .formView div.pic {
-    width: 100px;
-    float: left;
-    text-align: center;
-    margin-right: 3px;
-    border: 1px #999 solid;
-    padding: 1px;
+	width: 100px;
+	float: left;
+	text-align: center;
+	margin-right: 3px;
+	border: 1px #999 solid;
+	padding: 1px;
 }
 
 .formView div.pic a {
-    display: block;
-    width: 100px;
-    height: 100px;
-    overflow: hidden;
-    margin: 1px 0;
+	display: block;
+	width: 100px;
+	height: 100px;
+	overflow: hidden;
+	margin: 1px 0;
 }
 
 .formView div.pic .top,.formView div.pic .bottom {
-    background: #066ACF;
-    color: #fff;
-    padding: 2px;
-    word-wrap: break-word;
+	background: #066ACF;
+	color: #fff;
+	padding: 2px;
+	word-wrap: break-word;
 }
 
 /************/
@@ -1380,51 +1380,51 @@ table.formView.tableView tr.toggle td {
 /***********/
 
 #overlay,#page-loading {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 4999;
-    background: #fff;
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 4999;
+	background: #fff;
 	/* The fallback */
-    background: rgba(255,255,255,0.5);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#ffffff,endColorstr=#ffffff);
+	background: rgba(255,255,255,0.5);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#ffffff,endColorstr=#ffffff);
 }
 
 #overlay #processing,#page-loading #processing {
-    position: absolute;
-    top: 30%;
-    left: 40%;
-    z-index: 5000;
-    background: #fff;
-    border: 1px #AAA solid;
+	position: absolute;
+	top: 30%;
+	left: 40%;
+	z-index: 5000;
+	background: #fff;
+	border: 1px #AAA solid;
 }
 
 #overlay #processing,#page-loading #processing {
-    opacity: 1;
+	opacity: 1;
 }
 
 #overlay #processing img,#overlay #processing div,#page-loading #processing img,#overlay #processing div {
-    float: left;
+	float: left;
 }
 
 #overlay #processing div,#page-loading #processing div {
-    padding: 20px 20px 20px 40px;
-    background: url(../images/loading.gif) 5px 14px no-repeat;
+	padding: 20px 20px 20px 40px;
+	background: url(../images/loading.gif) 5px 14px no-repeat;
 }
 
 #overlay #processing span,#page-loading #processing span {
-    display: block;
-    font-family: Trebuchet MS, Tahoma, Arial, Helvetica, sans-serif;
-    font-weight: 700;
-    color: #333;
+	display: block;
+	font-family: Trebuchet MS, Tahoma, Arial, Helvetica, sans-serif;
+	font-weight: 700;
+	color: #333;
 }
 
 #overlay #processing span#line1,#page-loading #processing span#line1 {
-    font-size: 15px;
+	font-size: 15px;
 }
 
 #overlay #processing span#line2,#page-loading #processing span#line2 {
-    font-size: 13px;
+	font-size: 13px;
 }
 
 /*****************/
@@ -1436,13 +1436,13 @@ table.formView.tableView tr.toggle td {
 }
 
 .ui-dialog {
-    -moz-box-shadow: 0 2px 4px 0 rgba(0,0,0,0.3);
-    -webkit-box-shadow: 0 2px 4px 0 rgba(0,0,0,0.3);
-    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.3);
+	-moz-box-shadow: 0 2px 4px 0 rgba(0,0,0,0.3);
+	-webkit-box-shadow: 0 2px 4px 0 rgba(0,0,0,0.3);
+	box-shadow: 0 2px 4px 0 rgba(0,0,0,0.3);
 }
 
 .ui-dialog .ui-state-error {
-    padding: .2em;
+	padding: .2em;
 }
 
 .ui-dialog .ui-dialog-title{
@@ -1451,47 +1451,47 @@ table.formView.tableView tr.toggle td {
 }
 
 .dialog {
-    display: none;
-    text-align: left;
+	display: none;
+	text-align: left;
 }
 
 .dialog label, .dialog input {
 }
 
 .dialog input.text,.dialog textarea {
-    margin-bottom: 12px;
-    width: 95%;
-    padding: .2em;
+	margin-bottom: 12px;
+	width: 95%;
+	padding: .2em;
 }
 
 .dialog fieldset {
-    padding: 0;
-    border: 0;
-    margin-top: 15px;
+	padding: 0;
+	border: 0;
+	margin-top: 15px;
 }
 
 .dialog .inline {
-    display: inline;
+	display: inline;
 }
 
 .dialog .ui-widget {
-    font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
-    font-size: .9em;
+	font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+	font-size: .9em;
 }
 
 .ui-widget input,.ui-widget select,.ui-widget textarea,.ui-widget button {
-    font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
-    font-size: 1em;
+	font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+	font-size: 1em;
 }
 
 .validateTips {
-    border: 1px solid transparent;
-    padding: .3em 0;
-    margin: .1em;
+	border: 1px solid transparent;
+	padding: .3em 0;
+	margin: .1em;
 }
 
 .validateTips.ui-state-highlight {
-    padding: .3em;
+	padding: .3em;
 }
 
 /*********************/
