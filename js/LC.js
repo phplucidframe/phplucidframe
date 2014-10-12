@@ -1,16 +1,16 @@
 /**
- * Javascript
+ * This file is part of the PHPLucidFrame library.
+ * Core Javascript utility
  *
- * LucidFrame : Simple & Flexible PHP Development
- * Copyright (c), LucidFrame.
- *
- * Licensed under The MIT License
- * For full copyright and license information, please see the LICENSE.txt
- * Redistributions of files must retain the above copyright notice.
- *
- * @package		LC.js
- * @author		Sithu K. <cithukyaw@gmail.com>
+ * @package		LC\js
+ * @since		PHPLucidFrame v 1.0.0
+ * @copyright	Copyright (c), PHPLucidFrame.
+ * @author 		Sithu K. <sithukyaw.com>
+ * @link 		http://phplucidframe.sithukyaw.com
  * @license		http://www.opensource.org/licenses/mit-license.php MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.txt
  */
 var Form = {
 	/** 
