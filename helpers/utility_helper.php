@@ -72,37 +72,37 @@ function _htmlIEFix($matches) {
  */
 function _script(){
 	$sitewideWarnings = _cfg('sitewideWarnings');
-	?>
-	<script type="text/javascript">
-		var LC = {};
-		<?php if(WEB_ROOT){ ?>
-			var WEB_ROOT = '<?php echo WEB_ROOT; ?>';
-			LC.root = WEB_ROOT;
-		<?php } ?>
-		<?php if(WEB_APP_ROOT){ ?>
-			var WEB_APP_ROOT = '<?php echo WEB_APP_ROOT; ?>';
-			LC.appRoot = WEB_ROOT;
-		<?php } ?>
-		LC.self 		= '<?php echo _self(); ?>';
-		LC.lang 		= '<?php echo _lang(); ?>';
-		LC.baseURL 		= '<?php echo _cfg('baseURL'); ?>/';
-		LC.route		= '<?php echo _r(); ?>';
-		LC.namespace	= '<?php echo LC_NAMESPACE; ?>';
-		LC.sites		= <?php echo (json_encode(_cfg('sites'))); ?>;
-		LC.sitewideWarnings = <?php echo (json_encode($sitewideWarnings)); ?>;
-		<?php
-		if(function_exists('__script')) __script();
-		$jsVars = _cfg('jsVars');
-		if(count($jsVars)){
-			foreach($jsVars as $name => $val){
-				if(is_array($val)) echo 'LC.'.$name.' = '.json_encode($val).';';
-				elseif(is_numeric($val)) echo 'LC.'.$name.' = '.$val.';';
-				else echo 'LC.'.$name.' = "'.$val.'";';
-			}
+	$sites = _cfg('sites');
+	$script = '<script type="text/javascript">';
+	$script .= 'var LC = {};';
+	if(WEB_ROOT){
+		$script .= 'var WEB_ROOT = "'.WEB_ROOT.'";';
+		$script .= 'LC.root = WEB_ROOT;';
+	}
+	if(WEB_APP_ROOT){
+		$script .= 'var WEB_APP_ROOT = "'.WEB_APP_ROOT.'";';
+		$script .= 'LC.appRoot = WEB_ROOT;';
+	}
+	$script .= 'LC.self = "'._self().'";';
+	$script .= 'LC.lang = "'._lang().'";';
+	$script .= 'LC.baseURL = "'._cfg('baseURL').'/";';
+	$script .= 'LC.route = "'._r().'";';
+	$script .= 'LC.namespace = "'.LC_NAMESPACE.'";';
+	$script .= 'LC.sites = '.(is_array($sites) && count($sites) ? json_encode($sites) : 'false').';';
+	$script .= 'LC.sitewideWarnings = '.json_encode($sitewideWarnings).';';
+	# run hook
+	if(function_exists('__script')) __script();
+	# user defined variables
+	$jsVars = _cfg('jsVars');
+	if(count($jsVars)){
+		foreach($jsVars as $name => $val){
+			if(is_array($val)) $script .= 'LC.'.$name.' = '.json_encode($val).';';
+			elseif(is_numeric($val)) $script .= 'LC.'.$name.' = '.$val.';';
+			else $script .= 'LC.'.$name.' = "'.$val.'";';
 		}
-		?>
-	</script>
-	<?php
+	}
+	$script .= '</script>';
+	echo $script;
 }
 
 $lc_jsVars = array();
