@@ -448,7 +448,34 @@ var Page = {
 				}
 			});
 		}
-	}
+	},
+	/**
+	 * Check to see if CSS support is available in the browser
+	 * Inspired by https://developer.mozilla.org/en-US/docs/CSS/Tutorials/Using_CSS_animations/Detecting_CSS_animation_support
+	 * @param string feature The CSS feature/property name in camel case
+	 * @return boolean
+	*/	
+	detectCSSFeature : function(featureName){
+		var feature = false,
+		domPrefixes = 'Webkit Moz ms O'.split(' '),
+		elm = document.createElement('div'),
+		featurenameCapital = null;
+	
+		featureName = featureName.toLowerCase();
+	
+		if( elm.style[featureName] !== undefined ) { feature = true; } 
+	
+		if( feature === false ) {
+			featurenameCapital = featureName.charAt(0).toUpperCase() + featureName.substr(1);
+			for( var i = 0; i < domPrefixes.length; i++ ) {
+				if( elm.style[domPrefixes[i] + featurenameCapital ] !== undefined ) {
+				  feature = true;
+				  break;
+				}
+			}
+		}
+		return feature; 
+	}	
 };
 
 // Add under the namespace "LC"
