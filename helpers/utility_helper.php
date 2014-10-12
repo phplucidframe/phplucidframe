@@ -425,6 +425,10 @@ function _self($queryStr=array(), $lang=''){
  * @return void
  */
 function _redirect($path=NULL, $queryStr=array(), $lang=''){
+	if( preg_match('/^http+/', $path) ){
+		header('Location: ' . $path);
+		exit;		
+	}
 	if($path == 'self') $url = _self(NULL, $lang);
 	else $url = route_url($path, $queryStr, $lang);
 	header('Location: ' . $url);
