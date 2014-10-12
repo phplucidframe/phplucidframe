@@ -1,9 +1,9 @@
 What is LucidFrame
 ============
 PHPLucidFrame (a.k.a LucidFrame) is a mini application development framework - a toolkit for PHP developers. It provides logical structure and several helper utilities for web application development.
-It uses a module architecture to make complex application development simplified. LucidFrame is simple, fast and easy to install. The minimum requirements are a web server and a copy of LucidFrame.
+It uses a functional architecture to simplify complex application development. LucidFrame is especially designed for PHP, MySQL and Apache. It is simple, fast and easy to install.
 
-Zero configuration - just configure your database setting and you are ready to go. No complex JSON, XML, YAML or vHost configuration.
+Almost zero configuration - just configure your database setting and you are ready to go. No complex JSON, XML, YAML or vHost configuration.
 
 No template engine to eliminate overhead of template processing and to save your storage from template cache files.
 
@@ -44,4 +44,4 @@ Documentation
 [The complete PDF documentation](https://github.com/cithukyaw/LucidFrame/releases) can be downloaded in the release page.  
 The quick reference and coding samples are also available in the release.
 
-To run and check the sample administration panel, get `sample_db.sql` in [the release](https://github.com/cithukyaw/LucidFrame/releases) and import it. Then configure your database in `\inc\config.php`. It is accessible through http://www.example.com/admin or http://localhost/LucidFrame/admin. The default sample user is username: `admin` and password: `password`.
+To run and check the sample administration panel, get `sample_db.sql` in [the release](https://github.com/cithukyaw/LucidFrame/releases) and import it. Then configure your database in `\inc\config.php`. It is accessible through http://www.example.com/admin or http://localhost/LucidFrame/admin. The default sample user is username: `admin` and password: `password`. The passwords are encrypted with the default security salt. If you change the salt, you will not be able to access the sample admin panel.
