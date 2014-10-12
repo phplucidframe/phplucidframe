@@ -147,13 +147,13 @@ function _i($file, $recursive=true){
 }
 
 # DB configuration & DB helper
-if(isset($lc_databases['default']) && is_array($lc_databases['default']) && $lc_databases['default']['engine']){
+if(isset($lc_databases[$lc_defaultDbConnection]) && is_array($lc_databases[$lc_defaultDbConnection]) && $lc_databases[$lc_defaultDbConnection]['engine']){
 	if( $file = _i( 'helpers/db_helper.php', false) ) include $file;
-	require HELPER . 'db_helper.'.$lc_databases['default']['engine'].'.php';
+	require HELPER . 'db_helper.'.$lc_databases[$lc_defaultDbConnection]['engine'].'.php';
 
-	if(db_host() && db_user() && db_name()){
+	if(db_host($lc_defaultDbConnection) && db_user($lc_defaultDbConnection) && db_name($lc_defaultDbConnection)){
 		# Start DB connection
-		db_connect();
+		db_connect($lc_defaultDbConnection);
 	}
 }
 

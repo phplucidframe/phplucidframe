@@ -81,6 +81,8 @@ $lc_databases = array(
 	)
 );
 
+# $lc_defaultDbConnection: The default database connection
+$lc_defaultDbConnection = 'default';
 # $lc_siteName: Site Name
 $lc_siteName = 'LucidFrame';
 # $lc_siteDomain: Site Domain Name
