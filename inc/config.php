@@ -137,6 +137,8 @@ $lc_reqSign = '<span class="required">*</span>';
 $lc_nullFill = '<span class="nullFill">-</span>';
 # $lc_useDBAutoFields: Whether use DB auto field such as slug, created, updated, deleted, etc. or not
 $lc_useDBAutoFields = true;
+# $lc_minifyHTML: Compacting HTML code, including any inline JavaScript and CSS contained in it, can save many bytes of data and speed up downloading, parsing, and execution time.
+$lc_minifyHTML = true;
 /*
  * Auth Module Configuration
  */
