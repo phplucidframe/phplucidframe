@@ -217,8 +217,9 @@ if(!function_exists('_pr')){
  * @return mixed The value of the config variable
  */
 function _cfg($key='', $value=''){
+	if(empty($key)) return NULL;
 	if(strrpos($key, 'lc_') === 0) $key = substr($key, 3);
-	if(count(func_get_args()) == 2 && $key){
+	if(count(func_get_args()) == 2){
 		if(is_array($GLOBALS['lc_'.$key])) $GLOBALS['lc_'.$key][] = $value;
 		else $GLOBALS['lc_'.$key] = $value;
 	}
@@ -233,7 +234,8 @@ function _cfg($key='', $value=''){
  * @return mixed The value of the global variable
  */
 function _g($key, $value=''){
-	if(count(func_get_args()) == 2 && $key){
+	if(empty($key)) return NULL;
+	if(count(func_get_args()) == 2){
 		if(isset($GLOBALS[$key]) && is_array($GLOBALS[$key])) $GLOBALS[$key][] = $value;
 		else $GLOBALS[$key] = $value;
 	}
