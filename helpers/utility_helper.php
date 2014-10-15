@@ -208,6 +208,23 @@ if(!function_exists('_pr')){
 		if($pre) echo '</pre>';
 	}
 }
+
+if(!function_exists('_dump')){
+/**
+ * Convenience method for var_dump.
+ * Dumps information about a variable
+ *
+ * @param $input mixed The variable to debug
+ * @param $pre boolean True to print using <pre>, otherwise False
+ *
+ * @return void
+ */
+	function _dump($input, $pre=true){
+		if($pre) echo '<pre>';
+		var_dump($input);
+		if($pre) echo '</pre>';
+	}
+}
 /**
  * Convenience method to get/set a config variable without declaration global
  * within a function
