@@ -236,28 +236,19 @@ if(!function_exists('_dump')){
 function _cfg($key='', $value=''){
 	if(empty($key)) return NULL;
 	if(strrpos($key, 'lc_') === 0) $key = substr($key, 3);
-	if(count(func_get_args()) == 2){
-		if(is_array($GLOBALS['lc_'.$key])) $GLOBALS['lc_'.$key][] = $value;
-		else $GLOBALS['lc_'.$key] = $value;
-	}
-	if(isset($GLOBALS['lc_'.$key]) && $GLOBALS['lc_'.$key]) return $GLOBALS['lc_'.$key];
-	return NULL;
+	$key = 'lc_' . $key;
+	return (count(func_get_args()) == 2) ? __dotNotationToArray($key, 'global', $value) : __dotNotationToArray($key, 'global');
 }
 /**
  * Convenience method to get/set a global variable
  *
  * @param string $key The global variable name
- * @param mixed $value The value to set to the global variable
+ * @param mixed $value The value to set to the global variable; if it is not given, this is getter.
  * @return mixed The value of the global variable
  */
 function _g($key, $value=''){
 	if(empty($key)) return NULL;
-	if(count(func_get_args()) == 2){
-		if(isset($GLOBALS[$key]) && is_array($GLOBALS[$key])) $GLOBALS[$key][] = $value;
-		else $GLOBALS[$key] = $value;
-	}
-	if(isset($GLOBALS[$key]) && $GLOBALS[$key]) return $GLOBALS[$key];
-	return NULL;
+	return (count(func_get_args()) == 2) ? __dotNotationToArray($key, 'global', $value) : __dotNotationToArray($key, 'global');
 }
 /**
  * Convenience method for htmlspecialchars.
@@ -1167,4 +1158,79 @@ function _getTranslationStrings($data, $fields, $lang=NULL){
 	}
 	if($isObject) $data = (object) $data;
 	return $data;
+}
+/**
+ * @internal
+ * Dot notation access to multi-dimensional array
+ * Get the values by providing dot notation string key
+ * Set the values by providing dot notation string key
+ *
+ * @param string $key The string separated by dot (peroid)
+ * @param string $scope What scope in which the values will be stored - global or session
+ * @param mixed $value The optional value to set or updated
+ *
+ * @return mixed The value assigned
+ */
+function __dotNotationToArray($key, $scope='global', $value=''){
+	if(empty($key)) return NULL;
+	if(!in_array($scope, array('global', 'session'))) return NULL;
+	if(!in_array($scope, array('global', 'session')) && !is_array($scope)) return NULL;
+	if(is_array($scope)) $input = &$scope;
+
+	$type = (count(func_get_args()) == 3) ? 'setter' : 'getter';
+	$keys = explode(".", $key);
+	# extract the first key
+	$firstKey = array_shift($keys);
+	# extract the last key
+	$lastKey = end($keys);
+	# No. of keys exclusive of the first key
+	$count = count($keys); # more than 0 if there is at least one dot
+
+	if($scope == 'session'){
+		$firstKey = S_PREFIX . $firstKey;
+		if(!array_key_exists($firstKey, $_SESSION)) $_SESSION[$firstKey] = NULL;
+		$current = &$_SESSION[$firstKey];
+	}
+	elseif($scope == 'global'){
+		if(!array_key_exists($firstKey, $GLOBALS)) $GLOBALS[$firstKey] = NULL;
+		$current = &$GLOBALS[$firstKey];
+	}
+	elseif(is_array($scope) && isset($input)){
+		if(!array_key_exists($firstKey, $input)) $input[$firstKey] = NULL;
+		$current = &$input[$firstKey];
+	}
+
+	$theLastHasValue = false;
+	if( ($type == 'setter' && $count) ||
+		($type == 'getter' && $count > 1) ){ /* this will be skipped if no array (no dot notation)*/
+		foreach($keys as $k) {
+			if($k == $lastKey && isset($current[$lastKey])){
+				$theLastHasValue = true;
+				# if the last-key has the value of not-array, create array and push the later values.
+				$current[$lastKey] = is_array($current[$k]) ? $current[$k] : array($current[$k]);
+				break;
+			}
+			if($count && !isset($current[$k]) && !is_array($current)){
+				$current = array($k => NULL);
+			}
+			$current = &$current[$k];
+		}
+	}
+
+	# Set the values if it is setter
+	if($type == 'setter'){
+		if($theLastHasValue){
+			if(!in_array($value, $current[$lastKey])) $current[$lastKey][] = $value;
+		}elseif(is_array($current)){
+			if(!in_array($value, $current)) $current[] = $value;
+		}else{
+			$current = $value;
+		}
+		return $current;
+	}
+	# Get the values if it is getter
+	elseif($type == 'getter'){
+		return ($count) ? $current[$lastKey] : $current;
+	}
+	return NULL;
 }
