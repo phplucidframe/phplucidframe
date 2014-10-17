@@ -73,6 +73,43 @@ function _htmlIEFix($matches) {
 	return $html;
 }
 /**
+ * Auto-load a library, script or file
+ * @param string $name The file name without extension
+ * @return void
+ */
+function _loader($name, $path=HELPER){
+	global $lc_autoload;
+	$lc_autoload[] = $path . $name . '.php';
+	$lc_autoload = array_unique($lc_autoload);
+}
+/**
+ * Removing a library, script or file from auto-load
+ * @param string $name The file name without extension
+ * @return void
+ */
+function _unloader($name, $path=HELPER){
+	global $lc_autoload;
+	$file = $path . $name . '.php';
+	$key = array_search($file, $lc_autoload);
+	if($key !== false){
+		unset($lc_autoload[$key]);
+		$lc_autoload = array_values($lc_autoload);
+	}
+}
+/**
+ * @internal
+ * Check a library, script or file is ready to load
+ * @param string $name The file name without extension
+ * @return mixed The file name if it is ready to load, otherwise FALSE
+ */
+function _readyloader($name, $path=HELPER){
+	global $lc_autoload;
+	if(strpos($name, '.php') === false) $file = $path . $name . '.php';
+	else $file = $name;
+	if(array_search($file, $lc_autoload) !== false && is_file($file) && file_exists($file)) return $file;
+	return false;
+}
+/**
  * Declare global JS variables
  * @hook __script() at app/helpers/utility_helper.php
  *

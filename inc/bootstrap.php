@@ -146,10 +146,10 @@ function _i($file, $recursive=true){
 	}
 }
 
-# DB configuration & DB helper
+# DB configuration & DB helper (required)
 if(isset($lc_databases[$lc_defaultDbConnection]) && is_array($lc_databases[$lc_defaultDbConnection]) && $lc_databases[$lc_defaultDbConnection]['engine']){
-	if( $file = _i( 'helpers/db_helper.php', false) ) include $file;
-	require HELPER . 'db_helper.'.$lc_databases[$lc_defaultDbConnection]['engine'].'.php';
+	if( $file = _i( 'helpers/db_helper.php', false) ) include_once $file;
+	require_once HELPER . 'db_helper.'.$lc_databases[$lc_defaultDbConnection]['engine'].'.php';
 
 	if(db_host($lc_defaultDbConnection) && db_user($lc_defaultDbConnection) && db_name($lc_defaultDbConnection)){
 		# Start DB connection
@@ -157,46 +157,78 @@ if(isset($lc_databases[$lc_defaultDbConnection]) && is_array($lc_databases[$lc_d
 	}
 }
 
-# Translation helper
-require HELPER . 'i18n_helper.php';
+# Utility helpers (required)
+if( $file = _i( 'helpers/utility_helper.php', false) ) include_once $file;
+require_once HELPER . 'utility_helper.php';
 
-# Other Helpers
-if( $file = _i( 'helpers/session_helper.php', false) ) include $file;
-require HELPER . 'session_helper.php';
+_loader('i18n_helper', HELPER);
+_loader('session_helper', HELPER);
+_loader('validation_helper', HELPER);
+_loader('auth_helper', HELPER);
+_loader('pager_helper', HELPER);
+_loader('form_helper', HELPER);
+_loader('file_helper', HELPER);
 
-if( $file = _i( 'helpers/utility_helper.php', false) ) include $file;
-require HELPER . 'utility_helper.php';
+if(file_exists(INC.'autoload.php')) require_once INC.'autoload.php';
 
+# Translation helper (unloadable from /inc/autoload.php)
+if( $moduleI18n = _readyloader('i18n_helper') ) require_once $moduleI18n;
+_unloader('i18n_helper', HELPER);
+
+# Session helper (unloadable from /inc/autoload.php)
+if( $file = _i( 'helpers/session_helper.php', false) ) include_once $file;
+if( $moduleSession = _readyloader('session_helper') ) require_once $moduleSession;
+_unloader('session_helper', HELPER);
+
+# Route helper (required)
 require HELPER . 'route_helper.php'; # WEB_ROOT and WEB_APP_ROOT is created in route_helper
 
 # Load translations
-i18n_load();
+if( $moduleI18n ) i18n_load();
 
 # Site-specific configuration variables
 require INC . 'site.config.php';
-if( $file = _i( 'inc/site.config.php', false) ) include $file;
+if( $file = _i( 'inc/site.config.php', false) ) include_once $file;
 
 define('CSS', WEB_ROOT.'css/');
 define('JS', WEB_ROOT.'js/');
 define('WEB_VENDOR', WEB_ROOT.'vendor/');
 
-if( $file = _i( 'helpers/validation_helper.php', false) ) include $file;
-require HELPER . 'validation_helper.php';
+# Validation helper (unloadable from /inc/autoload.php)
+if( $file = _i( 'helpers/validation_helper.php', false) ) include_once $file;
+if( $moduleValidation = _readyloader('validation_helper') ) require_once $moduleValidation;
+_unloader('validation_helper', HELPER);
 
-if( $file = _i( 'helpers/auth_helper.php', false) ) include $file;
-require HELPER . 'auth_helper.php';
+# Auth helper (unloadable from /inc/autoload.php)
+if( $file = _i( 'helpers/auth_helper.php', false) ) include_once $file;
+if( $moduleAuth = _readyloader('auth_helper') ) require_once $moduleAuth;
+_unloader('auth_helper', HELPER);
 
-if( $file = _i( 'helpers/pager_helper.php', false) ) include $file;
-require HELPER . 'pager_helper.php';
+# Pager helper
+if( $file = _i( 'helpers/pager_helper.php', false) ) include_once $file;
+if( $modulePager = _readyloader('pager_helper') ) require_once $modulePager;
+_unloader('pager_helper', HELPER);
 
-require HELPER . 'security_helper.php';
+# Security helper (required)
+require_once HELPER . 'security_helper.php';
 
-require HELPER . 'form_helper.php';
+# Ajax Form helper (unloadable from /inc/autoload.php)
+if( $moduleForm = _readyloader('form_helper') ) require_once $moduleForm;
+_unloader('form_helper', HELPER);
 
-require HELPER . 'file_helper.php';
+# File helper (unloadable from /inc/autoload.php)
+if( $moduleFile = _readyloader('file_helper') ) require_once $moduleFile;
+_unloader('file_helper', HELPER);
 
 # Global Authentication Object
-$_auth = auth_get();
+$_auth = ($moduleAuth) ? auth_get() : NULL;
 
 # Check security prerequisite
 security_prerequisite();
+
+$module = NULL;
+foreach($lc_autoload as $file){
+	if($module = _readyloader($file)) require_once $module;
+}
+unset($module);
+unset($file);
