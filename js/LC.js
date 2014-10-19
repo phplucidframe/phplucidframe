@@ -13,11 +13,11 @@
  * with this source code in the file LICENSE.txt
  */
 var Form = {
-	/** 
+	/**
 	 * @internal
 	 * LC.Form.init()
 	 * Initialize the forms for Ajax
-	 */	
+	 */
 	init: function(){
 		Form.placeholderIE();
 		$forms = $('form');
@@ -68,7 +68,7 @@ var Form = {
 		// jquery ui button theme
 		if(typeof $('.jqbutton').button != 'undefined') $('.jqbutton').button();
 		// datepicker initialize
-		if(typeof $('.datepicker').button != 'undefined'){ 
+		if(typeof $('.datepicker').button != 'undefined'){
 			$( ".datepicker" ).datepicker({
 				changeMonth: true,
 				changeYear: true,
@@ -76,10 +76,10 @@ var Form = {
 			});
 		}
 	},
-	/** 
+	/**
 	 * @internal
 	 * LC.Form.placeholderIE()
-	 * IE placeholder attribute fix 
+	 * IE placeholder attribute fix
 	 */
 	placeholderIE : function(){
 		if($.browser.msie && $.browser.version <= 8.0 ){
@@ -114,7 +114,7 @@ var Form = {
 	 * @internal
 	 * LC.Form.submitform()
 	 * Ajax form submission
-	 */	
+	 */
 	submitForm : function(formId, e){
 		var $form = $('#'+formId);
 		var $message = $form.find('.message').filter(':first');
@@ -149,7 +149,7 @@ var Form = {
 	 * @internal
 	 * LC.Form.submitHandler()
 	 * Ajax form submit handling
-	 */		
+	 */
 	submitHandler : function(){
 		if(arguments.length == 1) response = arguments[0];
 		if(typeof response == 'object'){
@@ -196,7 +196,7 @@ var Form = {
 	/**
 	 * LC.Form.clear()
 	 * Clear the form values and form messages
-	 */ 
+	 */
 	clear : function( formId ){
 		var $form = $('#'+formId);
 		$form.find('.invalid').removeClass('invalid');
@@ -208,7 +208,7 @@ var Form = {
 	/**
 	 * LC.Form.data()
 	 * Get the embedded JSON form data
-	 */	
+	 */
 	data : function( id ){
 		$data = $( '#row-'+id ).find('.row-data');
 		if($data.size()){
@@ -375,7 +375,7 @@ var Page = {
 			return Page.queryStr['_'+id];
 		}
 		return null;
-	},	
+	},
 	/**
 	 * Ajax request helper
 	 * @param string id	HTML container ID or GET/POST for no HTML response
@@ -454,17 +454,17 @@ var Page = {
 	 * Inspired by https://developer.mozilla.org/en-US/docs/CSS/Tutorials/Using_CSS_animations/Detecting_CSS_animation_support
 	 * @param string feature The CSS feature/property name in camel case
 	 * @return boolean
-	*/	
+	*/
 	detectCSSFeature : function(featureName){
 		var feature = false,
 		domPrefixes = 'Webkit Moz ms O'.split(' '),
 		elm = document.createElement('div'),
 		featurenameCapital = null;
-	
+
 		featureName = featureName.toLowerCase();
-	
-		if( elm.style[featureName] !== undefined ) { feature = true; } 
-	
+
+		if( elm.style[featureName] !== undefined ) { feature = true; }
+
 		if( feature === false ) {
 			featurenameCapital = featureName.charAt(0).toUpperCase() + featureName.substr(1);
 			for( var i = 0; i < domPrefixes.length; i++ ) {
@@ -474,8 +474,8 @@ var Page = {
 				}
 			}
 		}
-		return feature; 
-	}	
+		return feature;
+	}
 };
 
 // Add under the namespace "LC"

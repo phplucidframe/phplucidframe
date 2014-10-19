@@ -38,14 +38,14 @@ function _flush($buffer, $mode){
 		<!--[if gte IE 10]> <html$1 class="ie ie10 '._lang().'"> <![endif]-->';
 		$buffer = preg_replace('/<html([^>]*)>/i', $replace, $buffer);
 	}
-	
+
 	if(_cfg('minifyHTML')){
 		# 1. strip whitespaces after tags, except space
 		# 2. strip whitespaces before tags, except space
 		# 3. shorten multiple whitespace sequences
 		$buffer = preg_replace(array('/\>[^\S ]+/s', '/[^\S ]+\</s', '/(\s)+/s'), array('>', '<', '\\1'), $buffer);
 	}
-	
+
 	if(function_exists('__flush')) return __flush($buffer, $mode); # run the hook if any
 	return $buffer;
 }
@@ -482,7 +482,7 @@ function _self($queryStr=array(), $lang=''){
 function _redirect($path=NULL, $queryStr=array(), $lang=''){
 	if( preg_match('/^http+/', $path) ){
 		header('Location: ' . $path);
-		exit;		
+		exit;
 	}
 	if($path == 'self') $url = _self(NULL, $lang);
 	else $url = route_url($path, $queryStr, $lang);

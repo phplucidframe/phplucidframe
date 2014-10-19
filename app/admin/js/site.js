@@ -37,7 +37,7 @@ LC.Page.Post = {
 			$('#dialog-confirm').dialog( 'open' );
 		},
 		/* Do delete action upon confirm OK */
-		doDelete : function(){			
+		doDelete : function(){
 			LC.Page.request("POST", // type
 				LC.Page.Post.List.url + 'action.php', // page to post
 				{ // data to post

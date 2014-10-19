@@ -131,7 +131,7 @@ class Form{
 				'callback' 	: '<?php echo self::$callback; ?>'
 			});
 		</script>
-        <?php
+		<?php
 		}
 	}
 }
