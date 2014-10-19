@@ -41,18 +41,7 @@ function session_set($name, $value='', $serialize=false){
  * @return void
  */
 function setSession($name, $value='', $serialize=false){
-	if(strpos($name, '.') !== false){
-		$names = explode('.', $name);
-		$name = array_shift($names);
-		if($serialize){
-			$code = '$_SESSION[S_PREFIX . $name]["' . implode('"]["', $names) . '"] = serialize($value);';
-		}else{
-			$code = '$_SESSION[S_PREFIX . $name]["' . implode('"]["', $names) . '"] = $value;';
-		}
-		eval($code);
-	}else{
-		$_SESSION[S_PREFIX . $name] = ($serialize) ? serialize($value) : $value;
-	}
+	__dotNotationToArray($name, 'session', $value, $serialize);
 }
 /**
  * Get a message or value of the given name from Session
@@ -79,18 +68,8 @@ function session_get($name, $unserialize=false){
  * @return mixed The value from SESSION
  */
 function getSession($name, $unserialize=false){
-	if(strpos($name, '.') !== false){
-		$names = explode('.', $name);
-		$name = array_shift($names);
-		$code  = '$value = isset($_SESSION[S_PREFIX . $name]["' . implode('"]["', $names) . '"])';
-		$code .= ' ? $_SESSION[S_PREFIX . $name]["' . implode('"]["', $names) . '"]';
-		$code .= ' : "";';
-		eval($code);
-		return ($unserialize) ? unserialize($value) : $value;
-	}else{
-		if(isset($_SESSION[S_PREFIX . $name])) return ($unserialize) ? unserialize($_SESSION[S_PREFIX . $name]) : $_SESSION[S_PREFIX . $name];
-		else return '';
-	}
+	$value = __dotNotationToArray($name, 'session');
+	return ($unserialize && is_string($value)) ? unserialize($value) : $value;
 }
 /**
  * Delete a message or value of the given name from Session
@@ -111,15 +90,31 @@ function session_delete($name){
  * @return void
  */
 function deleteSession($name){
-	if(strpos($name, '.') !== false){
-		$names = explode('.', $name);
-		$name = array_shift($names);
-		$code  = 'if( isset($_SESSION[S_PREFIX . $name]["' . implode('"]["', $names) . '"]) )';
-		$code .= ' unset($_SESSION[S_PREFIX . $name]["' . implode('"]["', $names) . '"]);';
-		eval($code);
-	}else{
-		if(isset($_SESSION[S_PREFIX . $name])) unset($_SESSION[S_PREFIX . $name]);
+	$name = S_PREFIX . $name;
+	if(isset($_SESSION[$name])){ 
+		unset($_SESSION[$name]);
+		return true;
 	}
+	$keys = explode('.', $name);
+	$firstKey = array_shift($keys);
+	if(count($keys)){
+		if(!isset($_SESSION[$firstKey])) return false;
+		$array = &$_SESSION[$firstKey];
+		$parent = &$_SESSION[$firstKey];
+		$found = true;
+		foreach($keys as $k) {
+			if(isset($array[$k])){
+				$parent = &$array; 
+				$array = &$array[$k];
+			}else{
+				return false;
+			}
+		}
+		$array = NULL;
+		unset($array);
+		unset($parent[$k]);
+	}	
+	return true;
 }
 
 if(!function_exists('flash_set')){

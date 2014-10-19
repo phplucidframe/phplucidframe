@@ -1205,16 +1205,17 @@ function _getTranslationStrings($data, $fields, $lang=NULL){
  * @param string $key The string separated by dot (peroid)
  * @param string $scope What scope in which the values will be stored - global or session
  * @param mixed $value The optional value to set or updated
+ * @param boolean $serialize The value is to be serialized or not
  *
  * @return mixed The value assigned
  */
-function __dotNotationToArray($key, $scope='global', $value=''){
+function __dotNotationToArray($key, $scope='global', $value='', $serialize=false){
 	if(empty($key)) return NULL;
 	if(!in_array($scope, array('global', 'session'))) return NULL;
 	if(!in_array($scope, array('global', 'session')) && !is_array($scope)) return NULL;
 	if(is_array($scope)) $input = &$scope;
 
-	$type = (count(func_get_args()) == 3) ? 'setter' : 'getter';
+	$type = (count(func_get_args()) > 2) ? 'setter' : 'getter';
 	$keys = explode(".", $key);
 	# extract the first key
 	$firstKey = array_shift($keys);
@@ -1222,6 +1223,22 @@ function __dotNotationToArray($key, $scope='global', $value=''){
 	$lastKey = end($keys);
 	# No. of keys exclusive of the first key
 	$count = count($keys); # more than 0 if there is at least one dot
+
+	if($type == 'getter' && $count == 0){ # just one-level key
+		if($scope == 'session'){
+			$firstKey = S_PREFIX . $firstKey;
+			if(array_key_exists($firstKey, $_SESSION)) return $_SESSION[$firstKey];
+			return NULL;
+		}
+		elseif($scope == 'global'){
+			if(array_key_exists($firstKey, $GLOBALS)) return $GLOBALS[$firstKey];
+			return NULL;
+		}
+		elseif(is_array($scope) && isset($input)){
+			if(array_key_exists($firstKey, $input)) return $input[$firstKey];
+			return NULL;
+		}
+	}
 
 	if($scope == 'session'){
 		$firstKey = S_PREFIX . $firstKey;
@@ -1243,8 +1260,10 @@ function __dotNotationToArray($key, $scope='global', $value=''){
 		foreach($keys as $k) {
 			if($k == $lastKey && isset($current[$lastKey])){
 				$theLastHasValue = true;
-				# if the last-key has the value of not-array, create array and push the later values.
-				$current[$lastKey] = is_array($current[$k]) ? $current[$k] : array($current[$k]);
+				if($scope != 'session'){
+					# if the last-key has the value of not-array, create array and push the later values.
+					$current[$lastKey] = is_array($current[$k]) ? $current[$k] : array($current[$k]);
+				}
 				break;
 			}
 			if($count && !isset($current[$k]) && !is_array($current)){
@@ -1253,21 +1272,26 @@ function __dotNotationToArray($key, $scope='global', $value=''){
 			$current = &$current[$k];
 		}
 	}
-
 	# Set the values if it is setter
 	if($type == 'setter'){
 		if($theLastHasValue){
-			if(!in_array($value, $current[$lastKey])) $current[$lastKey][] = $value;
-		}elseif(is_array($current)){
-			if(!in_array($value, $current)) $current[] = $value;
+			if(is_array($current[$lastKey]) && !in_array($value, $current[$lastKey]) && $value != $current[$lastKey]){
+				$current[$lastKey][] = ($serialize) ? serialize($value) : $value;
+			}else{
+				$current[$lastKey] = $value;
+			}
+		}elseif(!$theLastHasValue && is_array($current)){
+			if(!in_array($value, $current) && $value != $current){
+				$current[] = ($serialize) ? serialize($value) : $value;
+			}
 		}else{
-			$current = $value;
+			$current = ($serialize) ? serialize($value) : $value;
 		}
 		return $current;
 	}
 	# Get the values if it is getter
 	elseif($type == 'getter'){
-		return ($count) ? $current[$lastKey] : $current;
+		return ($count) ? (isset($current[$lastKey]) ? $current[$lastKey] : NULL)  : $current;
 	}
 	return NULL;
 }
