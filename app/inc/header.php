@@ -10,7 +10,8 @@
         		<a href="<?php echo _url('home'); ?>" id="logo">LucidFrame</a>
                 <div id="language-switcher">
 				<?php
-                foreach($lc_languages as $lcode => $lname){
+				$languages = _cfg('languages');
+				foreach($languages as $lcode => $lname){
 					$class = (_lang() == $lcode) ? 'active' : '';
 					$url = _self(NULL, $lcode);
                 ?>
