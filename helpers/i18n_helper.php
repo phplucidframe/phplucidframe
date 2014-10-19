@@ -99,7 +99,7 @@ function i18n_load() {
 	if(!file_exists($filename)) return false;
 	# Open the po file
 	if (!$file = fopen($filename, 'r')) {
-		deleteSession("i18n.{$lc_lang}");
+		session_delete("i18n.{$lc_lang}");
 		return false;
 	}
 
@@ -109,7 +109,7 @@ function i18n_load() {
 	}
 
 	# parse the file
-	deleteSession("i18n.{$lc_lang}");
+	session_delete("i18n.{$lc_lang}");
 
 	$type = 0;
 	$translations = array();

@@ -97,7 +97,7 @@ function auth_set($sess){
  */
 function auth_clear(){
 	global $_auth;
-	deleteSession(auth_namespace());
+	session_delete(auth_namespace());
 	$_auth = NULL;
 }
 /**
