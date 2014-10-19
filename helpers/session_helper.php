@@ -25,22 +25,6 @@
  * @return void
  */
 function session_set($name, $value='', $serialize=false){
-	setSession($name, $value, $serialize);
-}
-/**
- * @internal
- *
- * Set a message or value in Session using a name
- * Alias of session_set()
- *
- * @param $name string The session variable name to store the value
- *		It can be a value separated by period, eg., user.name will be ['user']['name']
- * @param mixed 	$value The value to be stored.
- * @param boolean 	$serialize The value is to be serialized or not
- *
- * @return void
- */
-function setSession($name, $value='', $serialize=false){
 	__dotNotationToArray($name, 'session', $value, $serialize);
 }
 /**
@@ -53,45 +37,19 @@ function setSession($name, $value='', $serialize=false){
  * @return mixed The value from SESSION
  */
 function session_get($name, $unserialize=false){
-	return getSession($name, $unserialize);
-}
-/**
- * @internal
- *
- * Get a message or value of the given name from Session
- * Alias of session_get()
- *
- * @param string $name 	The session variable name to retrieve its value
- 						It can be a value separated by period, eg., user.name will be ['user']['name']
- * @param boolean $unserialize The value is to be unserialized or not
- *
- * @return mixed The value from SESSION
- */
-function getSession($name, $unserialize=false){
 	$value = __dotNotationToArray($name, 'session');
 	return ($unserialize && is_string($value)) ? unserialize($value) : $value;
 }
 /**
- * Delete a message or value of the given name from Session
- *
- * @param string $name The session variable name to delete its value
- * @return void
- */
-function session_delete($name){
-	deleteSession($name);
-}
-/**
- * @internal
- *
  * Delete a message or value of the given name from Session
  * Alias of session_delete()
  *
  * @param string $name The session variable name to delete its value
  * @return void
  */
-function deleteSession($name){
+function session_delete($name){
 	$name = S_PREFIX . $name;
-	if(isset($_SESSION[$name])){ 
+	if(isset($_SESSION[$name])){
 		unset($_SESSION[$name]);
 		return true;
 	}
@@ -104,7 +62,7 @@ function deleteSession($name){
 		$found = true;
 		foreach($keys as $k) {
 			if(isset($array[$k])){
-				$parent = &$array; 
+				$parent = &$array;
 				$array = &$array[$k];
 			}else{
 				return false;
@@ -113,7 +71,7 @@ function deleteSession($name){
 		$array = NULL;
 		unset($array);
 		unset($parent[$k]);
-	}	
+	}
 	return true;
 }
 
@@ -129,25 +87,6 @@ if(!function_exists('flash_set')){
  * @return void
  */
 	function flash_set($msg, $name='', $class='success'){
-		setFlash($msg, $name, $class);
-	}
-}
-
-if(!function_exists('setFlash')){
-/**
- * @internal
- *
- * Set the flash message in session
- * Alias of flash_set()
- * This function is overwritable from the custom helpers/session_helper.php
- *
- * @param string $msg The message to be shown
- * @param string $name The optional session name to store the message
- * @param string $class The HTML class name; default is success
- *
- * @return void
- */
-	function setFlash($msg, $name='', $class='success'){
 		$msg = '<span class="'.$class.'">'.$msg.'</span>';
 		$msg = '<div class="message '.$class.'" style="display:block;"><ul><li>'.$msg.'</li></ul></div>';
 
@@ -167,24 +106,6 @@ if(!function_exists('flash_get')){
  * @return string The HTML message
  */
 	function flash_get($name='', $class='success'){
-		return getFlash($name, $class);
-	}
-}
-
-if(!function_exists('getFlash')){
-/**
- * @internal
- *
- * Get the flash message from session and then delete it
- * This function is overwritable from the custom helpers/session_helper.php
- * Alias of flash_get()
- *
- * @param $name  string The optional session name to retrieve the message from
- * @param $class string The HTML class name; default is success
- *
- * @return string The HTML message
- */
-	function getFlash($name='', $class='success'){
 		$message = '';
 		if($name){
 			if(isset($_SESSION[S_PREFIX.'flashMessage'][$name])){
