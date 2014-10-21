@@ -14,40 +14,52 @@
  * with this source code in the file LICENSE.txt
  */
 
-$_validation_messages = array(
-	'default'			=> _t("'%s' needs to be revised."),
-	'mandatory' 		=> _t("'%s' is required."),
-	'mandatoryOne'		=> _t("'%s' must be entered/selected at least one."),
-	'mandatoryAll'		=> _t("'%s' is required. All must be entered/selected."),
-	'notAllowZero' 		=> _t("'%s' should not be zero."),
-	'alphaNumeric' 		=> _t("'%s' should contain only letters and numbers."),
-	'alphaNumericSpace' => _t("'%s' should contain only letters, numbers and spaces."),
-	'alphaNumericDash' 	=> _t("'%s' should contain only letters, numbers and dashes."),
-	'numeric' 			=> _t("'%s' should be a number."),
-	'numericSpace' 		=> _t("'%s' should contain only numbers and spaces."),
-	'numericDash' 		=> _t("'%s' should contain only numbers and dashes. It should not start or end with a dash."),
-	'username' 			=> _t("'%s' should contain only letters, numbers, periods, underscores and dashes."),
-	'naturalNumber' 	=> _t("'%s' should be a positive integer. It is not allowed zero."),
-	'wholeNumber' 		=> _t("'%s' should be a positive integer."),
-	'integer' 			=> _t("'%s' should be a positive or negative integer."),
-	'rationalNumber' 	=> _t("'%s' should be an integer or decimal."),
-	'positiveRationalNumber' => _t("'%s' should be a positive integer or decimal."),
-	'email'				=> _t("'%s' should be a valid format, e.g., username@example.com"),
-	'domain'			=> _t("'%s' should be a valid domain name with letters, numbers and dash only."),
-	'url'				=> _t("'%s' should be a valid website address, e.g., http://www.example.com"),
-	'min'				=> _t("'%s' should be greater than or equal to %d."),
-	'max'				=> _t("'%s' should be less than or equal to %d."),
-	'minLength'			=> _t("'%s' should have at least %d letters."),
-	'maxLength'			=> _t("'%s' should not exceed %d letters."),
-	'between'			=> _t("'%s' should be between %d and %d."),
-	'fileMaxSize'		=> _t("'%s' cannot exceed the maximum allowed upload size %dMB."),
-	'fileMaxWidth'		=> _t("'%s' cannot exceed the maximum allowed width %dpx."),
-	'fileMaxHeight'		=> _t("'%s' cannot exceed the maximum allowed height %dpx."),
-	'fileMaxDimension'	=> _t("'%s' cannot exceed the maximum allowed dimension %dx%dpx."),
-	'fileExactDimension'=> _t("'%s' should have the dimension %dx%dpx."),
-	'fileExtension'		=> _t("'%s' must be one of the file types: %s."),
-	'custom' 			=> _t("'%s' should be a valid format.")
+$lc_validationMessages = array(
+	'default'				=> "'%s' needs to be revised.",
+	'mandatory'				=> "'%s' is required.",
+	'mandatoryOne'			=> "'%s' must be entered/selected at least one.",
+	'mandatoryAll'			=> "'%s' is required. All must be entered/selected.",
+	'notAllowZero'			=> "'%s' should not be zero.",
+	'alphaNumeric'			=> "'%s' should contain only letters and numbers.",
+	'alphaNumericSpace'		=> "'%s' should contain only letters, numbers and spaces.",
+	'alphaNumericDash'		=> "'%s' should contain only letters, numbers and dashes.",
+	'numeric'				=> "'%s' should be a number.",
+	'numericSpace'			=> "'%s' should contain only numbers and spaces.",
+	'numericDash'			=> "'%s' should contain only numbers and dashes. It should not start or end with a dash.",
+	'username'				=> "'%s' should contain only letters, numbers, periods, underscores and dashes.",
+	'naturalNumber'			=> "'%s' should be a positive integer. It is not allowed zero.",
+	'wholeNumber'			=> "'%s' should be a positive integer.",
+	'integer'				=> "'%s' should be a positive or negative integer.",
+	'rationalNumber'		=> "'%s' should be an integer or decimal.",
+	'positiveRationalNumber'=> "'%s' should be a positive integer or decimal.",
+	'email'					=> "'%s' should be a valid format, e.g., username@example.com",
+	'domain'				=> "'%s' should be a valid domain name with letters, numbers and dash only.",
+	'url'					=> "'%s' should be a valid website address, e.g., http://www.example.com",
+	'min'					=> "'%s' should be greater than or equal to %d.",
+	'max'					=> "'%s' should be less than or equal to %d.",
+	'minLength'				=> "'%s' should have at least %d letters.",
+	'maxLength'				=> "'%s' should not exceed %d letters.",
+	'between'				=> "'%s' should be between %d and %d.",
+	'fileMaxSize'			=> "'%s' cannot exceed the maximum allowed upload size %dMB.",
+	'fileMaxWidth'			=> "'%s' cannot exceed the maximum allowed width %dpx.",
+	'fileMaxHeight'			=> "'%s' cannot exceed the maximum allowed height %dpx.",
+	'fileMaxDimension'		=> "'%s' cannot exceed the maximum allowed dimension %dx%dpx.",
+	'fileExactDimension'	=> "'%s' should have the dimension %dx%dpx.",
+	'fileExtension'			=> "'%s' must be one of the file types: %s.",
+	'custom'				=> "'%s' should be a valid format."
 );
+/**
+ * @internal
+ * Initialize the validation messages
+ */
+function __validation_init(){
+	global $lc_validationMessages;
+	$i18nEnabled = function_exists('_t');
+	foreach($lc_validationMessages as $key => $msg){
+		$lc_validationMessages[$key] = ($i18nEnabled) ? _t($msg) : $msg;
+	}
+	Validation::set('messages', $lc_validationMessages);
+}
 /**
  * Checks that a string contains something other than whitespace
  * @param mixed $value The value being checked
@@ -663,4 +675,4 @@ class Validation{
 	}
 }
 
-Validation::set('messages', $_validation_messages);
+__validation_init();
