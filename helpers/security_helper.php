@@ -22,7 +22,8 @@ function security_prerequisite(){
 	$defaultSalt = md5('lucidframe');
 	$salt = file_get_contents(INC . 'security.salt');
 	if(strcmp($salt, $defaultSalt) === 0){
-		_cfg('sitewideWarnings', _t('Change your own security salt hash in the file "/inc/security.salt".'));
+		$msg = 'Change your own security salt hash in the file "/inc/security.salt".';
+		_cfg('sitewideWarnings', function_exists('_t') ? _t($msg) : $msg);
 	}
 }
 /**

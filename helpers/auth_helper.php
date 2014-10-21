@@ -64,7 +64,8 @@ function auth_prerequisite(){
 		return $auth;
 	}else{
 		$error = new stdClass();
-		$error->message = array(_t('Required to configure $lc_auth in "/inc/config.php". It is not allowed to configure in the application-level file "/app/inc/site.config.php".'));
+		$error->message = 'Required to configure $lc_auth in "/inc/config.php". It is not allowed to configure in the application-level file "/app/inc/site.config.php".';
+		$error->message = array(function_exists('_t') ? _t($error->message) : $error->message);
 		$error->type 	= 'sitewide-message error';
 		include( _i('inc/site.error.php') );
 		exit;
