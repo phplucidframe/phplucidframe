@@ -121,3 +121,66 @@ if(!function_exists('flash_get')){
 		return $message;
 	}
 }
+/**
+* Send a cookie
+* Convenience method for setcookie()
+* 
+* @param string $name The name of the cookie. 'cookiename' is called as cookie_get('cookiename') or $_COOKIE['cookiename']
+* @param mixed $value The value of the cookie. This value is stored on the clients computer
+* @param int $expiry The time the cookie expires. This is a Unix timestamp so is in number of seconds since the epoch.
+*  In other words, you'll most likely set this with the time() function plus the number of seconds before you want it to expire.
+*  If f set to 0, or omitted, the cookie will expire at the end of the session
+* @param string $path The path on the server in which the cookie will be available on. The default path '/' will make it available to the entire domain.
+* @param string $domain The domain that the cookie is available to. If it is not set, it depends on the configuration variable $lc_siteDomain.
+* @param bool $secure Indicates that the cookie should only be transmitted over a secure HTTPS connection from the client
+* @param bool $httpOnly When TRUE the cookie will be made accessible only through the HTTP protocol.
+*  This means that the cookie won't be accessible by scripting languages, such as JavaScript
+* 
+* @see http://php.net/manual/en/function.setcookie.php
+* 
+* @return void
+*/
+function cookie_set($name, $value, $expiry=0, $path='/', $domain='', $secure=false, $httpOnly=false){
+	if(!$domain) $domain = _cfg('siteDomain');
+	$name = preg_replace('/^('.S_PREFIX.')/', '', $name);
+	$name = S_PREFIX . $name;
+	if($expiry > 0) $expiry = time() + $expiry;
+	setcookie($name, $value, $expiry, $path, $domain, $secure, $httpOnly);
+}
+/**
+* Get a cookie
+* Convenience method to access $_COOKIE[cookiename] 
+* @param string $name The name of the cookie to retrieve
+* 
+* @return mixed
+*  The value of the cookie if found.
+*  NULL if not found.
+*  The entire $_COOKIE array if $name is not provided.
+*/
+function cookie_get($name=''){
+	if(empty($name)) return $_COOKIE;
+	$name = preg_replace('/^('.S_PREFIX.')/', '', $name);
+	$name = S_PREFIX . $name;
+	if(isset($_COOKIE[$name])) return $_COOKIE[$name];
+	else return NULL;
+}
+/**
+* Delete a cookie
+* Convenience method to delete $_COOKIE['cookiename'] 
+* @param string $name The name of the cookie to delete
+* @param string $path The path on the server in which the cookie will be available on.
+*  This would be the same value used for cookie_set().
+* 
+* @return bool TRUE for the successful delete; FALSE for no delete.
+*/
+function cookie_delete($name, $path='/'){
+	if(empty($name)) return $_COOKIE;
+	$name = preg_replace('/^('.S_PREFIX.')/', '', $name);
+	$name = S_PREFIX . $name;
+	if(isset($_COOKIE[$name])){
+		unset($_COOKIE[$name]);
+		setcookie($name, NULL, -1, $path);
+		return true;
+	}
+	return (!isset($_COOKIE[$name])) ? true : false;
+}
