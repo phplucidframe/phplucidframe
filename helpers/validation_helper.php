@@ -619,7 +619,7 @@ class Validation{
 										# Required property: extensions
 										if(!isset($v['extensions'])) continue;
 										$success = call_user_func_array($func, array($value, $v['extensions']));
-										if(!$success) self::setError($id, $rule, $v, '"'.implode(', ', $v['extensions']).'"');
+										if(!$success) self::setError($id, $rule, $v, implode(', ', $v['extensions']));
 										break;
 
 									default:
@@ -648,10 +648,11 @@ class Validation{
 		$args = func_get_args();
 		if(count($args) > 3){
 			$args = array_slice($args, 3);
-			$cmd  = 'self::$errors[] = array("msg" => sprintf( $msg, $caption';
-			$cmd .= ', '.implode(', ', $args);
-			$cmd .= ' ), "htmlID" => $id);';
-			eval($cmd);
+			array_unshift($args, $caption);
+			self::$errors[] = array(
+				"msg" => vsprintf($msg, $args),
+				"htmlID" => $id
+			);
 		}else{
 			self::$errors[] = array(
 				'msg' => sprintf( $msg, $caption ),
