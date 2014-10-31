@@ -46,6 +46,7 @@ $lc_validationMessages = array(
 	'fileMaxDimension'		=> "'%s' cannot exceed the maximum allowed dimension %dx%dpx.",
 	'fileExactDimension'	=> "'%s' should have the dimension %dx%dpx.",
 	'fileExtension'			=> "'%s' must be one of the file types: %s.",
+	'date'					=> "'%s' should be a real date or valid for the date format '%s'.",
 	'custom'				=> "'%s' should be a valid format."
 );
 /**
@@ -458,6 +459,48 @@ function validate_ip($value, $type = 'both') {
 	}
 	return (boolean)filter_var($value, FILTER_VALIDATE_IP, array('flags' => $flags));
 }
+/**
+ * Validation of a date which checks if the string passed is a valid date.
+ * **Allowed formats**
+ *
+ * - `d-m-y` 31-12-2014 separators can be a period, dash, forward slash, but not allow space
+ * - `m-d-y` 12-31-2014 separators can be a period, dash, forward slash, but not allow space
+ * - `y-m-d` 2014-12-31 separators can be a period, dash, forward slash, but not allow space
+ * 
+ * @param string $value The date string being checked
+ * @param string $format The date format to be validated against. Default is y-m-d for 2014-12-31
+ * 
+ * @return bool TRUE on success; FALSE on failure
+ */
+function validate_date($value, $format = 'y-m-d'){
+	if(empty($value)) return true;
+	$value = trim($value);
+	$format = strtolower($format);
+	$separators = array('/', '-', '.');
+	$sepGroup = '([-\/.])';
+	$cleanFormat = preg_replace('/'.$sepGroup.'/', '', $format); // remove the separators from the format
+	$pattern = '';
+	
+	if(in_array($cleanFormat, array('dmy', 'mdy'))){
+		$pattern = '/^([\d]{1,2})'.$sepGroup.'([\d]{1,2})'.$sepGroup.'([\d]{4})$/'; // dmy or mdy
+	}
+	else{
+		$pattern = '/^([\d]{4})'.$sepGroup.'([\d]{1,2})'.$sepGroup.'([\d]{1,2})$/'; // ymd
+	}
+	if($pattern && preg_match_all($pattern, $value, $matches)){
+		if($matches[2][0] != $matches[4][0]) return false; // inconsisitent separators
+		elseif(!in_array($matches[2][0], $separators)) return false; // invalid separator
+		$sep	= $matches[2][0]; // the separator using
+		$dt 	= explode($sep, $value);
+		$format = str_split($cleanFormat);
+		$ft 	= array_flip($format);
+		$y = $dt[$ft['y']];
+		$m = $dt[$ft['m']];
+		$d = $dt[$ft['d']];
+		return checkdate($m, $d, $y);
+	}
+	return false;
+}
 
 /**
  * This class is part of the PHPLucidFrame library.
@@ -624,6 +667,13 @@ class Validation{
 										if(!isset($v['extensions'])) continue;
 										$success = call_user_func_array($func, array($value, $v['extensions']));
 										if(!$success) self::setError($id, $rule, $v, implode(', ', $v['extensions']));
+										break;
+
+									case 'date':
+										# Optional property: dateFormat
+										if(!isset($v['dateFormat']) || (isset($v['dateFormat']) && empty($v['dateFormat']))) $v['dateFormat'] = 'y-m-d';
+										$success = call_user_func_array($func, array($value, $v['dateFormat']));
+										if(!$success) self::setError($id, $rule, $v, $v['dateFormat']);
 										break;
 
 									default:
