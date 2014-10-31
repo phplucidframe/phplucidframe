@@ -15,6 +15,7 @@ DirectoryIndex index.php index.html index.htm
 	# ~/blog/99/foo-bar to ~/app/blog-page/?lang=~&id=99&slug=foo-bar
 	RewriteRule ^(([a-z]{2}|[a-z]{2}-[A-Z]{2})/)?blog/([0-9]+)/(.*)$ app/index.php?lang=$1&id=$3&slug=$4&route=blog-page [NC,L]
 			
+	RewriteRule ^tests/?(.*) app/index.php [NC,L]
 	RewriteRule ^xhr/?(.*) app/index.php [NC,L]
 	
 	RewriteRule ^index.php$ app/index.php [NC,L]
