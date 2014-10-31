@@ -130,10 +130,10 @@ function db_setCharset($charset){
  *
  * @param string $sql SQL query string
  * @param array $args Array of placeholders and their values
- *		array(
- *			':placeholder1' => $value1,
- *			':placeholder2' => $value2
- *		)
+ *	array(
+ *		':placeholder1' => $value1,
+ *		':placeholder2' => $value2
+ *	)
  *
  * @return boolean Returns TRUE on success or FALSE on failure
  */
@@ -250,8 +250,8 @@ function db_fetchObject($result){
 }
 /**
  * Returns the auto generated id used in the last query
- * @return  int The value of the AUTO_INCREMENT field that was updated by the previous query.
- *			Returns zero if there was no previous query on the connection or if the query did not update an AUTO_INCREMENT value.
+ * @return int The value of the `AUTO_INCREMENT` field that was updated by the previous query;
+ *  `0` if there was no previous query on the connection or if the query did not update an `AUTO_INCREMENT` value.
  */
 function db_insertId(){
 	global $_conn;
@@ -269,10 +269,10 @@ function db_insertSlug(){
  *
  * @param string $sql The SQL query string
  * @param array $args The array of placeholders and their values
- *		array(
- *			':placeholder1' => $value1,
- *			':placeholder2' => $value2
- *		)
+ *	array(
+ *		':placeholder1' => $value1,
+ *		':placeholder2' => $value2
+ *	)
  *
  * @return int The result count
  */
@@ -290,10 +290,10 @@ function db_count($sql, $args=array()){
  *
  * @param string $sql The SQL query string
  * @param array $args The array of placeholders and their values
- *		array(
- *			':placeholder1' => $value1,
- *			':placeholder2' => $value2
- *		)
+ *	array(
+ *		':placeholder1' => $value1,
+ *		':placeholder2' => $value2
+ *	)
  *
  * @return mixed The value of the first field
  */
@@ -316,10 +316,10 @@ function db_fetch($sql, $args=array()){
  *
  * @param string $sql The SQL query string
  * @param array $args The array of placeholders and their values
- *		array(
- *			':placeholder1' => $value1,
- *			':placeholder2' => $value2
- *		)
+ *	array(
+ *		':placeholder1' => $value1,
+ *		':placeholder2' => $value2
+ *	)
  *
  * @return object The result object
  */
@@ -341,11 +341,11 @@ if(!function_exists('db_insert')){
  *
  * @param string $table The table name without prefix
  * @param array $data The array of data field names and values
- *					array(
- *						'fieldNameToSlug' => $valueToSlug, # if $lc_useDBAutoFields is enabled
- *						'fieldName1' => $fieldValue1,
- *						'fieldName2' => $fieldValue2
- *					)
+ *	array(
+ *		'fieldNameToSlug' => $valueToSlug, # if $lc_useDBAutoFields is enabled
+ *		'fieldName1' => $fieldValue1,
+ *		'fieldName2' => $fieldValue2
+ *	)
  * @param boolean $useSlug True to include the slug field or False to not exclude it
  * @return boolean Returns TRUE on success or FALSE on failure
  */
@@ -415,18 +415,18 @@ if(!function_exists('db_update')){
  *
  * @param string $table The table name without prefix
  * @param array $data The array of data field names and values
- *								array(
- *									'pkFieldName' 		=> $pkFieldValue, <=== 0
- *									'fieldNameToSlug' 	=> $valueToSlug,  <=== 1 # if $lc_useDBAutoFields is enabled
- *									'fieldName1' 		=> $value1,
- *									'fieldName2' 		=> $value2
- *								)
+ *	array(
+ *		'pkFieldName' 		=> $pkFieldValue, <=== 0
+ *		'fieldNameToSlug' 	=> $valueToSlug,  <=== 1 # if $lc_useDBAutoFields is enabled
+ *		'fieldName1' 		=> $value1,
+ *		'fieldName2' 		=> $value2
+ *	)
  * @param boolean $useSlug True to include the slug field or False to not exclude it
  * @param array $additionalCondition The addtional conditions for the UPDATE query, for example,
- *								array(
- *									'fieldName1' 		=> $value1,
- *									'fieldName2' 		=> $value2
- *								)
+ *	array(
+ *		'fieldName1' => $value1,
+ *		'fieldName2' => $value2
+ *	)
  * @return boolean Returns TRUE on success or FALSE on failure
  */
 	function db_update($table, $data=array(), $useSlug=true, $additionalCondition=array()){
@@ -503,11 +503,11 @@ if(!function_exists('db_delete')){
  *
  * @param string $table Table name without prefix
  * @param array $cond The array of condition for delete - field names and values, for example
- *		array(
- *			'fieldName1' 	=> $value1,
- *			'fieldName2 >=' => $value2,
- *			'fieldName3 	=> NULL
- *		)
+ *	array(
+ *		'fieldName1' 	=> $value1,
+ *		'fieldName2 >=' => $value2,
+ *		'fieldName3 	=> NULL
+ *	)
  * @return boolean Returns TRUE on success or FALSE on failure
  */
 	function db_delete($table, $cond=array()){
@@ -546,11 +546,11 @@ if(!function_exists('db_delete_multi')){
  *
  * @param string $table Table name without prefix
  * @param array $cond Array of condition for delete - field names and values, for example
- *			array(
- *				'fieldName1' 	=> $value1,
- *				'fieldName2 >=' => $value2,
- *				'fieldName3' 	=> NULL
- *			)
+ *	array(
+ *		'fieldName1' 	=> $value1,
+ *		'fieldName2 >=' => $value2,
+ *		'fieldName3' 	=> NULL
+ *	)
  *
  * @return boolean Returns TRUE on success or FALSE on failure
  */
@@ -583,11 +583,11 @@ if(!function_exists('db_delete_multi')){
  * Build the SQL WHERE clause from the various condition arrays
  *
  * @param array $cond The condition array, for example
- *			array(
- *				'fieldName1' 	=> $value1,
- *				'fieldName2 >='	=> $value2, <=== operators allowed =, >=, <=, >, <, !=, <>
- *				'fieldName3 	=> NULL
- *			)
+ *	array(
+ *		'fieldName1' 	=> $value1,
+ *		'fieldName2 >='	=> $value2, <=== operators allowed =, >=, <=, >, <, !=, <>
+ *		'fieldName3 	=> NULL
+ *	)
  * @param string $type The condition type "AND" or "OR"; Default is "AND"
  *
  * @return string The built condition WHERE clause
@@ -618,11 +618,11 @@ function db_condition($cond=array(), $type='AND'){
  * Build the SQL WHERE clause AND condition from the various condition arrays
  *
  * @param array $cond The condition array, for example
- *			array(
- *				'fieldName1' 	=> $value1,
- *				'fieldName2 >='	=> $value2, <=== operators allowed =, >=, <=, >, <, !=, <>
- *				'fieldName3 	=> NULL
- *			)
+ *	array(
+ *		'fieldName1' 	=> $value1,
+ *		'fieldName2 >='	=> $value2, <=== operators allowed =, >=, <=, >, <, !=, <>
+ *		'fieldName3 	=> NULL
+ *	)
  * @return string The built condition WHERE clause
  */
 function db_conditionAND($cond=array()){
@@ -632,11 +632,11 @@ function db_conditionAND($cond=array()){
  * Build the SQL WHERE clause OR condition from the various condition arrays
  *
  * @param array $cond The condition array, for example
- *			array(
- *				'fieldName1' 	=> $value1,
- *				'fieldName2 >='	=> $value2, <=== operators allowed =, >=, <=, >, <, !=, <>
- *				'fieldName3 	=> NULL
- *			)
+ *	array(
+ *		'fieldName1' 	=> $value1,
+ *		'fieldName2 >='	=> $value2, <=== operators allowed =, >=, <=, >, <, !=, <>
+ *		'fieldName3 	=> NULL
+ *	)
  * @return string The built condition WHERE clause
  */
 function db_conditionOR($cond=array()){
@@ -651,11 +651,11 @@ function db_conditionOR($cond=array()){
  * @param mixed $value The value for the field
  * @param string $exp The SQL expression
  * @return array The condition array, for example
- *			array(
- *				'value'  => $value,
- *				'exp >=' => $exp,
- *				'field 	 => $field
- *			)
+ *	array(
+ *		'value'  => $value,
+ *		'exp >=' => $exp,
+ *		'field 	 => $field
+ *	)
  */
 function db_exp($field, $value, $exp=''){
 	if($exp) $field = strtoupper($field) . '(' . $value . ')';

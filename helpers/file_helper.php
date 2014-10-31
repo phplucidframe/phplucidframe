@@ -59,8 +59,8 @@ class File{
 	 *
 	 * @param array $file The uploaded file information from $_FILES['xxx']
 	 * @param array Th array of the uploaded files,
-	 *				for example,
-	 *				uploaded[dimension] = file-name for image files or uploaded[] = file-name for other files
+	 *  for example,
+	 *  uploaded[dimension] = "file-name" for image files or uploaded[] = "file-name" for the files of other types
 	 */
 	public function upload($file){
 		$fileName 		= stripslashes($file['name']);

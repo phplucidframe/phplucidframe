@@ -196,15 +196,15 @@ function route_create($path=''){
  *
  * Alias `_url()`
  *
- * @param $path string Routing path such as "foo/bar"; NULL for the current path
- * @param $queryStr	array Query string as
- *		array(
- *			$value1,
- *			'key1' => $value2,
- *			'key3' => $value3 or array($value3, $value4)
- *		)
- * @param $lang string Languague code to be prepended to $path such as "en/foo/bar".
- *		It will be useful for site language switch redirect
+ * @param string $path Routing path such as "foo/bar"; NULL for the current path
+ * @param array $queryStr Query string as
+ * 	array(
+ * 		$value1, // no key here
+ * 		'key1' => $value2,
+ * 		'key3' => $value3 or array($value3, $value4)
+ * 	)
+ * @param string $lang Languague code to be prepended to $path such as "en/foo/bar". It will be useful for site language switch redirect
+ *
  * @return string
  *
  */
@@ -277,13 +277,13 @@ function route_url($path=NULL, $queryStr=array(), $lang=''){
 /**
  * Update the route path with the given query string
  *
- * @param $path	string The route path which may contain the query string
- * @param $queryStr	array Query string as
- *		array(
- *			$value1,
- *			'key1' => $value2,
- *			'key3' => $value3 or array($value3, $value4)
- *		)
+ * @param string $path The route path which may contain the query string
+ * @param array $queryStr Query string as
+ * 	array(
+ * 		$value1, // no key here
+ * 		'key1' => $value2,
+ * 		'key3' => $value3 or array($value3, $value4)
+ * 	)
  * @return string The updated route path
  */
 function route_updateQueryStr($path, &$queryStr=array()){

@@ -107,26 +107,26 @@ class Pager{
 	}
 	/**
 	 * Pager calculation function
-	 *
 	 * Before calling this function, the following property must be set:
+	 * 
 	 * - $page
 	 * - $itemsPerPage
 	 * - $pageNumLimit
 	 * - $total
 	 *
 	 * @return array The array of the offsets
-	 *					Array(
-	 *						[offset] => xx
-	 *						[thisPage] => xx
-	 *						[beforePages] => Array()
-	 *						[afterPages] => Array()
-	 *						[firstPageEnable] => xx
-	 *						[prePageEnable] => xx
-	 *						[nextPageNo] => xx
-	 *						[nextPageEnable] => xx
-	 *						[lastPageNo] => xx
-	 *						[lastPageEnable] => xx
-	 *					)
+	 * 	Array(
+	 * 		[offset] => xx
+	 * 		[thisPage] => xx
+	 * 		[beforePages] => Array()
+	 * 		[afterPages] => Array()
+	 * 		[firstPageEnable] => xx
+	 * 		[prePageEnable] => xx
+	 * 		[nextPageNo] => xx
+	 * 		[nextPageEnable] => xx
+	 * 		[lastPageNo] => xx
+	 * 		[lastPageEnable] => xx
+	 * 	)
 	 */
 	public function calculate(){
 

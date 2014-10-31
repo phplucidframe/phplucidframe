@@ -18,9 +18,9 @@
  * Set a message or value in Session using a name
  *
  * @param $name string The session variable name to store the value
- *		It can be a value separated by period, eg., user.name will be ['user']['name']
- * @param mixed 	$value The value to be stored.
- * @param boolean 	$serialize The value is to be serialized or not
+ *  It can be a value separated by period, eg., user.name will be ['user']['name']
+ * @param mixed $value The value to be stored.
+ * @param boolean $serialize The value is to be serialized or not
  *
  * @return void
  */
@@ -31,7 +31,7 @@ function session_set($name, $value='', $serialize=false){
  * Get a message or value of the given name from Session
  *
  * @param string $name 	The session variable name to retrieve its value
- 						It can be a value separated by period, eg., user.name will be ['user']['name']
+ *   It can be a value separated by period, eg., user.name will be ['user']['name']
  * @param boolean $unserialize The value is to be unserialized or not
  *
  * @return mixed The value from SESSION
@@ -42,7 +42,6 @@ function session_get($name, $unserialize=false){
 }
 /**
  * Delete a message or value of the given name from Session
- * Alias of session_delete()
  *
  * @param string $name The session variable name to delete its value
  * @return void
@@ -100,8 +99,8 @@ if(!function_exists('flash_get')){
  * Get the flash message from session and then delete it
  * This function is overwritable from the custom helpers/session_helper.php
  *
- * @param $name  string The optional session name to retrieve the message from
- * @param $class string The HTML class name; default is success
+ * @param string $name The optional session name to retrieve the message from
+ * @param string $class The HTML class name; default is success
  *
  * @return string The HTML message
  */
