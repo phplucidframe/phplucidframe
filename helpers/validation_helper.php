@@ -48,6 +48,7 @@ $lc_validationMessages = array(
 	'fileExtension'			=> "'%s' must be one of the file types: %s.",
 	'date'					=> "'%s' should be a real date or valid for the date format '%s'.",
 	'time'					=> "'%s' should be a real time or valid for 12-hr/24-hr format.",
+	'datetime'				=> "'%s' should be a real date/time or valid for the date/time format '%s' 12-hr/24-hr.",
 	'custom'				=> "'%s' should be a valid format."
 );
 /**
@@ -529,6 +530,32 @@ function validate_time($value){
 	}
 	return false;
 }
+/**
+ * Validation of a date/time which checks if the string passed is a valid date and time.
+ * **Allowed date formats**
+ *
+ * - `d-m-y` 31-12-2014 separators can be a period, dash, forward slash, but not allow space
+ * - `m-d-y` 12-31-2014 separators can be a period, dash, forward slash, but not allow space
+ * - `y-m-d` 2014-12-31 separators can be a period, dash, forward slash, but not allow space
+ * 
+ * @param string $value The date/time string being checked
+ * @param string $format The date format only to be validated against. Default is y-m-d for 2014-12-31.
+ *  Time format is not needed. This will validate against 24-hr or 12-hr format.
+ * 
+ * @return bool TRUE on success; FALSE on failure
+ */
+function validate_datetime($value, $format = 'y-m-d'){
+	if(empty($value)) return true;
+	$value = trim($value);
+	$generalPattern = '/^([\d]{1,4}[-\/.][\d]{1,2}[-\/.][\d]{1,4})(\s+.{4,}\s*(am|pm)?)$/i';
+	if(preg_match_all($generalPattern, $value, $matches)){
+		$date = $matches[1][0];
+		$time = $matches[2][0];
+		return validate_date($date, $format) && validate_time($time);
+	}else{
+		return false;
+	}
+}
 
 /**
  * This class is part of the PHPLucidFrame library.
@@ -707,6 +734,13 @@ class Validation{
 									case 'time':
 										$success = call_user_func_array($func, array($value));
 										if(!$success) self::setError($id, $rule, $v);
+										break;
+
+									case 'datetime':
+										# Optional property: dateFormat
+										if(!isset($v['dateFormat']) || (isset($v['dateFormat']) && empty($v['dateFormat']))) $v['dateFormat'] = 'y-m-d';
+										$success = call_user_func_array($func, array($value, $v['dateFormat']));
+										if(!$success) self::setError($id, $rule, $v, $v['dateFormat']);
 										break;
 
 									default:
