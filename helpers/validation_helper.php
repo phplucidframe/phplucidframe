@@ -47,6 +47,7 @@ $lc_validationMessages = array(
 	'fileExactDimension'	=> "'%s' should have the dimension %dx%dpx.",
 	'fileExtension'			=> "'%s' must be one of the file types: %s.",
 	'date'					=> "'%s' should be a real date or valid for the date format '%s'.",
+	'time'					=> "'%s' should be a real time or valid for 12-hr/24-hr format.",
 	'custom'				=> "'%s' should be a valid format."
 );
 /**
@@ -501,6 +502,33 @@ function validate_date($value, $format = 'y-m-d'){
 	}
 	return false;
 }
+/**
+ * Validation of a time which checks if the string passed is a valid time in 24-hr or 12-hr format
+ * **Allowed inputs**
+ * 
+ * - 23:59 or 01:00 or 1:00
+ * - 23:59:59 or 01:00:00 or 1:00:00
+ * - 11:59am or 01:00pm or 1:00pm
+ * - 11:59 am or 01:00 pm or 1:00 PM or 1:00PM
+ * - 11:59:59am 01:00:00pm or 1:00:00pm
+ * - 11:59:59 AM 01:00:00 PM or 1:00:00PM
+ * 
+ * @param string $value The time string being checked
+ * 
+ * @return bool TRUE on success; FALSE on failure
+ */
+function validate_time($value){
+	if(empty($value)) return true;
+	$value = trim($value);
+	$regex = array(
+		'24' => '/^([0-23]{2})(:)([0-59]{2})(:[0-59]{2})?$/', // 24-hr format
+		'12' => '/^(0?[0-11]{0,2})(:)([0-59]{2})(:[0-59]{2})?\s*(am|pm)$/i' // 12-hr format
+	);
+	foreach($regex as $pattern){
+		if(preg_match($pattern, $value)) return true;
+	}
+	return false;
+}
 
 /**
  * This class is part of the PHPLucidFrame library.
@@ -674,6 +702,11 @@ class Validation{
 										if(!isset($v['dateFormat']) || (isset($v['dateFormat']) && empty($v['dateFormat']))) $v['dateFormat'] = 'y-m-d';
 										$success = call_user_func_array($func, array($value, $v['dateFormat']));
 										if(!$success) self::setError($id, $rule, $v, $v['dateFormat']);
+										break;
+
+									case 'time':
+										$success = call_user_func_array($func, array($value));
+										if(!$success) self::setError($id, $rule, $v);
 										break;
 
 									default:
