@@ -152,4 +152,52 @@ class Form{
 			return _h($defaultValue);
 		}
 	}
+	/**
+	 * Allow you to select the option of a drop-down list.
+	 * 
+	 * @param string $name The field name of the drop-down list
+	 * @param mixed $value The option value to check against
+	 * @param mixed $defaultValue The default selected value (optional)
+	 * 
+	 * @return string `'selected="selected"'` if the option is found, otherwise the empty string returned
+	 */
+	public static function selected($name, $value, $defaultValue=NULL){
+		return (self::inputSelection($name, $value, $defaultValue)) ? 'selected="selected"' : '';
+	}
+	/**
+	 * Allow you to select a checkbox or a radio button
+	 * 
+	 * @param string $name The field name of the checkbox or radio button
+	 * @param mixed $value The value to check against
+	 * @param mixed $defaultValue The default selected value (optional)
+	 * 
+	 * @return string `'checked="checked"'` if the option is found, otherwise the empty string returned
+	 */
+	public static function checked($name, $value, $defaultValue=NULL){
+		return (self::inputSelection($name, $value, $defaultValue)) ? 'checked="checked"' : '';
+	}
+	/**
+	 * @internal
+	 * Allow you to select a checkbox or a radio button or an option of a drop-down list
+	 * 
+	 * @param string $name The field name of the checkbox or radio button or drop-down list
+	 * @param mixed $value The value to check against
+	 * @param mixed $defaultValue The default selected value (optional)
+	 * 
+	 * @return bool TRUE if the option is found, otherwise FALSE
+	 */
+	private static function inputSelection($name, $value, $defaultValue=NULL){
+		if(count($_POST)){
+			$name = preg_replace('/(\[\])$/', '', $name); // group[] will be replaced as group
+			if(!isset($_POST[$name])) return '';
+			$postedValue = _post($_POST[$name]);
+			if(is_array($postedValue) && in_array($value, $postedValue)) return true;
+			elseif($value == $postedValue) return true;
+			else return false;
+		}else{
+			if(is_array($defaultValue) && in_array($value, $defaultValue)) return true;
+			elseif($value == $defaultValue) return true;
+			else return false;
+		}
+	}
 }
