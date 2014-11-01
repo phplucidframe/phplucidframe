@@ -134,4 +134,22 @@ class Form{
 		<?php
 		}
 	}
+	/**
+	 * Permits you to set the value of an input or textarea.
+	 * Allows you to safely use HTML and characters such as quotes within form elements without breaking out of the form
+	 * 
+	 * @param string $name The input element field name
+	 * @param mixed $defaultValue The default value of the input element (optional)
+	 * 
+	 * @return mixed The value of the input element
+	 */
+	public static function value($name, $defaultValue=NULL){
+		if(count($_POST)){
+			if(!isset($_POST[$name])) return '';
+			$value = _post($_POST[$name]);
+			return _h($value);
+		}else{
+			return _h($defaultValue);
+		}
+	}
 }
