@@ -1,3 +1,3 @@
-<p>LucidFrame is a mini application development framework - a toolkit for PHP developers. It provides logical structure and several helper utilities for web application development.
+<p>PHPLucidFrame (a.k.a LucidFrame) is a mini application development framework - a toolkit for PHP developers. It provides logical structure and several helper utilities for web application development.
 It uses a module architecture to make the development of complex applications simplified.</p>
-<p>LucidFrame is simple, fast and easy to install. The minimum requirements are a web server and a copy of LucidFrame.</p>
+<p>LucidFrame is especially designed for PHP, MySQL and Apache. It is simple, fast and easy to install.</p>
