@@ -161,8 +161,8 @@ if(isset($lc_databases[$lc_defaultDbConnection]) && is_array($lc_databases[$lc_d
 if( $file = _i( 'helpers/utility_helper.php', false) ) include_once $file;
 require_once HELPER . 'utility_helper.php';
 
-_loader('i18n_helper', HELPER);
 _loader('session_helper', HELPER);
+_loader('i18n_helper', HELPER);
 _loader('validation_helper', HELPER);
 _loader('auth_helper', HELPER);
 _loader('pager_helper', HELPER);
@@ -171,14 +171,14 @@ _loader('file_helper', HELPER);
 
 if(file_exists(INC.'autoload.php')) require_once INC.'autoload.php';
 
-# Translation helper (unloadable from /inc/autoload.php)
-if( $moduleI18n = _readyloader('i18n_helper') ) require_once $moduleI18n;
-_unloader('i18n_helper', HELPER);
-
 # Session helper (unloadable from /inc/autoload.php)
 if( $file = _i( 'helpers/session_helper.php', false) ) include_once $file;
 if( $moduleSession = _readyloader('session_helper') ) require_once $moduleSession;
 _unloader('session_helper', HELPER);
+
+# Translation helper (unloadable from /inc/autoload.php)
+if( $moduleI18n = _readyloader('i18n_helper') ) require_once $moduleI18n;
+_unloader('i18n_helper', HELPER);
 
 # Route helper (required)
 require HELPER . 'route_helper.php'; # WEB_ROOT and WEB_APP_ROOT is created in route_helper
