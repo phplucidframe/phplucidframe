@@ -11,7 +11,7 @@
 <h3><?php echo _t('Prerequisites'); ?></h3>
 <ul>
 	<li>Web Server (For example, Apache with mod_rewrite enabled)</li>
-	<li>PHP version 5.1.6 or newer (mcrypt extension enabled, but by no means required.)</li>
+	<li>PHP version 5.2.0 or newer (mcrypt extension enabled, but by no means required.)</li>
 	<li>MySQL 5.0+ with MySQLi enabled.</li>
 </ul>
 <p>

@@ -20,7 +20,7 @@ Although it is stated as mini framework, it supports a wide range of web applica
 Prerequisites
 ------
 - Web Server (For example, Apache with mod_rewrite enabled)
-- PHP version 5.1.6 or newer (mcrypt extension enabled, but by no means required.)
+- PHP version 5.2.0 or newer (mcrypt extension enabled, but by no means required.)
 - MySQL 5.0+ with MySQLi enabled.
 - jQuery (LucidFrame provides AJAX Form and List APIs which require [jQuery](http://jquery.com/), but the release contains jQuery 1.7.1)
 
