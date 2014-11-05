@@ -13,6 +13,10 @@ if( !defined('ROOT') ){
 	define('ROOT', $ROOT);
 }
 
+if(strcasecmp(APP_ROOT, ROOT) === 0){
+	die('Enable mod_rewrite in your server and "AllowOverride All" from .htaccess');
+}
+
 # path to inc/ folder
 define('INC', ROOT.'inc/');
 # path to helpers/ folder
