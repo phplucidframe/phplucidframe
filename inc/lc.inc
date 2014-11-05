@@ -109,6 +109,40 @@ function __envLoader(){
 	global $lc_languages;
 	global $lc_baseURL;
 	global $lc_sites;
+	global $lc_env;
+	global $lc_debugLevel;
+	global $lc_minifyHTML;
+	
+	$lc_env = strtolower($lc_env);
+	if(!in_array($lc_env, array('development', 'production'))) $lc_env = 'production';
+	if($lc_env == 'production'){
+		error_reporting(0);
+		ini_set('display_errors', 0);
+		ini_set('display_startup_errors', 0);
+	}else{
+		$lc_minifyHTML = false;
+		switch($lc_debugLevel){
+			case 1:
+				error_reporting(E_ERROR | E_PARSE);
+				ini_set('display_errors', 1);
+				ini_set('display_startup_errors', 0);
+				break;
+			case 2:
+				error_reporting(E_ERROR | E_PARSE | E_NOTICE | E_WARNING);
+				ini_set('display_errors', 1);
+				ini_set('display_startup_errors', 1);
+				break;
+			case 3:
+				error_reporting(E_ALL);
+				ini_set('display_errors', 1);
+				ini_set('display_startup_errors', 1);
+				break;
+			default:
+				error_reporting($lc_debugLevel);
+				ini_set('display_errors', 1);
+				ini_set('display_startup_errors', 1);
+		}
+	}
 	
 	if( !isset($lc_languages) || (isset($lc_languages) && !is_array($lc_languages)) ){
 		$lc_languages = array('en' => 'English');

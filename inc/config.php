@@ -3,9 +3,6 @@
 # This is a system-specific configuration file #
 # All site general configration are done here  #
 ################################################
-error_reporting(E_ALL);
-ini_set('display_errors',1);
-ini_set('display_startup_errors',1);
 
 # Don't escape quotes when reading files from the database, disk, etc.
 ini_set('magic_quotes_runtime', '0');
@@ -81,6 +78,15 @@ $lc_databases = array(
 	)
 );
 
+# $lc_env: The setting for running environment: `development` or `production`
+$lc_env = 'development';
+# $lc_debugLevel: The debug level. If $lc_env = 'production', this is not considered.
+# `1` - show fatal errors, parse errors, but no PHP startup errors
+# `2` - show fatal errors, parse errors, warnings and notices
+# `3` - show all errors and warnings, except of level E_STRICT prior to PHP 5.4.0.
+# `int level` - set your own error reporting level. The parameter is either an integer representing a bit field, or named constants
+#  @see http://php.net/manual/en/errorfunc.configuration.php#ini.error-reporting
+$lc_debugLevel = 3;
 # $lc_defaultDbConnection: The default database connection
 $lc_defaultDbConnection = 'default';
 # $lc_siteName: Site Name
@@ -137,7 +143,9 @@ $lc_reqSign = '<span class="required">*</span>';
 $lc_nullFill = '<span class="nullFill">-</span>';
 # $lc_useDBAutoFields: Whether use DB auto field such as slug, created, updated, deleted, etc. or not
 $lc_useDBAutoFields = true;
-# $lc_minifyHTML: Compacting HTML code, including any inline JavaScript and CSS contained in it, can save many bytes of data and speed up downloading, parsing, and execution time.
+# $lc_minifyHTML: Compacting HTML code, including any inline JavaScript and CSS contained in it, 
+# can save many bytes of data and speed up downloading, parsing, and execution time.
+# It is forced to `false` when $lc_env = 'development'
 $lc_minifyHTML = true;
 /*
  * Auth Module Configuration
