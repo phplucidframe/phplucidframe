@@ -15,6 +15,53 @@
  */
 
 /**
+ * @internal
+ * 
+ * Initialize session.
+ * @see http://php.net/manual/en/session.configuration.php
+ * 
+ * @return void
+ */
+function session_init(){
+	$settings = array(
+		'default' => array(
+			'name'				=> 'LCSESSID', // the name of the session which is used as cookie name
+			'use_cookies'		=> '1', // specifies whether the module will use cookies to store the session id on the client side
+			'use_only_cookies'	=> '1', // specifies whether the module will only use cookies to store the session id on the client side. 
+										// Enabling this setting prevents attacks involved passing session ids in URLs
+			'use_trans_sid'		=> '0', // transparent sid support is enabled or not
+			'cache_limiter'		=> 'nocache', // the cache control method used for session pages: nocache, private, private_no_expire, or public.
+			'cookie_httponly'	=> '1', // Marks the cookie as accessible only through the HTTP protocol to not accessible by scripting languages
+			'gc_probability'	=> 1, // in conjunction with gc_divisor is used to manage probability that the gc (garbage collection) routine is started
+			'gc_divisor'		=> 100, // defines the probability that the gc (garbage collection) process is started on every session initialization
+			'gc_maxlifetime'	=> 240, // specifies the number of seconds after which data will be seen as 'garbage' and potentially cleaned up
+			'cookie_lifetime'	=> 180, // the lifetime of the cookie in seconds which is sent to the browser. The value 0 means "until the browser is closed." 
+			'cookie_path'		=> '/', // path to set in the session cookie.
+			'save_path'			=> '' //  the path of the directory used to save session data.
+		)
+	);
+	$userSettings = _cfg('session');
+	$type = 'default';
+	$config = $settings[$type];
+	if($userSettings){
+		if( isset($userSettings['type']) && array_key_exists($userSettings['type'], $settings) ) $type = $userSettings['type'];
+		if( isset($userSettings['options']) && is_array($userSettings['options']) ){
+			$config = array_merge($config, $userSettings['options']);
+		}
+	}
+	
+	foreach($config as $key => $value){
+		if($key == 'gc_maxlifetime' || $key == 'cookie_lifetime') $value = $value * 60;
+		ini_set('session.'.$key, $value);
+	}
+	
+	if(function_exists('session_beforeStart')){
+		call_user_func('session_beforeStart');
+	}
+	
+	session_start();
+}
+/**
  * Set a message or value in Session using a name
  *
  * @param $name string The session variable name to store the value
@@ -183,3 +230,5 @@ function cookie_delete($name, $path='/'){
 	}
 	return (!isset($_COOKIE[$name])) ? true : false;
 }
+
+session_init();

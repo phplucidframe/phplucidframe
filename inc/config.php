@@ -3,43 +3,10 @@
 # This is a system-specific configuration file #
 # All site general configration are done here  #
 ################################################
-
-# Don't escape quotes when reading files from the database, disk, etc.
+/**
+* Don't escape quotes when reading files from the database, disk, etc.
+*/
 ini_set('magic_quotes_runtime', '0');
-
-# session.save_path defines the argument which is passed to the save handler.
-# If you choose the default files handler, this is the path where the files are created. Defaults to /tmp
-//ini_set('session.save_path', FILE . 'sessions/');
-
-# Use session cookies, not transparent sessions that puts the session id in the query string.
-ini_set('session.use_cookies', '1');
-ini_set('session.use_only_cookies', '1');
-ini_set('session.use_trans_sid', '0');
-# Don't send HTTP headers using PHP's session handler.
-ini_set('session.cache_limiter', 'none');
-# Use httponly session cookies.
-ini_set('session.cookie_httponly', '1');
-/**
- * Some distributions of Linux (most notably Debian) ship their PHP
- * installations with garbage collection (gc) disabled. Since this depends on
- * PHP's garbage collection for clearing sessions, ensure that garbage
- * collection occurs by using the most common settings.
- */
-ini_set('session.gc_probability', 1);
-ini_set('session.gc_divisor', 100);
-/**
- * Set session lifetime (in seconds), i.e. the time from the user's last visit
- * to the active session may be deleted by the session garbage collector. When
- * a session is deleted, authenticated users are logged out, and the contents
- * of the user's $_SESSION variable is discarded.
- */
-ini_set('session.gc_maxlifetime', 86400); 	# 24 hours
-/**
- * Set session cookie lifetime (in seconds), i.e. the time from the session is
- * created to the cookie expires, i.e. when the browser is expected to discard
- * the cookie. The value 0 means "until the browser is closed".
- */
-ini_set('session.cookie_lifetime', 86400); 	# 24 hours
 /**
  * Set the maximum amount of memory in bytes that a script is allowed to allocate.
  * This helps prevent poorly written scripts for eating up all available memory on a server
@@ -50,20 +17,52 @@ ini_set('memory_limit', '256M');
  * This helps prevent poorly written scripts from tying up the server. The default setting is 30.
 */
 ini_set('max_execution_time', 36000);
-
-// For IE<=8
-session_cache_limiter("must-revalidate");
-
-session_start();
 /**
  * Default Time Zone
  */
 date_default_timezone_set('Asia/Rangoon');
-
-# Routing query name
+/**
+ * Routing query name
+ */
+# 
 define('ROUTE', 'route');
-# session prefix
+/**
+ * Session prefix
+ * All session variable names will be prefixed with this
+ */
 define('S_PREFIX', '__LucidFrame__');
+/**
+ * Session configuration.
+ *
+ * Contains an array of settings to use for session configuration. 
+ * Any settings declared here will override the settings of the default config.
+ *
+ * ## Options
+ *
+ * - `name` - The name of the session to use. Defaults to 'LCSESSID'
+ * - `use_cookies` - Whether cookies will be used to store the session id on the client side. Defaults to 1 (enabled).
+ * - `use_only_cookies` - Whether the module will *only* use cookies to store the session id on the client side. Defaults to 1 (enabled).
+ * - `use_trans_sid` - Transparent sid support is enabled or not
+ * - `cache_limiter` - The cache control method used for session pages: nocache (default), private, private_no_expire, or public.
+ * - `cookie_httponly` - Marks the cookie as accessible only through the HTTP protocol.
+ * - `gc_divisor` - The probability that the gc (garbage collection) process is started on every session initialization. Default to 100.
+ * - `gc_probability` - In conjunction with `gc_divisor` is used to manage probability that the gc (garbage collection) routine is started. Default to 1.
+ * - `gc_maxlifetime` - The number of minutes after which data will be seen as 'garbage' and potentially cleaned up. Defaults to 240 minutes.
+ * - `cookie_lifetime`- The number of minutes you want session cookies to live for. Defaults to 180 minutes
+ *    The value 0 means "until the browser is closed.". Defaults to 180 mintues.
+ * - `cookie_path` - The path to set in the session cookie. Defaults to '/'
+ * - `save_path`- The path of the directory used to save session data. Defaults to ''.
+ * 
+ * see more options at http://php.net/manual/en/session.configuration.php
+ * 
+ * The hook `session_beforeStart()` is available to define in /app/helpers/session_helper.php 
+ * so that you could do something before session starts.
+ */
+$lc_session = array(
+	'type' => 'default', // no need to change this for the time being
+	'options' => array(
+	)
+);
 
 # $lc_databases: The array specifies the database connection
 $lc_databases = array(
