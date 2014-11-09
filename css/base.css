@@ -1029,11 +1029,14 @@ table.list tr td {
 	padding: 3px 5px;
 }
 
-table.list tr.label td {
+table.list tr.label td,
+table.list tr th {
 	border-top: medium none;
 }
 
-table.list tr td.tableLeft {
+table.list tr td.tableLeft,
+table.list tr td:first-child,
+table.list tr th:first-child {
 	border-left: 1px solid #999;
 }
 
@@ -1041,7 +1044,8 @@ table.list tr.top td {
 	border-top: none;
 }
 
-table.list tr.label td {
+table.list tr.label td,
+table.list tr th {
 	color: #333;
 	height: 27px;
 	padding: 0 5px;
@@ -1057,7 +1061,8 @@ table.list tr.label td {
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f9f9f9', endColorstr='#e5e5e5',GradientType=0 ); /* IE6-9 */
 }
 
-table.list tr.label td, table.list tr.label td div {
+table.list tr.label td, table.list tr.label td div
+table.list tr th, table.list tr th div {
 	color: #333;
 }
 
