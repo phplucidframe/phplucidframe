@@ -34,8 +34,8 @@ function session_init(){
 			'cookie_httponly'	=> '1', // Marks the cookie as accessible only through the HTTP protocol to not accessible by scripting languages
 			'gc_probability'	=> 1, // in conjunction with gc_divisor is used to manage probability that the gc (garbage collection) routine is started
 			'gc_divisor'		=> 100, // defines the probability that the gc (garbage collection) process is started on every session initialization
-			'gc_maxlifetime'	=> 240, // specifies the number of seconds after which data will be seen as 'garbage' and potentially cleaned up
-			'cookie_lifetime'	=> 180, // the lifetime of the cookie in seconds which is sent to the browser. The value 0 means "until the browser is closed." 
+			'gc_maxlifetime'	=> 240, // specifies the number of minutes after which data will be seen as 'garbage' and potentially cleaned up
+			'cookie_lifetime'	=> 180, // the lifetime of the cookie in minutes which is sent to the browser. The value 0 means "until the browser is closed." 
 			'cookie_path'		=> '/', // path to set in the session cookie.
 			'save_path'			=> '' //  the path of the directory used to save session data.
 		)
