@@ -96,10 +96,21 @@ $lc_siteDomain = $_SERVER['HTTP_HOST'];
 # Leave blank if it is located in the document root
 $lc_baseURL = 'LucidFrame';
 # $lc_sites: consider sub-directories as additional site roots and namespaces
+/**
+ * ### Syntax
+ * 	array(
+ * 		'virtual_folder_name (namespace)'  => 'physical_folder_name_directly_under_app_directory
+ * 	)
+ * Then, you could specify the directories and you can let LucidFrame know to include the files from those directories automatically.
+ *   /app/admin/css
+ *   /app/admin/inc
+ *   /app/admin/helpers
+ *   /app/admin/js
+ * you could also set 'lc-admin' => 'admin', then you can access http://localhost/LucidFrame/lc-admin
+ * Leave this an empty array if you don't want this feature
+ */
 $lc_sites = array(
 	'admin' => 'admin',
-	/* 'virtual_folder_name (namespace)'  => 'physical_folder_name_directly_under_app_directory */
-	/* you could also set 'lc-admin' => 'admin', then you can access http://localhost/LucidFrame/lc-admin */
 );
 # $lc_homeRouting: Home page routing; if it is not set, default is 'home'
 $lc_homeRouting = 'home';
