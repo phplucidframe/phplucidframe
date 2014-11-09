@@ -1,4 +1,4 @@
-<?php include( _i('inc/header.php') ); ?>
+<?php include( _i('inc/tpl/header.php') ); ?>
 <h4><?php echo $pageTitle; ?></h4>
 <?php include( APP_ROOT . 'admin/inc/language-selection.php' ); ?>
 <div id="buttonZone">
@@ -10,4 +10,4 @@
 <div id="dialog-confirm" class="dialog" title="<?php echo _t('Confirm Post Delete'); ?>" style="display:none">
     <div class="msg-body"><?php echo _t('Are you sure you want to delete?'); ?></div>
 </div>
-<?php include( _i('inc/footer.php') ); ?>
+<?php include( _i('inc/tpl/footer.php') ); ?>

@@ -4,7 +4,7 @@
  * It generally should contain HTML between <body> and </body>.
  */
 ?>
-<?php include( _i('inc/header.php') ); ?>
+<?php include( _i('inc/tpl/header.php') ); ?>
 
 <h3><?php echo $blog->title; ?></h3>
 <p>
@@ -60,4 +60,4 @@
 	</form>
 </p>
 
-<?php include( _i('inc/footer.php') ); ?>
+<?php include( _i('inc/tpl/footer.php') ); ?>

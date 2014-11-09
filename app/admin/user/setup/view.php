@@ -1,4 +1,4 @@
-<?php include( _i('inc/header.php') ); ?>
+<?php include( _i('inc/tpl/header.php') ); ?>
 <div class="block full-width">
 	<h3><?php echo _t($pageTitle); ?></h3>
 	<div class="content-box">
@@ -60,4 +60,4 @@
 	</div>
 	<div id="block-foot"></div>
 </div>
-<?php include( _i('inc/footer.php') ); ?>
+<?php include( _i('inc/tpl/footer.php') ); ?>

@@ -1,4 +1,4 @@
-<?php include( _i('inc/header.php') ); ?>
+<?php include( _i('inc/tpl/header.php') ); ?>
 <h4><?php echo $pageTitle; ?></h4>
 <div id="buttonZone">
     <button type="button" class="button mini green" id="btnNew"><?php echo _t('Add New Category'); ?></button>
@@ -49,4 +49,4 @@
         <?php Form::token(); ?>
     </form>
 </div>
-<?php include( _i('inc/footer.php') ); ?>
+<?php include( _i('inc/tpl/footer.php') ); ?>

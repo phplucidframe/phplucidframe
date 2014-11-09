@@ -1,4 +1,4 @@
-<?php include( _i('inc/header.php')) ; ?>
+<?php include( _i('inc/tpl/header.php')) ; ?>
 <h4><?php echo _t($pageTitle); ?></h4>
 <div id="buttonZone">
     <button type="button" class="button mini green" id="btnNew"><?php echo _t('Add New User'); ?></button>
@@ -13,4 +13,4 @@
 <div id="dialog-warning" class="dialog" title="<?php echo _t('Delete Restriction'); ?>" style="display:none">
     <div class="msg-body"><?php echo _t('You cannot delete the default user account.'); ?></div>
 </div>
-<?php include( _i('inc/footer.php') ); ?>
+<?php include( _i('inc/tpl/footer.php') ); ?>

@@ -4,7 +4,7 @@
  * It generally should contain HTML between <body> and </body>.
  */
 ?>
-<?php include( _i('inc/header.php') ); ?>
+<?php include( _i('inc/tpl/header.php') ); ?>
 
 <h1><?php echo _t('Welcome to LucidFrame'); ?></h1>
 <?php echo _tc('about'); ?>
@@ -20,4 +20,4 @@
 	<a href="<?php echo _url('blog/2/url-rewrite-to-a-lucid-page-including-a-form-example'); ?>" class="button">View AJAX Form Example</a>
 </p>
 
-<?php include( _i('inc/footer.php') ); ?>
+<?php include( _i('inc/tpl/footer.php') ); ?>

@@ -31,11 +31,11 @@ $twImage 	= (_meta('twitter:image')) ? _meta('twitter:image') : _img('logo-120x1
 <meta property="og:description" content="<?php echo $ogDesc; ?>" />
 <meta property="og:site_name" content="<?php echo $ogSiteName; ?>" />
 <!-- Twitter -->
-<meta name="twitter:card" content="<?php echo $twCard; ?>">
-<meta name="twitter:site" content="@<?php echo $twSite; ?>">
-<meta name="twitter:title" content="<?php echo $twTitle; ?>">
-<meta name="twitter:description" content="<?php echo $twDesc; ?>">
-<meta name="twitter:image" content="<?php echo $twImage; ?>">
+<meta name="twitter:card" content="<?php echo $twCard; ?>" />
+<meta name="twitter:site" content="@<?php echo $twSite; ?>" />
+<meta name="twitter:title" content="<?php echo $twTitle; ?>" />
+<meta name="twitter:description" content="<?php echo $twDesc; ?>" />
+<meta name="twitter:image" content="<?php echo $twImage; ?>" />
 
 <link rel="shortcut icon" href="<?php echo _img('favicon.ico'); ?>" type="image/x-icon" />
 <?php _css('base.css'); ?>

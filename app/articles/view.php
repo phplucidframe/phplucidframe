@@ -4,7 +4,7 @@
  * It generally should contain HTML between <body> and </body>.
  */
 ?>
-<?php include( _i('inc/header.php') ); ?>
+<?php include( _i('inc/tpl/header.php') ); ?>
 
 <h3><?php echo $pageTitle; ?></h3>
 <?php
@@ -35,4 +35,4 @@ if(count($articles)){
 }
 ?>
 
-<?php include( _i('inc/footer.php') ); ?>
+<?php include( _i('inc/tpl/footer.php') ); ?>
