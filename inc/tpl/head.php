@@ -21,6 +21,7 @@ $twImage 	= (_meta('twitter:image')) ? _meta('twitter:image') : _img('logo-120x1
 <link rel="canonical" href="<?php echo _canonical(); ?>" />
 <?php _hreflang(); ?>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" /> <?php // remove this line if your website isn't specifically designed to be responsive ?>
 <meta name="description" content="<?php echo $lc_metaDescription; ?>" />
 <meta name="keywords" content="<?php echo $lc_metaKeywords; ?>" />
 <!-- Facebook -->
