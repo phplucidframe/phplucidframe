@@ -73,8 +73,11 @@ class Form{
 		if($token == $postedToken){
 			# check referer if it is requesting in the same site
 			if($_SERVER['HTTP_REFERER'] && _cfg('siteDomain')){
-				$parsedURL = parse_url($_SERVER['HTTP_REFERER']);
-				if( strcasecmp(_cfg('siteDomain'), $parsedURL['host']) == 0 ){
+				$siteDomain	= _cfg('siteDomain');
+				$siteDomain	= preg_replace('/^www\./', '', $siteDomain);
+				$parsedURL	= parse_url($_SERVER['HTTP_REFERER']);
+				$parsedURL['host'] = preg_replace('/^www\./', '', $parsedURL['host']);
+				if( strcasecmp($siteDomain, $parsedURL['host']) == 0 ){
 					$result = true;
 				}
 			}
