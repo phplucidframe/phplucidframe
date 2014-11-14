@@ -1,7 +1,7 @@
 The MIT License
 
-LucidFrame : Simple & Flexible PHP Development
-Copyright (c) 2014, LucidFrame.
+PHPLucidFrame : Simple, Lightweight & yet Powerfull PHP Application Framework
+Copyright (c) 2014, PHPLucidFrame.
 
 Permission is hereby granted, free of charge, to any person obtaining a
 copy of this software and associated documentation files (the "Software"),
@@ -23,4 +23,4 @@ DEALINGS IN THE SOFTWARE.
 
 Author:
 Sithu K.
-sithukyaw.com
+<hello@sithukyaw.com>

@@ -6,7 +6,7 @@
  * @package		LC\Helpers\Validation
  * @since		PHPLucidFrame v 1.0.0
  * @copyright	Copyright (c), PHPLucidFrame.
- * @author 		Sithu K. <sithukyaw.com>
+ * @author 		Sithu K. <hello@sithukyaw.com>
  * @link 		http://phplucidframe.sithukyaw.com
  * @license		http://www.opensource.org/licenses/mit-license.php MIT License
  *
