@@ -21,15 +21,15 @@
 						<td class="label"><?php echo _t('Password').$lc_reqSign; ?></td>
 						<td class="labelSeperator">:</td>
 						<td class="entry">
-	                    	<input type="password" name="txtPwd" id="txtPwd" size="30" />
-	                    </td>
+							<input type="password" name="txtPwd" id="txtPwd" size="30" />
+						</td>
 					</tr>
 					<tr class="tdPassword">
 						<td class="label"><?php echo _t('Confirm Password').$lc_reqSign; ?></td>
 						<td class="labelSeperator">:</td>
 						<td class="entry">
-	                    	<input type="password" name="txtConfirmPwd" id="txtConfirmPwd" size="30" />
-	                    </td>
+							<input type="password" name="txtConfirmPwd" id="txtConfirmPwd" size="30" />
+						</td>
 					</tr>
 				<?php endif ?>
 				<tr>
@@ -41,11 +41,11 @@
 					<td class="label"><?php echo _t('Role').$lc_reqSign; ?></td>
 					<td class="labelSeperator">:</td>
 					<td class="entry">
-                    	<select name="cboRole">
-                        	<option value="editor" <?php if($user->role == 'editor') echo 'selected="selected"'; ?>>Editor</option>
-                            <option value="admin" <?php if($user->role == 'admin') echo 'selected="selected"'; ?>>Administrator</option>
-                        </select>
-                    </td>
+						<select name="cboRole">
+							<option value="editor" <?php if($user->role == 'editor') echo 'selected="selected"'; ?>>Editor</option>
+							<option value="admin" <?php if($user->role == 'admin') echo 'selected="selected"'; ?>>Administrator</option>
+						</select>
+					</td>
 				</tr>
 				<tr>
 					<td colspan="2">
@@ -55,7 +55,7 @@
 					</td>
 				</tr>
 			</table>
-            <?php Form::token(); ?>
+			<?php Form::token(); ?>
 		</form>
 	</div>
 	<div id="block-foot"></div>

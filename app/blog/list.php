@@ -89,4 +89,4 @@ if(count($blog)){
 	?>
 	<div class="noRecord"><?php echo _t('There is no record.'); ?></div>
 	<?php
-}	
+}

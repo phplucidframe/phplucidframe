@@ -34,14 +34,14 @@ if($result){
 	?>
 	<table cellpadding="0" cellspacing="0" border="0" class="list news">
 		<tr class="label">
-        	<td class="tableLeft" colspan="2"><?php echo _t('Actions'); ?></td>
-            <td>
+			<td class="tableLeft" colspan="2"><?php echo _t('Actions'); ?></td>
+			<td>
 				<span><?php echo _t('Title'); ?></span>
 				<label class="lang">(<?php echo _langName($lang); ?>)</label>
-            </td>
-            <td><?php echo _t('Author'); ?></td>
-            <td><?php echo _t('Category'); ?></td>
-            <td><?php echo _t('Date') ?></td>
+			</td>
+			<td><?php echo _t('Author'); ?></td>
+			<td><?php echo _t('Category'); ?></td>
+			<td><?php echo _t('Date') ?></td>
 
 		</tr>
 		<?php
@@ -51,20 +51,20 @@ if($result){
 			$row->catName 	= ($row->catName_i18n) ? $row->catName_i18n : $row->catName;
 			?>
 			<tr id="row-<?php echo $row->postId; ?>">
-                <td class="tableLeft colAction">
-                    <a href="<?php echo _url('admin/post/setup', array($row->postId, 'lang' => $lang)); ?>" class="edit" title="Edit" >
-                        <span><?php echo _t('Edit'); ?></span>
-                    </a>
-	            </td>
-                <td class="colAction">
-	                <a href="#" class="delete" title="Delete" onclick="LC.Page.Post.List.remove(<?php echo $row->postId; ?>)">
-	                   	<span><?php echo _t('Delete'); ?></span>
-	                </a>
-                </td>
+				<td class="tableLeft colAction">
+					<a href="<?php echo _url('admin/post/setup', array($row->postId, 'lang' => $lang)); ?>" class="edit" title="Edit" >
+						<span><?php echo _t('Edit'); ?></span>
+					</a>
+				</td>
+				<td class="colAction">
+					<a href="#" class="delete" title="Delete" onclick="LC.Page.Post.List.remove(<?php echo $row->postId; ?>)">
+						<span><?php echo _t('Delete'); ?></span>
+					</a>
+				</td>
 				<td class="colTitle <?php echo $lang; ?>"><?php echo $row->postTitle;?></td>
-                <td class=""><?php echo $row->fullName; ?></td>
-                <td class="<?php echo $lang; ?>"><?php echo $row->catName; ?></td>
-                <td class=""><?php echo _fdateTime($row->created); ?></td>
+				<td class=""><?php echo $row->fullName; ?></td>
+				<td class="<?php echo $lang; ?>"><?php echo $row->catName; ?></td>
+				<td class=""><?php echo _fdateTime($row->created); ?></td>
 			</tr>
 			<?php
 		}
