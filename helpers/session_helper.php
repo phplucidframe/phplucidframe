@@ -16,10 +16,10 @@
 
 /**
  * @internal
- * 
+ *
  * Initialize session.
  * @see http://php.net/manual/en/session.configuration.php
- * 
+ *
  * @return void
  */
 function session_init(){
@@ -27,7 +27,7 @@ function session_init(){
 		'default' => array(
 			'name'				=> 'LCSESSID', // the name of the session which is used as cookie name
 			'use_cookies'		=> '1', // specifies whether the module will use cookies to store the session id on the client side
-			'use_only_cookies'	=> '1', // specifies whether the module will only use cookies to store the session id on the client side. 
+			'use_only_cookies'	=> '1', // specifies whether the module will only use cookies to store the session id on the client side.
 										// Enabling this setting prevents attacks involved passing session ids in URLs
 			'use_trans_sid'		=> '0', // transparent sid support is enabled or not
 			'cache_limiter'		=> 'nocache', // the cache control method used for session pages: nocache, private, private_no_expire, or public.
@@ -35,7 +35,7 @@ function session_init(){
 			'gc_probability'	=> 1, // in conjunction with gc_divisor is used to manage probability that the gc (garbage collection) routine is started
 			'gc_divisor'		=> 100, // defines the probability that the gc (garbage collection) process is started on every session initialization
 			'gc_maxlifetime'	=> 240, // specifies the number of minutes after which data will be seen as 'garbage' and potentially cleaned up
-			'cookie_lifetime'	=> 180, // the lifetime of the cookie in minutes which is sent to the browser. The value 0 means "until the browser is closed." 
+			'cookie_lifetime'	=> 180, // the lifetime of the cookie in minutes which is sent to the browser. The value 0 means "until the browser is closed."
 			'cookie_path'		=> '/', // path to set in the session cookie.
 			'save_path'			=> '' //  the path of the directory used to save session data.
 		)
@@ -49,16 +49,16 @@ function session_init(){
 			$config = array_merge($config, $userSettings['options']);
 		}
 	}
-	
+
 	foreach($config as $key => $value){
 		if($key == 'gc_maxlifetime' || $key == 'cookie_lifetime') $value = $value * 60;
 		ini_set('session.'.$key, $value);
 	}
-	
+
 	if(function_exists('session_beforeStart')){
 		call_user_func('session_beforeStart');
 	}
-	
+
 	session_start();
 }
 /**
@@ -170,7 +170,7 @@ if(!function_exists('flash_get')){
 /**
 * Send a cookie
 * Convenience method for setcookie()
-* 
+*
 * @param string $name The name of the cookie. 'cookiename' is called as cookie_get('cookiename') or $_COOKIE['cookiename']
 * @param mixed $value The value of the cookie. This value is stored on the clients computer
 * @param int $expiry The time the cookie expires. This is a Unix timestamp so is in number of seconds since the epoch.
@@ -181,9 +181,9 @@ if(!function_exists('flash_get')){
 * @param bool $secure Indicates that the cookie should only be transmitted over a secure HTTPS connection from the client
 * @param bool $httpOnly When TRUE the cookie will be made accessible only through the HTTP protocol.
 *  This means that the cookie won't be accessible by scripting languages, such as JavaScript
-* 
+*
 * @see http://php.net/manual/en/function.setcookie.php
-* 
+*
 * @return void
 */
 function cookie_set($name, $value, $expiry=0, $path='/', $domain='', $secure=false, $httpOnly=false){
@@ -195,9 +195,9 @@ function cookie_set($name, $value, $expiry=0, $path='/', $domain='', $secure=fal
 }
 /**
 * Get a cookie
-* Convenience method to access $_COOKIE[cookiename] 
+* Convenience method to access $_COOKIE[cookiename]
 * @param string $name The name of the cookie to retrieve
-* 
+*
 * @return mixed
 *  The value of the cookie if found.
 *  NULL if not found.
@@ -212,11 +212,11 @@ function cookie_get($name=''){
 }
 /**
 * Delete a cookie
-* Convenience method to delete $_COOKIE['cookiename'] 
+* Convenience method to delete $_COOKIE['cookiename']
 * @param string $name The name of the cookie to delete
 * @param string $path The path on the server in which the cookie will be available on.
 *  This would be the same value used for cookie_set().
-* 
+*
 * @return bool TRUE for the successful delete; FALSE for no delete.
 */
 function cookie_delete($name, $path='/'){

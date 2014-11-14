@@ -140,10 +140,10 @@ class Form{
 	/**
 	 * Permits you to set the value of an input or textarea.
 	 * Allows you to safely use HTML and characters such as quotes within form elements without breaking out of the form
-	 * 
+	 *
 	 * @param string $name The input element field name
 	 * @param mixed $defaultValue The default value of the input element (optional)
-	 * 
+	 *
 	 * @return mixed The value of the input element
 	 */
 	public static function value($name, $defaultValue=NULL){
@@ -157,11 +157,11 @@ class Form{
 	}
 	/**
 	 * Allow you to select the option of a drop-down list.
-	 * 
+	 *
 	 * @param string $name The field name of the drop-down list
 	 * @param mixed $value The option value to check against
 	 * @param mixed $defaultValue The default selected value (optional)
-	 * 
+	 *
 	 * @return string `'selected="selected"'` if the option is found, otherwise the empty string returned
 	 */
 	public static function selected($name, $value, $defaultValue=NULL){
@@ -169,11 +169,11 @@ class Form{
 	}
 	/**
 	 * Allow you to select a checkbox or a radio button
-	 * 
+	 *
 	 * @param string $name The field name of the checkbox or radio button
 	 * @param mixed $value The value to check against
 	 * @param mixed $defaultValue The default selected value (optional)
-	 * 
+	 *
 	 * @return string `'checked="checked"'` if the option is found, otherwise the empty string returned
 	 */
 	public static function checked($name, $value, $defaultValue=NULL){
@@ -182,11 +182,11 @@ class Form{
 	/**
 	 * @internal
 	 * Allow you to select a checkbox or a radio button or an option of a drop-down list
-	 * 
+	 *
 	 * @param string $name The field name of the checkbox or radio button or drop-down list
 	 * @param mixed $value The value to check against
 	 * @param mixed $defaultValue The default selected value (optional)
-	 * 
+	 *
 	 * @return bool TRUE if the option is found, otherwise FALSE
 	 */
 	private static function inputSelection($name, $value, $defaultValue=NULL){

@@ -2,7 +2,7 @@
 /**
  * This file is part of the PHPLucidFrame library.
  * This is a system-specific configuration file. All site general configuration are done here.
- * 
+ *
  * @package		LC
  * @since		PHPLucidFrame v 1.0.0
  * @copyright	Copyright (c), PHPLucidFrame.
@@ -35,7 +35,6 @@ date_default_timezone_set('Asia/Rangoon');
 /**
  * Routing query name
  */
-# 
 define('ROUTE', 'route');
 /**
  * Session prefix
@@ -45,7 +44,7 @@ define('S_PREFIX', '__LucidFrame__');
 /**
  * Session configuration.
  *
- * Contains an array of settings to use for session configuration. 
+ * Contains an array of settings to use for session configuration.
  * Any settings declared here will override the settings of the default config.
  *
  * ## Options
@@ -63,10 +62,10 @@ define('S_PREFIX', '__LucidFrame__');
  *    The value 0 means "until the browser is closed.". Defaults to 180 mintues.
  * - `cookie_path` - The path to set in the session cookie. Defaults to '/'
  * - `save_path`- The path of the directory used to save session data. Defaults to ''.
- * 
+ *
  * see more options at http://php.net/manual/en/session.configuration.php
- * 
- * The hook `session_beforeStart()` is available to define in /app/helpers/session_helper.php 
+ *
+ * The hook `session_beforeStart()` is available to define in /app/helpers/session_helper.php
  * so that you could do something before session starts.
  */
 $lc_session = array(
@@ -164,7 +163,7 @@ $lc_reqSign = '<span class="required">*</span>';
 $lc_nullFill = '<span class="nullFill">-</span>';
 # $lc_useDBAutoFields: Whether use DB auto field such as slug, created, updated, deleted, etc. or not
 $lc_useDBAutoFields = true;
-# $lc_minifyHTML: Compacting HTML code, including any inline JavaScript and CSS contained in it, 
+# $lc_minifyHTML: Compacting HTML code, including any inline JavaScript and CSS contained in it,
 # can save many bytes of data and speed up downloading, parsing, and execution time.
 # It is forced to `false` when $lc_env = 'development'
 $lc_minifyHTML = true;

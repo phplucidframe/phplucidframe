@@ -20,7 +20,7 @@
  * ob_start callback function to output buffer
  * It also adds the conditional IE comments and class (ie6,...ie10..) to <html>
  * Hook to implement `__flush()` at app/helpers/utility_helper.php
- * 
+ *
  * @param string $buffer The output buffer
  *
  * @return string
@@ -308,7 +308,7 @@ function _lang(){
  * Read "lang" from query string; if it is not found, get the default language code
  * Basically, it is useful for admin content management by language
  * Hook to implement `__getLang()` at app/helpers/utility_helper.php
- * 
+ *
  * @return string The language code
  */
 function _getLang(){
@@ -419,7 +419,7 @@ function _ssl(){
 /**
  * Get the current routing path
  * For example,
- * 
+ *
  * - example.com/foo/bar would return foo/bar
  * - example.com/en/foo/bar would also return foo/bar
  * - example.com/1/this-is-slug (if accomplished by RewriteRule) would return the underlying physical path
@@ -432,7 +432,7 @@ function _r(){
 /**
  * The more realistic function to get the current routing path on the address bar regardless of RewriteRule behind
  * For example,
- * 
+ *
  * - example.com/foo/bar would return foo/bar
  * - example.com/en/foo/bar would also return foo/bar
  * - example.com/1/this-is-slug would return 1/this-is-slug
@@ -559,7 +559,7 @@ function _hreflang(){
 }
 /**
  * Return a component of the current path.
- * When viewing a page http://www.example.com/foo/bar and its path would be "foo/bar", 
+ * When viewing a page http://www.example.com/foo/bar and its path would be "foo/bar",
  * for example, arg(0) returns "foo" and arg(1) returns "bar"
  *
  * @param mixed $index
@@ -612,12 +612,12 @@ function _arg($index = NULL, $path = NULL) {
 /**
  * Check if the URI has a language code and return it when it matches
  * For example,
- * 
+ *
  * - /LucidFrame/en/....
  * - /LucidFrame/....
  * - /en/...
  * - /....
- * 
+ *
  * @return mixed The language code if it has one, otherwise return FALSE
  */
 function _getLangInURI(){
@@ -1099,12 +1099,12 @@ function _meta($key, $value=''){
 /**
  * Simple mail helper function
  *  The formatting of the email addresses must comply with RFC 2822. Some examples are:
- * 
+ *
  *  - user@example.com
  *  - user@example.com, anotheruser@example.com
  *  - User <user@example.com>
  *  - User <user@example.com>, Another User <anotheruser@example.com>*
- * 
+ *
  * @param string $from 		The sender of the mail
  * @param string $to 		The receiver or receivers of the mail
  * @param string $subject 	Subject of the email to be sent.

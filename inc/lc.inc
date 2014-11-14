@@ -12,7 +12,7 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.txt
  */
- 
+
 /**
  * @internal
  * Site-wide warnings to be shown
@@ -77,7 +77,7 @@ function _i($file, $recursive=true){
 		);
 
 	}
-		
+
 	if(isset($lc_sites) && is_array($lc_sites) && count($lc_sites)){
 		if(array_key_exists(LC_NAMESPACE, $lc_sites)){
 		# Find in SUB-DIR -> APP_ROOT -> ROOT
@@ -88,7 +88,7 @@ function _i($file, $recursive=true){
 			);
 		}
 	}
-	
+
 	# $key is for file_exists()
 	# $value is for include() or <script> or <link>
 	foreach($folders as $key => $value){
@@ -98,8 +98,8 @@ function _i($file, $recursive=true){
 			return $fileWithPath;
 		}
 		if($recursive == false) break;
-	}	
-	
+	}
+
 	if(strstr($_SERVER['PHP_SELF'], APP_DIR)){
 		if(is_file($file) && file_exists($file)){
 			return $file;
@@ -116,7 +116,7 @@ function _i($file, $recursive=true){
  * Load running environment settings
  * Initalize the site language(s), error reporting
  * Define two constants - REQUEST_URI and LC_NAMESPACE
- * 
+ *
  * @return void
  */
 function __envLoader(){
@@ -126,7 +126,7 @@ function __envLoader(){
 	global $lc_env;
 	global $lc_debugLevel;
 	global $lc_minifyHTML;
-	
+
 	$lc_env = strtolower($lc_env);
 	if(!in_array($lc_env, array('development', 'production'))) $lc_env = 'production';
 	if($lc_env == 'production'){
@@ -157,7 +157,7 @@ function __envLoader(){
 				ini_set('display_startup_errors', 1);
 		}
 	}
-	
+
 	if( !isset($lc_languages) || (isset($lc_languages) && !is_array($lc_languages)) ){
 		$lc_languages = array('en' => 'English');
 	}

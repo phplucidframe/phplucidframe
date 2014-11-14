@@ -18,7 +18,7 @@
 
 We follow [the successful Git branching model](http://nvie.com/posts/a-successful-git-branching-model/).
 
-- Create a **topic/feature** branch from where you want to base your work. This is usually the **dev** branch: `$ git checkout -b myfeature dev` 
+- Create a **topic/feature** branch from where you want to base your work. This is usually the **dev** branch: `$ git checkout -b myfeature dev`
 - For bug fixes, create a branch from master `$ git checkout -b mybugfix master`.
 - Only target release branches if you are certain your fix must be on that branch.
 - Better avoid working directly on the master branch, to avoid conflicts if you pull in updates from origin.
@@ -38,7 +38,7 @@ We follow [the successful Git branching model](http://nvie.com/posts/a-successfu
 - Functions and control structures must use [BSD KNF style braces](http://en.wikipedia.org/wiki/Indent_style#BSD_KNF_style).
 - A class' opening `{` must be on the same line as the class name.
 - Class names MUST be declared in [StudlyCaps](http://en.wikipedia.org/wiki/CamelCase), e.g., `Class FooBar{ }`.
-- Variable names 
+- Variable names
   - MUST be declared in [camelCase](http://en.wikipedia.org/wiki/CamelCase), e.g., `$fooBar`.
   - Some variable names could be prefixed like `$lc_fooBar` as for namespace.
 - Function names

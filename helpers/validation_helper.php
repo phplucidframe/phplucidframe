@@ -420,7 +420,7 @@ function validate_fileExactDimension($value, $width, $height){
  * Validation of image file upload for max width only
  * @param array $value The $_FILES array
  * @param int $maxWidth	The maximum image width in pixels
- * @return boolean 
+ * @return boolean
  *  TRUE if the uploaded image does not exceed the maximum width allowed;
  *  FALSE otherwise
  */
@@ -468,10 +468,10 @@ function validate_ip($value, $type = 'both') {
  * - `d-m-y` 31-12-2014 separators can be a period, dash, forward slash, but not allow space
  * - `m-d-y` 12-31-2014 separators can be a period, dash, forward slash, but not allow space
  * - `y-m-d` 2014-12-31 separators can be a period, dash, forward slash, but not allow space
- * 
+ *
  * @param string $value The date string being checked
  * @param string $format The date format to be validated against. Default is y-m-d for 2014-12-31
- * 
+ *
  * @return bool TRUE on success; FALSE on failure
  */
 function validate_date($value, $format = 'y-m-d'){
@@ -482,7 +482,7 @@ function validate_date($value, $format = 'y-m-d'){
 	$sepGroup = '([-\/.])';
 	$cleanFormat = preg_replace('/'.$sepGroup.'/', '', $format); // remove the separators from the format
 	$pattern = '';
-	
+
 	if(in_array($cleanFormat, array('dmy', 'mdy'))){
 		$pattern = '/^([\d]{1,2})'.$sepGroup.'([\d]{1,2})'.$sepGroup.'([\d]{4})$/'; // dmy or mdy
 	}
@@ -506,16 +506,16 @@ function validate_date($value, $format = 'y-m-d'){
 /**
  * Validation of a time which checks if the string passed is a valid time in 24-hr or 12-hr format
  * **Allowed inputs**
- * 
+ *
  * - 23:59 or 01:00 or 1:00
  * - 23:59:59 or 01:00:00 or 1:00:00
  * - 11:59am or 01:00pm or 1:00pm
  * - 11:59 am or 01:00 pm or 1:00 PM or 1:00PM
  * - 11:59:59am 01:00:00pm or 1:00:00pm
  * - 11:59:59 AM 01:00:00 PM or 1:00:00PM
- * 
+ *
  * @param string $value The time string being checked
- * 
+ *
  * @return bool TRUE on success; FALSE on failure
  */
 function validate_time($value){
@@ -537,11 +537,11 @@ function validate_time($value){
  * - `d-m-y` 31-12-2014 separators can be a period, dash, forward slash, but not allow space
  * - `m-d-y` 12-31-2014 separators can be a period, dash, forward slash, but not allow space
  * - `y-m-d` 2014-12-31 separators can be a period, dash, forward slash, but not allow space
- * 
+ *
  * @param string $value The date/time string being checked
  * @param string $format The date format only to be validated against. Default is y-m-d for 2014-12-31.
  *  Time format is not needed. This will validate against 24-hr or 12-hr format.
- * 
+ *
  * @return bool TRUE on success; FALSE on failure
  */
 function validate_datetime($value, $format = 'y-m-d'){

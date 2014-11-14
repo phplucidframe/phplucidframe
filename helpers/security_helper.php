@@ -93,4 +93,4 @@ function _xss($value){
 		$value = preg_replace( $pattern, '', trim(stripslashes($value)));
 	}
 	return $value;
-}	
+}

@@ -108,7 +108,7 @@ class Pager{
 	/**
 	 * Pager calculation function
 	 * Before calling this function, the following property must be set:
-	 * 
+	 *
 	 * - $page
 	 * - $itemsPerPage
 	 * - $pageNumLimit
