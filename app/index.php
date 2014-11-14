@@ -1,22 +1,19 @@
 <?php
 /**
- * PHP 5
+ * PHPLucidFrame : Simple, Lightweight & yet Powerfull PHP Application Framework
+ * The request collector
  *
- * LucidFrame : Simple & Flexible PHP Development
- * Copyright (c), LucidFrame.
- *
- * Licensed under The MIT License
- * For full copyright and license information, please see the LICENSE.txt
- * Redistributions of files must retain the above copyright notice.
- *
- * @package     LC.app
- * @author		Sithu K. <cithukyaw@gmail.com>
- * @license     http://www.opensource.org/licenses/mit-license.php MIT License
+ * @package		LC
+ * @since		PHPLucidFrame v 1.0.0
+ * @copyright	Copyright (c), PHPLucidFrame.
+ * @author 		Sithu K. <hello@sithukyaw.com>
+ * @link 		http://phplucidframe.sithukyaw.com
+ * @license		http://www.opensource.org/licenses/mit-license.php MIT License
+ * 
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.txt
  */
 
-/*
- * Request Collector
- */
 require_once '../inc/bootstrap.php';
 
 ob_start('_flush');
