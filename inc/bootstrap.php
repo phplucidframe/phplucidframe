@@ -1,4 +1,23 @@
 <?php
+/**
+ * This file is part of the PHPLucidFrame library.
+ * 
+ * This file is loaded automatically by the app/index.php
+ * This file loads/creates any application wide configuration settings, such as 
+ * Database, Session, loading additional configuration files.
+ * This file includes the resources that provide global functions/constants that your application uses.
+ * 
+ * @package		LC
+ * @since		PHPLucidFrame v 1.0.0
+ * @copyright	Copyright (c), PHPLucidFrame.
+ * @author 		Sithu K. <hello@sithukyaw.com>
+ * @link 		http://phplucidframe.sithukyaw.com
+ * @license		http://www.opensource.org/licenses/mit-license.php MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.txt
+ */
+ 
 define('APP_DIR', 'app');
 
 if( !defined('APP_ROOT') ){
