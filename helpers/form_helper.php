@@ -6,7 +6,8 @@
  * @package		LC\Helpers\Form
  * @since		PHPLucidFrame v 1.0.0
  * @copyright	Copyright (c), PHPLucidFrame.
- * @author 		Sithu K. <cithukyaw@gmail.com>
+ * @author 		Sithu K. <hello@sithukyaw.com>
+ * @link 		http://phplucidframe.sithukyaw.com
  * @license		http://www.opensource.org/licenses/mit-license.php MIT License
  *
  * This source file is subject to the MIT license that is bundled
@@ -72,8 +73,11 @@ class Form{
 		if($token == $postedToken){
 			# check referer if it is requesting in the same site
 			if($_SERVER['HTTP_REFERER'] && _cfg('siteDomain')){
-				$parsedURL = parse_url($_SERVER['HTTP_REFERER']);
-				if( strcasecmp(_cfg('siteDomain'), $parsedURL['host']) == 0 ){
+				$siteDomain	= _cfg('siteDomain');
+				$siteDomain	= preg_replace('/^www\./', '', $siteDomain);
+				$parsedURL	= parse_url($_SERVER['HTTP_REFERER']);
+				$parsedURL['host'] = preg_replace('/^www\./', '', $parsedURL['host']);
+				if( strcasecmp($siteDomain, $parsedURL['host']) == 0 ){
 					$result = true;
 				}
 			}
@@ -130,7 +134,73 @@ class Form{
 				'callback' 	: '<?php echo self::$callback; ?>'
 			});
 		</script>
-        <?php
+		<?php
+		}
+	}
+	/**
+	 * Permits you to set the value of an input or textarea.
+	 * Allows you to safely use HTML and characters such as quotes within form elements without breaking out of the form
+	 *
+	 * @param string $name The input element field name
+	 * @param mixed $defaultValue The default value of the input element (optional)
+	 *
+	 * @return mixed The value of the input element
+	 */
+	public static function value($name, $defaultValue=NULL){
+		if(count($_POST)){
+			if(!isset($_POST[$name])) return '';
+			$value = _post($_POST[$name]);
+			return _h($value);
+		}else{
+			return _h($defaultValue);
+		}
+	}
+	/**
+	 * Allow you to select the option of a drop-down list.
+	 *
+	 * @param string $name The field name of the drop-down list
+	 * @param mixed $value The option value to check against
+	 * @param mixed $defaultValue The default selected value (optional)
+	 *
+	 * @return string `'selected="selected"'` if the option is found, otherwise the empty string returned
+	 */
+	public static function selected($name, $value, $defaultValue=NULL){
+		return (self::inputSelection($name, $value, $defaultValue)) ? 'selected="selected"' : '';
+	}
+	/**
+	 * Allow you to select a checkbox or a radio button
+	 *
+	 * @param string $name The field name of the checkbox or radio button
+	 * @param mixed $value The value to check against
+	 * @param mixed $defaultValue The default selected value (optional)
+	 *
+	 * @return string `'checked="checked"'` if the option is found, otherwise the empty string returned
+	 */
+	public static function checked($name, $value, $defaultValue=NULL){
+		return (self::inputSelection($name, $value, $defaultValue)) ? 'checked="checked"' : '';
+	}
+	/**
+	 * @internal
+	 * Allow you to select a checkbox or a radio button or an option of a drop-down list
+	 *
+	 * @param string $name The field name of the checkbox or radio button or drop-down list
+	 * @param mixed $value The value to check against
+	 * @param mixed $defaultValue The default selected value (optional)
+	 *
+	 * @return bool TRUE if the option is found, otherwise FALSE
+	 */
+	private static function inputSelection($name, $value, $defaultValue=NULL){
+		if(count($_POST)){
+			$name = preg_replace('/(\[\])$/', '', $name); // group[] will be replaced as group
+			if(!isset($_POST[$name])) return '';
+			$postedValue = _post($_POST[$name]);
+			if(is_array($postedValue) && in_array($value, $postedValue)) return true;
+			elseif($value == $postedValue) return true;
+			else return false;
+		}else{
+			if(is_array($defaultValue) && in_array($value, $defaultValue)) return true;
+			elseif($value == $defaultValue) return true;
+			else return false;
 		}
 	}
 }

@@ -6,7 +6,8 @@
  * @package		LC\Helpers\Authentication
  * @since		PHPLucidFrame v 1.0.0
  * @copyright	Copyright (c), PHPLucidFrame.
- * @author 		Sithu K. <cithukyaw@gmail.com>
+ * @author 		Sithu K. <hello@sithukyaw.com>
+ * @link 		http://phplucidframe.sithukyaw.com
  * @license		http://www.opensource.org/licenses/mit-license.php MIT License
  *
  * This source file is subject to the MIT license that is bundled
@@ -59,13 +60,16 @@ function auth_prerequisite(){
 	global $lc_siteErrors;
 	db_prerequisite();
 	$auth = _cfg('auth');
-	if($auth['table'] && $auth['fields']['id'] && $auth['fields']['role']){
+	if( isset($auth['table']) && $auth['table'] &&
+	    isset($auth['fields']['id']) && $auth['fields']['id'] &&
+	    isset($auth['fields']['role']) && $auth['fields']['role'] ){
 		return $auth;
 	}else{
 		$error = new stdClass();
-		$error->message = array(_t('Required to configure $lc_auth in "/inc/config.php". It is not allowed to configure in the application-level file "/app/inc/site.config.php".'));
+		$error->message = 'Required to configure $lc_auth in "/inc/config.php". It is not allowed to configure in the application-level file "/app/inc/site.config.php".';
+		$error->message = array(function_exists('_t') ? _t($error->message) : $error->message);
 		$error->type 	= 'sitewide-message error';
-		include( _i('inc/site.error.php') );
+		include( _i('inc/tpl/site.error.php') );
 		exit;
 	}
 }
@@ -96,7 +100,7 @@ function auth_set($sess){
  */
 function auth_clear(){
 	global $_auth;
-	deleteSession(auth_namespace());
+	session_delete(auth_namespace());
 	$_auth = NULL;
 }
 /**
@@ -143,7 +147,7 @@ if(!function_exists('auth_permissions')){
  */
 	function auth_permissions($role){
 		global $lc_auth;
-		$perms = $lc_auth['perms'];
+		$perms = isset($lc_auth['perms']) ? $lc_auth['perms'] : array();
 		return (isset($perms[$role])) ? $perms[$role] : array();
 	}
 }

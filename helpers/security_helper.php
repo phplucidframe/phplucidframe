@@ -6,7 +6,8 @@
  * @package		LC\Helpers\Security
  * @since		PHPLucidFrame v 1.0.0
  * @copyright	Copyright (c), PHPLucidFrame.
- * @author 		Sithu K. <cithukyaw@gmail.com>
+ * @author 		Sithu K. <hello@sithukyaw.com>
+ * @link 		http://phplucidframe.sithukyaw.com
  * @license		http://www.opensource.org/licenses/mit-license.php MIT License
  *
  * This source file is subject to the MIT license that is bundled
@@ -19,9 +20,10 @@
  */
 function security_prerequisite(){
 	$defaultSalt = md5('lucidframe');
-	$salt = file_get_contents(INC . 'security.salt');
-	if(strcmp($salt, $defaultSalt) === 0){
-		_cfg('sitewideWarnings', _t('Change your own security salt hash in the file "/inc/security.salt".'));
+	$salt = trim(_cfg('securitySalt'));
+	if(function_exists('mcrypt_encrypt') && strcmp($salt, $defaultSalt) === 0){
+		$msg = 'Change your own security salt hash in the file "/inc/security.salt".';
+		_cfg('sitewideWarnings', function_exists('_t') ? _t($msg) : $msg);
 	}
 }
 /**
@@ -91,4 +93,4 @@ function _xss($value){
 		$value = preg_replace( $pattern, '', trim(stripslashes($value)));
 	}
 	return $value;
-}	
+}

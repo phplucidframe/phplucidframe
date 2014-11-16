@@ -6,7 +6,8 @@
  * @package		LC\Helpers\Internationalization
  * @since		PHPLucidFrame v 1.0.0
  * @copyright	Copyright (c), PHPLucidFrame.
- * @author 		Sithu K. <cithukyaw@gmail.com>
+ * @author 		Sithu K. <hello@sithukyaw.com>
+ * @link 		http://phplucidframe.sithukyaw.com
  * @license		http://www.opensource.org/licenses/mit-license.php MIT License
  *
  * This source file is subject to the MIT license that is bundled
@@ -98,7 +99,7 @@ function i18n_load() {
 	if(!file_exists($filename)) return false;
 	# Open the po file
 	if (!$file = fopen($filename, 'r')) {
-		deleteSession("i18n.{$lc_lang}");
+		session_delete("i18n.{$lc_lang}");
 		return false;
 	}
 
@@ -108,7 +109,7 @@ function i18n_load() {
 	}
 
 	# parse the file
-	deleteSession("i18n.{$lc_lang}");
+	session_delete("i18n.{$lc_lang}");
 
 	$type = 0;
 	$translations = array();

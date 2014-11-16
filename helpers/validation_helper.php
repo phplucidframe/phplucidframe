@@ -6,47 +6,63 @@
  * @package		LC\Helpers\Validation
  * @since		PHPLucidFrame v 1.0.0
  * @copyright	Copyright (c), PHPLucidFrame.
- * @author 		Sithu K. <cithukyaw@gmail.com>
+ * @author 		Sithu K. <hello@sithukyaw.com>
+ * @link 		http://phplucidframe.sithukyaw.com
  * @license		http://www.opensource.org/licenses/mit-license.php MIT License
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.txt
  */
 
-$_validation_messages = array(
-	'default'			=> _t("'%s' needs to be revised."),
-	'mandatory' 		=> _t("'%s' is required."),
-	'mandatoryOne'		=> _t("'%s' must be entered/selected at least one."),
-	'mandatoryAll'		=> _t("'%s' is required. All must be entered/selected."),
-	'notAllowZero' 		=> _t("'%s' should not be zero."),
-	'alphaNumeric' 		=> _t("'%s' should contain only letters and numbers."),
-	'alphaNumericSpace' => _t("'%s' should contain only letters, numbers and spaces."),
-	'alphaNumericDash' 	=> _t("'%s' should contain only letters, numbers and dashes."),
-	'numeric' 			=> _t("'%s' should be a number."),
-	'numericSpace' 		=> _t("'%s' should contain only numbers and spaces."),
-	'numericDash' 		=> _t("'%s' should contain only numbers and dashes. It should not start or end with a dash."),
-	'username' 			=> _t("'%s' should contain only letters, numbers, periods, underscores and dashes."),
-	'naturalNumber' 	=> _t("'%s' should be a positive integer. It is not allowed zero."),
-	'wholeNumber' 		=> _t("'%s' should be a positive integer."),
-	'integer' 			=> _t("'%s' should be a positive or negative integer."),
-	'rationalNumber' 	=> _t("'%s' should be an integer or decimal."),
-	'positiveRationalNumber' => _t("'%s' should be a positive integer or decimal."),
-	'email'				=> _t("'%s' should be a valid format, e.g., username@example.com"),
-	'domain'			=> _t("'%s' should be a valid domain name with letters, numbers and dash only."),
-	'url'				=> _t("'%s' should be a valid website address, e.g., http://www.example.com"),
-	'min'				=> _t("'%s' should be greater than or equal to %d."),
-	'max'				=> _t("'%s' should be less than or equal to %d."),
-	'minLength'			=> _t("'%s' should have at least %d letters."),
-	'maxLength'			=> _t("'%s' should not exceed %d letters."),
-	'between'			=> _t("'%s' should be between %d and %d."),
-	'fileMaxSize'		=> _t("'%s' cannot exceed the maximum allowed upload size %dMB."),
-	'fileMaxWidth'		=> _t("'%s' cannot exceed the maximum allowed width %dpx."),
-	'fileMaxHeight'		=> _t("'%s' cannot exceed the maximum allowed height %dpx."),
-	'fileMaxDimension'	=> _t("'%s' cannot exceed the maximum allowed dimension %dx%dpx."),
-	'fileExactDimension'=> _t("'%s' should have the dimension %dx%dpx."),
-	'fileExtension'		=> _t("'%s' must be one of the file types: %s."),
-	'custom' 			=> _t("'%s' should be a valid format.")
+$lc_validationMessages = array(
+	'default'				=> "'%s' needs to be revised.",
+	'mandatory'				=> "'%s' is required.",
+	'mandatoryOne'			=> "'%s' must be entered/selected at least one.",
+	'mandatoryAll'			=> "'%s' is required. All must be entered/selected.",
+	'notAllowZero'			=> "'%s' should not be zero.",
+	'alphaNumeric'			=> "'%s' should contain only letters and numbers.",
+	'alphaNumericSpace'		=> "'%s' should contain only letters, numbers and spaces.",
+	'alphaNumericDash'		=> "'%s' should contain only letters, numbers and dashes.",
+	'numeric'				=> "'%s' should be a number.",
+	'numericSpace'			=> "'%s' should contain only numbers and spaces.",
+	'numericDash'			=> "'%s' should contain only numbers and dashes. It should not start or end with a dash.",
+	'username'				=> "'%s' should contain only letters, numbers, periods, underscores and dashes.",
+	'naturalNumber'			=> "'%s' should be a positive integer. It is not allowed zero.",
+	'wholeNumber'			=> "'%s' should be a positive integer.",
+	'integer'				=> "'%s' should be a positive or negative integer.",
+	'rationalNumber'		=> "'%s' should be an integer or decimal.",
+	'positiveRationalNumber'=> "'%s' should be a positive integer or decimal.",
+	'email'					=> "'%s' should be a valid format, e.g., username@example.com",
+	'domain'				=> "'%s' should be a valid domain name with letters, numbers and dash only.",
+	'url'					=> "'%s' should be a valid website address, e.g., http://www.example.com",
+	'min'					=> "'%s' should be greater than or equal to %d.",
+	'max'					=> "'%s' should be less than or equal to %d.",
+	'minLength'				=> "'%s' should have at least %d letters.",
+	'maxLength'				=> "'%s' should not exceed %d letters.",
+	'between'				=> "'%s' should be between %d and %d.",
+	'fileMaxSize'			=> "'%s' cannot exceed the maximum allowed upload size %dMB.",
+	'fileMaxWidth'			=> "'%s' cannot exceed the maximum allowed width %dpx.",
+	'fileMaxHeight'			=> "'%s' cannot exceed the maximum allowed height %dpx.",
+	'fileMaxDimension'		=> "'%s' cannot exceed the maximum allowed dimension %dx%dpx.",
+	'fileExactDimension'	=> "'%s' should have the dimension %dx%dpx.",
+	'fileExtension'			=> "'%s' must be one of the file types: %s.",
+	'date'					=> "'%s' should be a real date or valid for the date format '%s'.",
+	'time'					=> "'%s' should be a real time or valid for 12-hr/24-hr format.",
+	'datetime'				=> "'%s' should be a real date/time or valid for the date/time format '%s' 12-hr/24-hr.",
+	'custom'				=> "'%s' should be a valid format."
 );
+/**
+ * @internal
+ * Initialize the validation messages
+ */
+function __validation_init(){
+	global $lc_validationMessages;
+	$i18nEnabled = function_exists('_t');
+	foreach($lc_validationMessages as $key => $msg){
+		$lc_validationMessages[$key] = ($i18nEnabled) ? _t($msg) : $msg;
+	}
+	Validation::set('messages', $lc_validationMessages);
+}
 /**
  * Checks that a string contains something other than whitespace
  * @param mixed $value The value being checked
@@ -132,7 +148,7 @@ function validate_alphaNumericDash($value){
 /**
  * Checks if a value is numeric.
  * @param mixed $value The value being checked
- * @return 	boolean TRUE if var is a number or a numeric string, FALSE otherwise.
+ * @return boolean TRUE if var is a number or a numeric string, FALSE otherwise.
  */
 function validate_numeric($value) {
 	return is_numeric($value);
@@ -140,7 +156,7 @@ function validate_numeric($value) {
 /**
  * Checks if the value contains numbers and dashes
  * @param mixed $value The value being checked
- * @return 	boolean TRUE if the value contains numbers and dashes only, FALSE otherwise
+ * @return boolean TRUE if the value contains numbers and dashes only, FALSE otherwise
  */
 function validate_numericDash($value){
 	if(is_numeric($value) && strlen($value) == 1) return true;
@@ -169,9 +185,9 @@ function validate_username($value){
 /**
  * Checks if a value is a positive integer starting from 1, 2, 3, and so on. No decimal
  * @param mixed $value The value being checked
- * @return 	boolean TRUE if the value is natural number, FALSE otherwise
- * @see 	http://en.wikipedia.org/wiki/Natural_number
- *			http://math.about.com/od/mathhelpandtutorials/a/Understanding-Classification-Of-Numbers.htm
+ * @return boolean TRUE if the value is natural number, FALSE otherwise
+ * @see http://en.wikipedia.org/wiki/Natural_number
+ *   http://math.about.com/od/mathhelpandtutorials/a/Understanding-Classification-Of-Numbers.htm
  */
 function validate_naturalNumber($value){
 	$value = trim($value);
@@ -181,8 +197,8 @@ function validate_naturalNumber($value){
 /**
  * Checks if a value is a positive integer starting from 0, 1, 2, 3, and so on. No decimal.
  * @param mixed $value The value being checked
- * @return 	boolean TRUE if the value is whole number, FALSE otherwise
- * @see 	http://math.about.com/od/mathhelpandtutorials/a/Understanding-Classification-Of-Numbers.htm
+ * @return boolean TRUE if the value is whole number, FALSE otherwise
+ * @see http://math.about.com/od/mathhelpandtutorials/a/Understanding-Classification-Of-Numbers.htm
  */
 function validate_wholeNumber($value){
 	$value = trim($value);
@@ -192,8 +208,8 @@ function validate_wholeNumber($value){
 /**
  * Checks if a value is a positive or negative integer.
  * @param mixed $value The value being checked
- * @return 	boolean TRUE if the value is integer, FALSE otherwise
- * @see 	http://math.about.com/od/mathhelpandtutorials/a/Understanding-Classification-Of-Numbers.htm
+ * @return boolean TRUE if the value is integer, FALSE otherwise
+ * @see http://math.about.com/od/mathhelpandtutorials/a/Understanding-Classification-Of-Numbers.htm
  */
 function validate_integer($value){
 	$value = trim($value);
@@ -203,8 +219,8 @@ function validate_integer($value){
 /**
  * Checks if a value is an integer AND decimal.
  * @param mixed $value The value being checked
- * @return 	boolean TRUE if the value is rational number, FALSE otherwise
- * @see 	http://math.about.com/od/mathhelpandtutorials/a/Understanding-Classification-Of-Numbers.htm
+ * @return boolean TRUE if the value is rational number, FALSE otherwise
+ * @see http://math.about.com/od/mathhelpandtutorials/a/Understanding-Classification-Of-Numbers.htm
  */
 function validate_rationalNumber($value){
 	$value = trim($value);
@@ -214,8 +230,8 @@ function validate_rationalNumber($value){
 /**
  * Checks if a value is a positive integer AND decimal
  * @param mixed $value The value being checked
- * @return 	boolean TRUE if the value is positive rational number, FALSE otherwise
- * @see 	http://math.about.com/od/mathhelpandtutorials/a/Understanding-Classification-Of-Numbers.htm
+ * @return boolean TRUE if the value is positive rational number, FALSE otherwise
+ * @see http://math.about.com/od/mathhelpandtutorials/a/Understanding-Classification-Of-Numbers.htm
  */
 function validate_positiveRationalNumber($value){
 	$value = trim($value);
@@ -330,9 +346,9 @@ function validate_between($value, $min, $max) {
 /**
  * Used when a custom regular expression is needed.
  * Searches the value for a match to the regular expression given in pattern.
- * @param  mixed	$value		The value being checked
- * @param  string	$pattern 	The pattern to search for, as a string
- * @return mixed  1 if the pattern matches given value, 0 if it does not, or FALSE if an error occurred.
+ * @param  mixed $value The value being checked
+ * @param  string $pattern The pattern to search for, as a string
+ * @return mixed `1` if the pattern matches given value, `0` if it does not, or `FALSE` if an error occurred.
  * @see http://php.net/manual/en/function.preg-match.php
  */
 function validate_custom($value, $pattern){
@@ -344,7 +360,7 @@ function validate_custom($value, $pattern){
 /**
  * Validation of image file upload for allowed file extensions
  * @param array $value The $_FILES array
- * @param array $extensions	The Array of file extensions such as array('jpg', 'jpeg', 'png', 'gif')
+ * @param array $extensions The Array of file extensions such as `array('jpg', 'jpeg', 'png', 'gif')`
  * @return boolean TRUE if the uploaded file extension is allowed according to the given extensions, FALSE otherwise
  */
 function validate_fileExtension($value, $extensions = array('jpg', 'jpeg', 'png', 'gif')){
@@ -373,8 +389,9 @@ function validate_fileMaxSize($value, $maxSize = NULL) {
  * @param array $value The $_FILES array
  * @param int $maxWidth	The maximum image width in pixels
  * @param int $maxHeight The maximum image height in pixels
- * @return boolean TRUE if the image uploaded dimension does not exceed the given max width and height,
- *					FALSE otherwise
+ * @return boolean
+ *  TRUE if the image uploaded dimension does not exceed the given max width and height;
+ *  FALSE otherwise
  */
 function validate_fileMaxDimension($value, $maxWidth, $maxHeight){
 	if(!is_array($value)) return true;
@@ -388,8 +405,9 @@ function validate_fileMaxDimension($value, $maxWidth, $maxHeight){
  * @param array $value The $_FILES array
  * @param int $width The image width in pixels
  * @param int $height The mage height in pixels
- * @return boolean TRUE if the image uploaded dimension same as the given max width and height,
- *					FALSE otherwise
+ * @return boolean
+ *  TRUE if the image uploaded dimension same as the given max width and height;
+ *  FALSE otherwise
  */
 function validate_fileExactDimension($value, $width, $height){
 	if(!is_array($value)) return true;
@@ -402,8 +420,9 @@ function validate_fileExactDimension($value, $width, $height){
  * Validation of image file upload for max width only
  * @param array $value The $_FILES array
  * @param int $maxWidth	The maximum image width in pixels
- * @return boolean TRUE if the uploaded image does not exceed the maximum width allowed,
- *					FALSE otherwise
+ * @return boolean
+ *  TRUE if the uploaded image does not exceed the maximum width allowed;
+ *  FALSE otherwise
  */
 function validate_fileMaxWidth($value, $maxWidth){
 	if(!is_array($value)) return true;
@@ -415,8 +434,9 @@ function validate_fileMaxWidth($value, $maxWidth){
  * Validation of image file upload for max height only
  * @param array $value The $_FILES array
  * @param int $maxHeight The maximum image height in pixels
- * @return boolean TRUE if the uploaded image does not exceed the maximum height allowed,
- *					FALSE otherwise
+ * @return boolean
+ *  TRUE if the uploaded image does not exceed the maximum height allowed;
+ *  FALSE otherwise
  */
 function validate_fileMaxHeight($value, $maxHeight){
 	if(!is_array($value)) return true;
@@ -440,6 +460,101 @@ function validate_ip($value, $type = 'both') {
 		$flags = FILTER_FLAG_IPV6;
 	}
 	return (boolean)filter_var($value, FILTER_VALIDATE_IP, array('flags' => $flags));
+}
+/**
+ * Validation of a date which checks if the string passed is a valid date.
+ * **Allowed formats**
+ *
+ * - `d-m-y` 31-12-2014 separators can be a period, dash, forward slash, but not allow space
+ * - `m-d-y` 12-31-2014 separators can be a period, dash, forward slash, but not allow space
+ * - `y-m-d` 2014-12-31 separators can be a period, dash, forward slash, but not allow space
+ *
+ * @param string $value The date string being checked
+ * @param string $format The date format to be validated against. Default is y-m-d for 2014-12-31
+ *
+ * @return bool TRUE on success; FALSE on failure
+ */
+function validate_date($value, $format = 'y-m-d'){
+	if(empty($value)) return true;
+	$value = trim($value);
+	$format = strtolower($format);
+	$separators = array('/', '-', '.');
+	$sepGroup = '([-\/.])';
+	$cleanFormat = preg_replace('/'.$sepGroup.'/', '', $format); // remove the separators from the format
+	$pattern = '';
+
+	if(in_array($cleanFormat, array('dmy', 'mdy'))){
+		$pattern = '/^([\d]{1,2})'.$sepGroup.'([\d]{1,2})'.$sepGroup.'([\d]{4})$/'; // dmy or mdy
+	}
+	else{
+		$pattern = '/^([\d]{4})'.$sepGroup.'([\d]{1,2})'.$sepGroup.'([\d]{1,2})$/'; // ymd
+	}
+	if($pattern && preg_match_all($pattern, $value, $matches)){
+		if($matches[2][0] != $matches[4][0]) return false; // inconsisitent separators
+		elseif(!in_array($matches[2][0], $separators)) return false; // invalid separator
+		$sep	= $matches[2][0]; // the separator using
+		$dt 	= explode($sep, $value);
+		$format = str_split($cleanFormat);
+		$ft 	= array_flip($format);
+		$y = $dt[$ft['y']];
+		$m = $dt[$ft['m']];
+		$d = $dt[$ft['d']];
+		return checkdate($m, $d, $y);
+	}
+	return false;
+}
+/**
+ * Validation of a time which checks if the string passed is a valid time in 24-hr or 12-hr format
+ * **Allowed inputs**
+ *
+ * - 23:59 or 01:00 or 1:00
+ * - 23:59:59 or 01:00:00 or 1:00:00
+ * - 11:59am or 01:00pm or 1:00pm
+ * - 11:59 am or 01:00 pm or 1:00 PM or 1:00PM
+ * - 11:59:59am 01:00:00pm or 1:00:00pm
+ * - 11:59:59 AM 01:00:00 PM or 1:00:00PM
+ *
+ * @param string $value The time string being checked
+ *
+ * @return bool TRUE on success; FALSE on failure
+ */
+function validate_time($value){
+	if(empty($value)) return true;
+	$value = trim($value);
+	$regex = array(
+		'24' => '/^([0-23]{2})(:)([0-59]{2})(:[0-59]{2})?$/', // 24-hr format
+		'12' => '/^(0?[0-11]{0,2})(:)([0-59]{2})(:[0-59]{2})?\s*(am|pm)$/i' // 12-hr format
+	);
+	foreach($regex as $pattern){
+		if(preg_match($pattern, $value)) return true;
+	}
+	return false;
+}
+/**
+ * Validation of a date/time which checks if the string passed is a valid date and time.
+ * **Allowed date formats**
+ *
+ * - `d-m-y` 31-12-2014 separators can be a period, dash, forward slash, but not allow space
+ * - `m-d-y` 12-31-2014 separators can be a period, dash, forward slash, but not allow space
+ * - `y-m-d` 2014-12-31 separators can be a period, dash, forward slash, but not allow space
+ *
+ * @param string $value The date/time string being checked
+ * @param string $format The date format only to be validated against. Default is y-m-d for 2014-12-31.
+ *  Time format is not needed. This will validate against 24-hr or 12-hr format.
+ *
+ * @return bool TRUE on success; FALSE on failure
+ */
+function validate_datetime($value, $format = 'y-m-d'){
+	if(empty($value)) return true;
+	$value = trim($value);
+	$generalPattern = '/^([\d]{1,4}[-\/.][\d]{1,2}[-\/.][\d]{1,4})(\s+.{4,}\s*(am|pm)?)$/i';
+	if(preg_match_all($generalPattern, $value, $matches)){
+		$date = $matches[1][0];
+		$time = $matches[2][0];
+		return validate_date($date, $format) && validate_time($time);
+	}else{
+		return false;
+	}
 }
 
 /**
@@ -466,8 +581,8 @@ class Validation{
 	 *
 	 * @param array $validations The array of the validation rules
 	 * @param string $type The return form of the error message:
-	 *						"multi" to return all error messages occurred
-	 *						"single" to return the first error message occurred
+	 *  "multi" to return all error messages occurred;
+	 *  "single" to return the first error message occurred
 	 *
 	 * @return void
 	 */
@@ -606,7 +721,26 @@ class Validation{
 										# Required property: extensions
 										if(!isset($v['extensions'])) continue;
 										$success = call_user_func_array($func, array($value, $v['extensions']));
-										if(!$success) self::setError($id, $rule, $v, '"'.implode(', ', $v['extensions']).'"');
+										if(!$success) self::setError($id, $rule, $v, implode(', ', $v['extensions']));
+										break;
+
+									case 'date':
+										# Optional property: dateFormat
+										if(!isset($v['dateFormat']) || (isset($v['dateFormat']) && empty($v['dateFormat']))) $v['dateFormat'] = 'y-m-d';
+										$success = call_user_func_array($func, array($value, $v['dateFormat']));
+										if(!$success) self::setError($id, $rule, $v, $v['dateFormat']);
+										break;
+
+									case 'time':
+										$success = call_user_func_array($func, array($value));
+										if(!$success) self::setError($id, $rule, $v);
+										break;
+
+									case 'datetime':
+										# Optional property: dateFormat
+										if(!isset($v['dateFormat']) || (isset($v['dateFormat']) && empty($v['dateFormat']))) $v['dateFormat'] = 'y-m-d';
+										$success = call_user_func_array($func, array($value, $v['dateFormat']));
+										if(!$success) self::setError($id, $rule, $v, $v['dateFormat']);
 										break;
 
 									default:
@@ -635,10 +769,11 @@ class Validation{
 		$args = func_get_args();
 		if(count($args) > 3){
 			$args = array_slice($args, 3);
-			$cmd  = 'self::$errors[] = array("msg" => sprintf( $msg, $caption';
-			$cmd .= ', '.implode(', ', $args);
-			$cmd .= ' ), "htmlID" => $id);';
-			eval($cmd);
+			array_unshift($args, $caption);
+			self::$errors[] = array(
+				"msg" => vsprintf($msg, $args),
+				"htmlID" => $id
+			);
 		}else{
 			self::$errors[] = array(
 				'msg' => sprintf( $msg, $caption ),
@@ -662,4 +797,4 @@ class Validation{
 	}
 }
 
-Validation::set('messages', $_validation_messages);
+__validation_init();

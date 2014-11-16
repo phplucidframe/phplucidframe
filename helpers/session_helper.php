@@ -6,7 +6,8 @@
  * @package		LC\Helpers\Session
  * @since		PHPLucidFrame v 1.0.0
  * @copyright	Copyright (c), PHPLucidFrame.
- * @author 		Sithu K. <cithukyaw@gmail.com>
+ * @author 		Sithu K. <hello@sithukyaw.com>
+ * @link 		http://phplucidframe.sithukyaw.com
  * @license		http://www.opensource.org/licenses/mit-license.php MIT License
  *
  * This source file is subject to the MIT license that is bundled
@@ -14,82 +15,77 @@
  */
 
 /**
+ * @internal
+ *
+ * Initialize session.
+ * @see http://php.net/manual/en/session.configuration.php
+ *
+ * @return void
+ */
+function session_init(){
+	$settings = array(
+		'default' => array(
+			'name'				=> 'LCSESSID', // the name of the session which is used as cookie name
+			'use_cookies'		=> '1', // specifies whether the module will use cookies to store the session id on the client side
+			'use_only_cookies'	=> '1', // specifies whether the module will only use cookies to store the session id on the client side.
+										// Enabling this setting prevents attacks involved passing session ids in URLs
+			'use_trans_sid'		=> '0', // transparent sid support is enabled or not
+			'cache_limiter'		=> 'nocache', // the cache control method used for session pages: nocache, private, private_no_expire, or public.
+			'cookie_httponly'	=> '1', // Marks the cookie as accessible only through the HTTP protocol to not accessible by scripting languages
+			'gc_probability'	=> 1, // in conjunction with gc_divisor is used to manage probability that the gc (garbage collection) routine is started
+			'gc_divisor'		=> 100, // defines the probability that the gc (garbage collection) process is started on every session initialization
+			'gc_maxlifetime'	=> 240, // specifies the number of minutes after which data will be seen as 'garbage' and potentially cleaned up
+			'cookie_lifetime'	=> 180, // the lifetime of the cookie in minutes which is sent to the browser. The value 0 means "until the browser is closed."
+			'cookie_path'		=> '/', // path to set in the session cookie.
+			'save_path'			=> '' //  the path of the directory used to save session data.
+		)
+	);
+	$userSettings = _cfg('session');
+	$type = 'default';
+	$config = $settings[$type];
+	if($userSettings){
+		if( isset($userSettings['type']) && array_key_exists($userSettings['type'], $settings) ) $type = $userSettings['type'];
+		if( isset($userSettings['options']) && is_array($userSettings['options']) ){
+			$config = array_merge($config, $userSettings['options']);
+		}
+	}
+
+	foreach($config as $key => $value){
+		if($key == 'gc_maxlifetime' || $key == 'cookie_lifetime') $value = $value * 60;
+		ini_set('session.'.$key, $value);
+	}
+
+	if(function_exists('session_beforeStart')){
+		call_user_func('session_beforeStart');
+	}
+
+	session_start();
+}
+/**
  * Set a message or value in Session using a name
  *
  * @param $name string The session variable name to store the value
- *		It can be a value separated by period, eg., user.name will be ['user']['name']
- * @param mixed 	$value The value to be stored.
- * @param boolean 	$serialize The value is to be serialized or not
+ *  It can be a value separated by period, eg., user.name will be ['user']['name']
+ * @param mixed $value The value to be stored.
+ * @param boolean $serialize The value is to be serialized or not
  *
  * @return void
  */
 function session_set($name, $value='', $serialize=false){
-	setSession($name, $value, $serialize);
-}
-/**
- * @internal
- *
- * Set a message or value in Session using a name
- * Alias of session_set()
- *
- * @param $name string The session variable name to store the value
- *		It can be a value separated by period, eg., user.name will be ['user']['name']
- * @param mixed 	$value The value to be stored.
- * @param boolean 	$serialize The value is to be serialized or not
- *
- * @return void
- */
-function setSession($name, $value='', $serialize=false){
-	if(strpos($name, '.') !== false){
-		$names = explode('.', $name);
-		$name = array_shift($names);
-		if($serialize){
-			$code = '$_SESSION[S_PREFIX . $name]["' . implode('"]["', $names) . '"] = serialize($value);';
-		}else{
-			$code = '$_SESSION[S_PREFIX . $name]["' . implode('"]["', $names) . '"] = $value;';
-		}
-		eval($code);
-	}else{
-		$_SESSION[S_PREFIX . $name] = ($serialize) ? serialize($value) : $value;
-	}
+	__dotNotationToArray($name, 'session', $value, $serialize);
 }
 /**
  * Get a message or value of the given name from Session
  *
  * @param string $name 	The session variable name to retrieve its value
- 						It can be a value separated by period, eg., user.name will be ['user']['name']
+ *   It can be a value separated by period, eg., user.name will be ['user']['name']
  * @param boolean $unserialize The value is to be unserialized or not
  *
  * @return mixed The value from SESSION
  */
 function session_get($name, $unserialize=false){
-	return getSession($name, $unserialize);
-}
-/**
- * @internal
- *
- * Get a message or value of the given name from Session
- * Alias of session_get()
- *
- * @param string $name 	The session variable name to retrieve its value
- 						It can be a value separated by period, eg., user.name will be ['user']['name']
- * @param boolean $unserialize The value is to be unserialized or not
- *
- * @return mixed The value from SESSION
- */
-function getSession($name, $unserialize=false){
-	if(strpos($name, '.') !== false){
-		$names = explode('.', $name);
-		$name = array_shift($names);
-		$code  = '$value = isset($_SESSION[S_PREFIX . $name]["' . implode('"]["', $names) . '"])';
-		$code .= ' ? $_SESSION[S_PREFIX . $name]["' . implode('"]["', $names) . '"]';
-		$code .= ' : "";';
-		eval($code);
-		return ($unserialize) ? unserialize($value) : $value;
-	}else{
-		if(isset($_SESSION[S_PREFIX . $name])) return ($unserialize) ? unserialize($_SESSION[S_PREFIX . $name]) : $_SESSION[S_PREFIX . $name];
-		else return '';
-	}
+	$value = __dotNotationToArray($name, 'session');
+	return ($unserialize && is_string($value)) ? unserialize($value) : $value;
 }
 /**
  * Delete a message or value of the given name from Session
@@ -98,27 +94,31 @@ function getSession($name, $unserialize=false){
  * @return void
  */
 function session_delete($name){
-	deleteSession($name);
-}
-/**
- * @internal
- *
- * Delete a message or value of the given name from Session
- * Alias of session_delete()
- *
- * @param string $name The session variable name to delete its value
- * @return void
- */
-function deleteSession($name){
-	if(strpos($name, '.') !== false){
-		$names = explode('.', $name);
-		$name = array_shift($names);
-		$code  = 'if( isset($_SESSION[S_PREFIX . $name]["' . implode('"]["', $names) . '"]) )';
-		$code .= ' unset($_SESSION[S_PREFIX . $name]["' . implode('"]["', $names) . '"]);';
-		eval($code);
-	}else{
-		if(isset($_SESSION[S_PREFIX . $name])) unset($_SESSION[S_PREFIX . $name]);
+	$name = S_PREFIX . $name;
+	if(isset($_SESSION[$name])){
+		unset($_SESSION[$name]);
+		return true;
 	}
+	$keys = explode('.', $name);
+	$firstKey = array_shift($keys);
+	if(count($keys)){
+		if(!isset($_SESSION[$firstKey])) return false;
+		$array = &$_SESSION[$firstKey];
+		$parent = &$_SESSION[$firstKey];
+		$found = true;
+		foreach($keys as $k) {
+			if(isset($array[$k])){
+				$parent = &$array;
+				$array = &$array[$k];
+			}else{
+				return false;
+			}
+		}
+		$array = NULL;
+		unset($array);
+		unset($parent[$k]);
+	}
+	return true;
 }
 
 if(!function_exists('flash_set')){
@@ -133,25 +133,6 @@ if(!function_exists('flash_set')){
  * @return void
  */
 	function flash_set($msg, $name='', $class='success'){
-		setFlash($msg, $name, $class);
-	}
-}
-
-if(!function_exists('setFlash')){
-/**
- * @internal
- *
- * Set the flash message in session
- * Alias of flash_set()
- * This function is overwritable from the custom helpers/session_helper.php
- *
- * @param string $msg The message to be shown
- * @param string $name The optional session name to store the message
- * @param string $class The HTML class name; default is success
- *
- * @return void
- */
-	function setFlash($msg, $name='', $class='success'){
 		$msg = '<span class="'.$class.'">'.$msg.'</span>';
 		$msg = '<div class="message '.$class.'" style="display:block;"><ul><li>'.$msg.'</li></ul></div>';
 
@@ -165,30 +146,12 @@ if(!function_exists('flash_get')){
  * Get the flash message from session and then delete it
  * This function is overwritable from the custom helpers/session_helper.php
  *
- * @param $name  string The optional session name to retrieve the message from
- * @param $class string The HTML class name; default is success
+ * @param string $name The optional session name to retrieve the message from
+ * @param string $class The HTML class name; default is success
  *
  * @return string The HTML message
  */
 	function flash_get($name='', $class='success'){
-		return getFlash($name, $class);
-	}
-}
-
-if(!function_exists('getFlash')){
-/**
- * @internal
- *
- * Get the flash message from session and then delete it
- * This function is overwritable from the custom helpers/session_helper.php
- * Alias of flash_get()
- *
- * @param $name  string The optional session name to retrieve the message from
- * @param $class string The HTML class name; default is success
- *
- * @return string The HTML message
- */
-	function getFlash($name='', $class='success'){
 		$message = '';
 		if($name){
 			if(isset($_SESSION[S_PREFIX.'flashMessage'][$name])){
@@ -204,3 +167,68 @@ if(!function_exists('getFlash')){
 		return $message;
 	}
 }
+/**
+* Send a cookie
+* Convenience method for setcookie()
+*
+* @param string $name The name of the cookie. 'cookiename' is called as cookie_get('cookiename') or $_COOKIE['cookiename']
+* @param mixed $value The value of the cookie. This value is stored on the clients computer
+* @param int $expiry The time the cookie expires. This is a Unix timestamp so is in number of seconds since the epoch.
+*  In other words, you'll most likely set this with the time() function plus the number of seconds before you want it to expire.
+*  If f set to 0, or omitted, the cookie will expire at the end of the session
+* @param string $path The path on the server in which the cookie will be available on. The default path '/' will make it available to the entire domain.
+* @param string $domain The domain that the cookie is available to. If it is not set, it depends on the configuration variable $lc_siteDomain.
+* @param bool $secure Indicates that the cookie should only be transmitted over a secure HTTPS connection from the client
+* @param bool $httpOnly When TRUE the cookie will be made accessible only through the HTTP protocol.
+*  This means that the cookie won't be accessible by scripting languages, such as JavaScript
+*
+* @see http://php.net/manual/en/function.setcookie.php
+*
+* @return void
+*/
+function cookie_set($name, $value, $expiry=0, $path='/', $domain='', $secure=false, $httpOnly=false){
+	if(!$domain) $domain = _cfg('siteDomain');
+	$name = preg_replace('/^('.S_PREFIX.')/', '', $name);
+	$name = S_PREFIX . $name;
+	if($expiry > 0) $expiry = time() + $expiry;
+	setcookie($name, $value, $expiry, $path, $domain, $secure, $httpOnly);
+}
+/**
+* Get a cookie
+* Convenience method to access $_COOKIE[cookiename]
+* @param string $name The name of the cookie to retrieve
+*
+* @return mixed
+*  The value of the cookie if found.
+*  NULL if not found.
+*  The entire $_COOKIE array if $name is not provided.
+*/
+function cookie_get($name=''){
+	if(empty($name)) return $_COOKIE;
+	$name = preg_replace('/^('.S_PREFIX.')/', '', $name);
+	$name = S_PREFIX . $name;
+	if(isset($_COOKIE[$name])) return $_COOKIE[$name];
+	else return NULL;
+}
+/**
+* Delete a cookie
+* Convenience method to delete $_COOKIE['cookiename']
+* @param string $name The name of the cookie to delete
+* @param string $path The path on the server in which the cookie will be available on.
+*  This would be the same value used for cookie_set().
+*
+* @return bool TRUE for the successful delete; FALSE for no delete.
+*/
+function cookie_delete($name, $path='/'){
+	if(empty($name)) return $_COOKIE;
+	$name = preg_replace('/^('.S_PREFIX.')/', '', $name);
+	$name = S_PREFIX . $name;
+	if(isset($_COOKIE[$name])){
+		unset($_COOKIE[$name]);
+		setcookie($name, NULL, -1, $path);
+		return true;
+	}
+	return (!isset($_COOKIE[$name])) ? true : false;
+}
+
+session_init();

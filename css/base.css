@@ -1,7 +1,7 @@
 @charset  utf-8;
 
 body {
-	font-size: 12px;
+	font-size: 13px;
 	margin: 0;
 	font-family: Arial, Helvetica, sans-serif;
 	color: #333;
@@ -10,7 +10,7 @@ body {
 
 input, button, textarea, select{
 	font-family: Arial, Helvetica, sans-serif;
-	font-size: 12px;
+	font-size: 13px;
 	margin: 0;
 }
 
@@ -233,6 +233,7 @@ label.radio {
 	position: relative;
 	display: inline-block;
 	padding: 7px 12px;
+	margin-right:5px;
 	min-width: 65px;
 	font-size: 13px;
 	font-weight: bold;
@@ -514,14 +515,14 @@ ul#menu li{
 
 ul#menu li a{
 	color: #fff;
+	font-weight:bold;
 	text-shadow: 0 -1px 0 rgba(0,0,0,0.5);
-	font-size: 13px;
 	line-height: 17px;
 	min-width: 55px;
-	height: 24px;
+	height: 25px;
 	display: block;
 	background-color: #006600;
-	padding: 7px 10px 0;
+	padding: 8px 10px 0;
 	text-align: center;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
@@ -1028,11 +1029,14 @@ table.list tr td {
 	padding: 3px 5px;
 }
 
-table.list tr.label td {
+table.list tr.label td,
+table.list tr th {
 	border-top: medium none;
 }
 
-table.list tr td.tableLeft {
+table.list tr td.tableLeft,
+table.list tr td:first-child,
+table.list tr th:first-child {
 	border-left: 1px solid #999;
 }
 
@@ -1040,7 +1044,8 @@ table.list tr.top td {
 	border-top: none;
 }
 
-table.list tr.label td {
+table.list tr.label td,
+table.list tr th {
 	color: #333;
 	height: 27px;
 	padding: 0 5px;
@@ -1056,7 +1061,8 @@ table.list tr.label td {
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f9f9f9', endColorstr='#e5e5e5',GradientType=0 ); /* IE6-9 */
 }
 
-table.list tr.label td, table.list tr.label td div {
+table.list tr.label td, table.list tr.label td div
+table.list tr th, table.list tr th div {
 	color: #333;
 }
 

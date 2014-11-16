@@ -28,21 +28,21 @@ if($result = db_query($sql)){
 	?>
 	<table cellpadding="0" cellspacing="0" border="0" class="list">
 		<tr class="label">
-        	<td class="tableLeft" colspan="2"><?php echo _t('Actions'); ?></td>
+			<td class="tableLeft" colspan="2"><?php echo _t('Actions'); ?></td>
 			<td>
 				<span>Name</span>
-            	<label class="lang">(<?php echo _langName(); ?>)</label>
-            </td>
-            <?php if($langs){ ?>
+				<label class="lang">(<?php echo _langName(); ?>)</label>
+			</td>
+			<?php if($langs){ ?>
 				<?php foreach($langs as $lcode => $lname){ ?>
-                <td>
+				<td>
 					<span>Name</span>
 					<?php if(_langName($lcode)){ ?>
-                    <label class="lang">(<?php echo _langName($lcode); ?>)</label>
-                    <?php } ?>
-                </td>
-                <?php } ?>
-            <?php } ?>
+					<label class="lang">(<?php echo _langName($lcode); ?>)</label>
+					<?php } ?>
+				</td>
+				<?php } ?>
+			<?php } ?>
 		</tr>
 		<?php
 		while($row = db_fetchObject($result)){
@@ -55,31 +55,31 @@ if($result = db_query($sql)){
 			$data = array_merge($data, $i18n);
 		?>
 			<tr id="row-<?php echo $row->catId; ?>">
-                <td class="tableLeft colAction">
-                	<span class="row-data" style="display:none"><?php echo json_encode($data); ?></span>
-                	<a href="javascript:" class="edit" title="Edit" onclick="LC.Page.Category.edit(<?php echo $row->catId; ?>)">
-                    	<span><?php echo _t('Edit'); ?></span>
-                    </a>
-                </td>
-                <td class="colAction">
-                	<a href="#" class="delete" title="Delete" onclick="LC.Page.Category.remove(<?php echo $row->catId; ?>)">
-                    	<span><?php echo _t('Delete'); ?></span>
-                    </a>
-                </td>
-                <td class="colName">
-                	<?php echo $row->catName; ?>
-                </td>
+				<td class="tableLeft colAction">
+					<span class="row-data" style="display:none"><?php echo json_encode($data); ?></span>
+					<a href="javascript:" class="edit" title="Edit" onclick="LC.Page.Category.edit(<?php echo $row->catId; ?>)">
+						<span><?php echo _t('Edit'); ?></span>
+					</a>
+				</td>
+				<td class="colAction">
+					<a href="#" class="delete" title="Delete" onclick="LC.Page.Category.remove(<?php echo $row->catId; ?>)">
+						<span><?php echo _t('Delete'); ?></span>
+					</a>
+				</td>
+				<td class="colName">
+					<?php echo $row->catName; ?>
+				</td>
 				<?php if($langs){ ?>
-                    <?php foreach($langs as $lcode => $lname){ ?>
-                    <td class="colName <?php echo $lcode; ?>">
-                    	<?php
+					<?php foreach($langs as $lcode => $lname){ ?>
+					<td class="colName <?php echo $lcode; ?>">
+						<?php
 						$lcode = _queryLang($lcode);
 						if(isset($i18n['catName_i18n'][$lcode])) echo $i18n['catName_i18n'][$lcode];
 						else echo '&nbsp;';
 						?>
-                    </td>
-                    <?php } ?>
-                <?php } ?>
+					</td>
+					<?php } ?>
+				<?php } ?>
 			</tr>
 		<?php
 		}

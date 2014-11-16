@@ -6,7 +6,8 @@
  * @package		LC\Helpers\File
  * @since		PHPLucidFrame v 1.0.0
  * @copyright	Copyright (c), PHPLucidFrame.
- * @author 		Sithu K. <cithukyaw@gmail.com>
+ * @author 		Sithu K. <hello@sithukyaw.com>
+ * @link 		http://phplucidframe.sithukyaw.com
  * @license		http://www.opensource.org/licenses/mit-license.php MIT License
  *
  * This source file is subject to the MIT license that is bundled
@@ -58,8 +59,8 @@ class File{
 	 *
 	 * @param array $file The uploaded file information from $_FILES['xxx']
 	 * @param array Th array of the uploaded files,
-	 *				for example,
-	 *				uploaded[dimension] = file-name for image files or uploaded[] = file-name for other files
+	 *  for example,
+	 *  uploaded[dimension] = "file-name" for image files or uploaded[] = "file-name" for the files of other types
 	 */
 	public function upload($file){
 		$fileName 		= stripslashes($file['name']);

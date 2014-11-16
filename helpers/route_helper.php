@@ -6,7 +6,8 @@
  * @package		LC\Helpers\Routing
  * @since		PHPLucidFrame v 1.0.0
  * @copyright	Copyright (c), PHPLucidFrame.
- * @author 		Sithu K. <cithukyaw@gmail.com>
+ * @author 		Sithu K. <hello@sithukyaw.com>
+ * @link 		http://phplucidframe.sithukyaw.com
  * @license		http://www.opensource.org/licenses/mit-license.php MIT License
  *
  * This source file is subject to the MIT license that is bundled
@@ -195,15 +196,15 @@ function route_create($path=''){
  *
  * Alias `_url()`
  *
- * @param $path string Routing path such as "foo/bar"; NULL for the current path
- * @param $queryStr	array Query string as
- *		array(
- *			$value1,
- *			'key1' => $value2,
- *			'key3' => $value3 or array($value3, $value4)
- *		)
- * @param $lang string Languague code to be prepended to $path such as "en/foo/bar".
- *		It will be useful for site language switch redirect
+ * @param string $path Routing path such as "foo/bar"; NULL for the current path
+ * @param array $queryStr Query string as
+ * 	array(
+ * 		$value1, // no key here
+ * 		'key1' => $value2,
+ * 		'key3' => $value3 or array($value3, $value4)
+ * 	)
+ * @param string $lang Languague code to be prepended to $path such as "en/foo/bar". It will be useful for site language switch redirect
+ *
  * @return string
  *
  */
@@ -276,13 +277,13 @@ function route_url($path=NULL, $queryStr=array(), $lang=''){
 /**
  * Update the route path with the given query string
  *
- * @param $path	string The route path which may contain the query string
- * @param $queryStr	array Query string as
- *		array(
- *			$value1,
- *			'key1' => $value2,
- *			'key3' => $value3 or array($value3, $value4)
- *		)
+ * @param string $path The route path which may contain the query string
+ * @param array $queryStr Query string as
+ * 	array(
+ * 		$value1, // no key here
+ * 		'key1' => $value2,
+ * 		'key3' => $value3 or array($value3, $value4)
+ * 	)
  * @return string The updated route path
  */
 function route_updateQueryStr($path, &$queryStr=array()){

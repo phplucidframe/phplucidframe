@@ -11,7 +11,7 @@ _meta('description', $pageTitle.': '._cfg('metaDescription'));
 <html>
 <head>
 	<title><?php echo _title($pageTitle); ?></title>
-	<?php include( _i('inc/head.php') ); ?>
+	<?php include( _i('inc/tpl/head.php') ); ?>
 </head>
 <body>
 	<?php include('view.php'); ?>

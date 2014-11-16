@@ -6,7 +6,8 @@
  * @package		LC\Helpers\Utility
  * @since		PHPLucidFrame v 1.0.0
  * @copyright	Copyright (c), PHPLucidFrame.
- * @author 		Sithu K. <cithukyaw@gmail.com>
+ * @author 		Sithu K. <hello@sithukyaw.com>
+ * @link 		http://phplucidframe.sithukyaw.com
  * @license		http://www.opensource.org/licenses/mit-license.php MIT License
  *
  * This source file is subject to the MIT license that is bundled
@@ -18,10 +19,11 @@
  *
  * ob_start callback function to output buffer
  * It also adds the conditional IE comments and class (ie6,...ie10..) to <html>
- * @hook 	__flush() at app/helpers/utility_helper.php
- * @param	string $buffer The output buffer
+ * Hook to implement `__flush()` at app/helpers/utility_helper.php
  *
- * @return 	string
+ * @param string $buffer The output buffer
+ *
+ * @return string
  */
 function _flush($buffer, $mode){
 	# Add IE-specific class to the <html> tag
@@ -36,6 +38,13 @@ function _flush($buffer, $mode){
 		<!--[if IE 9]><html$1 class="ie ie9 '._lang().'"><![endif]-->
 		<!--[if gte IE 10]> <html$1 class="ie ie10 '._lang().'"> <![endif]-->';
 		$buffer = preg_replace('/<html([^>]*)>/i', $replace, $buffer);
+	}
+
+	if(_cfg('minifyHTML')){
+		# 1. strip whitespaces after tags, except space
+		# 2. strip whitespaces before tags, except space
+		# 3. shorten multiple whitespace sequences
+		$buffer = preg_replace(array('/\>[^\S ]+/s', '/[^\S ]+\</s', '/(\s)+/s'), array('>', '<', '\\1'), $buffer);
 	}
 
 	if(function_exists('__flush')) return __flush($buffer, $mode); # run the hook if any
@@ -65,8 +74,45 @@ function _htmlIEFix($matches) {
 	return $html;
 }
 /**
+ * Auto-load a library, script or file
+ * @param string $name The file name without extension
+ * @return void
+ */
+function _loader($name, $path=HELPER){
+	global $lc_autoload;
+	$lc_autoload[] = $path . $name . '.php';
+	$lc_autoload = array_unique($lc_autoload);
+}
+/**
+ * Removing a library, script or file from auto-load
+ * @param string $name The file name without extension
+ * @return void
+ */
+function _unloader($name, $path=HELPER){
+	global $lc_autoload;
+	$file = $path . $name . '.php';
+	$key = array_search($file, $lc_autoload);
+	if($key !== false){
+		unset($lc_autoload[$key]);
+		$lc_autoload = array_values($lc_autoload);
+	}
+}
+/**
+ * @internal
+ * Check a library, script or file is ready to load
+ * @param string $name The file name without extension
+ * @return mixed The file name if it is ready to load, otherwise FALSE
+ */
+function _readyloader($name, $path=HELPER){
+	global $lc_autoload;
+	if(strpos($name, '.php') === false) $file = $path . $name . '.php';
+	else $file = $name;
+	if(array_search($file, $lc_autoload) !== false && is_file($file) && file_exists($file)) return $file;
+	return false;
+}
+/**
  * Declare global JS variables
- * @hook __script() at app/helpers/utility_helper.php
+ * Hook to implement `__script()` at app/helpers/utility_helper.php
  *
  * @return void
  */
@@ -119,7 +165,7 @@ function _addvar($name, $value=''){
  * JS file include helper
  *
  * @param string $file An absolute file path or just file name
- *		The file name only will be prepended the folder name js/ and it will be looked in every sub-sites "js" folder
+ *  The file name only will be prepended the folder name js/ and it will be looked in every sub-sites "js" folder
  *
  * @return void
  */
@@ -145,7 +191,7 @@ function _js($file){
  * CSS file include helper
  *
  * @param string $file An absolute file path or file name only
- *		The file name only will be prepended the folder name css/ and it will be looked in every sub-sites "css" folder
+ *  The file name only will be prepended the folder name css/ and it will be looked in every sub-sites "css" folder
  *
  * @return void
  */
@@ -200,37 +246,46 @@ if(!function_exists('_pr')){
 		if($pre) echo '</pre>';
 	}
 }
+
+if(!function_exists('_dump')){
 /**
- * Convenience method to get/set a config variable without declaration global
- * within a function
+ * Convenience method for var_dump.
+ * Dumps information about a variable
+ *
+ * @param $input mixed The variable to debug
+ * @param $pre boolean True to print using <pre>, otherwise False
+ *
+ * @return void
+ */
+	function _dump($input, $pre=true){
+		if($pre) echo '<pre>';
+		var_dump($input);
+		if($pre) echo '</pre>';
+	}
+}
+/**
+ * Convenience method to get/set a config variable without global declaration within the calling function
  *
  * @param string $key The config variable name without prefix
  * @param mixed $value The value to set to the config variable
  * @return mixed The value of the config variable
  */
 function _cfg($key='', $value=''){
+	if(empty($key)) return NULL;
 	if(strrpos($key, 'lc_') === 0) $key = substr($key, 3);
-	if(count(func_get_args()) == 2 && $key){
-		if(is_array($GLOBALS['lc_'.$key])) $GLOBALS['lc_'.$key][] = $value;
-		else $GLOBALS['lc_'.$key] = $value;
-	}
-	if(isset($GLOBALS['lc_'.$key]) && $GLOBALS['lc_'.$key]) return $GLOBALS['lc_'.$key];
-	return NULL;
+	$key = 'lc_' . $key;
+	return (count(func_get_args()) == 2) ? __dotNotationToArray($key, 'global', $value) : __dotNotationToArray($key, 'global');
 }
 /**
  * Convenience method to get/set a global variable
  *
  * @param string $key The global variable name
- * @param mixed $value The value to set to the global variable
+ * @param mixed $value The value to set to the global variable; if it is not given, this is getter.
  * @return mixed The value of the global variable
  */
 function _g($key, $value=''){
-	if(count(func_get_args()) == 2 && $key){
-		if(isset($GLOBALS[$key]) && is_array($GLOBALS[$key])) $GLOBALS[$key][] = $value;
-		else $GLOBALS[$key] = $value;
-	}
-	if(isset($GLOBALS[$key]) && $GLOBALS[$key]) return $GLOBALS[$key];
-	return NULL;
+	if(empty($key)) return NULL;
+	return (count(func_get_args()) == 2) ? __dotNotationToArray($key, 'global', $value) : __dotNotationToArray($key, 'global');
 }
 /**
  * Convenience method for htmlspecialchars.
@@ -252,7 +307,8 @@ function _lang(){
  * Get the language to process
  * Read "lang" from query string; if it is not found, get the default language code
  * Basically, it is useful for admin content management by language
- * @hook __getLang() at app/helpers/utility_helper.php
+ * Hook to implement `__getLang()` at app/helpers/utility_helper.php
+ *
  * @return string The language code
  */
 function _getLang(){
@@ -362,9 +418,11 @@ function _ssl(){
 }
 /**
  * Get the current routing path
- * For example, example.com/foo/bar would return foo/bar
- *	example.com/en/foo/bar would also return foo/bar
- *  example.com/1/this-is-slug (if accomplished by RewriteRule) would return the underlying physical path
+ * For example,
+ *
+ * - example.com/foo/bar would return foo/bar
+ * - example.com/en/foo/bar would also return foo/bar
+ * - example.com/1/this-is-slug (if accomplished by RewriteRule) would return the underlying physical path
  *
  * @return string The route path starting from the site root
  */
@@ -373,10 +431,11 @@ function _r(){
 }
 /**
  * The more realistic function to get the current routing path on the address bar regardless of RewriteRule behind
+ * For example,
  *
- * For example, `example.com/foo/bar` would return `foo/bar`
- *	`example.com/en/foo/bar` would also return `foo/bar`
- *  `example.com/1/this-is-slug` would return `1/this-is-slug`
+ * - example.com/foo/bar would return foo/bar
+ * - example.com/en/foo/bar would also return foo/bar
+ * - example.com/1/this-is-slug would return 1/this-is-slug
  *
  * @return string The route path starting from the site root
  */
@@ -387,11 +446,11 @@ function _rr(){
  * Get the absolute URL path
  * @param string 	$path		Routing path such as "foo/bar"; NULL for the current path
  * @param array 	$queryStr	Query string as
- *								array(
- *									$value1, // no key here
- *									'key1' => $value2,
- *									'key3' => $value3 or array($value3, $value4)
- *								 )
+ * 	array(
+ * 		$value1, // no key here
+ * 		'key1' => $value2,
+ * 		'key3' => $value3 or array($value3, $value4)
+ * 	)
  * @param string	$lang		Languague code to be prepended to $path such as "en/foo/bar". It will be useful for site language switch redirect
  * @return void
  */
@@ -401,11 +460,11 @@ function _url($path=NULL, $queryStr=array(), $lang=''){
 /**
  * Get the absolute URL path
  * @param array 	$queryStr	Query string as
- *								array(
- *									$value1, // no key here
- *									'key1' => $value2,
- *									'key3' => $value3 or array($value3, $value4)
- *								 )
+ * 	array(
+ * 		$value1, // no key here
+ * 		'key1' => $value2,
+ * 		'key3' => $value3 or array($value3, $value4)
+ * 	)
  * @param string	$lang		Languague code to be prepended to $path such as "en/foo/bar". It will be useful for site language switch redirect
  * @return void
  */
@@ -416,18 +475,18 @@ function _self($queryStr=array(), $lang=''){
  * Header redirect to a specific location
  * @param string 	$path		Routing path such as "foo/bar"; NULL for the current path
  * @param array 	$queryStr	Query string as
- *								array(
- *									$value1, // no key here
- *									'key1' => $value2,
- *									'key3' => $value3 or array($value3, $value4)
- *							 	)
+ * 	array(
+ * 		$value1, // no key here
+ * 		'key1' => $value2,
+ * 		'key3' => $value3 or array($value3, $value4)
+ * 	)
  * @param string 	$lang		Languague code to be prepended to $path such as "en/foo/bar". It will be useful for site language switch redirect
  * @return void
  */
 function _redirect($path=NULL, $queryStr=array(), $lang=''){
 	if( preg_match('/^http+/', $path) ){
 		header('Location: ' . $path);
-		exit;		
+		exit;
 	}
 	if($path == 'self') $url = _self(NULL, $lang);
 	else $url = route_url($path, $queryStr, $lang);
@@ -500,17 +559,18 @@ function _hreflang(){
 }
 /**
  * Return a component of the current path.
- * When viewing a page at the path "foo/bar", for example, arg(0) returns "foo" and arg(1) returns "bar"
+ * When viewing a page http://www.example.com/foo/bar and its path would be "foo/bar",
+ * for example, arg(0) returns "foo" and arg(1) returns "bar"
  *
- * @param $index
- *   The index of the component, where each component is separated by a '/'
- *   (forward-slash), and where the first component has an index of 0 (zero).
- * @param $path
- *   A path to break into components. Defaults to the path of the current page.
+ * @param mixed $index
+ *  The index of the component, where each component is separated by a '/'
+ *  (forward-slash), and where the first component has an index of 0 (zero).
+ * @param string $path
+ *  A path to break into components. Defaults to the path of the current page.
  *
  * @return mixed
- *   The component specified by $index, or NULL if the specified component was not found.
- *   If called without arguments, it returns an array containing all the components of the current path.
+ *  The component specified by `$index`, or `NULL` if the specified component was not found.
+ *  If called without arguments, it returns an array containing all the components of the current path.
  */
 function _arg($index = NULL, $path = NULL) {
 	if(isset($_GET[$index])){
@@ -551,12 +611,13 @@ function _arg($index = NULL, $path = NULL) {
 }
 /**
  * Check if the URI has a language code and return it when it matches
+ * For example,
  *
- * (for example)
  * - /LucidFrame/en/....
  * - /LucidFrame/....
  * - /en/...
  * - /....
+ *
  * @return mixed The language code if it has one, otherwise return FALSE
  */
 function _getLangInURI(){
@@ -588,8 +649,8 @@ function _validHost($host) {
 /**
  * Get the page title glued by a separator
  *
- * @param 	string|array $args multiple arguments
- * @return 	string The formatted page title
+ * @param string|array $args multiple arguments
+ * @return string The formatted page title
  */
 function _title(/*[mixed $args [, mixed $... ]]*/){
 	global $lc_siteName;
@@ -625,8 +686,8 @@ function _title(/*[mixed $args [, mixed $... ]]*/){
 /**
  * Filters elements of an array which have empty values
  *
- * @param 	array $input The input array
- * @return	array The filtered array
+ * @param array $input The input array
+ * @return array The filtered array
  */
 function _filterArrayEmpty($input){
 	return array_filter($input, '_notEmpty');
@@ -634,8 +695,8 @@ function _filterArrayEmpty($input){
 /**
  * Check the given value is not empty
  *
- * @param 	string $value The value to be checked
- * @return 	boolean TRUE if not empty; FALSE if empty
+ * @param string $value The value to be checked
+ * @return boolean TRUE if not empty; FALSE if empty
  */
 function _notEmpty($value){
 	$value = trim($value);
@@ -785,9 +846,9 @@ if(!function_exists('_fdatetime')){
 /**
  * Format a date/time
  *
- * @param 	string $dateTime A date/time to be formatted
- * @param	string $format The date/time format; The config variable will be used if it is not passed
- * @return 	string The formatted date/time
+ * @param string $dateTime A date/time to be formatted
+ * @param string $format The date/time format; The config variable will be used if it is not passed
+ * @return string The formatted date/time
  */
 	function _fdatetime($dateTime, $format=''){
 		if(!$format) $format = _cfg('dateTimeFormat');
@@ -797,10 +858,10 @@ if(!function_exists('_fdatetime')){
 
 if(!function_exists('_ftimeAgo')){
 /**
- * Display elapsed time in wording
+ * Display elapsed time in wording, e.g., 2 hours ago, 1 year ago, etc.
  *
- * @param timestamp|string 	$time	The elapsed time in unix timestamp or date/time string
- * @param string 			$format The date/time format to show when 4 days passed
+ * @param timestamp|string $time The elapsed time in unix timestamp or date/time string
+ * @param string $format The date/time format to show when 4 days passed
  * @return string
  */
 	function _ftimeAgo($time, $format = 'M j Y'){
@@ -838,14 +899,14 @@ if(!function_exists('_msg')){
 /**
  * Print or return the message formatted with HTML
  *
- * @param  	mixed 	$msg A message string or Array of message strings
- * @param	string 	$class The CSS class name
- * @param	bool	$return What is expected to return from this function:
- *						NULL - no return; just print it
- *						html - return HTML
- * @param	string	$display Display the message on the spot or not
+ * @param mixed $msg A message string or Array of message strings
+ * @param string $class The CSS class name
+ * @param mixed $return What is expected to return from this function.
+ *  `NULL` (default) no return and just print it.
+ *  `html` return HTML.
+ * @param string $display Display the message on the spot or not
  *
- * @return 	string 	The formatted date
+ * @return string The formatted date
  */
 	function _msg($msg, $class='error', $return=NULL, $display='display:block'){
 		if(empty($msg)) $html = '';
@@ -880,9 +941,9 @@ if(!function_exists('_msg')){
 /**
  * Find the size of the given file.
  *
- * @param string 	$file The file name (file must exist)
- * @param int 		$digits Number of precisions
- * @param array		$sizes Array of size units, e.g., array("TB","GB","MB","KB","B"). Default is array("MB","KB","B")
+ * @param string $file The file name (file must exist)
+ * @param int $digits Number of precisions
+ * @param array $sizes Array of size units, e.g., array("TB","GB","MB","KB","B"). Default is array("MB","KB","B")
  *
  * @return string|bool Size (B, KiB, MiB, GiB, TiB, PiB, EiB, ZiB, YiB) or boolean
  */
@@ -906,9 +967,9 @@ function _filesize($file, $digits = 2, $sizes = array("MB","KB","B")) {
 if(!function_exists('_randomCode')){
 /**
  * Generate a random string from the given array of letters.
- * @param	int 	$length	The length of required random string
- * @param	array 	$letters Array of letters from which randomized string is derived from. Default is a to z and 0 to 9.
- * @return	string 	Random string of requried length
+ * @param int $length The length of required random string
+ * @param array $letters Array of letters from which randomized string is derived from. Default is a to z and 0 to 9.
+ * @return string Random string of requried length
  */
 	function _randomCode($length=5, $letters = array()){
 		# Letters & Numbers for default
@@ -1037,6 +1098,12 @@ function _meta($key, $value=''){
 }
 /**
  * Simple mail helper function
+ *  The formatting of the email addresses must comply with RFC 2822. Some examples are:
+ *
+ *  - user@example.com
+ *  - user@example.com, anotheruser@example.com
+ *  - User <user@example.com>
+ *  - User <user@example.com>, Another User <anotheruser@example.com>*
  *
  * @param string $from 		The sender of the mail
  * @param string $to 		The receiver or receivers of the mail
@@ -1044,11 +1111,6 @@ function _meta($key, $value=''){
  * @param string $message 	Message to be sent
  * @param string $cc 		The CC receiver or receivers of the mail
  * @param string $bcc 		The Bcc receiver or receivers of the mail
- * 	The formatting of $from, $to, $cc and $bcc must comply with RFC 2822. Some examples are:
- * 		user@example.com
- * 		user@example.com, anotheruser@example.com
- * 		User <user@example.com>
- * 		User <user@example.com>, Another User <anotheruser@example.com>
  *
  * @return boolean Returns TRUE if the mail was successfully accepted for delivery, FALSE otherwise
  */
@@ -1140,4 +1202,103 @@ function _getTranslationStrings($data, $fields, $lang=NULL){
 	}
 	if($isObject) $data = (object) $data;
 	return $data;
+}
+/**
+ * @internal
+ * Dot notation access to multi-dimensional array
+ * Get the values by providing dot notation string key
+ * Set the values by providing dot notation string key
+ *
+ * @param string $key The string separated by dot (peroid)
+ * @param string $scope What scope in which the values will be stored - global or session
+ * @param mixed $value The optional value to set or updated
+ * @param boolean $serialize The value is to be serialized or not
+ *
+ * @return mixed The value assigned
+ */
+function __dotNotationToArray($key, $scope='global', $value='', $serialize=false){
+	if(empty($key)) return NULL;
+	if(!in_array($scope, array('global', 'session'))) return NULL;
+	if(!in_array($scope, array('global', 'session')) && !is_array($scope)) return NULL;
+	if(is_array($scope)) $input = &$scope;
+
+	$type = (count(func_get_args()) > 2) ? 'setter' : 'getter';
+	$keys = explode(".", $key);
+	# extract the first key
+	$firstKey = array_shift($keys);
+	# extract the last key
+	$lastKey = end($keys);
+	# No. of keys exclusive of the first key
+	$count = count($keys); # more than 0 if there is at least one dot
+
+	if($type == 'getter' && $count == 0){ # just one-level key
+		if($scope == 'session'){
+			$firstKey = S_PREFIX . $firstKey;
+			if(array_key_exists($firstKey, $_SESSION)) return $_SESSION[$firstKey];
+			return NULL;
+		}
+		elseif($scope == 'global'){
+			if(array_key_exists($firstKey, $GLOBALS)) return $GLOBALS[$firstKey];
+			return NULL;
+		}
+		elseif(is_array($scope) && isset($input)){
+			if(array_key_exists($firstKey, $input)) return $input[$firstKey];
+			return NULL;
+		}
+	}
+
+	if($scope == 'session'){
+		$firstKey = S_PREFIX . $firstKey;
+		if(!array_key_exists($firstKey, $_SESSION)) $_SESSION[$firstKey] = NULL;
+		$current = &$_SESSION[$firstKey];
+	}
+	elseif($scope == 'global'){
+		if(!array_key_exists($firstKey, $GLOBALS)) $GLOBALS[$firstKey] = NULL;
+		$current = &$GLOBALS[$firstKey];
+	}
+	elseif(is_array($scope) && isset($input)){
+		if(!array_key_exists($firstKey, $input)) $input[$firstKey] = NULL;
+		$current = &$input[$firstKey];
+	}
+
+	$theLastHasValue = false;
+	if( ($type == 'setter' && $count) ||
+		($type == 'getter' && $count > 1) ){ /* this will be skipped if no array (no dot notation)*/
+		foreach($keys as $k) {
+			if($k == $lastKey && isset($current[$lastKey])){
+				$theLastHasValue = true;
+				if($scope != 'session'){
+					# if the last-key has the value of not-array, create array and push the later values.
+					$current[$lastKey] = is_array($current[$k]) ? $current[$k] : array($current[$k]);
+				}
+				break;
+			}
+			if($count && !isset($current[$k]) && !is_array($current)){
+				$current = array($k => NULL);
+			}
+			$current = &$current[$k];
+		}
+	}
+	# Set the values if it is setter
+	if($type == 'setter'){
+		if($theLastHasValue){
+			if(is_array($current[$lastKey]) && !in_array($value, $current[$lastKey]) && $value != $current[$lastKey]){
+				$current[$lastKey][] = ($serialize) ? serialize($value) : $value;
+			}else{
+				$current[$lastKey] = $value;
+			}
+		}elseif(!$theLastHasValue && is_array($current)){
+			if(!in_array($value, $current) && $value != $current){
+				$current[] = ($serialize) ? serialize($value) : $value;
+			}
+		}else{
+			$current = ($serialize) ? serialize($value) : $value;
+		}
+		return $current;
+	}
+	# Get the values if it is getter
+	elseif($type == 'getter'){
+		return ($count) ? (isset($current[$lastKey]) ? $current[$lastKey] : NULL)  : $current;
+	}
+	return NULL;
 }

@@ -1,6 +1,9 @@
 <?php
 if(_meta('description')) 	$lc_metaDescription = _meta('description');
 if(_meta('keywords')) 	 	$lc_metaKeywords = _meta('keywords');
+$lc_siteName		= _cfg('siteName');
+$lc_siteDomain		= _meta('siteDomain');
+$lc_metaDescription	= _meta('description');
 
 $ogTitle 	= (_meta('og:title')) ? _meta('og:title') : $lc_siteName;
 $ogURL 		= (_meta('og:url')) ? _meta('og:url') : _url();
@@ -18,6 +21,7 @@ $twImage 	= (_meta('twitter:image')) ? _meta('twitter:image') : _img('logo-120x1
 <link rel="canonical" href="<?php echo _canonical(); ?>" />
 <?php _hreflang(); ?>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" /> <?php // remove this line if your website isn't specifically designed to be responsive ?>
 <meta name="description" content="<?php echo $lc_metaDescription; ?>" />
 <meta name="keywords" content="<?php echo $lc_metaKeywords; ?>" />
 <!-- Facebook -->
@@ -28,11 +32,11 @@ $twImage 	= (_meta('twitter:image')) ? _meta('twitter:image') : _img('logo-120x1
 <meta property="og:description" content="<?php echo $ogDesc; ?>" />
 <meta property="og:site_name" content="<?php echo $ogSiteName; ?>" />
 <!-- Twitter -->
-<meta name="twitter:card" content="<?php echo $twCard; ?>">
-<meta name="twitter:site" content="@<?php echo $twSite; ?>">
-<meta name="twitter:title" content="<?php echo $twTitle; ?>">
-<meta name="twitter:description" content="<?php echo $twDesc; ?>">
-<meta name="twitter:image" content="<?php echo $twImage; ?>">
+<meta name="twitter:card" content="<?php echo $twCard; ?>" />
+<meta name="twitter:site" content="@<?php echo $twSite; ?>" />
+<meta name="twitter:title" content="<?php echo $twTitle; ?>" />
+<meta name="twitter:description" content="<?php echo $twDesc; ?>" />
+<meta name="twitter:image" content="<?php echo $twImage; ?>" />
 
 <link rel="shortcut icon" href="<?php echo _img('favicon.ico'); ?>" type="image/x-icon" />
 <?php _css('base.css'); ?>

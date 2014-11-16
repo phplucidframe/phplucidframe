@@ -7,7 +7,7 @@ $pageTitle = _t('Categories');
 <html lang="<?php echo _lang(); ?>">
 <head>
 	<title><?php echo _title($pageTitle); ?></title>
-	<?php include( _i('inc/head.php') ); ?>
+	<?php include( _i('inc/tpl/head.php') ); ?>
 	<?php _css('base.my.css'); ?>
 </head>
 <body>

@@ -6,7 +6,8 @@
  * @package		LC\Helpers\Pagination
  * @since		PHPLucidFrame v 1.0.0
  * @copyright	Copyright (c), PHPLucidFrame.
- * @author 		Sithu K. <cithukyaw@gmail.com>
+ * @author 		Sithu K. <hello@sithukyaw.com>
+ * @link 		http://phplucidframe.sithukyaw.com
  * @license		http://www.opensource.org/licenses/mit-license.php MIT License
  *
  * This source file is subject to the MIT license that is bundled
@@ -106,26 +107,26 @@ class Pager{
 	}
 	/**
 	 * Pager calculation function
-	 *
 	 * Before calling this function, the following property must be set:
+	 *
 	 * - $page
 	 * - $itemsPerPage
 	 * - $pageNumLimit
 	 * - $total
 	 *
 	 * @return array The array of the offsets
-	 *					Array(
-	 *						[offset] => xx
-	 *						[thisPage] => xx
-	 *						[beforePages] => Array()
-	 *						[afterPages] => Array()
-	 *						[firstPageEnable] => xx
-	 *						[prePageEnable] => xx
-	 *						[nextPageNo] => xx
-	 *						[nextPageEnable] => xx
-	 *						[lastPageNo] => xx
-	 *						[lastPageEnable] => xx
-	 *					)
+	 * 	Array(
+	 * 		[offset] => xx
+	 * 		[thisPage] => xx
+	 * 		[beforePages] => Array()
+	 * 		[afterPages] => Array()
+	 * 		[firstPageEnable] => xx
+	 * 		[prePageEnable] => xx
+	 * 		[nextPageNo] => xx
+	 * 		[nextPageEnable] => xx
+	 * 		[lastPageNo] => xx
+	 * 		[lastPageEnable] => xx
+	 * 	)
 	 */
 	public function calculate(){
 
