@@ -60,7 +60,7 @@ function auth_prerequisite(){
 	global $lc_siteErrors;
 	db_prerequisite();
 	$auth = _cfg('auth');
-	if( isset($auth['table']) && $auth['table'] && 
+	if( isset($auth['table']) && $auth['table'] &&
 	    isset($auth['fields']['id']) && $auth['fields']['id'] &&
 	    isset($auth['fields']['role']) && $auth['fields']['role'] ){
 		return $auth;
