@@ -145,22 +145,6 @@ $lc_cleanURL = true;
 $lc_securitySalt = file_get_contents(INC . 'security.salt');
 # $lc_formTokenName - Customize your form token name at your own
 $lc_formTokenName = 'LCFormToken';
-# $lc_titleSeparator - Page title separator
-$lc_titleSeparator = '-';
-# $lc_breadcrumbSeparator - Breadcrumb separator
-$lc_breadcrumbSeparator = '&raquo;';
-# $lc_dateFormat: Date format
-$lc_dateFormat = 'd-m-Y';
-# $lc_dateTimeFormat: Date Time format
-$lc_dateTimeFormat = 'd-m-Y h:ia';
-# $lc_pageNumLimit: number of page numbers to be shown in pager
-$lc_pageNumLimit = 10;
-# $lc_itemsPerPage: number of items per page in pager
-$lc_itemsPerPage = 15;
-# $lc_reqSign: Sign for mandatory fields
-$lc_reqSign = '<span class="required">*</span>';
-# $lc_nullFill: Sign for the empty fields
-$lc_nullFill = '<span class="nullFill">-</span>';
 # $lc_useDBAutoFields: Whether use DB auto field such as slug, created, updated, deleted, etc. or not
 $lc_useDBAutoFields = true;
 # $lc_minifyHTML: Compacting HTML code, including any inline JavaScript and CSS contained in it,
