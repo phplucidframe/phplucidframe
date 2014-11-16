@@ -21,7 +21,7 @@
 function security_prerequisite(){
 	$defaultSalt = md5('lucidframe');
 	$salt = trim(_cfg('securitySalt'));
-	if(strcmp($salt, $defaultSalt) === 0){
+	if(function_exists('mcrypt_encrypt') && strcmp($salt, $defaultSalt) === 0){
 		$msg = 'Change your own security salt hash in the file "/inc/security.salt".';
 		_cfg('sitewideWarnings', function_exists('_t') ? _t($msg) : $msg);
 	}
