@@ -188,3 +188,13 @@ function __envLoader(){
 	unset($requestURI);
 	unset($request);
 }
+/**
+ * @internal
+ * Read security.salt and return the hash string which is the value for $lc_securitySalt
+ * @return string
+ */
+function __salt(){
+	$file = INC . 'security.salt';
+	if(is_file($file) && file_exists($file)) return trim(file_get_contents(INC . 'security.salt'));
+	return '';
+}

@@ -140,9 +140,9 @@ $lc_lang = $lc_defaultLang;
 $lc_cleanURL = true;
 # $lc_securitySalt: the key with which the data will be encrypted
 # default hash string is located at ./inc/security.salt
-# It is strongly recommended to change this and use the mhash functions to create a key from a string.
+# It is strongly recommended to change this and use the hash functions to create a key from a string.
 # If you leave this blank, md5() only will be used for encryption
-$lc_securitySalt = file_get_contents(INC . 'security.salt');
+$lc_securitySalt = __salt();
 # $lc_formTokenName - Customize your form token name at your own
 $lc_formTokenName = 'LCFormToken';
 # $lc_useDBAutoFields: Whether use DB auto field such as slug, created, updated, deleted, etc. or not
