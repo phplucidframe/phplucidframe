@@ -111,17 +111,17 @@ $lc_baseURL = 'LucidFrame';
  * 	array(
  * 		'virtual_folder_name (namespace)'  => 'physical_folder_name_directly_under_app_directory
  * 	)
- * Then, you could specify the directories and you can let LucidFrame know to include the files from those directories automatically.
+ * For example, if you have the configuration `'admin' => 'admin'` here, you let LucidFrame know to include the files
+ * from those directories below without specifying the directory name explicilty in every include:
  *   /app/admin/css
  *   /app/admin/inc
  *   /app/admin/helpers
  *   /app/admin/js
  * you could also set 'lc-admin' => 'admin', then you can access http://localhost/LucidFrame/lc-admin
  * Leave this an empty array if you don't want this feature
+ * @see https://github.com/cithukyaw/LucidFrame/wiki/Configuration-for-The-Sample-Administration-Module
  */
-$lc_sites = array(
-	'admin' => 'admin',
-);
+$lc_sites = array();
 # $lc_homeRouting: Home page routing; if it is not set, default is 'home'
 $lc_homeRouting = 'home';
 # $lc_translationEnabled - Enable/Disable language translation
