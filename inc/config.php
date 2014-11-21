@@ -98,13 +98,13 @@ $lc_env = 'development';
 $lc_debugLevel = 3;
 # $lc_defaultDbConnection: The default database connection
 $lc_defaultDbConnection = 'default';
+# $lc_baseURL: No trailing slash (only if it is located in a sub-directory)
+# Leave blank if it is located in the document root
+$lc_baseURL = 'LucidFrame';
 # $lc_siteName: Site Name
 $lc_siteName = 'LucidFrame';
 # $lc_siteDomain: Site Domain Name
 $lc_siteDomain = $_SERVER['HTTP_HOST'];
-# $lc_baseURL: No trailing slash (only if it is located in a sub-directory)
-# Leave blank if it is located in the document root
-$lc_baseURL = 'LucidFrame';
 # $lc_sites: consider sub-directories as additional site roots and namespaces
 /**
  * ### Syntax
