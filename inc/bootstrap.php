@@ -22,14 +22,15 @@ define('APP_DIR', 'app');
 define('_DS_', DIRECTORY_SEPARATOR);
 
 if( !defined('APP_ROOT') ){
-	$APP_ROOT = rtrim(getcwd(), '/').'/';
-	if(isset($_GET['bootstrap'])) $APP_ROOT .= APP_DIR . '/';
+	$APP_ROOT = rtrim(getcwd(), _DS_) . _DS_;
+	if(isset($_GET['bootstrap'])) $APP_ROOT .= APP_DIR . _DS_;
 	define('APP_ROOT', $APP_ROOT); # including trailing slash
 }
 
 if( !defined('ROOT') ){
-	$ROOT = str_replace(APP_DIR, '', rtrim(APP_ROOT, '/'));
-	if( strrpos($ROOT, '/') != strlen($ROOT)-1 ) $ROOT .= '/'; # include trailing slash if not
+	$regex = '/\\'._DS_.APP_DIR.'\b$/';
+	$ROOT = preg_replace($regex, '', rtrim(APP_ROOT, _DS_));
+	if( strrpos($ROOT, _DS_) != strlen($ROOT)-1 ) $ROOT .= _DS_; # include trailing slash if not
 	define('ROOT', $ROOT);
 }
 
