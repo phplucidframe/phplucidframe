@@ -109,15 +109,15 @@ $lc_siteDomain = $_SERVER['HTTP_HOST'];
 /**
  * ### Syntax
  * 	array(
- * 		'virtual_folder_name (namespace)'  => 'physical_folder_name_directly_under_app_directory
+ * 		'virtual_folder_name (namespace)'  => 'physical_folder_name_directly_under_app_directory'
  * 	)
- * For example, if you have the configuration `'admin' => 'admin'` here, you let LucidFrame know to include the files
+ * For example, if you have the configuration `array('admin' => 'admin')` here, you let LucidFrame know to include the files
  * from those directories below without specifying the directory name explicilty in every include:
  *   /app/admin/css
  *   /app/admin/inc
  *   /app/admin/helpers
  *   /app/admin/js
- * you could also set 'lc-admin' => 'admin', then you can access http://localhost/LucidFrame/lc-admin
+ * you could also set `array('lc-admin' => 'admin')`, then you can access http://localhost/LucidFrame/lc-admin
  * Leave this an empty array if you don't want this feature
  * @see https://github.com/cithukyaw/LucidFrame/wiki/Configuration-for-The-Sample-Administration-Module
  */
