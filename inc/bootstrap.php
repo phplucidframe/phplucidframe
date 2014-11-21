@@ -19,6 +19,7 @@
  */
 
 define('APP_DIR', 'app');
+define('_DS_', DIRECTORY_SEPARATOR);
 
 if( !defined('APP_ROOT') ){
 	$APP_ROOT = rtrim(getcwd(), '/').'/';
