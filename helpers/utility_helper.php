@@ -628,12 +628,14 @@ function _getLangInURI(){
 		$lc_languages = array('en' => 'English');
 	}
 
-	$baseURL 	= _cfg('baseURL');
-	$baseURL 	= ($baseURL) ? '\/'.trim($baseURL, '/').'\/' : '\/';
-	$regex 		= '/^'.$baseURL.'\b('.implode('|', array_keys($lc_languages)).'){1}\b(\/?)/i';
+	$baseURL 	= trim(_cfg('baseURL'), '/');
+	$baseURL 	= ($baseURL) ? "/$baseURL/" : '/';
+	$baseURL 	= str_replace('/', '\/', $baseURL); // escape literal `/`
+	$baseURL 	= str_replace('.', '\.', $baseURL); // escape literal `.`
+	$regex 		= '/^('.$baseURL.')\b('.implode('|', array_keys($lc_languages)).'){1}\b(\/?)/i';
 
 	if(preg_match($regex, $_SERVER['REQUEST_URI'], $matches)){
-		return $matches[1];
+		return $matches[2];
 	}
 	return false;
 }
