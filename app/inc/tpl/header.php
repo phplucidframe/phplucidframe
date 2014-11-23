@@ -33,7 +33,7 @@
 						<a href="<?php echo _url('articles'); ?>" <?php if(_arg(0) == 'articles') echo 'class="active"'; ?>><?php echo _t('Articles'); ?></a>
 					</li>
 					<li>
-						<a href="https://github.com/cithukyaw/LucidFrame/releases" target="_blank">Download</a>
+						<a href="http://phplucidframe.sithukyaw.com/downloads" target="_blank">Downloads</a>
 					</li>
 					<li>
 						<a href="https://github.com/cithukyaw/LucidFrame" target="_blank">GitHub</a>
