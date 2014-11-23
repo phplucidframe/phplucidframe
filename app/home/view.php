@@ -15,6 +15,7 @@
 	<li>MySQL 5.0+ with MySQLi enabled.</li>
 </ul>
 <p>
+	<a href="http://phplucidframe.sithukyaw.com" class="button green">Download LucidFrame</a>
 	<a href="<?php echo _url('blog'); ?>" class="button">View AJAX List Example</a>
 	<a href="<?php echo _url('articles'); ?>" class="button">View Ordinary List Example</a>
 	<a href="<?php echo _url('blog/2/url-rewrite-to-a-lucid-page-including-a-form-example'); ?>" class="button">View AJAX Form Example</a>

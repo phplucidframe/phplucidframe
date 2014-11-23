@@ -27,13 +27,13 @@
 						<a href="<?php echo _url('home'); ?>" <?php if(_arg(0) == 'home') echo 'class="active"'; ?>><?php echo _t('Welcome'); ?></a>
 					</li>
 					<li>
-						<a href="<?php echo _url('blog'); ?>" <?php if(in_array(_arg(0), array('blog', 'blog-page'))) echo 'class="active"'; ?>><?php echo _t('Blog'); ?></a>
+						<a href="<?php echo _url('blog'); ?>" <?php if(in_array(_arg(0), array('blog', 'blog-page'))) echo 'class="active"'; ?>><?php echo _t('Example 1'); ?></a>
 					</li>
 					<li>
-						<a href="<?php echo _url('articles'); ?>" <?php if(_arg(0) == 'articles') echo 'class="active"'; ?>><?php echo _t('Articles'); ?></a>
+						<a href="<?php echo _url('articles'); ?>" <?php if(_arg(0) == 'articles') echo 'class="active"'; ?>><?php echo _t('Example 2'); ?></a>
 					</li>
 					<li>
-						<a href="https://github.com/cithukyaw/LucidFrame/releases" target="_blank">Download</a>
+						<a href="http://phplucidframe.sithukyaw.com/downloads" target="_blank">Downloads</a>
 					</li>
 					<li>
 						<a href="https://github.com/cithukyaw/LucidFrame" target="_blank">GitHub</a>
