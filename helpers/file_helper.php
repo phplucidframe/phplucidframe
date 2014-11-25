@@ -219,15 +219,24 @@ class File{
 	 *
 	 * @param string $fileName The file name with an absolute web path
 	 * @param string $caption The image caption
-	 * @param int $imgWidth The actual image width in pixel
-	 * @param int $imgHeight The actual image height in pixel
-	 * @param int $desiredWidth The desired image width in pixel
-	 * @param int $desiredHeight The desired image height in pixel
+	 * @param int $dimension The actual image dimension in "widthxheight"
+	 * @param string $desiredDimension The desired dimension in "widthxheight"
 	 * @param array $attributes The HTML attributes in array like key => value
 	 *
 	 * @return string The <img> tag
 	 */
-	public static function img($fileName, $caption, $imgWidth, $imgHeight, $desiredWidth=0, $desiredHeight=0, $attributes=array()){
+	public static function img($fileName, $caption, $dimension, $desiredDimension='0x0', $attributes=array()){
+		$regex = '/^[0-9]+x[0-9]+$/i'; # check the format of "99x99" for the dimensions
+		if(!preg_match($regex, $dimension)){
+			echo '';
+			return NULL;
+		}
+		if(!preg_match($regex, $desiredDimension)){
+			$desiredDimension = '0x0';
+		}
+		list($imgWidth, $imgHeight) = explode('x', strtolower($dimension));
+		list($desiredWidth, $desiredHeight) = explode('x', strtolower($desiredDimension));
+
 		if($imgWidth > $desiredWidth || $imgHeight > $desiredHeight){ # scale down
 			if($desiredWidth == 0 && $desiredHeight > 0){ # resized to height
 				$desiredWidth 	= floor(($imgWidth/$imgHeight) * $desiredHeight);
@@ -256,6 +265,9 @@ class File{
 						$imgHeight = $desiredHeight;
 					}
 				}
+			}else{ # if the desired dimension is not given
+				$desiredWidth = $imgWidth;
+				$desiredHeight = $imgHeight;
 			}
 		}
 
