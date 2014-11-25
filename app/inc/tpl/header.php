@@ -16,7 +16,7 @@
 					$url = _self(NULL, $lcode);
 				?>
 					<a href="<?php echo $url ?>" class="<?php echo $class; ?>">
-						<span><img src="<?php echo _img('flags/'.$lcode.'.png'); ?>" alt="<?php echo $lname; ?>" title="<?php echo $lname; ?>" /></span>
+						<span><?php _image('flags/'.$lcode.'.png', $lname); ?></span>
 					</a>
 				<?php
 				}
