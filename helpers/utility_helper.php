@@ -223,6 +223,49 @@ function _img($file){
 	return WEB_ROOT . 'images/' . $file;
 }
 
+if(!function_exists('_image')){
+/**
+ * Display an image fitting into the desired dimension
+ * It expects the file existing in one of the directories ./files (`FILE`) and ./images (`IMAGE`)
+ * This function has dependency on file_helper. If there is no file_helper found,
+ * the arguments `$dimension` and `$attributes` will be ignored.
+ *
+ * @param string $file The image file name with path excluding
+ *   the base directory name (FILE or IMAGE) without leading slash.
+ * @param string $caption The image caption
+ * @param string $dimension The desired dimension in "widthxheight"
+ * @param array $attributes The HTML attributes in array like key => value
+ *
+ * @return void
+ */
+	function _image($file, $caption='', $dimension='0x0', $attributes=''){
+		$directory = array(
+			'files' => FILE,
+			'images' => IMAGE
+		);
+		# find the image in the two directories - ./files and ./images
+		foreach($directory as $dir => $path){
+			$image = $path . $file;
+			if(is_file($image) && file_exists($image)){
+				list($width, $height) = getimagesize($image);
+				break;
+			}
+		}
+		if(isset($width) && isset($height)){ // if the image is found
+			$image = WEB_ROOT . $dir . '/' . $file;
+			if(class_exists('File')){
+				echo File::img($image, $caption, $width.'x'.$height, $dimension, $attributes);
+			}else{
+				echo '<img src="'.$image.'" alt="'.$caption.'" title="'.$caption.'" width="'.$width.'" height"'.$height.'" />';
+			}
+		}else{ # if the image is not found
+			echo '<div class="image404" align="center">';
+			echo function_exists('_t') ? _t('No Image') : 'No Image';
+			echo '</div>';
+		}
+	}
+}
+
 if(!function_exists('_pr')){
 /**
  * Convenience method for print_r.
