@@ -1,29 +1,26 @@
 <?php
 if(_meta('description')) 	$lc_metaDescription = _meta('description');
 if(_meta('keywords')) 	 	$lc_metaKeywords = _meta('keywords');
-$lc_siteName		= _cfg('siteName');
-$lc_siteDomain		= _meta('siteDomain');
-$lc_metaDescription	= _meta('description');
 
-$ogTitle 	= (_meta('og:title')) ? _meta('og:title') : $lc_siteName;
+$ogTitle 	= (_meta('og:title')) ? _meta('og:title') : _cfg('siteName');
 $ogURL 		= (_meta('og:url')) ? _meta('og:url') : _url();
 $ogType 	= (_meta('og:type')) ? _meta('og:type') : 'website';
 $ogImage 	= (_meta('og:image')) ? _meta('og:image') : _img('logo-200x200.jpg');
-$ogDesc 	= (_meta('og:description')) ? _meta('og:description') : $lc_metaDescription;
-$ogSiteName = (_meta('og:site_name')) ? _meta('og:site_name') : $lc_siteName;
+$ogDesc 	= (_meta('og:description')) ? _meta('og:description') : _cfg('metaDescription');
+$ogSiteName = (_meta('og:site_name')) ? _meta('og:site_name') : _cfg('siteName');
 
 $twCard 	= (_meta('twitter:card')) ? _meta('twitter:card') : 'summary';
-$twSite 	= (_meta('twitter:site')) ? _meta('twitter:site') : current(explode('.', $lc_siteDomain));
-$twTitle 	= (_meta('twitter:title')) ? _meta('twitter:title') : $lc_siteName;
-$twDesc 	= (_meta('twitter:description')) ? _meta('twitter:description') : $lc_metaDescription;
+$twSite 	= (_meta('twitter:site')) ? _meta('twitter:site') : current(explode('.', _cfg('siteDomain')));
+$twTitle 	= (_meta('twitter:title')) ? _meta('twitter:title') : _cfg('siteName');
+$twDesc 	= (_meta('twitter:description')) ? _meta('twitter:description') : _cfg('metaDescription');
 $twImage 	= (_meta('twitter:image')) ? _meta('twitter:image') : _img('logo-120x120.jpg');
 ?>
 <link rel="canonical" href="<?php echo _canonical(); ?>" />
 <?php _hreflang(); ?>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" /> <?php // remove this line if your website isn't specifically designed to be responsive ?>
-<meta name="description" content="<?php echo $lc_metaDescription; ?>" />
-<meta name="keywords" content="<?php echo $lc_metaKeywords; ?>" />
+<meta name="description" content="<?php echo _cfg('metaDescription'); ?>" />
+<meta name="keywords" content="<?php echo _cfg('metaKeywords'); ?>" />
 <!-- Facebook -->
 <meta property="og:title" content="<?php echo $ogTitle; ?>" />
 <meta property="og:url" content="<?php echo $ogURL; ?>" />
