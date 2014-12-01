@@ -1104,9 +1104,9 @@ function _sqlDate($date, $givenFormat='dmy', $separator='-'){
  * @return string The encrypted text
  */
 function _encrypt($text){
-	global $lc_securitySalt;
-	if(!$lc_securitySalt || !function_exists('mcrypt_encrypt')) return md5($text);
-	return trim(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $lc_securitySalt, $text, MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND))));
+	$secret = _cfg('securitySecret');
+	if(!$secret || !function_exists('mcrypt_encrypt')) return md5($text);
+	return trim(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $secret, $text, MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND))));
 }
 /**
  * Decrypts the given text using security salt if mcrypt extension is enabled, otherwise return the original encrypted string
@@ -1115,9 +1115,9 @@ function _encrypt($text){
  * @return 	string The decrypted text
  */
 function _decrypt($text){
-	global $lc_securitySalt;
-	if(!$lc_securitySalt || !function_exists('mcrypt_encrypt')) return $text;
-	return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $lc_securitySalt, base64_decode($text), MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND)));
+	$secret = _cfg('securitySecret');
+	if(!$secret || !function_exists('mcrypt_encrypt')) return $text;
+	return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $secret, base64_decode($text), MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND)));
 }
 
 $_meta = array();

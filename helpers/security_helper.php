@@ -16,13 +16,13 @@
 
 /**
  * @internal
- * Check the default security salt to be changed
+ * Check the default security secret to be changed
  */
 function security_prerequisite(){
-	$defaultSalt = md5('lucidframe');
-	$salt = trim(_cfg('securitySalt'));
-	if(function_exists('mcrypt_encrypt') && strcmp($salt, $defaultSalt) === 0){
-		$msg = 'Change your own security salt hash in the file "/inc/security.salt".';
+	$defaultSecret = md5('lucidframe');
+	$secret = trim(_cfg('securitySecret'));
+	if(function_exists('mcrypt_encrypt') && strcmp($secret, $defaultSecret) === 0){
+		$msg = 'Change your own security hash in the file "/inc/.secret".';
 		$msg .= 'Get your own hash string at <a href="http://phplucidframe.sithukyaw.com/hash-generator" target="_blank">phplucidframe.sithukyaw.com/hash-generator</a>.';
 		_cfg('sitewideWarnings', function_exists('_t') ? _t($msg) : $msg);
 	}
