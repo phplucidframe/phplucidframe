@@ -1347,3 +1347,38 @@ function __dotNotationToArray($key, $scope='global', $value='', $serialize=false
 	}
 	return NULL;
 }
+/**
+ * Detect the current page visited by a search bot or crawler
+ * @return boolean TRUE if it is a bot's visit; otherwise FALSE
+ * @see http://www.useragentstring.com/pages/Crawlerlist/  /
+ */
+function _isBot(){
+	$bots = array(
+		'Googlebot',
+		'Slurp',
+		'msnbot',
+		'search.msn.com',
+		'Baidu',
+		'Yandex',
+		'nutch',
+		'FAST',
+		'Sosospider',
+		'Exabot',
+		'sogou',
+		'bot',
+		'crawler',
+		'spider',
+		'Feedfetcher-Google',
+		'ASPSeek',
+		'simpy',
+		'Libwww-perl'
+	);
+	$userAgent = $_SERVER['HTTP_USER_AGENT'];
+	if(empty($userAgent)) return false;
+	foreach($bots as $bot){
+	   if(false !== strpos(strtolower($userAgent), strtolower($bot))){
+			return true;
+		}
+	}
+	return false;
+}
