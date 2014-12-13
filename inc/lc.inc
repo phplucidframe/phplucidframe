@@ -29,6 +29,18 @@ $lc_autoload = array();
 */
 $lc_namespace = '';
 /**
+ * Check config.php
+ */
+if(!file_exists(INC . 'config.php')){
+	die('Copy "/inc/config.default.php" and rename to "/inc/config.php".');
+}
+/**
+ * Check site.config.php
+ */
+if(!file_exists(INC . 'site.config.php')){
+	die('Copy "/inc/site.config.default.php" and rename to "/inc/site.config.php".');
+}
+/**
  * File include helper
  * Find files under the default directories inc/, js/, css/ according to the defined site directories $lc_sites
  *
