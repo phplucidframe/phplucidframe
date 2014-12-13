@@ -98,42 +98,55 @@ $lc_env = 'development';
 $lc_debugLevel = 3;
 # $lc_defaultDbConnection: The default database connection
 $lc_defaultDbConnection = 'default';
-# $lc_baseURL: No trailing slash (only if it is located in a sub-directory)
-# Leave blank if it is located in the document root
-$lc_baseURL = 'LucidFrame';
 # $lc_siteName: Site Name
 $lc_siteName = 'LucidFrame';
 # $lc_siteDomain: Site Domain Name
 $lc_siteDomain = $_SERVER['HTTP_HOST'];
+# $lc_baseURL: No trailing slash (only if it is located in a sub-directory)
+# Leave blank if it is located in the document root
+$lc_baseURL = 'LucidFrame';
 # $lc_sites: consider sub-directories as additional site roots and namespaces
 /**
  * ### Syntax
  * 	array(
- * 		'virtual_folder_name (namespace)'  => 'physical_folder_name_directly_under_app_directory'
+ * 		'virtual_folder_name (namespace)'  => 'path/to/physical_folder_name_directly_under_app_directory'
  * 	)
- * For example, if you have the configuration `array('admin' => 'admin')` here, you let LucidFrame know to include the files
+ * For example, if you have the configuration `'admin' => 'admin'` here, you let LucidFrame know to include the files
  * from those directories below without specifying the directory name explicilty in every include:
  *   /app/admin/css
  *   /app/admin/inc
  *   /app/admin/helpers
  *   /app/admin/js
- * you could also set `array('lc-admin' => 'admin')`, then you can access http://localhost/LucidFrame/lc-admin
+ * you could also set 'lc-admin' => 'admin', then you can access http://localhost/LucidFrame/lc-admin
  * Leave this an empty array if you don't want this feature
  * @see https://github.com/cithukyaw/LucidFrame/wiki/Configuration-for-The-Sample-Administration-Module
  */
-$lc_sites = array();
+$lc_sites = array(
+	/* 'virtual_folder_name (namespace)'  => 'path/to/physical_folder_name_directly_under_app_directory' */
+);
 # $lc_homeRouting: Home page routing; if it is not set, default is 'home'
 $lc_homeRouting = 'home';
 # $lc_translationEnabled - Enable/Disable language translation
 $lc_translationEnabled = true;
-# $lc_languages: Site languages (leave this blank for single-language site)
+# $lc_languages: Site languages (leave this as an empty array for single-language site)
+/**
+ * ### Syntax
+ * 	array(
+ * 		'lang_code' => 'Language Name'
+ * 	)
+ * ### Example
+ *    array(
+ *		'en' => 'English',
+ *		'my' => 'Myanmar',
+ *		'zh-CN' => 'Chinese'
+ *    )
+ */
 $lc_languages = array(
-	/* 'lang_code' => 'lang_name' */
-	 'en' => 'English',
-	 'my' => 'Myanmar',
+	/* 'lang_code' => 'Language Name' */
 );
 # $lc_defaultLang: Default site language (leave blank for single-language site)
-$lc_defaultLang = 'en';
+# One of the key of $lc_languages
+$lc_defaultLang = '';
 # $lc_lang: Current selected language
 $lc_lang = $lc_defaultLang;
 # $lc_cleanURL: Enable/Disable clean URL
@@ -151,7 +164,7 @@ $lc_useDBAutoFields = true;
 # can save many bytes of data and speed up downloading, parsing, and execution time.
 # It is forced to `false` when $lc_env = 'development'
 $lc_minifyHTML = true;
-/*
+/**
  * Auth Module Configuration
  */
 # $lc_auth: configuration for the user authentication
