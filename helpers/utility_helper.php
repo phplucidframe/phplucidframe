@@ -516,25 +516,49 @@ function _self($queryStr=array(), $lang=''){
 }
 /**
  * Header redirect to a specific location
- * @param string 	$path		Routing path such as "foo/bar"; NULL for the current path
- * @param array 	$queryStr	Query string as
+ * @param string $path Routing path such as "foo/bar"; NULL for the current path
+ * @param array $queryStr Query string as
  * 	array(
  * 		$value1, // no key here
  * 		'key1' => $value2,
  * 		'key3' => $value3 or array($value3, $value4)
  * 	)
- * @param string 	$lang		Languague code to be prepended to $path such as "en/foo/bar". It will be useful for site language switch redirect
+ * @param string $lang The Languague code to be prepended to $path such as "en/foo/bar".
+ *   It will be useful for site language switch redirect
+ * @param int $status The HTTP status code - 301 for permanent redirect;
+ *   use `_redirect301()` instead; do not provide this for default 302 redirect.
  * @return void
  */
-function _redirect($path=NULL, $queryStr=array(), $lang=''){
+function _redirect($path=NULL, $queryStr=array(), $lang='', $status=NULL){
 	if( stripos($path, 'http') === 0 ){
+		if($status === 301){
+			header("HTTP/1.1 301 Moved Permanently");
+		}
 		header('Location: ' . $path);
 		exit;
 	}
 	if($path == 'self') $url = _self(NULL, $lang);
 	else $url = route_url($path, $queryStr, $lang);
+	if($status === 301){
+		header("HTTP/1.1 301 Moved Permanently");
+	}
 	header('Location: ' . $url);
 	exit;
+}
+/**
+ * Header redirect to a specific location by sending 301 status code
+ * @param string $path Routing path such as "foo/bar"; NULL for the current path
+ * @param array $queryStr Query string as
+ * 	array(
+ * 		$value1, // no key here
+ * 		'key1' => $value2,
+ * 		'key3' => $value3 or array($value3, $value4)
+ * 	)
+ * @param string $lang Languague code to be prepended to $path such as "en/foo/bar". It will be useful for site language switch redirect
+ * @return void
+ */
+function _redirect301($path=NULL, $queryStr=array(), $lang=''){
+	_redirect($path, $queryStr, $lang, 301);
 }
 /**
  * Redirect to 401 page
