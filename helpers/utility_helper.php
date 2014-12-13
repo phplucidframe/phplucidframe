@@ -105,7 +105,7 @@ function _unloader($name, $path=HELPER){
  */
 function _readyloader($name, $path=HELPER){
 	global $lc_autoload;
-	if(strpos($name, '.php') === false) $file = $path . $name . '.php';
+	if(stripos($name, '.php') === false) $file = $path . $name . '.php';
 	else $file = $name;
 	if(array_search($file, $lc_autoload) !== false && is_file($file) && file_exists($file)) return $file;
 	return false;
@@ -170,13 +170,13 @@ function _addvar($name, $value=''){
  * @return void
  */
 function _js($file){
-	if( preg_match('/^http+/', $file) ){
+	if( stripos($file, 'http') === 0 ){
 		echo '<script src="'. $file .'" type="text/javascript"></script>';
 		return;
 	}
 	$file = 'js/'.$file;
 	$file = _i($file);
-	if( preg_match('/^http+/', $file) ){
+	if( stripos($file, 'http') === 0 ){
 		$fileWithSystemPath = str_replace(WEB_ROOT, ROOT, $file);
 		if(file_exists($fileWithSystemPath)){
 			echo '<script src="'. $file .'" type="text/javascript"></script>';
@@ -196,13 +196,13 @@ function _js($file){
  * @return void
  */
 function _css($file){
-	if( preg_match('/^http+/', $file) ){
+	if( stripos($file, 'http') === 0 ){
 		echo '<link href="'. $file .'" rel="stylesheet" type="text/css" />';
 		return;
 	}
 	$file = 'css/'.$file;
 	$file = _i($file);
-	if( preg_match('/^http+/', $file) ){
+	if( stripos($file, 'http') === 0 ){
 		$fileWithSystemPath = str_replace(WEB_ROOT, ROOT, $file);
 		if(file_exists($fileWithSystemPath)){
 			echo '<link href="'. $file .'" rel="stylesheet" type="text/css" />';
@@ -527,7 +527,7 @@ function _self($queryStr=array(), $lang=''){
  * @return void
  */
 function _redirect($path=NULL, $queryStr=array(), $lang=''){
-	if( preg_match('/^http+/', $path) ){
+	if( stripos($path, 'http') === 0 ){
 		header('Location: ' . $path);
 		exit;
 	}

@@ -153,7 +153,7 @@ function route_search(){
 		$seg[0] = $sites[LC_NAMESPACE];
 	}
 
-	if(preg_match('/(\.php){1}$/i', $q)){
+	if(strripos($q, '.php') !== false){
 		$path = implode('/', $seg);
 		if(file_exists($path)) return $path;
 	}
