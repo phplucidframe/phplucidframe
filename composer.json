@@ -1,0 +1,26 @@
+{
+	"name": "lucidframe/phplucidframe",
+	"description": "The simple, lightweight & yet powerful PHP framework",
+	"type": "library",
+	"keywords": ["framework"],
+	"homepage": "http://phplucidframe.sithukyaw.com",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Sithu Kyaw",
+			"email": "hello@sithukyaw.com",
+			"homepage": "http://sithukyaw.com",
+			"role": "Creator & Core Developer"
+		}
+	],
+	"support": {
+		"issues": "https://github.com/cithukyaw/LucidFrame/issues",
+		"forum": "http://groups.google.com/group/phplucidframe",
+		"irc": "irc://irc.freenode.org/phplucidframe",
+		"source": "https://github.com/cithukyaw/LucidFrame"
+	},
+	"require": {
+		"php": ">=5.2.0",
+		"ext-mcrypt": "*"
+	}
+}
