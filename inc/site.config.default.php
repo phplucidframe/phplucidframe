@@ -24,7 +24,7 @@ $lc_metaKeywords 		= 'PHP LucidFrame, PHP, Framework, Web Application Developmen
 # The site contact email address - This address will be used as "To" for all incoming mails
 $lc_siteReceiverEmail 	= ($_SERVER['HTTP_HOST'] == 'localhost') ? 'test@localhost.com' : 'test@example.com';
 # The site sender email address - This address will be used as "From" for all outgoing mails
-$lc_siteSenderEmail 	= "{$lc_siteName} <noreply@{$lc_siteDomain}>";
+$lc_siteSenderEmail 	= "{$lc_siteName} <noreply@localhost.com>";
 # $lc_titleSeparator - Page title separator
 $lc_titleSeparator = '-';
 # $lc_breadcrumbSeparator - Breadcrumb separator

@@ -105,7 +105,7 @@ function _unloader($name, $path=HELPER){
  */
 function _readyloader($name, $path=HELPER){
 	global $lc_autoload;
-	if(strpos($name, '.php') === false) $file = $path . $name . '.php';
+	if(stripos($name, '.php') === false) $file = $path . $name . '.php';
 	else $file = $name;
 	if(array_search($file, $lc_autoload) !== false && is_file($file) && file_exists($file)) return $file;
 	return false;
@@ -170,13 +170,13 @@ function _addvar($name, $value=''){
  * @return void
  */
 function _js($file){
-	if( preg_match('/^http+/', $file) ){
+	if( stripos($file, 'http') === 0 ){
 		echo '<script src="'. $file .'" type="text/javascript"></script>';
 		return;
 	}
 	$file = 'js/'.$file;
 	$file = _i($file);
-	if( preg_match('/^http+/', $file) ){
+	if( stripos($file, 'http') === 0 ){
 		$fileWithSystemPath = str_replace(WEB_ROOT, ROOT, $file);
 		if(file_exists($fileWithSystemPath)){
 			echo '<script src="'. $file .'" type="text/javascript"></script>';
@@ -196,13 +196,13 @@ function _js($file){
  * @return void
  */
 function _css($file){
-	if( preg_match('/^http+/', $file) ){
+	if( stripos($file, 'http') === 0 ){
 		echo '<link href="'. $file .'" rel="stylesheet" type="text/css" />';
 		return;
 	}
 	$file = 'css/'.$file;
 	$file = _i($file);
-	if( preg_match('/^http+/', $file) ){
+	if( stripos($file, 'http') === 0 ){
 		$fileWithSystemPath = str_replace(WEB_ROOT, ROOT, $file);
 		if(file_exists($fileWithSystemPath)){
 			echo '<link href="'. $file .'" rel="stylesheet" type="text/css" />';
@@ -221,6 +221,49 @@ function _css($file){
  */
 function _img($file){
 	return WEB_ROOT . 'images/' . $file;
+}
+
+if(!function_exists('_image')){
+/**
+ * Display an image fitting into the desired dimension
+ * It expects the file existing in one of the directories ./files (`FILE`) and ./images (`IMAGE`)
+ * This function has dependency on file_helper. If there is no file_helper found,
+ * the arguments `$dimension` and `$attributes` will be ignored.
+ *
+ * @param string $file The image file name with path excluding
+ *   the base directory name (FILE or IMAGE) without leading slash.
+ * @param string $caption The image caption
+ * @param string $dimension The desired dimension in "widthxheight"
+ * @param array $attributes The HTML attributes in array like key => value
+ *
+ * @return void
+ */
+	function _image($file, $caption='', $dimension='0x0', $attributes=''){
+		$directory = array(
+			'files' => FILE,
+			'images' => IMAGE
+		);
+		# find the image in the two directories - ./files and ./images
+		foreach($directory as $dir => $path){
+			$image = $path . $file;
+			if(is_file($image) && file_exists($image)){
+				list($width, $height) = getimagesize($image);
+				break;
+			}
+		}
+		if(isset($width) && isset($height)){ // if the image is found
+			$image = WEB_ROOT . $dir . '/' . $file;
+			if(class_exists('File')){
+				echo File::img($image, $caption, $width.'x'.$height, $dimension, $attributes);
+			}else{
+				echo '<img src="'.$image.'" alt="'.$caption.'" title="'.$caption.'" width="'.$width.'" height"'.$height.'" />';
+			}
+		}else{ # if the image is not found
+			echo '<div class="image404" align="center">';
+			echo function_exists('_t') ? _t('No Image') : 'No Image';
+			echo '</div>';
+		}
+	}
 }
 
 if(!function_exists('_pr')){
@@ -473,25 +516,49 @@ function _self($queryStr=array(), $lang=''){
 }
 /**
  * Header redirect to a specific location
- * @param string 	$path		Routing path such as "foo/bar"; NULL for the current path
- * @param array 	$queryStr	Query string as
+ * @param string $path Routing path such as "foo/bar"; NULL for the current path
+ * @param array $queryStr Query string as
  * 	array(
  * 		$value1, // no key here
  * 		'key1' => $value2,
  * 		'key3' => $value3 or array($value3, $value4)
  * 	)
- * @param string 	$lang		Languague code to be prepended to $path such as "en/foo/bar". It will be useful for site language switch redirect
+ * @param string $lang The Languague code to be prepended to $path such as "en/foo/bar".
+ *   It will be useful for site language switch redirect
+ * @param int $status The HTTP status code - 301 for permanent redirect;
+ *   use `_redirect301()` instead; do not provide this for default 302 redirect.
  * @return void
  */
-function _redirect($path=NULL, $queryStr=array(), $lang=''){
-	if( preg_match('/^http+/', $path) ){
+function _redirect($path=NULL, $queryStr=array(), $lang='', $status=NULL){
+	if( stripos($path, 'http') === 0 ){
+		if($status === 301){
+			header("HTTP/1.1 301 Moved Permanently");
+		}
 		header('Location: ' . $path);
 		exit;
 	}
 	if($path == 'self') $url = _self(NULL, $lang);
 	else $url = route_url($path, $queryStr, $lang);
+	if($status === 301){
+		header("HTTP/1.1 301 Moved Permanently");
+	}
 	header('Location: ' . $url);
 	exit;
+}
+/**
+ * Header redirect to a specific location by sending 301 status code
+ * @param string $path Routing path such as "foo/bar"; NULL for the current path
+ * @param array $queryStr Query string as
+ * 	array(
+ * 		$value1, // no key here
+ * 		'key1' => $value2,
+ * 		'key3' => $value3 or array($value3, $value4)
+ * 	)
+ * @param string $lang Languague code to be prepended to $path such as "en/foo/bar". It will be useful for site language switch redirect
+ * @return void
+ */
+function _redirect301($path=NULL, $queryStr=array(), $lang=''){
+	_redirect($path, $queryStr, $lang, 301);
 }
 /**
  * Redirect to 401 page
@@ -1061,9 +1128,9 @@ function _sqlDate($date, $givenFormat='dmy', $separator='-'){
  * @return string The encrypted text
  */
 function _encrypt($text){
-	global $lc_securitySalt;
-	if(!$lc_securitySalt || !function_exists('mcrypt_encrypt')) return md5($text);
-	return trim(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $lc_securitySalt, $text, MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND))));
+	$secret = _cfg('securitySecret');
+	if(!$secret || !function_exists('mcrypt_encrypt')) return md5($text);
+	return trim(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $secret, $text, MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND))));
 }
 /**
  * Decrypts the given text using security salt if mcrypt extension is enabled, otherwise return the original encrypted string
@@ -1072,9 +1139,9 @@ function _encrypt($text){
  * @return 	string The decrypted text
  */
 function _decrypt($text){
-	global $lc_securitySalt;
-	if(!$lc_securitySalt || !function_exists('mcrypt_encrypt')) return $text;
-	return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $lc_securitySalt, base64_decode($text), MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND)));
+	$secret = _cfg('securitySecret');
+	if(!$secret || !function_exists('mcrypt_encrypt')) return $text;
+	return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $secret, base64_decode($text), MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND)));
 }
 
 $_meta = array();
@@ -1303,4 +1370,39 @@ function __dotNotationToArray($key, $scope='global', $value='', $serialize=false
 		return ($count) ? (isset($current[$lastKey]) ? $current[$lastKey] : NULL)  : $current;
 	}
 	return NULL;
+}
+/**
+ * Detect the current page visited by a search bot or crawler
+ * @return boolean TRUE if it is a bot's visit; otherwise FALSE
+ * @see http://www.useragentstring.com/pages/Crawlerlist/  /
+ */
+function _isBot(){
+	$bots = array(
+		'Googlebot',
+		'Slurp',
+		'msnbot',
+		'search.msn.com',
+		'Baidu',
+		'Yandex',
+		'nutch',
+		'FAST',
+		'Sosospider',
+		'Exabot',
+		'sogou',
+		'bot',
+		'crawler',
+		'spider',
+		'Feedfetcher-Google',
+		'ASPSeek',
+		'simpy',
+		'Libwww-perl'
+	);
+	$userAgent = $_SERVER['HTTP_USER_AGENT'];
+	if(empty($userAgent)) return false;
+	foreach($bots as $bot){
+	   if(false !== strpos(strtolower($userAgent), strtolower($bot))){
+			return true;
+		}
+	}
+	return false;
 }

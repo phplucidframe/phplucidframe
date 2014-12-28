@@ -109,7 +109,7 @@ $lc_baseURL = 'LucidFrame';
 /**
  * ### Syntax
  * 	array(
- * 		'virtual_folder_name (namespace)'  => 'physical_folder_name_directly_under_app_directory
+ * 		'virtual_folder_name (namespace)'  => 'path/to/physical_folder_name_directly_under_app_directory'
  * 	)
  * For example, if you have the configuration `'admin' => 'admin'` here, you let LucidFrame know to include the files
  * from those directories below without specifying the directory name explicilty in every include:
@@ -121,28 +121,41 @@ $lc_baseURL = 'LucidFrame';
  * Leave this an empty array if you don't want this feature
  * @see https://github.com/cithukyaw/LucidFrame/wiki/Configuration-for-The-Sample-Administration-Module
  */
-$lc_sites = array();
+$lc_sites = array(
+	/* 'virtual_folder_name (namespace)'  => 'path/to/physical_folder_name_directly_under_app_directory' */
+);
 # $lc_homeRouting: Home page routing; if it is not set, default is 'home'
 $lc_homeRouting = 'home';
 # $lc_translationEnabled - Enable/Disable language translation
 $lc_translationEnabled = true;
-# $lc_languages: Site languages (leave this blank for single-language site)
+# $lc_languages: Site languages (leave this as an empty array for single-language site)
+/**
+ * ### Syntax
+ * 	array(
+ * 		'lang_code' => 'Language Name'
+ * 	)
+ * ### Example
+ *    array(
+ *		'en' => 'English',
+ *		'my' => 'Myanmar',
+ *		'zh-CN' => 'Chinese'
+ *    )
+ */
 $lc_languages = array(
-	/* 'lang_code' => 'lang_name' */
-	 'en' => 'English',
-	 'my' => 'Myanmar',
+	/* 'lang_code' => 'Language Name' */
 );
 # $lc_defaultLang: Default site language (leave blank for single-language site)
-$lc_defaultLang = 'en';
+# One of the key of $lc_languages
+$lc_defaultLang = '';
 # $lc_lang: Current selected language
 $lc_lang = $lc_defaultLang;
 # $lc_cleanURL: Enable/Disable clean URL
 $lc_cleanURL = true;
-# $lc_securitySalt: the key with which the data will be encrypted
-# default hash string is located at ./inc/security.salt
+# $lc_securitySecret: the key with which the data will be encrypted
+# default hash string is located at ./inc/.secret
 # It is strongly recommended to change this and use the hash functions to create a key from a string.
 # If you leave this blank, md5() only will be used for encryption
-$lc_securitySalt = __salt();
+$lc_securitySecret = __secret();
 # $lc_formTokenName - Customize your form token name at your own
 $lc_formTokenName = 'LCFormToken';
 # $lc_useDBAutoFields: Whether use DB auto field such as slug, created, updated, deleted, etc. or not
@@ -151,7 +164,7 @@ $lc_useDBAutoFields = true;
 # can save many bytes of data and speed up downloading, parsing, and execution time.
 # It is forced to `false` when $lc_env = 'development'
 $lc_minifyHTML = true;
-/*
+/**
  * Auth Module Configuration
  */
 # $lc_auth: configuration for the user authentication

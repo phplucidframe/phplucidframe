@@ -50,6 +50,8 @@ define('VENDOR', ROOT.'vendor/');
 define('BUSINESS', ROOT.'business/');
 # path to files/ folder
 define('FILE', ROOT.'files/');
+# path to images/ folder
+define('IMAGE', ROOT.'images/');
 # path to files/cache filder
 define('CACHE', FILE.'cache/');
 
