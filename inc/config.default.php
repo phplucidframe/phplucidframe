@@ -136,13 +136,16 @@ $lc_translationEnabled = true;
  * 	)
  * ### Example
  *    array(
- *		'en' => 'English',
- *		'my' => 'Myanmar',
- *		'zh-CN' => 'Chinese'
+ *      'en' => 'English',
+ *      'my' => 'Myanmar',
+ *      'zh-CN' => 'Chinese'
  *    )
+ * Make this an empty array for single-language site
  */
 $lc_languages = array(
 	/* 'lang_code' => 'Language Name' */
+	'en' => 'English',
+	'my' => 'Myanmar'
 );
 # $lc_defaultLang: Default site language (leave blank for single-language site)
 # One of the key of $lc_languages
