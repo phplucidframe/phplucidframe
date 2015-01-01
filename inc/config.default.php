@@ -149,7 +149,7 @@ $lc_languages = array(
 );
 # $lc_defaultLang: Default site language (leave blank for single-language site)
 # One of the key of $lc_languages
-$lc_defaultLang = '';
+$lc_defaultLang = 'en';
 # $lc_lang: Current selected language
 $lc_lang = $lc_defaultLang;
 # $lc_cleanURL: Enable/Disable clean URL
