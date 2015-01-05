@@ -522,8 +522,8 @@ function validate_time($value){
 	if(empty($value)) return true;
 	$value = trim($value);
 	$regex = array(
-		'24' => '/^([0-23]{2})(:)([0-59]{2})(:[0-59]{2})?$/', // 24-hr format
-		'12' => '/^(0?[0-11]{0,2})(:)([0-59]{2})(:[0-59]{2})?\s*(am|pm)$/i' // 12-hr format
+		'24' => '/^([01]?[0-9]|2[0-3]):([0-5][0-9])(:[0-5][0-9])?$/', // 24-hour format
+		'12' => '/^(0?[0-9]|1[0-2]):([0-5][0-9])(:[0-5][0-9])?\s*(am|pm)$/i' // 12-hour format
 	);
 	foreach($regex as $pattern){
 		if(preg_match($pattern, $value)) return true;
