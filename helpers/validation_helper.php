@@ -46,9 +46,9 @@ $lc_validationMessages = array(
 	'fileMaxDimension'		=> "'%s' cannot exceed the maximum allowed dimension %dx%dpx.",
 	'fileExactDimension'	=> "'%s' should have the dimension %dx%dpx.",
 	'fileExtension'			=> "'%s' must be one of the file types: %s.",
-	'date'					=> "'%s' should be a real date or valid for the date format '%s'.",
-	'time'					=> "'%s' should be a real time or valid for 12-hr/24-hr format.",
-	'datetime'				=> "'%s' should be a real date/time or valid for the date/time format '%s' 12-hr/24-hr.",
+	'date'					=> "'%s' should be valid for the date format '%s'.",
+	'time'					=> "'%s' should be valid for %s format.",
+	'datetime'				=> "'%s' should be valid for the date/time format '%s' %s.",
 	'custom'				=> "'%s' should be a valid format."
 );
 /**
@@ -504,7 +504,7 @@ function validate_date($value, $format = 'y-m-d'){
 	return false;
 }
 /**
- * Validation of a time which checks if the string passed is a valid time in 24-hr or 12-hr format
+ * Validation of a time which checks if the string passed is a valid time in 24-hour or 12-hour format or both
  * **Allowed inputs**
  *
  * - 23:59 or 01:00 or 1:00
@@ -515,17 +515,23 @@ function validate_date($value, $format = 'y-m-d'){
  * - 11:59:59 AM 01:00:00 PM or 1:00:00PM
  *
  * @param string $value The time string being checked
+ * @param string $timeFormat The time format: 12, 24 or both
  *
  * @return bool TRUE on success; FALSE on failure
  */
-function validate_time($value){
+function validate_time($value, $timeFormat = 'both'){
 	if(empty($value)) return true;
 	$value = trim($value);
 	$regex = array(
-		'24' => '/^([0-23]{2})(:)([0-59]{2})(:[0-59]{2})?$/', // 24-hr format
-		'12' => '/^(0?[0-11]{0,2})(:)([0-59]{2})(:[0-59]{2})?\s*(am|pm)$/i' // 12-hr format
+		'24' => '/^([01]?[0-9]|2[0-3]):([0-5][0-9])(:[0-5][0-9])?$/', // 24-hour format
+		'12' => '/^(0?[0-9]|1[0-2]):([0-5][0-9])(:[0-5][0-9])?\s*(am|pm)$/i' // 12-hour format
 	);
-	foreach($regex as $pattern){
+
+	if(!in_array($timeFormat, array('both', '12', '24'))) $timeFormat = 'both';
+	if($timeFormat === 'both') $test = $regex;
+	else $test = array($regex[$timeFormat]);
+
+	foreach($test as $pattern){
 		if(preg_match($pattern, $value)) return true;
 	}
 	return false;
@@ -539,19 +545,19 @@ function validate_time($value){
  * - `y-m-d` 2014-12-31 separators can be a period, dash, forward slash, but not allow space
  *
  * @param string $value The date/time string being checked
- * @param string $format The date format only to be validated against. Default is y-m-d for 2014-12-31.
- *  Time format is not needed. This will validate against 24-hr or 12-hr format.
+ * @param string $dateFormat The date format only to be validated against. Default is y-m-d for 2014-12-31.
+ * @param string $timeFormat The time format: 12, 24 or both
  *
  * @return bool TRUE on success; FALSE on failure
  */
-function validate_datetime($value, $format = 'y-m-d'){
+function validate_datetime($value, $dateFormat = 'y-m-d', $timeFormat = 'both'){
 	if(empty($value)) return true;
 	$value = trim($value);
 	$generalPattern = '/^([\d]{1,4}[-\/.][\d]{1,2}[-\/.][\d]{1,4})(\s+.{4,}\s*(am|pm)?)$/i';
 	if(preg_match_all($generalPattern, $value, $matches)){
 		$date = $matches[1][0];
 		$time = $matches[2][0];
-		return validate_date($date, $format) && validate_time($time);
+		return validate_date($date, $dateFormat) && validate_time($time, $timeFormat);
 	}else{
 		return false;
 	}
@@ -732,15 +738,18 @@ class Validation{
 										break;
 
 									case 'time':
-										$success = call_user_func_array($func, array($value));
-										if(!$success) self::setError($id, $rule, $v);
+										# Optional property: $timeFormat
+										if(!isset($v['timeFormat']) || (isset($v['timeFormat']) && empty($v['timeFormat']))) $v['timeFormat'] = 'both';
+										$success = call_user_func_array($func, array($value, $v['timeFormat']));
+										if(!$success) self::setError($id, $rule, $v, ($v['timeFormat'] === 'both') ? '12/24-hour' : $v['timeFormat'].'-hour');
 										break;
 
 									case 'datetime':
-										# Optional property: dateFormat
+										# Optional property: dateFormat, timeFormat
 										if(!isset($v['dateFormat']) || (isset($v['dateFormat']) && empty($v['dateFormat']))) $v['dateFormat'] = 'y-m-d';
-										$success = call_user_func_array($func, array($value, $v['dateFormat']));
-										if(!$success) self::setError($id, $rule, $v, $v['dateFormat']);
+										if(!isset($v['timeFormat']) || (isset($v['timeFormat']) && empty($v['timeFormat']))) $v['timeFormat'] = 'both';
+										$success = call_user_func_array($func, array($value, $v['dateFormat'], $v['timeFormat']));
+										if(!$success) self::setError($id, $rule, $v, $v['dateFormat'], ($v['timeFormat'] === 'both') ? '12/24-hour' : $v['timeFormat'].'-hour');
 										break;
 
 									default:
