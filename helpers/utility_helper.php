@@ -26,6 +26,9 @@
  * @return string
  */
 function _flush($buffer, $mode){
+	# run the hook if any
+	if(function_exists('__flush')) return __flush($buffer, $mode);
+
 	# Add IE-specific class to the <html> tag
 	$pattern = '/(<html.*class="([^"]*)"[^>]*>)/i';
 	if(preg_match($pattern, $buffer)){
@@ -39,8 +42,6 @@ function _flush($buffer, $mode){
 		<!--[if gte IE 10]> <html$1 class="ie ie10 '._lang().'"> <![endif]-->';
 		$buffer = preg_replace('/<html([^>]*)>/i', $replace, $buffer);
 	}
-
-	if(function_exists('__flush')) return __flush($buffer, $mode); # run the hook if any
 	# Compress HTML output
 	$buffer = _minifyHTML($buffer);
 	return $buffer;
