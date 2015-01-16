@@ -40,14 +40,9 @@ function _flush($buffer, $mode){
 		$buffer = preg_replace('/<html([^>]*)>/i', $replace, $buffer);
 	}
 
-	if(_cfg('minifyHTML')){
-		# 1. strip whitespaces after tags, except space
-		# 2. strip whitespaces before tags, except space
-		# 3. shorten multiple whitespace sequences
-		$buffer = preg_replace(array('/\>[^\S ]+/s', '/[^\S ]+\</s', '/(\s)+/s'), array('>', '<', '\\1'), $buffer);
-	}
-
 	if(function_exists('__flush')) return __flush($buffer, $mode); # run the hook if any
+	# Compress HTML output
+	$buffer = _minifyHTML($buffer);
 	return $buffer;
 }
 /**
@@ -70,6 +65,20 @@ function __htmlIEFix($matches) {
 		if($i == count($versions)-1) $html .= "<!--[if gte IE {$v}]>$tag<![endif]-->\n";
 		else $html .= "<!--[if IE {$v}]>$tag<![endif]-->\n";
 		$i++;
+	}
+	return $html;
+}
+/**
+ * Minify and compress the given HTML according to the configuration `$lc_minifyHTML`
+ * @param  string $html HTML to be compressed or minified
+ * @return string The compressed or minifed HTML
+ */
+function _minifyHTML($html){
+	if(_cfg('minifyHTML')){
+		# 1. strip whitespaces after tags, except space
+		# 2. strip whitespaces before tags, except space
+		# 3. shorten multiple whitespace sequences
+		return preg_replace(array('/\>[^\S ]+/s', '/[^\S ]+\</s', '/(\s)+/s'), array('>', '<', '\\1'), $html);
 	}
 	return $html;
 }
