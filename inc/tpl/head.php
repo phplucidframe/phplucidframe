@@ -14,6 +14,10 @@ $twSite 	= (_meta('twitter:site')) ? _meta('twitter:site') : current(explode('.'
 $twTitle 	= (_meta('twitter:title')) ? _meta('twitter:title') : _cfg('siteName');
 $twDesc 	= (_meta('twitter:description')) ? _meta('twitter:description') : _cfg('metaDescription');
 $twImage 	= (_meta('twitter:image')) ? _meta('twitter:image') : _img('logo-120x120.jpg');
+
+$gpSiteName = (_meta('gp:site_name')) ? _meta('gp:site_name') : _cfg('siteName');
+$gpImage    = (_meta('gp:image')) ? _meta('gp:image') : _img('logo-200x200.jpg');
+$gpDesc     = (_meta('gp:description')) ? _meta('gp:description') : _cfg('metaDescription');
 ?>
 <link rel="canonical" href="<?php echo _canonical(); ?>" />
 <?php _hreflang(); ?>
@@ -34,6 +38,10 @@ $twImage 	= (_meta('twitter:image')) ? _meta('twitter:image') : _img('logo-120x1
 <meta name="twitter:title" content="<?php echo $twTitle; ?>" />
 <meta name="twitter:description" content="<?php echo $twDesc; ?>" />
 <meta name="twitter:image" content="<?php echo $twImage; ?>" />
+<!-- Schema.org markup for Google+ -->
+<meta itemprop="name" content="<?php echo $gpSiteName; ?>">
+<meta itemprop="description" content="<?php echo $gpDesc; ?>">
+<meta itemprop="image" content="<?php echo $gpImage; ?>">
 
 <link rel="shortcut icon" href="<?php echo _img('favicon.ico'); ?>" type="image/x-icon" />
 <?php _css('base.css'); ?>

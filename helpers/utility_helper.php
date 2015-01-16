@@ -31,15 +31,16 @@ function _flush($buffer, $mode){
 
 	# Add IE-specific class to the <html> tag
 	$pattern = '/(<html.*class="([^"]*)"[^>]*>)/i';
+	$schemaMicroData = 'itemscope itemtype="http://schema.org/Product"';
 	if(preg_match($pattern, $buffer)){
 		$buffer = preg_replace_callback($pattern, '__htmlIEFix', $buffer);
 	}else{
-		$replace = '<!--[if !IE]><!--><html$1 class="'._lang().'"><!--<![endif]-->
-		<!--[if IE 6]><html$1 class="ie ie6 '._lang().'"><![endif]-->
-		<!--[if IE 7]><html$1 class="ie ie7 '._lang().'"><![endif]-->
-		<!--[if IE 8]><html$1 class="ie ie8 '._lang().'"><![endif]-->
-		<!--[if IE 9]><html$1 class="ie ie9 '._lang().'"><![endif]-->
-		<!--[if gte IE 10]> <html$1 class="ie ie10 '._lang().'"> <![endif]-->';
+		$replace = '<!--[if !IE]><!--><html$1 class="'._lang().'" '.$schemaMicroData.'><!--<![endif]-->
+		<!--[if IE 6]><html$1 class="ie ie6 '._lang().'" '.$schemaMicroData.'><![endif]-->
+		<!--[if IE 7]><html$1 class="ie ie7 '._lang().'" '.$schemaMicroData.'><![endif]-->
+		<!--[if IE 8]><html$1 class="ie ie8 '._lang().'" '.$schemaMicroData.'><![endif]-->
+		<!--[if IE 9]><html$1 class="ie ie9 '._lang().'" '.$schemaMicroData.'><![endif]-->
+		<!--[if gte IE 10]> <html$1 class="ie ie10 '._lang().'" '.$schemaMicroData.'> <![endif]-->';
 		$buffer = preg_replace('/<html([^>]*)>/i', $replace, $buffer);
 	}
 	# Compress HTML output
