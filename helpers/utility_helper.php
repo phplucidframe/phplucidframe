@@ -1299,8 +1299,9 @@ function __dotNotationToArray($key, $scope='global', $value='', $serialize=false
 	$lastKey = end($keys);
 	# No. of keys exclusive of the first key
 	$count = count($keys); # more than 0 if there is at least one dot
+	$justOneLevelKey = ($count === 0) ? true : false;
 
-	if($type == 'getter' && $count == 0){ # just one-level key
+	if($type == 'getter' && $justOneLevelKey){ # just one-level key
 		if($scope == 'session'){
 			$firstKey = S_PREFIX . $firstKey;
 			if(array_key_exists($firstKey, $_SESSION)) return $_SESSION[$firstKey];
@@ -1331,8 +1332,7 @@ function __dotNotationToArray($key, $scope='global', $value='', $serialize=false
 	}
 
 	$theLastHasValue = false;
-	if( ($type == 'setter' && $count) ||
-		($type == 'getter' && $count > 1) ){ /* this will be skipped if no array (no dot notation)*/
+	if( ($type == 'setter' && $count) || ($type == 'getter' && $count > 1) ){ # this will be skipped if no dot notation
 		foreach($keys as $k) {
 			if($k == $lastKey && isset($current[$lastKey])){
 				$theLastHasValue = true;
@@ -1350,16 +1350,9 @@ function __dotNotationToArray($key, $scope='global', $value='', $serialize=false
 	}
 	# Set the values if it is setter
 	if($type == 'setter'){
-		if($theLastHasValue){
-			if(is_array($current[$lastKey]) && !in_array($value, $current[$lastKey]) && $value != $current[$lastKey]){
-				$current[$lastKey][] = ($serialize) ? serialize($value) : $value;
-			}else{
-				$current[$lastKey] = $value;
-			}
-		}elseif(!$theLastHasValue && is_array($current)){
-			if(!in_array($value, $current) && $value != $current){
-				$current[] = ($serialize) ? serialize($value) : $value;
-			}
+		if(is_array($current) && $theLastHasValue){
+			# when $theLastHasValue, dot notation is given and it is array
+			$current[$lastKey] = ($serialize) ? serialize($value) : $value;
 		}else{
 			$current = ($serialize) ? serialize($value) : $value;
 		}
