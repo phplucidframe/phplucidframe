@@ -134,6 +134,7 @@ function db_setCharset($charset){
  *		':placeholder1' => $value1,
  *		':placeholder2' => $value2
  *	)
+ * The prefix colon ":" for placeholder is optional
  *
  * @return boolean Returns TRUE on success or FALSE on failure
  */
@@ -143,6 +144,7 @@ function db_query($sql, $args=array()){
 
 	if(count($args)){
 		foreach($args as $key => $value){
+			if(strpos($key, ':') === false) $key = ':'.$key;
 			if(is_array($value)){
 				$value = array_map('db_escapeStringMulti', $value);
 				$value = implode(',', $value);
