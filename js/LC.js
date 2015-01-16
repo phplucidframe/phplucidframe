@@ -68,13 +68,14 @@ var Form = {
 		// jquery ui button theme
 		if(typeof $('.jqbutton').button != 'undefined') $('.jqbutton').button();
 		// datepicker initialize
-		if(typeof $('.datepicker').button != 'undefined'){
-			$( ".datepicker" ).datepicker({
+		$('.datepicker').each(function(){
+			var dateFormat = $(this).data('date-format') || 'dd-mm-yy';
+			$(this).datepicker({
 				changeMonth: true,
 				changeYear: true,
-				dateFormat: 'dd-mm-yy'
+				dateFormat: dateFormat
 			});
-		}
+		});
 	},
 	/**
 	 * @internal
