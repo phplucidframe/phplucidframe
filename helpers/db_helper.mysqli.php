@@ -101,7 +101,7 @@ function db_connect($namespace='default'){
 	if (!$_conn) {
 		die('Not connected mysqli!');
 	}
-    # Force MySQL to use the UTF-8 character set. Also set the collation, if a certain one has been set;
+	# Force MySQL to use the UTF-8 character set. Also set the collation, if a certain one has been set;
 	# otherwise, MySQL defaults to 'utf8_general_ci' # for UTF-8.
 	if (!db_setCharset('utf8')){
 		printf("Error loading character set utf8: %s", mysqli_error($_conn));
