@@ -278,7 +278,10 @@ var Page = {
 	 */
 	showGlobalMessage : function(){
 		var html = '';
-		if(LC.sitewideWarnings && LC.sitewideWarnings.length){
+		if(LC.sitewideWarnings){
+			if(typeof(LC.sitewideWarnings) === 'string'){
+				LC.sitewideWarnings = [LC.sitewideWarnings];
+			}
 			$.each(LC.sitewideWarnings, function(i, msg){
 				html = '<div class="message sitewide-message warning" title="Click to dismiss">';
 				html += '<ul>';
