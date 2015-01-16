@@ -1,19 +1,19 @@
 <?php
-if(_meta('description')) 	$lc_metaDescription = _meta('description');
-if(_meta('keywords')) 	 	$lc_metaKeywords = _meta('keywords');
+if(_meta('description')) $lc_metaDescription = _meta('description');
+if(_meta('keywords'))    $lc_metaKeywords = _meta('keywords');
 
-$ogTitle 	= (_meta('og:title')) ? _meta('og:title') : _cfg('siteName');
-$ogURL 		= (_meta('og:url')) ? _meta('og:url') : _url();
-$ogType 	= (_meta('og:type')) ? _meta('og:type') : 'website';
-$ogImage 	= (_meta('og:image')) ? _meta('og:image') : _img('logo-200x200.jpg');
-$ogDesc 	= (_meta('og:description')) ? _meta('og:description') : _cfg('metaDescription');
+$ogTitle    = (_meta('og:title')) ? _meta('og:title') : _cfg('siteName');
+$ogURL      = (_meta('og:url')) ? _meta('og:url') : _url();
+$ogType     = (_meta('og:type')) ? _meta('og:type') : 'website';
+$ogImage    = (_meta('og:image')) ? _meta('og:image') : _img('logo-200x200.jpg');
+$ogDesc     = (_meta('og:description')) ? _meta('og:description') : _cfg('metaDescription');
 $ogSiteName = (_meta('og:site_name')) ? _meta('og:site_name') : _cfg('siteName');
 
-$twCard 	= (_meta('twitter:card')) ? _meta('twitter:card') : 'summary';
-$twSite 	= (_meta('twitter:site')) ? _meta('twitter:site') : current(explode('.', _cfg('siteDomain')));
-$twTitle 	= (_meta('twitter:title')) ? _meta('twitter:title') : _cfg('siteName');
-$twDesc 	= (_meta('twitter:description')) ? _meta('twitter:description') : _cfg('metaDescription');
-$twImage 	= (_meta('twitter:image')) ? _meta('twitter:image') : _img('logo-120x120.jpg');
+$twCard     = (_meta('twitter:card')) ? _meta('twitter:card') : 'summary';
+$twSite     = (_meta('twitter:site')) ? _meta('twitter:site') : current(explode('.', _cfg('siteDomain')));
+$twTitle    = (_meta('twitter:title')) ? _meta('twitter:title') : _cfg('siteName');
+$twDesc     = (_meta('twitter:description')) ? _meta('twitter:description') : _cfg('metaDescription');
+$twImage    = (_meta('twitter:image')) ? _meta('twitter:image') : _img('logo-120x120.jpg');
 
 $gpSiteName = (_meta('gp:site_name')) ? _meta('gp:site_name') : _cfg('siteName');
 $gpImage    = (_meta('gp:image')) ? _meta('gp:image') : _img('logo-200x200.jpg');
