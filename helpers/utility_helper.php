@@ -29,7 +29,7 @@ function _flush($buffer, $mode){
 	# Add IE-specific class to the <html> tag
 	$pattern = '/(<html.*class="([^"]*)"[^>]*>)/i';
 	if(preg_match($pattern, $buffer)){
-		$buffer = preg_replace_callback($pattern, '_htmlIEFix', $buffer);
+		$buffer = preg_replace_callback($pattern, '__htmlIEFix', $buffer);
 	}else{
 		$replace = '<!--[if !IE]><!--><html$1 class="'._lang().'"><!--<![endif]-->
 		<!--[if IE 6]><html$1 class="ie ie6 '._lang().'"><![endif]-->
@@ -57,7 +57,7 @@ function _flush($buffer, $mode){
  * It adds the conditional IE comments and class (ie6,...ie10..) to <html>
  * @return string
  */
-function _htmlIEFix($matches) {
+function __htmlIEFix($matches) {
 	$find 	 = 'class="'.$matches[2].'"';
 	$replace = 'class="'.$matches[2].' '._lang().'"';
 	$tag   	 = str_replace($find, $replace, $matches[1]);
