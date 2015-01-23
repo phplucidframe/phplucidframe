@@ -23,6 +23,11 @@ var Form = {
 		$forms = $('form');
 		$.each( $forms, function(){
 			var $form = $(this);
+			if(typeof(CKEDITOR) !== 'undefined'){
+				for(instance in CKEDITOR.instances){
+					CKEDITOR.instances[instance].updateElement();
+				}
+			}
 			if($form.hasClass('no-ajax')) return; // normal form submission
 			// Add a hidden input and a reset button
 			$form.append('<input type="hidden" name="submitButton" class="submitButton" />');
