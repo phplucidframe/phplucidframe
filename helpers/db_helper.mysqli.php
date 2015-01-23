@@ -582,14 +582,17 @@ if(!function_exists('db_delete_multi')){
 	}
 }
 /**
+ * @internal
  * Build the SQL WHERE clause from the various condition arrays
  *
  * @param array $cond The condition array, for example
- *	array(
- *		'fieldName1' 	=> $value1,
- *		'fieldName2 >='	=> $value2, <=== operators allowed =, >=, <=, >, <, !=, <>
- *		'fieldName3 	=> NULL
- *	)
+ *
+ *    array(
+ *      'fieldName1'    => $value1,
+ *      'fieldName2 >=' => $value2,
+ *      'fieldName3     => NULL
+ *    )
+ *
  * @param string $type The condition type "AND" or "OR"; Default is "AND"
  *
  * @return string The built condition WHERE clause
@@ -620,28 +623,66 @@ function db_condition($cond=array(), $type='AND'){
  * Build the SQL WHERE clause AND condition from the various condition arrays
  *
  * @param array $cond The condition array, for example
- *	array(
- *		'fieldName1' 	=> $value1,
- *		'fieldName2 >='	=> $value2, <=== operators allowed =, >=, <=, >, <, !=, <>
- *		'fieldName3 	=> NULL
- *	)
+ *
+ *    array(
+ *      'fieldName1'    => $value1,
+ *      'fieldName2 >=' => $value2,
+ *      'fieldName3     => NULL
+ *    )
+ *
  * @return string The built condition WHERE clause
  */
 function db_conditionAND($cond=array()){
 	return db_condition($cond, 'AND');
 }
 /**
+ * Build the SQL WHERE clause AND condition from the various condition arrays
+ * Alias of `db_conditionAND()`
+ *
+ * @param array $cond The condition array, for example
+ *
+ *    array(
+ *      'fieldName1'    => $value1,
+ *      'fieldName2 >=' => $value2, <== operators allowed =, >=, <=, >, <, !=, <>, between, nbetween
+ *      'fieldName3     => NULL
+ *    )
+ *
+ * @return string The built condition WHERE clause
+ */
+function db_and($cond=array()){
+	return db_condition($cond, 'AND');
+}
+/**
  * Build the SQL WHERE clause OR condition from the various condition arrays
  *
  * @param array $cond The condition array, for example
- *	array(
- *		'fieldName1' 	=> $value1,
- *		'fieldName2 >='	=> $value2, <=== operators allowed =, >=, <=, >, <, !=, <>
- *		'fieldName3 	=> NULL
- *	)
+ *
+ *    array(
+ *      'fieldName1'    => $value1,
+ *      'fieldName2 >=' => $value2,
+ *      'fieldName3     => NULL
+ *    )
+ *
  * @return string The built condition WHERE clause
  */
 function db_conditionOR($cond=array()){
+	return db_condition($cond, 'OR');
+}
+/**
+ * Build the SQL WHERE clause OR condition from the various condition arrays
+ * Alias of `db_conditionOR()`
+ *
+ * @param array $cond The condition array, for example
+ *
+ *    array(
+ *      'fieldName1'    => $value1,
+ *      'fieldName2 >=' => $value2, <== operators allowed =, >=, <=, >, <, !=, <>, between, nbetween
+ *      'fieldName3     => NULL
+ *    )
+ *
+ * @return string The built condition WHERE clause
+ */
+function db_or($cond=array()){
 	return db_condition($cond, 'OR');
 }
 /**
