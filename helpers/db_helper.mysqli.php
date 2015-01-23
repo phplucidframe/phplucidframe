@@ -622,6 +622,7 @@ function db_condition($cond=array(), $type='AND'){
 /**
  * Build the SQL WHERE clause AND condition from the various condition arrays
  *
+ * @deprecated 1.2.0
  * @param array $cond The condition array, for example
  *
  *    array(
@@ -655,6 +656,7 @@ function db_and($cond=array()){
 /**
  * Build the SQL WHERE clause OR condition from the various condition arrays
  *
+ * @deprecated 1.2.0
  * @param array $cond The condition array, for example
  *
  *    array(
