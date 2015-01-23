@@ -602,7 +602,7 @@ function db_condition($cond=array(), $type='AND'){
 	if(empty($cond)) return '';
 	$type 		= strtoupper($type);
 	$condition 	= array();
-	$operators 	= array('=', '>=', '<=', '>', '<', '!=', '<>');
+	$operators 	= array('=', '>=', '<=', '>', '<', '!=', '<>', 'between', 'nbetween');
 	$opr 		= '=';
 	$regexp 	= '/^[a-z0-9_]+(\.)?[a-z0-9_]+(\s)*('.implode('|', $operators).'){1}$/i';
 	foreach($cond as $field => $value){
@@ -617,6 +617,12 @@ function db_condition($cond=array(), $type='AND'){
 			# assuming that is a condition built by db_or() or db_and();
 			$condition[] = '( ' . $value . ' )';
 		}else{
+			# if the operator is "between", the value must be array
+			# otherwise force to "="
+			if(in_array($opr, array('between', 'nbetween')) && !is_array($value)){
+				$opr = '=';
+			}
+
 			if(is_numeric($value)){
 				$condition[] = $field . ' ' . $opr . ' ' . db_escapeString($value) . '';
 			}elseif(is_string($value)){
@@ -629,8 +635,15 @@ function db_condition($cond=array(), $type='AND'){
 				foreach($value as $v){
 					$list[] = (is_numeric($v)) ? db_escapeString($v) : '"' . db_escapeString($v) . '"';
 				}
-				$oprIN = ($opr === '!=') ? 'NOT IN' : 'IN';
-				$condition[] = $field . ' '. $oprIN . ' (' . implode(', ', $list) . ')';
+				if($opr === 'between'){
+					$condition[] = '( ' . $field . ' BETWEEN ' . current($list) . ' AND ' . end($list) . ' )';
+				}elseif($opr === 'nbetween'){
+					$condition[] = '( ' . $field . ' NOT BETWEEN ' . current($list) . ' AND ' . end($list) . ' )';
+				}elseif($opr === '!='){
+					$condition[] = $field . ' NOT IN (' . implode(', ', $list) . ')';
+				}else{
+					$condition[] = $field . ' IN (' . implode(', ', $list) . ')';
+				}
 			}else{
 				$condition[] = $field . ' ' . $opr . ' ' . db_escapeString($value);
 			}
