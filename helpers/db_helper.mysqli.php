@@ -598,22 +598,43 @@ if(!function_exists('db_delete_multi')){
  * @return string The built condition WHERE clause
  */
 function db_condition($cond=array(), $type='AND'){
-	if(!is_array($cond)) return '';
+	if(!is_array($cond)) return $cond;
+	if(empty($cond)) return '';
 	$type 		= strtoupper($type);
 	$condition 	= array();
 	$operators 	= array('=', '>=', '<=', '>', '<', '!=', '<>');
 	$opr 		= '=';
+	$regexp 	= '/^[a-z0-9_]+(\.)?[a-z0-9_]+(\s)*('.implode('|', $operators).'){1}$/i';
 	foreach($cond as $field => $value){
 		$field = trim($field);
-		$regexp = '/^[a-z0-9_]+(\.)?[a-z0-9_]+(\s)*('.implode('|', $operators).'){1}$/i';
 		# check if any operator is given in the field
-		if(preg_match($regexp, $field, $matches)){
+		if(!is_numeric($field) && preg_match($regexp, $field, $matches)){
 			$opr 	= $matches[3];
 			$field 	= trim(str_replace($opr, '', $field));
 		}
-		if(is_string($value)) $condition[] = $field . ' ' . $opr . ' "' . db_escapeString($value) . '"';
-		elseif(is_null($value)) $condition[] = $field . ' IS NULL';
-		else $condition[] = $field . ' ' . $opr . ' ' . db_escapeString($value);
+		if(is_numeric($field)){
+			# if the field is array index,
+			# assuming that is a condition built by db_or() or db_and();
+			$condition[] = '( ' . $value . ' )';
+		}else{
+			if(is_numeric($value)){
+				$condition[] = $field . ' ' . $opr . ' ' . db_escapeString($value) . '';
+			}elseif(is_string($value)){
+				$condition[] = $field . ' ' . $opr . ' "' . db_escapeString($value) . '"';
+			}elseif(is_null($value)){
+				if(in_array($opr, array('!=', '<>'))) $condition[] = $field . ' IS NOT NULL';
+				else $condition[] = $field . ' IS NULL';
+			}elseif(is_array($value) && count($value)){
+				$list = array();
+				foreach($value as $v){
+					$list[] = (is_numeric($v)) ? db_escapeString($v) : '"' . db_escapeString($v) . '"';
+				}
+				$oprIN = ($opr === '!=') ? 'NOT IN' : 'IN';
+				$condition[] = $field . ' '. $oprIN . ' (' . implode(', ', $list) . ')';
+			}else{
+				$condition[] = $field . ' ' . $opr . ' ' . db_escapeString($value);
+			}
+		}
 	}
 	if(count($condition)) $condition = implode(" {$type} ", $condition);
 	else $condition = '';
