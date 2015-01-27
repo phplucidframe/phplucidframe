@@ -693,7 +693,7 @@ function db_conditionAND($cond=array()){
  * Build the SQL WHERE clause AND condition from the various condition arrays
  * Alias of `db_conditionAND()`
  *
- * @param array $cond The condition array, for example
+ * @param array $cond [,$cond2,$cond3,...] The condition array(s), for example
  *
  *    array(
  *      'fieldName1'    => $value1,
@@ -704,7 +704,12 @@ function db_conditionAND($cond=array()){
  * @return string The built condition WHERE clause
  */
 function db_and($cond=array()){
-	return db_condition($cond, 'AND');
+	$conditions = func_get_args();
+	$builtCond = array();
+	foreach($conditions as $c){
+		$builtCond[] = db_condition($c, 'AND');
+	}
+	return implode(' AND ', $builtCond);
 }
 /**
  * Build the SQL WHERE clause OR condition from the various condition arrays
@@ -727,7 +732,7 @@ function db_conditionOR($cond=array()){
  * Build the SQL WHERE clause OR condition from the various condition arrays
  * Alias of `db_conditionOR()`
  *
- * @param array $cond The condition array, for example
+ * @param array $cond [,$cond2,$cond3,...] The condition array(s), for example
  *
  *    array(
  *      'fieldName1'    => $value1,
@@ -738,7 +743,12 @@ function db_conditionOR($cond=array()){
  * @return string The built condition WHERE clause
  */
 function db_or($cond=array()){
-	return db_condition($cond, 'OR');
+	$conditions = func_get_args();
+	$builtCond = array();
+	foreach($conditions as $c){
+		$builtCond[] = db_condition($c, 'OR');
+	}
+	return implode(' OR ', $builtCond);
 }
 /**
  * @internal
