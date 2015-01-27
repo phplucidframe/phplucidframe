@@ -17,6 +17,7 @@
 /** @type array It contains the built and executed queries through out the script execuation */
 global $db_builtQueries;
 $db_builtQueries = array();
+$db_printQuery = false;
 
 /**
  * @internal
@@ -126,6 +127,18 @@ function db_setCharset($charset){
 	return mysqli_set_charset( $_conn , $charset );
 }
 /**
+ * Make the generated query returned from the query executing functions
+ * such as db_query, db_update, db_delete, etc. without executing the query
+ * especially for debugging and testing.
+ * Call `db_prq(true)` before and `db_prq(false)` after
+ * `db_queryStr()` is same purpose, but after executing the query
+ *
+ * @param bool $enable Enable to return the query built; defaults to `true`.
+ */
+function db_prq($enable=true){
+	_g('db_printQuery', $enable);
+}
+/**
  * Perform a query on the database
  *
  * @param string $sql SQL query string
@@ -158,6 +171,8 @@ function db_query($sql, $args=array()){
 	}
 
 	$db_builtQueries[] = $sql;
+
+	if(_g('db_printQuery')) return $sql;
 
 	if($result = mysqli_query($_conn, $sql)){
 		return $result;
@@ -525,8 +540,10 @@ if(!function_exists('db_delete')){
 		$condition = db_condition($cond);
 		if($condition) $condition = ' WHERE '.$condition;
 
+		$sql = 'DELETE FROM ' . $table . $condition . ' LIMIT 1';
+		if(_g('db_printQuery')) return $sql;
+
 		ob_start(); # to capture error return
-		$sql = 'DELETE FROM '.$table.' '.$condition.' LIMIT 1';
 		db_query($sql);
 		$return = ob_get_clean();
 		if($return){
@@ -569,8 +586,10 @@ if(!function_exists('db_delete_multi')){
 		$condition = db_condition($cond);
 		if($condition) $condition = ' WHERE '.$condition;
 
-		ob_start(); # to capture error return
 		$sql = 'DELETE FROM ' . $table . $condition;
+		if(_g('db_printQuery')) return $sql;
+
+		ob_start(); # to capture error return
 		db_query($sql);
 		$return = ob_get_clean();
 
