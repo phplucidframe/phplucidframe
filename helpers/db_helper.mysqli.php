@@ -432,24 +432,45 @@ if(!function_exists('db_update')){
  *
  * @param string $table The table name without prefix
  * @param array $data The array of data field names and values
- *	array(
- *		'pkFieldName' 		=> $pkFieldValue, <=== 0
- *		'fieldNameToSlug' 	=> $valueToSlug,  <=== 1 # if $lc_useDBAutoFields is enabled
- *		'fieldName1' 		=> $value1,
- *		'fieldName2' 		=> $value2
- *	)
- * @param boolean $useSlug True to include the slug field or False to not exclude it
- * @param array $additionalCondition The addtional conditions for the UPDATE query, for example,
- *	array(
- *		'fieldName1' => $value1,
- *		'fieldName2' => $value2
- *	)
+ *   The first field/value pair will be used as condition if you did not provide the fourth argument
+ *
+ *    array(
+ *      'conditionField'  => $conditionFieldValue, <===
+ *      'fieldNameToSlug' => $valueToSlug,  <=== if $lc_useDBAutoFields is enabled
+ *      'fieldName1'      => $value1,
+ *      'fieldName2'      => $value2
+ *    )
+ *
+ * @param boolean $useSlug TRUE to include the slug field or FALSE to not exclude it
+ *   The fourth argument can be provided here if you want to omit this.
+ * @param array|string $condition The condition for the UPDATE query. If you provide this,
+ *   the first field of `$data` will not be built for condition
+ *
+ * ### Example
+ *
+ *    array(
+ *      'fieldName1' => $value1,
+ *      'fieldName2' => $value2
+ *    )
+ *
+ * OR
+ *
+ *   db_or(array(
+ *      'fieldName1' => $value1,
+ *      'fieldName2' => $value2
+ *   ))
+ *
  * @return boolean Returns TRUE on success or FALSE on failure
  */
-	function db_update($table, $data=array(), $useSlug=true, $additionalCondition=array()){
+	function db_update($table, $data=array(), $useSlug=true, $condition=NULL){
 		if(count($data) == 0) return;
 		global $_conn;
 		global $lc_useDBAutoFields;
+
+		if(func_num_args() === 3 && (gettype($useSlug) === 'string' || is_array($useSlug))){
+			$condition = $useSlug;
+			$useSlug = true;
+		}
 
 		$table 	= ltrim($table, db_prefix());
 		$table 	= db_prefix().$table;
@@ -457,7 +478,7 @@ if(!function_exists('db_update')){
 		# Invoke the hook db_update_[table_name] if any
 		$hook = 'db_update_' . strtolower($table);
 		if(function_exists($hook)){
-			return call_user_func_array( $hook, array($table, $data, $useSlug, $additionalCondition) );
+			return call_user_func_array( $hook, array($table, $data, $useSlug, $condition) );
 		}
 
 		# if slug is already provided in the data array, use it
@@ -470,31 +491,44 @@ if(!function_exists('db_update')){
 		}
 
 		$fields = array();
-		$slug 	= '';
-		$condition = '';
-		$notCondition = '';
+		$slug = '';
+		$cond = '';
+		$notCond = '';
 		$i = 0;
 		foreach($data as $field => $value){
-			if($i == 0){ # $data[0] is PK
-				$condition = array($field => db_escapeString($value)); # for PK condition
-				$notCondition = array("$field !=" => db_escapeString($value));
-			}else{
-				if(is_null($value)) $fields[] = $field . ' = NULL';
-				else $fields[] = $field . ' = "' . db_escapeString($value) . '"';
+			if($i === 0 && !$condition){
+				# $data[0] is for PK condition, but only if $condition is not provided
+				$cond = array($field => db_escapeString($value)); # for PK condition
+				$i++;
+				continue;
 			}
+
+			if(is_null($value)) $fields[] = $field . ' = NULL';
+			else $fields[] = $field . ' = "' . db_escapeString($value) . '"';
+
 			if($i == 1 && $useSlug == true){ # $data[1] is slug
 				$slug = db_escapeString($value);
 			}
 			$i++;
 		}
 
-		if($condition){ # must have condition
-			if(count($additionalCondition)){
-				$condition = array_merge($condition, $additionalCondition);
+		# must have condition
+		# this prevents unexpected update happened to all records
+		if($cond || $condition){
+			if($cond && is_array($cond)){
+				$cond = db_condition($cond);
+			}elseif($condition && is_array($condition)){
+				$cond = db_condition($condition);
+			}elseif($condition && is_string($condition)){
+				$cond = $condition;
 			}
+
+			if(empty($cond)) return false;
+			$notCond = 'NOT ( ' . $cond . ' )';
+
 			if($lc_useDBAutoFields){
 				if($useSlug){
-					$slug = _slug($slug, $table, $notCondition);
+					$slug = _slug($slug, $table, $notCond);
 					session_set('lastInsertSlug', $slug);
 					$fields[] = 'slug = "'.$slug.'"';
 				}
@@ -502,10 +536,7 @@ if(!function_exists('db_update')){
 			}
 			$fields = implode(', ', $fields);
 
-			if($condition) $condition = db_condition($condition);
-
-			$sql = 'UPDATE ' . $table . ' SET ' . $fields . '
-					WHERE ' . $condition . ' LIMIT 1';
+			$sql = 'UPDATE ' . $table . ' SET ' . $fields . ' WHERE ' . $cond;
 			return db_query($sql);
 		}else{
 			return false;
@@ -519,15 +550,25 @@ if(!function_exists('db_delete')){
  * It checks FK delete RESTRICT constraint, then SET deleted if it cannot be deleted
  *
  * @param string $table Table name without prefix
- * @param array $cond The array of condition for delete - field names and values, for example
- *	array(
- *		'fieldName1' 	=> $value1,
- *		'fieldName2 >=' => $value2,
- *		'fieldName3 	=> NULL
- *	)
+ * @param string|array $condition The array of condition for delete - field names and values, for example
+ *
+ *    array(
+ *      'fieldName1'    => $value1,
+ *      'fieldName2 >=' => $value2,
+ *      'fieldName3     => NULL
+ *    )
+ *
+ *   The built condition string, for example,
+ *
+ *    db_or(array(
+ *      'fieldName1'    => $value1,
+ *      'fieldName2 >=' => $value2,
+ *      'fieldName3     => NULL
+ *    ))
+ *
  * @return boolean Returns TRUE on success or FALSE on failure
  */
-	function db_delete($table, $cond=array()){
+	function db_delete($table, $condition=NULL){
 		$table = ltrim($table, db_prefix());
 		$table = db_prefix().$table;
 
@@ -537,7 +578,9 @@ if(!function_exists('db_delete')){
 			return call_user_func_array( $hook, array($table, $cond) );
 		}
 
-		$condition = db_condition($cond);
+		if(is_array($condition)){
+			$condition = db_condition($condition);
+		}
 		if($condition) $condition = ' WHERE '.$condition;
 
 		$sql = 'DELETE FROM ' . $table . $condition . ' LIMIT 1';
@@ -564,16 +607,25 @@ if(!function_exists('db_delete_multi')){
  * Handy MYSQL delete operation for multiple records
  *
  * @param string $table Table name without prefix
- * @param array $cond Array of condition for delete - field names and values, for example
- *	array(
- *		'fieldName1' 	=> $value1,
- *		'fieldName2 >=' => $value2,
- *		'fieldName3' 	=> NULL
- *	)
+ * @param string|array $condition The array of condition for delete - field names and values, for example
+ *
+ *    array(
+ *      'fieldName1'    => $value1,
+ *      'fieldName2 >=' => $value2,
+ *      'fieldName3     => NULL
+ *    )
+ *
+ *   The built condition string, for example,
+ *
+ *    db_or(array(
+ *      'fieldName1'    => $value1,
+ *      'fieldName2 >=' => $value2,
+ *      'fieldName3     => NULL
+ *    ))
  *
  * @return boolean Returns TRUE on success or FALSE on failure
  */
-	function db_delete_multi($table, $cond=array()){
+	function db_delete_multi($table, $condition=NULL){
 		$table = ltrim($table, db_prefix());
 		$table = db_prefix().$table;
 
@@ -583,7 +635,9 @@ if(!function_exists('db_delete_multi')){
 			return call_user_func_array( $hook, array($table, $cond) );
 		}
 
-		$condition = db_condition($cond);
+		if(is_array($condition)){
+			$condition = db_condition($condition);
+		}
 		if($condition) $condition = ' WHERE '.$condition;
 
 		$sql = 'DELETE FROM ' . $table . $condition;
