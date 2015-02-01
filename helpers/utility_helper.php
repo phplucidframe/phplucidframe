@@ -18,57 +18,99 @@
  * @internal
  *
  * ob_start callback function to output buffer
- * It also adds the conditional IE comments and class (ie6,...ie10..) to <html>
+ * It also adds the following to <html>
+ *
+ * - a class for IE "ie ieX"
+ * - lang="xx" for multi-lingual site
+ * - itemscope and itemtype attribute
+ *
  * Hook to implement `__flush()` at app/helpers/utility_helper.php
  *
- * @param string $buffer The output buffer
+ * @param string $buffer Contents of the output buffer.
+ * @param int $phase Bitmask of PHP_OUTPUT_HANDLER_* constants.
+ *
+ *    PHP_OUTPUT_HANDLER_CLEANABLE
+ *    PHP_OUTPUT_HANDLER_FLUSHABLE
+ *    PHP_OUTPUT_HANDLER_REMOVABLE
  *
  * @return string
+ * @see php.net/ob_start
  */
-function _flush($buffer, $mode){
-	# run the hook if any
-	if(function_exists('__flush')) return __flush($buffer, $mode);
+function _flush($buffer, $phase){
+	if(function_exists('__flush')) return __flush($buffer, $phase); # Run the hook if any
 
-	# Add IE-specific class to the <html> tag
-	$pattern = '/(<html.*class="([^"]*)"[^>]*>)/i';
-	$schemaMicroData = 'itemscope itemtype="http://schema.org/Product"';
-	if(preg_match($pattern, $buffer)){
-		$buffer = preg_replace_callback($pattern, '__htmlIEFix', $buffer);
-	}else{
-		$replace = '<!--[if !IE]><!--><html$1 class="'._lang().'" '.$schemaMicroData.'><!--<![endif]-->
-		<!--[if IE 6]><html$1 class="ie ie6 '._lang().'" '.$schemaMicroData.'><![endif]-->
-		<!--[if IE 7]><html$1 class="ie ie7 '._lang().'" '.$schemaMicroData.'><![endif]-->
-		<!--[if IE 8]><html$1 class="ie ie8 '._lang().'" '.$schemaMicroData.'><![endif]-->
-		<!--[if IE 9]><html$1 class="ie ie9 '._lang().'" '.$schemaMicroData.'><![endif]-->
-		<!--[if gte IE 10]> <html$1 class="ie ie10 '._lang().'" '.$schemaMicroData.'> <![endif]-->';
-		$buffer = preg_replace('/<html([^>]*)>/i', $replace, $buffer);
+	$posHtml = stripos($buffer, '<html');
+	$posHead = stripos($buffer, '<head');
+
+	$beforeHtmlTag = substr($buffer, 0, $posHtml);
+	$afterHtmlTag = substr($buffer, $posHead);
+	$htmlTag = trim(str_ireplace($beforeHtmlTag, '', substr($buffer, 0, $posHead)));
+
+	if(trim($htmlTag)){
+		$htmlTag = trim(ltrim($htmlTag, '<html.<HTML'), '>. ');
+		$attributes = array();
+		$attrList = explode(' ', $htmlTag);
+		foreach($attrList as $list){
+			$attr = explode('=', $list);
+			$attr[0] = trim($attr[0]);
+			if(count($attr) == 2){
+				$attr[1] = trim($attr[1], '".\'');
+			}
+			$attributes[$attr[0]] = $attr;
+		}
+
+		$IE = false;
+		$IEVersion = '';
+		$userAgent = $_SERVER['HTTP_USER_AGENT'];
+		if(strpos($userAgent, 'MSIE') !== false || strpos($userAgent, 'Trident') !== false){
+			$IE = true;
+			if(preg_match('/(MSIE|rv)\s(\d+)/i', $userAgent, $m)){
+				$IEVersion = 'ie' . $m[2];
+			}
+		}
+
+		if(array_key_exists('class', $attributes)){ # if there is class attribute provided
+			if($IE) $attributes['class'][1] .= ' ie ' . $IEVersion;
+			if(_multilingual()) $attributes['class'][1] .= ' ' . _lang();
+		}else{ # if there is not class attributes provided
+			if($IE || _multilingual()){
+				$value = array();
+				if($IE) $value[] = 'ie ' . $IEVersion; # ie class
+				if(_multilingual()) $value[] = _lang(); # lang class
+				if(count($value)) $attributes['class'] = array('class', implode(' ', $value));
+			}
+		}
+
+		if(_multilingual()){ # lang attributes
+			if(!array_key_exists('lang', $attributes)){ # if there is no lang attribute provided
+				$attributes['lang'] = array('lang', _lang());
+			}
+		}
+
+		if(!array_key_exists('itemscope', $attributes)){
+			$attributes['itemscope'] = array('itemscope');
+		}
+
+		if(!array_key_exists('itemtype', $attributes)){
+			# if there is no itemtype attribute provided
+			# default to "WebPage"
+			$attributes['itemtype'] = array('itemtype', "http://schema.org/WebPage");
+		}
+
+		ksort($attributes);
+		$html = '<html';
+		foreach($attributes as $key => $value){
+			$html .= ' '.$key;
+			if(isset($value[1])){ # some attribute may not have value, such as itemscope
+				$html .= '="' . $value[1] . '"';
+			}
+		}
+		$html .= '>' . "\r\n";
+		$buffer = $beforeHtmlTag . $html . $afterHtmlTag;
 	}
-	# Compress HTML output
+	# compress the output
 	$buffer = _minifyHTML($buffer);
 	return $buffer;
-}
-/**
- * @internal
- *
- * This function is a callback for preg_replace_callback()
- * It adds the conditional IE comments and class (ie6,...ie10..) to <html>
- * @return string
- */
-function __htmlIEFix($matches) {
-	$find 	 = 'class="'.$matches[2].'"';
-	$replace = 'class="'.$matches[2].' '._lang().'"';
-	$tag   	 = str_replace($find, $replace, $matches[1]);
-	$html 	 = '<!--[if !IE]><!-->'.$tag.'<!--<![endif]-->';
-	$i = 0;
-	$versions = range(6, 10);
-	foreach($versions as $v){
-		$replace = 'class="'.$matches[2].' ie ie'.$v.' '._lang().'"';
-		$tag   	 = str_replace($find, $replace, $matches[1]);
-		if($i == count($versions)-1) $html .= "<!--[if gte IE {$v}]>$tag<![endif]-->\n";
-		else $html .= "<!--[if IE {$v}]>$tag<![endif]-->\n";
-		$i++;
-	}
-	return $html;
 }
 /**
  * Minify and compress the given HTML according to the configuration `$lc_minifyHTML`
