@@ -19,6 +19,10 @@ global $db_builtQueries;
 $db_builtQueries = array();
 $db_printQuery = false;
 
+define('LC_FETCH_ASSOC', 1);
+define('LC_FETCH_ARRAY', 2);
+define('LC_FETCH_OBJECT', 3);
+
 /**
  * @internal
  * Return the database configuration of the given namespace
@@ -350,6 +354,40 @@ function db_fetchResult($sql, $args=array()){
 		}
 	}
 	return false;
+}
+/**
+ * Perform a query on the database and return the array of all results
+ *
+ * @param string $sql The SQL query string
+ * @param array $args The array of placeholders and their values
+ * @param int $resultType The optional constant indicating what type of array should be produced.
+ *   The possible values for this parameter are the constants **LC_FETCH_OBJECT**, **LC_FETCH_ASSOC**, or **LC_FETCH_ARRAY**.
+ *   Default to **LC_FETCH_OBJECT**.
+ *
+ * @return array The result array of objects or associated arrays or index arrays
+ */
+function db_extract($sql, $args=array(), $resultType=LC_FETCH_OBJECT){
+	if(is_numeric($args)){
+		if(in_array($args, array(LC_FETCH_OBJECT, LC_FETCH_ASSOC, LC_FETCH_ARRAY))){
+			$resultType = $args;
+		}
+		$args = array();
+	}
+	$data = array();
+	if($result = db_query($sql, $args)){
+		while(true){
+			if($resultType == LC_FETCH_ARRAY){
+				$row = db_fetchArray($result);
+			}elseif($resultType == LC_FETCH_ASSOC){
+				$row = db_fetchAssoc($result);
+			}else{
+				$row = db_fetchObject($result);
+			}
+			if(!$row) break;
+			$data[] = $row;
+		}
+	}
+	return $data;
 }
 
 if(!function_exists('db_insert')){
