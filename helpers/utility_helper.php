@@ -1170,7 +1170,7 @@ function _meta($key, $value=''){
 		if(isset($_meta[$key])) return $_meta[$key];
 		else return '';
 	}else{
-		if(in_array($key, array('description', 'og:description', 'twitter:description'))){
+		if(in_array($key, array('description', 'og:description', 'twitter:description', 'gp:description'))){
 			$value = trim(substr($value, 0, 200));
 		}
 		$_meta[$key] = $value;
