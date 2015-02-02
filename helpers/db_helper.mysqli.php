@@ -715,14 +715,17 @@ function db_condition($cond=array(), $type='AND'){
 	$condition 	= array();
 	$operators 	= array('=', '>=', '<=', '>', '<', '!=', '<>', 'between', 'nbetween');
 	$opr 		= '=';
-	$regexp 	= '/^[a-z0-9_]+(\.)?[a-z0-9_]+(\s)*('.implode('|', $operators).'){1}$/i';
 	foreach($cond as $field => $value){
 		$field = trim($field);
+		$fieldOpr = explode(' ', $field);
+		$field = trim($fieldOpr[0]);
+		$opr = (count($fieldOpr) === 2) ? trim($fieldOpr[1]) : '=';
+
 		# check if any operator is given in the field
-		if(!is_numeric($field) && preg_match($regexp, $field, $matches)){
-			$opr 	= $matches[3];
-			$field 	= trim(str_replace($opr, '', $field));
+		if(!in_array($opr, $operators)){
+			$opr = '=';
 		}
+
 		if(is_numeric($field)){
 			# if the field is array index,
 			# assuming that is a condition built by db_or() or db_and();
