@@ -713,8 +713,24 @@ function db_condition($cond=array(), $type='AND'){
 	if(empty($cond)) return '';
 	$type 		= strtoupper($type);
 	$condition 	= array();
-	$operators 	= array('=', '>=', '<=', '>', '<', '!=', '<>', 'between', 'nbetween');
-	$opr 		= '=';
+	$operators 	= array(
+		'=', '>=', '<=', '>', '<', '!=', '<>',
+		'between', 'nbetween',
+		'like', 'like%%', 'like%~', 'like~%',
+		'nlike', 'nlike%%', 'nlike%~', 'nlike~%'
+	);
+
+	$likes = array(
+		'like'    => 'LIKE "%:likeValue%"',
+		'like%%'  => 'LIKE "%:likeValue%"',
+		'like%~'  => 'LIKE "%:likeValue"',
+		'like~%'  => 'LIKE ":likeValue%"',
+		'nlike'   => 'NOT LIKE "%:likeValue%"',
+		'nlike%%' => 'NOT LIKE "%:likeValue%"',
+		'nlike%~' => 'NOT LIKE "%:likeValue"',
+		'nlike~%' => 'NOT LIKE ":likeValue%"',
+	);
+
 	foreach($cond as $field => $value){
 		$field = trim($field);
 		$fieldOpr = explode(' ', $field);
@@ -736,8 +752,11 @@ function db_condition($cond=array(), $type='AND'){
 			if(in_array($opr, array('between', 'nbetween')) && !is_array($value)){
 				$opr = '=';
 			}
+			$opr = strtolower($opr);
 
-			if(is_numeric($value)){
+			if(array_key_exists($opr, $likes)){
+				$condition[] = $field . ' ' . str_replace(':likeValue', db_escapeString($value), $likes[$opr]);
+			}elseif(is_numeric($value)){
 				$condition[] = $field . ' ' . $opr . ' ' . db_escapeString($value) . '';
 			}elseif(is_string($value)){
 				$condition[] = $field . ' ' . $opr . ' "' . db_escapeString($value) . '"';
