@@ -815,6 +815,9 @@ function db_conditionAND($cond=array()){
  *      'fieldName3     => NULL
  *    )
  *
+ * ### Operators allowed in condition array
+ *     >, >=, <, <=, !=, between, nbetween, like, like%%, like%~, like~%, nlike, nlike%%, nlike%~, nlike~%
+ *
  * @return string The built condition WHERE clause
  */
 function db_and($cond=array()){
@@ -853,6 +856,9 @@ function db_conditionOR($cond=array()){
  *      'fieldName2 >=' => $value2, <== operators allowed =, >=, <=, >, <, !=, <>, between, nbetween
  *      'fieldName3     => NULL
  *    )
+ *
+ * ### Operators allowed in condition array
+ *     >, >=, <, <=, !=, between, nbetween, like, like%%, like%~, like~%, nlike, nlike%%, nlike%~, nlike~%
  *
  * @return string The built condition WHERE clause
  */
