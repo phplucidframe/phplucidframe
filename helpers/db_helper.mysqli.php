@@ -133,9 +133,8 @@ function db_setCharset($charset){
 /**
  * Make the generated query returned from the query executing functions
  * such as db_query, db_update, db_delete, etc. without executing the query
- * especially for debugging and testing.
- * Call `db_prq(true)` before and `db_prq(false)` after
- * `db_queryStr()` is same purpose, but after executing the query
+ * especially for debugging and testing. Call `db_prq(true)` before and `db_prq(false)` after.
+ * `db_queryStr()` is same purpose but after executing the query.
  *
  * @param bool $enable Enable to return the query built; defaults to `true`.
  */
@@ -147,10 +146,10 @@ function db_prq($enable=true){
  *
  * @param string $sql SQL query string
  * @param array $args Array of placeholders and their values
- *	array(
- *		':placeholder1' => $value1,
- *		':placeholder2' => $value2
- *	)
+ *     array(
+ *       ':placeholder1' => $value1,
+ *       ':placeholder2' => $value2
+ *     )
  * The prefix colon ":" for placeholder is optional
  *
  * @return boolean Returns TRUE on success or FALSE on failure
@@ -472,12 +471,12 @@ if(!function_exists('db_update')){
  * @param array $data The array of data field names and values
  *   The first field/value pair will be used as condition if you did not provide the fourth argument
  *
- *    array(
- *      'conditionField'  => $conditionFieldValue, <===
- *      'fieldNameToSlug' => $valueToSlug,  <=== if $lc_useDBAutoFields is enabled
- *      'fieldName1'      => $value1,
- *      'fieldName2'      => $value2
- *    )
+ *     array(
+ *       'conditionField'  => $conditionFieldValue, <===
+ *       'fieldNameToSlug' => $valueToSlug,  <=== if $lc_useDBAutoFields is enabled
+ *       'fieldName1'      => $value1,
+ *       'fieldName2'      => $value2
+ *     )
  *
  * @param boolean $useSlug TRUE to include the slug field or FALSE to not exclude it
  *   The fourth argument can be provided here if you want to omit this.
@@ -486,17 +485,17 @@ if(!function_exists('db_update')){
  *
  * ### Example
  *
- *    array(
- *      'fieldName1' => $value1,
- *      'fieldName2' => $value2
- *    )
+ *     array(
+ *       'fieldName1' => $value1,
+ *       'fieldName2' => $value2
+ *     )
  *
  * OR
  *
- *   db_or(array(
- *      'fieldName1' => $value1,
- *      'fieldName2' => $value2
- *   ))
+ *     db_or(array(
+ *       'fieldName1' => $value1,
+ *       'fieldName2' => $value2
+ *     ))
  *
  * @return boolean Returns TRUE on success or FALSE on failure
  */
@@ -590,19 +589,19 @@ if(!function_exists('db_delete')){
  * @param string $table Table name without prefix
  * @param string|array $condition The array of condition for delete - field names and values, for example
  *
- *    array(
- *      'fieldName1'    => $value1,
- *      'fieldName2 >=' => $value2,
- *      'fieldName3     => NULL
- *    )
+ *     array(
+ *       'fieldName1'    => $value1,
+ *       'fieldName2 >=' => $value2,
+ *       'fieldName3     => NULL
+ *     )
  *
  *   The built condition string, for example,
  *
- *    db_or(array(
- *      'fieldName1'    => $value1,
- *      'fieldName2 >=' => $value2,
- *      'fieldName3     => NULL
- *    ))
+ *     db_or(array(
+ *       'fieldName1'    => $value1,
+ *       'fieldName2 >=' => $value2,
+ *       'fieldName3     => NULL
+ *     ))
  *
  * @return boolean Returns TRUE on success or FALSE on failure
  */
@@ -792,11 +791,11 @@ function db_condition($cond=array(), $type='AND'){
  * @deprecated 1.2.0
  * @param array $cond The condition array, for example
  *
- *    array(
- *      'fieldName1'    => $value1,
- *      'fieldName2 >=' => $value2,
- *      'fieldName3     => NULL
- *    )
+ *     array(
+ *       'fieldName1'    => $value1,
+ *       'fieldName2 >=' => $value2,
+ *       'fieldName3     => NULL
+ *     )
  *
  * @return string The built condition WHERE clause
  */
@@ -807,13 +806,13 @@ function db_conditionAND($cond=array()){
  * Build the SQL WHERE clause AND condition from the various condition arrays
  * Alias of `db_conditionAND()`
  *
- * @param array $cond [,$cond2,$cond3,...] The condition array(s), for example
+ * @param array $cond [$cond1,$cond2,$cond3,...] The condition array(s), for example
  *
- *    array(
- *      'fieldName1'    => $value1,
- *      'fieldName2 >=' => $value2, <== operators allowed =, >=, <=, >, <, !=, <>, between, nbetween
- *      'fieldName3     => NULL
- *    )
+ *     array(
+ *       'fieldName1'    => $value1,
+ *       'fieldName2 >=' => $value2,
+ *       'fieldName3     => NULL
+ *     )
  *
  * ### Operators allowed in condition array
  *     >, >=, <, <=, !=, between, nbetween, like, like%%, like%~, like~%, nlike, nlike%%, nlike%~, nlike~%
@@ -834,11 +833,11 @@ function db_and($cond=array()){
  * @deprecated 1.2.0
  * @param array $cond The condition array, for example
  *
- *    array(
- *      'fieldName1'    => $value1,
- *      'fieldName2 >=' => $value2,
- *      'fieldName3     => NULL
- *    )
+ *     array(
+ *       'fieldName1'    => $value1,
+ *       'fieldName2 >=' => $value2,
+ *       'fieldName3     => NULL
+ *     )
  *
  * @return string The built condition WHERE clause
  */
@@ -851,11 +850,11 @@ function db_conditionOR($cond=array()){
  *
  * @param array $cond [,$cond2,$cond3,...] The condition array(s), for example
  *
- *    array(
- *      'fieldName1'    => $value1,
- *      'fieldName2 >=' => $value2, <== operators allowed =, >=, <=, >, <, !=, <>, between, nbetween
- *      'fieldName3     => NULL
- *    )
+ *     array(
+ *       'fieldName1'    => $value1,
+ *       'fieldName2 >=' => $value2,
+ *       'fieldName3     => NULL
+ *     )
  *
  * ### Operators allowed in condition array
  *     >, >=, <, <=, !=, between, nbetween, like, like%%, like%~, like~%, nlike, nlike%%, nlike%~, nlike~%
