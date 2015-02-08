@@ -62,6 +62,10 @@ require_once INC . 'config.php';
 # Load environment settings
 __envLoader();
 
+# Utility helpers (required)
+if( $file = _i( 'helpers/utility_helper.php', false) ) include_once $file;
+require_once HELPER . 'utility_helper.php';
+
 # DB configuration & DB helper (required)
 if(isset($lc_databases[$lc_defaultDbConnection]) && is_array($lc_databases[$lc_defaultDbConnection]) && $lc_databases[$lc_defaultDbConnection]['engine']){
 	if( $file = _i( 'helpers/db_helper.php', false) ) include_once $file;
@@ -72,10 +76,6 @@ if(isset($lc_databases[$lc_defaultDbConnection]) && is_array($lc_databases[$lc_d
 		db_connect($lc_defaultDbConnection);
 	}
 }
-
-# Utility helpers (required)
-if( $file = _i( 'helpers/utility_helper.php', false) ) include_once $file;
-require_once HELPER . 'utility_helper.php';
 
 _loader('session_helper', HELPER);
 _loader('i18n_helper', HELPER);

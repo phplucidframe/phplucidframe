@@ -17,6 +17,11 @@
 /** @type array It contains the built and executed queries through out the script execuation */
 global $db_builtQueries;
 $db_builtQueries = array();
+$db_printQuery = false;
+
+define('LC_FETCH_ASSOC', 1);
+define('LC_FETCH_ARRAY', 2);
+define('LC_FETCH_OBJECT', 3);
 
 /**
  * @internal
@@ -101,7 +106,7 @@ function db_connect($namespace='default'){
 	if (!$_conn) {
 		die('Not connected mysqli!');
 	}
-    # Force MySQL to use the UTF-8 character set. Also set the collation, if a certain one has been set;
+	# Force MySQL to use the UTF-8 character set. Also set the collation, if a certain one has been set;
 	# otherwise, MySQL defaults to 'utf8_general_ci' # for UTF-8.
 	if (!db_setCharset('utf8')){
 		printf("Error loading character set utf8: %s", mysqli_error($_conn));
@@ -126,14 +131,26 @@ function db_setCharset($charset){
 	return mysqli_set_charset( $_conn , $charset );
 }
 /**
+ * Make the generated query returned from the query executing functions
+ * such as db_query, db_update, db_delete, etc. without executing the query
+ * especially for debugging and testing. Call `db_prq(true)` before and `db_prq(false)` after.
+ * `db_queryStr()` is same purpose but after executing the query.
+ *
+ * @param bool $enable Enable to return the query built; defaults to `true`.
+ */
+function db_prq($enable=true){
+	_g('db_printQuery', $enable);
+}
+/**
  * Perform a query on the database
  *
  * @param string $sql SQL query string
  * @param array $args Array of placeholders and their values
- *	array(
- *		':placeholder1' => $value1,
- *		':placeholder2' => $value2
- *	)
+ *     array(
+ *       ':placeholder1' => $value1,
+ *       ':placeholder2' => $value2
+ *     )
+ * The prefix colon ":" for placeholder is optional
  *
  * @return boolean Returns TRUE on success or FALSE on failure
  */
@@ -143,6 +160,7 @@ function db_query($sql, $args=array()){
 
 	if(count($args)){
 		foreach($args as $key => $value){
+			if(strpos($key, ':') === false) $key = ':'.$key;
 			if(is_array($value)){
 				$value = array_map('db_escapeStringMulti', $value);
 				$value = implode(',', $value);
@@ -156,6 +174,8 @@ function db_query($sql, $args=array()){
 	}
 
 	$db_builtQueries[] = $sql;
+
+	if(_g('db_printQuery')) return $sql;
 
 	if($result = mysqli_query($_conn, $sql)){
 		return $result;
@@ -334,6 +354,40 @@ function db_fetchResult($sql, $args=array()){
 	}
 	return false;
 }
+/**
+ * Perform a query on the database and return the array of all results
+ *
+ * @param string $sql The SQL query string
+ * @param array $args The array of placeholders and their values
+ * @param int $resultType The optional constant indicating what type of array should be produced.
+ *   The possible values for this parameter are the constants **LC_FETCH_OBJECT**, **LC_FETCH_ASSOC**, or **LC_FETCH_ARRAY**.
+ *   Default to **LC_FETCH_OBJECT**.
+ *
+ * @return array The result array of objects or associated arrays or index arrays
+ */
+function db_extract($sql, $args=array(), $resultType=LC_FETCH_OBJECT){
+	if(is_numeric($args)){
+		if(in_array($args, array(LC_FETCH_OBJECT, LC_FETCH_ASSOC, LC_FETCH_ARRAY))){
+			$resultType = $args;
+		}
+		$args = array();
+	}
+	$data = array();
+	if($result = db_query($sql, $args)){
+		while(true){
+			if($resultType == LC_FETCH_ARRAY){
+				$row = db_fetchArray($result);
+			}elseif($resultType == LC_FETCH_ASSOC){
+				$row = db_fetchAssoc($result);
+			}else{
+				$row = db_fetchObject($result);
+			}
+			if(!$row) break;
+			$data[] = $row;
+		}
+	}
+	return $data;
+}
 
 if(!function_exists('db_insert')){
 /**
@@ -415,24 +469,45 @@ if(!function_exists('db_update')){
  *
  * @param string $table The table name without prefix
  * @param array $data The array of data field names and values
- *	array(
- *		'pkFieldName' 		=> $pkFieldValue, <=== 0
- *		'fieldNameToSlug' 	=> $valueToSlug,  <=== 1 # if $lc_useDBAutoFields is enabled
- *		'fieldName1' 		=> $value1,
- *		'fieldName2' 		=> $value2
- *	)
- * @param boolean $useSlug True to include the slug field or False to not exclude it
- * @param array $additionalCondition The addtional conditions for the UPDATE query, for example,
- *	array(
- *		'fieldName1' => $value1,
- *		'fieldName2' => $value2
- *	)
+ *   The first field/value pair will be used as condition if you did not provide the fourth argument
+ *
+ *     array(
+ *       'conditionField'  => $conditionFieldValue, <===
+ *       'fieldNameToSlug' => $valueToSlug,  <=== if $lc_useDBAutoFields is enabled
+ *       'fieldName1'      => $value1,
+ *       'fieldName2'      => $value2
+ *     )
+ *
+ * @param boolean $useSlug TRUE to include the slug field or FALSE to not exclude it
+ *   The fourth argument can be provided here if you want to omit this.
+ * @param array|string $condition The condition for the UPDATE query. If you provide this,
+ *   the first field of `$data` will not be built for condition
+ *
+ * ### Example
+ *
+ *     array(
+ *       'fieldName1' => $value1,
+ *       'fieldName2' => $value2
+ *     )
+ *
+ * OR
+ *
+ *     db_or(array(
+ *       'fieldName1' => $value1,
+ *       'fieldName2' => $value2
+ *     ))
+ *
  * @return boolean Returns TRUE on success or FALSE on failure
  */
-	function db_update($table, $data=array(), $useSlug=true, $additionalCondition=array()){
+	function db_update($table, $data=array(), $useSlug=true, $condition=NULL){
 		if(count($data) == 0) return;
 		global $_conn;
 		global $lc_useDBAutoFields;
+
+		if(func_num_args() === 3 && (gettype($useSlug) === 'string' || is_array($useSlug))){
+			$condition = $useSlug;
+			$useSlug = true;
+		}
 
 		$table 	= ltrim($table, db_prefix());
 		$table 	= db_prefix().$table;
@@ -440,7 +515,7 @@ if(!function_exists('db_update')){
 		# Invoke the hook db_update_[table_name] if any
 		$hook = 'db_update_' . strtolower($table);
 		if(function_exists($hook)){
-			return call_user_func_array( $hook, array($table, $data, $useSlug, $additionalCondition) );
+			return call_user_func_array( $hook, array($table, $data, $useSlug, $condition) );
 		}
 
 		# if slug is already provided in the data array, use it
@@ -453,31 +528,44 @@ if(!function_exists('db_update')){
 		}
 
 		$fields = array();
-		$slug 	= '';
-		$condition = '';
-		$notCondition = '';
+		$slug = '';
+		$cond = '';
+		$notCond = '';
 		$i = 0;
 		foreach($data as $field => $value){
-			if($i == 0){ # $data[0] is PK
-				$condition = array($field => db_escapeString($value)); # for PK condition
-				$notCondition = array("$field !=" => db_escapeString($value));
-			}else{
-				if(is_null($value)) $fields[] = $field . ' = NULL';
-				else $fields[] = $field . ' = "' . db_escapeString($value) . '"';
+			if($i === 0 && !$condition){
+				# $data[0] is for PK condition, but only if $condition is not provided
+				$cond = array($field => db_escapeString($value)); # for PK condition
+				$i++;
+				continue;
 			}
+
+			if(is_null($value)) $fields[] = $field . ' = NULL';
+			else $fields[] = $field . ' = "' . db_escapeString($value) . '"';
+
 			if($i == 1 && $useSlug == true){ # $data[1] is slug
 				$slug = db_escapeString($value);
 			}
 			$i++;
 		}
 
-		if($condition){ # must have condition
-			if(count($additionalCondition)){
-				$condition = array_merge($condition, $additionalCondition);
+		# must have condition
+		# this prevents unexpected update happened to all records
+		if($cond || $condition){
+			if($cond && is_array($cond)){
+				$cond = db_condition($cond);
+			}elseif($condition && is_array($condition)){
+				$cond = db_condition($condition);
+			}elseif($condition && is_string($condition)){
+				$cond = $condition;
 			}
+
+			if(empty($cond)) return false;
+			$notCond = 'NOT ( ' . $cond . ' )';
+
 			if($lc_useDBAutoFields){
 				if($useSlug){
-					$slug = _slug($slug, $table, $notCondition);
+					$slug = _slug($slug, $table, $notCond);
 					session_set('lastInsertSlug', $slug);
 					$fields[] = 'slug = "'.$slug.'"';
 				}
@@ -485,10 +573,7 @@ if(!function_exists('db_update')){
 			}
 			$fields = implode(', ', $fields);
 
-			if($condition) $condition = db_condition($condition);
-
-			$sql = 'UPDATE ' . $table . ' SET ' . $fields . '
-					WHERE ' . $condition . ' LIMIT 1';
+			$sql = 'UPDATE ' . $table . ' SET ' . $fields . ' WHERE ' . $cond;
 			return db_query($sql);
 		}else{
 			return false;
@@ -502,15 +587,25 @@ if(!function_exists('db_delete')){
  * It checks FK delete RESTRICT constraint, then SET deleted if it cannot be deleted
  *
  * @param string $table Table name without prefix
- * @param array $cond The array of condition for delete - field names and values, for example
- *	array(
- *		'fieldName1' 	=> $value1,
- *		'fieldName2 >=' => $value2,
- *		'fieldName3 	=> NULL
- *	)
+ * @param string|array $condition The array of condition for delete - field names and values, for example
+ *
+ *     array(
+ *       'fieldName1'    => $value1,
+ *       'fieldName2 >=' => $value2,
+ *       'fieldName3     => NULL
+ *     )
+ *
+ *   The built condition string, for example,
+ *
+ *     db_or(array(
+ *       'fieldName1'    => $value1,
+ *       'fieldName2 >=' => $value2,
+ *       'fieldName3     => NULL
+ *     ))
+ *
  * @return boolean Returns TRUE on success or FALSE on failure
  */
-	function db_delete($table, $cond=array()){
+	function db_delete($table, $condition=NULL){
 		$table = ltrim($table, db_prefix());
 		$table = db_prefix().$table;
 
@@ -520,11 +615,15 @@ if(!function_exists('db_delete')){
 			return call_user_func_array( $hook, array($table, $cond) );
 		}
 
-		$condition = db_condition($cond);
+		if(is_array($condition)){
+			$condition = db_condition($condition);
+		}
 		if($condition) $condition = ' WHERE '.$condition;
 
+		$sql = 'DELETE FROM ' . $table . $condition . ' LIMIT 1';
+		if(_g('db_printQuery')) return $sql;
+
 		ob_start(); # to capture error return
-		$sql = 'DELETE FROM '.$table.' '.$condition.' LIMIT 1';
 		db_query($sql);
 		$return = ob_get_clean();
 		if($return){
@@ -545,16 +644,25 @@ if(!function_exists('db_delete_multi')){
  * Handy MYSQL delete operation for multiple records
  *
  * @param string $table Table name without prefix
- * @param array $cond Array of condition for delete - field names and values, for example
- *	array(
- *		'fieldName1' 	=> $value1,
- *		'fieldName2 >=' => $value2,
- *		'fieldName3' 	=> NULL
- *	)
+ * @param string|array $condition The array of condition for delete - field names and values, for example
+ *
+ *    array(
+ *      'fieldName1'    => $value1,
+ *      'fieldName2 >=' => $value2,
+ *      'fieldName3     => NULL
+ *    )
+ *
+ *   The built condition string, for example,
+ *
+ *    db_or(array(
+ *      'fieldName1'    => $value1,
+ *      'fieldName2 >=' => $value2,
+ *      'fieldName3     => NULL
+ *    ))
  *
  * @return boolean Returns TRUE on success or FALSE on failure
  */
-	function db_delete_multi($table, $cond=array()){
+	function db_delete_multi($table, $condition=NULL){
 		$table = ltrim($table, db_prefix());
 		$table = db_prefix().$table;
 
@@ -564,11 +672,15 @@ if(!function_exists('db_delete_multi')){
 			return call_user_func_array( $hook, array($table, $cond) );
 		}
 
-		$condition = db_condition($cond);
+		if(is_array($condition)){
+			$condition = db_condition($condition);
+		}
 		if($condition) $condition = ' WHERE '.$condition;
 
-		ob_start(); # to capture error return
 		$sql = 'DELETE FROM ' . $table . $condition;
+		if(_g('db_printQuery')) return $sql;
+
+		ob_start(); # to capture error return
 		db_query($sql);
 		$return = ob_get_clean();
 
@@ -580,35 +692,94 @@ if(!function_exists('db_delete_multi')){
 	}
 }
 /**
+ * @internal
  * Build the SQL WHERE clause from the various condition arrays
  *
  * @param array $cond The condition array, for example
- *	array(
- *		'fieldName1' 	=> $value1,
- *		'fieldName2 >='	=> $value2, <=== operators allowed =, >=, <=, >, <, !=, <>
- *		'fieldName3 	=> NULL
- *	)
+ *
+ *    array(
+ *      'fieldName1'    => $value1,
+ *      'fieldName2 >=' => $value2,
+ *      'fieldName3     => NULL
+ *    )
+ *
  * @param string $type The condition type "AND" or "OR"; Default is "AND"
  *
  * @return string The built condition WHERE clause
  */
 function db_condition($cond=array(), $type='AND'){
-	if(!is_array($cond)) return '';
+	if(!is_array($cond)) return $cond;
+	if(empty($cond)) return '';
 	$type 		= strtoupper($type);
 	$condition 	= array();
-	$operators 	= array('=', '>=', '<=', '>', '<', '!=', '<>');
-	$opr 		= '=';
+	$operators 	= array(
+		'=', '>=', '<=', '>', '<', '!=', '<>',
+		'between', 'nbetween',
+		'like', 'like%%', 'like%~', 'like~%',
+		'nlike', 'nlike%%', 'nlike%~', 'nlike~%'
+	);
+
+	$likes = array(
+		'like'    => 'LIKE "%:likeValue%"',
+		'like%%'  => 'LIKE "%:likeValue%"',
+		'like%~'  => 'LIKE "%:likeValue"',
+		'like~%'  => 'LIKE ":likeValue%"',
+		'nlike'   => 'NOT LIKE "%:likeValue%"',
+		'nlike%%' => 'NOT LIKE "%:likeValue%"',
+		'nlike%~' => 'NOT LIKE "%:likeValue"',
+		'nlike~%' => 'NOT LIKE ":likeValue%"',
+	);
+
 	foreach($cond as $field => $value){
 		$field = trim($field);
-		$regexp = '/^[a-z0-9_]+(\.)?[a-z0-9_]+(\s)*('.implode('|', $operators).'){1}$/i';
+		$fieldOpr = explode(' ', $field);
+		$field = trim($fieldOpr[0]);
+		$opr = (count($fieldOpr) === 2) ? trim($fieldOpr[1]) : '=';
+
 		# check if any operator is given in the field
-		if(preg_match($regexp, $field, $matches)){
-			$opr 	= $matches[3];
-			$field 	= trim(str_replace($opr, '', $field));
+		if(!in_array($opr, $operators)){
+			$opr = '=';
 		}
-		if(is_string($value)) $condition[] = $field . ' ' . $opr . ' "' . db_escapeString($value) . '"';
-		elseif(is_null($value)) $condition[] = $field . ' IS NULL';
-		else $condition[] = $field . ' ' . $opr . ' ' . db_escapeString($value);
+
+		if(is_numeric($field)){
+			# if the field is array index,
+			# assuming that is a condition built by db_or() or db_and();
+			$condition[] = '( ' . $value . ' )';
+		}else{
+			# if the operator is "between", the value must be array
+			# otherwise force to "="
+			if(in_array($opr, array('between', 'nbetween')) && !is_array($value)){
+				$opr = '=';
+			}
+			$opr = strtolower($opr);
+
+			if(array_key_exists($opr, $likes)){
+				$condition[] = $field . ' ' . str_replace(':likeValue', db_escapeString($value), $likes[$opr]);
+			}elseif(is_numeric($value)){
+				$condition[] = $field . ' ' . $opr . ' ' . db_escapeString($value) . '';
+			}elseif(is_string($value)){
+				$condition[] = $field . ' ' . $opr . ' "' . db_escapeString($value) . '"';
+			}elseif(is_null($value)){
+				if(in_array($opr, array('!=', '<>'))) $condition[] = $field . ' IS NOT NULL';
+				else $condition[] = $field . ' IS NULL';
+			}elseif(is_array($value) && count($value)){
+				$list = array();
+				foreach($value as $v){
+					$list[] = (is_numeric($v)) ? db_escapeString($v) : '"' . db_escapeString($v) . '"';
+				}
+				if($opr === 'between'){
+					$condition[] = '( ' . $field . ' BETWEEN ' . current($list) . ' AND ' . end($list) . ' )';
+				}elseif($opr === 'nbetween'){
+					$condition[] = '( ' . $field . ' NOT BETWEEN ' . current($list) . ' AND ' . end($list) . ' )';
+				}elseif($opr === '!='){
+					$condition[] = $field . ' NOT IN (' . implode(', ', $list) . ')';
+				}else{
+					$condition[] = $field . ' IN (' . implode(', ', $list) . ')';
+				}
+			}else{
+				$condition[] = $field . ' ' . $opr . ' ' . db_escapeString($value);
+			}
+		}
 	}
 	if(count($condition)) $condition = implode(" {$type} ", $condition);
 	else $condition = '';
@@ -617,30 +788,86 @@ function db_condition($cond=array(), $type='AND'){
 /**
  * Build the SQL WHERE clause AND condition from the various condition arrays
  *
+ * @deprecated 1.2.0
  * @param array $cond The condition array, for example
- *	array(
- *		'fieldName1' 	=> $value1,
- *		'fieldName2 >='	=> $value2, <=== operators allowed =, >=, <=, >, <, !=, <>
- *		'fieldName3 	=> NULL
- *	)
+ *
+ *     array(
+ *       'fieldName1'    => $value1,
+ *       'fieldName2 >=' => $value2,
+ *       'fieldName3     => NULL
+ *     )
+ *
  * @return string The built condition WHERE clause
  */
 function db_conditionAND($cond=array()){
 	return db_condition($cond, 'AND');
 }
 /**
+ * Build the SQL WHERE clause AND condition from the various condition arrays
+ * Alias of `db_conditionAND()`
+ *
+ * @param array $cond [$cond1,$cond2,$cond3,...] The condition array(s), for example
+ *
+ *     array(
+ *       'fieldName1'    => $value1,
+ *       'fieldName2 >=' => $value2,
+ *       'fieldName3     => NULL
+ *     )
+ *
+ * ### Operators allowed in condition array
+ *     >, >=, <, <=, !=, between, nbetween, like, like%%, like%~, like~%, nlike, nlike%%, nlike%~, nlike~%
+ *
+ * @return string The built condition WHERE clause
+ */
+function db_and($cond=array()){
+	$conditions = func_get_args();
+	$builtCond = array();
+	foreach($conditions as $c){
+		$builtCond[] = db_condition($c, 'AND');
+	}
+	return implode(' AND ', $builtCond);
+}
+/**
  * Build the SQL WHERE clause OR condition from the various condition arrays
  *
+ * @deprecated 1.2.0
  * @param array $cond The condition array, for example
- *	array(
- *		'fieldName1' 	=> $value1,
- *		'fieldName2 >='	=> $value2, <=== operators allowed =, >=, <=, >, <, !=, <>
- *		'fieldName3 	=> NULL
- *	)
+ *
+ *     array(
+ *       'fieldName1'    => $value1,
+ *       'fieldName2 >=' => $value2,
+ *       'fieldName3     => NULL
+ *     )
+ *
  * @return string The built condition WHERE clause
  */
 function db_conditionOR($cond=array()){
 	return db_condition($cond, 'OR');
+}
+/**
+ * Build the SQL WHERE clause OR condition from the various condition arrays
+ * Alias of `db_conditionOR()`
+ *
+ * @param array $cond [,$cond2,$cond3,...] The condition array(s), for example
+ *
+ *     array(
+ *       'fieldName1'    => $value1,
+ *       'fieldName2 >=' => $value2,
+ *       'fieldName3     => NULL
+ *     )
+ *
+ * ### Operators allowed in condition array
+ *     >, >=, <, <=, !=, between, nbetween, like, like%%, like%~, like~%, nlike, nlike%%, nlike%~, nlike~%
+ *
+ * @return string The built condition WHERE clause
+ */
+function db_or($cond=array()){
+	$conditions = func_get_args();
+	$builtCond = array();
+	foreach($conditions as $c){
+		$builtCond[] = db_condition($c, 'OR');
+	}
+	return implode(' OR ', $builtCond);
 }
 /**
  * @internal

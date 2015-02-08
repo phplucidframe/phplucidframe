@@ -23,6 +23,11 @@ var Form = {
 		$forms = $('form');
 		$.each( $forms, function(){
 			var $form = $(this);
+			if(typeof(CKEDITOR) !== 'undefined'){
+				for(instance in CKEDITOR.instances){
+					CKEDITOR.instances[instance].updateElement();
+				}
+			}
 			if($form.hasClass('no-ajax')) return; // normal form submission
 			// Add a hidden input and a reset button
 			$form.append('<input type="hidden" name="submitButton" class="submitButton" />');
@@ -68,13 +73,14 @@ var Form = {
 		// jquery ui button theme
 		if(typeof $('.jqbutton').button != 'undefined') $('.jqbutton').button();
 		// datepicker initialize
-		if(typeof $('.datepicker').button != 'undefined'){
-			$( ".datepicker" ).datepicker({
+		$('.datepicker').each(function(){
+			var dateFormat = $(this).data('date-format') || 'dd-mm-yy';
+			$(this).datepicker({
 				changeMonth: true,
 				changeYear: true,
-				dateFormat: 'dd-mm-yy'
+				dateFormat: dateFormat
 			});
-		}
+		});
 	},
 	/**
 	 * @internal
@@ -278,7 +284,10 @@ var Page = {
 	 */
 	showGlobalMessage : function(){
 		var html = '';
-		if(LC.sitewideWarnings && LC.sitewideWarnings.length){
+		if(LC.sitewideWarnings){
+			if(typeof(LC.sitewideWarnings) === 'string'){
+				LC.sitewideWarnings = [LC.sitewideWarnings];
+			}
 			$.each(LC.sitewideWarnings, function(i, msg){
 				html = '<div class="message sitewide-message warning" title="Click to dismiss">';
 				html += '<ul>';

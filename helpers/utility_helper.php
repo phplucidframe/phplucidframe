@@ -18,58 +18,111 @@
  * @internal
  *
  * ob_start callback function to output buffer
- * It also adds the conditional IE comments and class (ie6,...ie10..) to <html>
+ * It also adds the following to <html>
+ *
+ * - a class for IE "ie ieX"
+ * - lang="xx" for multi-lingual site
+ * - itemscope and itemtype attribute
+ *
  * Hook to implement `__flush()` at app/helpers/utility_helper.php
  *
- * @param string $buffer The output buffer
+ * @param string $buffer Contents of the output buffer.
+ * @param int $phase Bitmask of PHP_OUTPUT_HANDLER_* constants.
+ *
+ *    PHP_OUTPUT_HANDLER_CLEANABLE
+ *    PHP_OUTPUT_HANDLER_FLUSHABLE
+ *    PHP_OUTPUT_HANDLER_REMOVABLE
  *
  * @return string
+ * @see php.net/ob_start
  */
-function _flush($buffer, $mode){
-	# Add IE-specific class to the <html> tag
-	$pattern = '/(<html.*class="([^"]*)"[^>]*>)/i';
-	if(preg_match($pattern, $buffer)){
-		$buffer = preg_replace_callback($pattern, '_htmlIEFix', $buffer);
-	}else{
-		$replace = '<!--[if !IE]><!--><html$1 class="'._lang().'"><!--<![endif]-->
-		<!--[if IE 6]><html$1 class="ie ie6 '._lang().'"><![endif]-->
-		<!--[if IE 7]><html$1 class="ie ie7 '._lang().'"><![endif]-->
-		<!--[if IE 8]><html$1 class="ie ie8 '._lang().'"><![endif]-->
-		<!--[if IE 9]><html$1 class="ie ie9 '._lang().'"><![endif]-->
-		<!--[if gte IE 10]> <html$1 class="ie ie10 '._lang().'"> <![endif]-->';
-		$buffer = preg_replace('/<html([^>]*)>/i', $replace, $buffer);
-	}
+function _flush($buffer, $phase){
+	if(function_exists('__flush')) return __flush($buffer, $phase); # Run the hook if any
 
+	$posHtml = stripos($buffer, '<html');
+	$posHead = stripos($buffer, '<head');
+
+	$beforeHtmlTag = substr($buffer, 0, $posHtml);
+	$afterHtmlTag = substr($buffer, $posHead);
+	$htmlTag = trim(str_ireplace($beforeHtmlTag, '', substr($buffer, 0, $posHead)));
+
+	if(trim($htmlTag)){
+		$htmlTag = trim(ltrim($htmlTag, '<html.<HTML'), '>. ');
+		$attributes = array();
+		$attrList = explode(' ', $htmlTag);
+		foreach($attrList as $list){
+			$attr = explode('=', $list);
+			$attr[0] = trim($attr[0]);
+			if(count($attr) == 2){
+				$attr[1] = trim($attr[1], '".\'');
+			}
+			$attributes[$attr[0]] = $attr;
+		}
+
+		$IE = false;
+		$IEVersion = '';
+		$userAgent = $_SERVER['HTTP_USER_AGENT'];
+		if(strpos($userAgent, 'MSIE') !== false || strpos($userAgent, 'Trident') !== false){
+			$IE = true;
+			if(preg_match('/(MSIE|rv)\s(\d+)/i', $userAgent, $m)){
+				$IEVersion = 'ie' . $m[2];
+			}
+		}
+
+		if(array_key_exists('class', $attributes)){ # if there is class attribute provided
+			if($IE) $attributes['class'][1] .= ' ie ' . $IEVersion;
+			if(_multilingual()) $attributes['class'][1] .= ' ' . _lang();
+		}else{ # if there is not class attributes provided
+			if($IE || _multilingual()){
+				$value = array();
+				if($IE) $value[] = 'ie ' . $IEVersion; # ie class
+				if(_multilingual()) $value[] = _lang(); # lang class
+				if(count($value)) $attributes['class'] = array('class', implode(' ', $value));
+			}
+		}
+
+		if(_multilingual()){ # lang attributes
+			if(!array_key_exists('lang', $attributes)){ # if there is no lang attribute provided
+				$attributes['lang'] = array('lang', _lang());
+			}
+		}
+
+		if(!array_key_exists('itemscope', $attributes)){
+			$attributes['itemscope'] = array('itemscope');
+		}
+
+		if(!array_key_exists('itemtype', $attributes)){
+			# if there is no itemtype attribute provided
+			# default to "WebPage"
+			$attributes['itemtype'] = array('itemtype', "http://schema.org/WebPage");
+		}
+
+		ksort($attributes);
+		$html = '<html';
+		foreach($attributes as $key => $value){
+			$html .= ' '.$key;
+			if(isset($value[1])){ # some attribute may not have value, such as itemscope
+				$html .= '="' . $value[1] . '"';
+			}
+		}
+		$html .= '>' . "\r\n";
+		$buffer = $beforeHtmlTag . $html . $afterHtmlTag;
+	}
+	# compress the output
+	$buffer = _minifyHTML($buffer);
+	return $buffer;
+}
+/**
+ * Minify and compress the given HTML according to the configuration `$lc_minifyHTML`
+ * @param  string $html HTML to be compressed or minified
+ * @return string The compressed or minifed HTML
+ */
+function _minifyHTML($html){
 	if(_cfg('minifyHTML')){
 		# 1. strip whitespaces after tags, except space
 		# 2. strip whitespaces before tags, except space
 		# 3. shorten multiple whitespace sequences
-		$buffer = preg_replace(array('/\>[^\S ]+/s', '/[^\S ]+\</s', '/(\s)+/s'), array('>', '<', '\\1'), $buffer);
-	}
-
-	if(function_exists('__flush')) return __flush($buffer, $mode); # run the hook if any
-	return $buffer;
-}
-/**
- * @internal
- *
- * This function is a callback for preg_replace_callback()
- * It adds the conditional IE comments and class (ie6,...ie10..) to <html>
- * @return string
- */
-function _htmlIEFix($matches) {
-	$find 	 = 'class="'.$matches[2].'"';
-	$replace = 'class="'.$matches[2].' '._lang().'"';
-	$tag   	 = str_replace($find, $replace, $matches[1]);
-	$html 	 = '<!--[if !IE]><!-->'.$tag.'<!--<![endif]-->';
-	$i = 0;
-	$versions = range(6, 10);
-	foreach($versions as $v){
-		$replace = 'class="'.$matches[2].' ie ie'.$v.' '._lang().'"';
-		$tag   	 = str_replace($find, $replace, $matches[1]);
-		if($i == count($versions)-1) $html .= "<!--[if gte IE {$v}]>$tag<![endif]-->\n";
-		else $html .= "<!--[if IE {$v}]>$tag<![endif]-->\n";
-		$i++;
+		return preg_replace(array('/\>[^\S ]+/s', '/[^\S ]+\</s', '/(\s)+/s'), array('>', '<', '\\1'), $html);
 	}
 	return $html;
 }
@@ -1159,7 +1212,7 @@ function _meta($key, $value=''){
 		if(isset($_meta[$key])) return $_meta[$key];
 		else return '';
 	}else{
-		if(in_array($key, array('description', 'og:description', 'twitter:description'))){
+		if(in_array($key, array('description', 'og:description', 'twitter:description', 'gp:description'))){
 			$value = trim(substr($value, 0, 200));
 		}
 		$_meta[$key] = $value;
@@ -1299,8 +1352,9 @@ function __dotNotationToArray($key, $scope='global', $value='', $serialize=false
 	$lastKey = end($keys);
 	# No. of keys exclusive of the first key
 	$count = count($keys); # more than 0 if there is at least one dot
+	$justOneLevelKey = ($count === 0) ? true : false;
 
-	if($type == 'getter' && $count == 0){ # just one-level key
+	if($type == 'getter' && $justOneLevelKey){ # just one-level key
 		if($scope == 'session'){
 			$firstKey = S_PREFIX . $firstKey;
 			if(array_key_exists($firstKey, $_SESSION)) return $_SESSION[$firstKey];
@@ -1331,8 +1385,7 @@ function __dotNotationToArray($key, $scope='global', $value='', $serialize=false
 	}
 
 	$theLastHasValue = false;
-	if( ($type == 'setter' && $count) ||
-		($type == 'getter' && $count > 1) ){ /* this will be skipped if no array (no dot notation)*/
+	if( ($type == 'setter' && $count) || ($type == 'getter' && $count > 1) ){ # this will be skipped if no dot notation
 		foreach($keys as $k) {
 			if($k == $lastKey && isset($current[$lastKey])){
 				$theLastHasValue = true;
@@ -1350,16 +1403,9 @@ function __dotNotationToArray($key, $scope='global', $value='', $serialize=false
 	}
 	# Set the values if it is setter
 	if($type == 'setter'){
-		if($theLastHasValue){
-			if(is_array($current[$lastKey]) && !in_array($value, $current[$lastKey]) && $value != $current[$lastKey]){
-				$current[$lastKey][] = ($serialize) ? serialize($value) : $value;
-			}else{
-				$current[$lastKey] = $value;
-			}
-		}elseif(!$theLastHasValue && is_array($current)){
-			if(!in_array($value, $current) && $value != $current){
-				$current[] = ($serialize) ? serialize($value) : $value;
-			}
+		if(is_array($current) && $theLastHasValue){
+			# when $theLastHasValue, dot notation is given and it is array
+			$current[$lastKey] = ($serialize) ? serialize($value) : $value;
 		}else{
 			$current = ($serialize) ? serialize($value) : $value;
 		}
