@@ -39,11 +39,11 @@ Although it is stated as mini framework, it supports a wide range of web applica
 
 You can also install LucidFrame using [Composer](http://getcomposer.org/).
 
-    composer require lucidframe/phplucidframe:~1.1.1
+    composer require lucidframe/phplucidframe:~1.2.0
 
 OR
 
-	php composer.phar require lucidframe/phplucidframe:~1.1.1
+	php composer.phar require lucidframe/phplucidframe:~1.2.0
 
 ## Furthermore on Installation
 
@@ -83,6 +83,7 @@ You can generate the application secret `/inc/.secret` at [phplucidframe.sithuky
 ## Support & Resources
 
 - [Community Forum](http://phplucidframe.sithukyaw.com/community)
+- [Stackoverflow](http://stackoverflow.com/questions/tagged/phplucidframe)
 - [GitHub issues](https://github.com/cithukyaw/LucidFrame/issues)
 - [Gitter IM](http://gitter.im/cithukyaw/LucidFrame)
 - [IRC channel](http://webchat.freenode.net/?channels=#phplucidframe) `#phplucidframe`
