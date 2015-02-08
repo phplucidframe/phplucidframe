@@ -45,7 +45,7 @@ if(sizeof($_POST)){
 				$data['slug'] = $postSlug;
 			}
 
-			if(db_update('post', $data, $slug=false)){
+			if(db_update('post', $data, $useSlug)){
 				$success = true;
 			}
 		}else{ # new
