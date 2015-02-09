@@ -532,6 +532,8 @@ if(!function_exists('db_update')){
 		$cond = '';
 		$notCond = '';
 		$i = 0;
+		$slugIndex = 1;
+		if($condition) $slugIndex = 0;
 		foreach($data as $field => $value){
 			if($i === 0 && !$condition){
 				# $data[0] is for PK condition, but only if $condition is not provided
@@ -543,7 +545,7 @@ if(!function_exists('db_update')){
 			if(is_null($value)) $fields[] = $field . ' = NULL';
 			else $fields[] = $field . ' = "' . db_escapeString($value) . '"';
 
-			if($i == 1 && $useSlug == true){ # $data[1] is slug
+			if($i === $slugIndex && $useSlug === true){ # $data[1] is slug
 				$slug = db_escapeString($value);
 			}
 			$i++;
