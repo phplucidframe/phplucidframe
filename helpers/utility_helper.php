@@ -3,12 +3,12 @@
  * This file is part of the PHPLucidFrame library.
  * Core utility for general purpose functions.
  *
- * @package		LC\Helpers\Utility
- * @since		PHPLucidFrame v 1.0.0
- * @copyright	Copyright (c), PHPLucidFrame.
- * @author 		Sithu K. <hello@sithukyaw.com>
- * @link 		http://phplucidframe.sithukyaw.com
- * @license		http://www.opensource.org/licenses/mit-license.php MIT License
+ * @package     LC\Helpers\Utility
+ * @since       PHPLucidFrame v 1.0.0
+ * @copyright   Copyright (c), PHPLucidFrame.
+ * @author      Sithu K. <hello@sithukyaw.com>
+ * @link        http://phplucidframe.sithukyaw.com
+ * @license     http://www.opensource.org/licenses/mit-license.php MIT License
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.txt
@@ -129,6 +129,7 @@ function _minifyHTML($html){
 /**
  * Auto-load a library, script or file
  * @param string $name The file name without extension
+ * @param string $path The directory path for the library, script or file; default to helpers/
  * @return void
  */
 function _loader($name, $path=HELPER){
@@ -139,6 +140,7 @@ function _loader($name, $path=HELPER){
 /**
  * Removing a library, script or file from auto-load
  * @param string $name The file name without extension
+ * @param string $path The directory path for the library, script or file; default to helpers/
  * @return void
  */
 function _unloader($name, $path=HELPER){
@@ -154,6 +156,7 @@ function _unloader($name, $path=HELPER){
  * @internal
  * Check a library, script or file is ready to load
  * @param string $name The file name without extension
+ * @param string $path The directory path for the library, script or file; default to helpers/
  * @return mixed The file name if it is ready to load, otherwise FALSE
  */
 function _readyloader($name, $path=HELPER){
@@ -217,7 +220,7 @@ function _addvar($name, $value=''){
 /**
  * JS file include helper
  *
- * @param string $file An absolute file path or just file name
+ * @param string $file An absolute file path or just file name.
  *  The file name only will be prepended the folder name js/ and it will be looked in every sub-sites "js" folder
  *
  * @return void
@@ -243,7 +246,7 @@ function _js($file){
 /**
  * CSS file include helper
  *
- * @param string $file An absolute file path or file name only
+ * @param string $file An absolute file path or file name only.
  *  The file name only will be prepended the folder name css/ and it will be looked in every sub-sites "css" folder
  *
  * @return void
@@ -270,7 +273,7 @@ function _css($file){
  * Get the absolute image file name
  *
  * @param string $file An image file name only (no need directory path)
- * @return void
+ * @return string The absolute image URL
  */
 function _img($file){
 	return WEB_ROOT . 'images/' . $file;
@@ -321,12 +324,12 @@ if(!function_exists('_image')){
 
 if(!function_exists('_pr')){
 /**
- * Convenience method for print_r.
+ * Convenience method for `print_r`.
  * Displays information about a variable in a way that's readable by humans.
  * If given a string, integer or float, the value itself will be printed. If given an array, values will be presented in a format that shows keys and elements.
  *
- * @param $input mixed The variable to debug
- * @param $pre boolean True to print using <pre>, otherwise False
+ * @param mixed mixed The variable to debug
+ * @param boolean $pre TRUE to print using `<pre>`, otherwise FALSE
  *
  * @return void
  */
@@ -345,11 +348,11 @@ if(!function_exists('_pr')){
 
 if(!function_exists('_dump')){
 /**
- * Convenience method for var_dump.
+ * Convenience method for `var_dump`.
  * Dumps information about a variable
  *
- * @param $input mixed The variable to debug
- * @param $pre boolean True to print using <pre>, otherwise False
+ * @param mixed $input mixed The variable to debug
+ * @param boolean $pre boolean TRUE to print using `<pre>`, otherwise FALSE
  *
  * @return void
  */
@@ -363,7 +366,7 @@ if(!function_exists('_dump')){
  * Convenience method to get/set a config variable without global declaration within the calling function
  *
  * @param string $key The config variable name without prefix
- * @param mixed $value The value to set to the config variable
+ * @param mixed $value The value to set to the config variable; if it is omitted, it is Getter method.
  * @return mixed The value of the config variable
  */
 function _cfg($key='', $value=''){
@@ -376,7 +379,7 @@ function _cfg($key='', $value=''){
  * Convenience method to get/set a global variable
  *
  * @param string $key The global variable name
- * @param mixed $value The value to set to the global variable; if it is not given, this is getter.
+ * @param mixed $value The value to set to the global variable; if it is not given, it is Getter method.
  * @return mixed The value of the global variable
  */
 function _g($key, $value=''){
@@ -540,14 +543,16 @@ function _rr(){
 }
 /**
  * Get the absolute URL path
- * @param string 	$path		Routing path such as "foo/bar"; NULL for the current path
- * @param array 	$queryStr	Query string as
- * 	array(
- * 		$value1, // no key here
- * 		'key1' => $value2,
- * 		'key3' => $value3 or array($value3, $value4)
- * 	)
- * @param string	$lang		Languague code to be prepended to $path such as "en/foo/bar". It will be useful for site language switch redirect
+ * @param string $path     Routing path such as "foo/bar"; NULL for the current path
+ * @param array  $queryStr Query string as
+ *
+ *     array(
+ *       $value1, // no key here
+ *       'key1' => $value2,
+ *       'key3' => $value3 or array($value3, $value4)
+ *     )
+ *
+ * @param string $lang Languague code to be prepended to $path such as "en/foo/bar". It will be useful for site language switch redirect
  * @return void
  */
 function _url($path=NULL, $queryStr=array(), $lang=''){
@@ -555,13 +560,15 @@ function _url($path=NULL, $queryStr=array(), $lang=''){
 }
 /**
  * Get the absolute URL path
- * @param array 	$queryStr	Query string as
- * 	array(
- * 		$value1, // no key here
- * 		'key1' => $value2,
- * 		'key3' => $value3 or array($value3, $value4)
- * 	)
- * @param string	$lang		Languague code to be prepended to $path such as "en/foo/bar". It will be useful for site language switch redirect
+ * @param array $queryStr Query string as
+ *
+ *     array(
+ *       $value1, // no key here
+ *       'key1' => $value2,
+ *       'key3' => $value3 or array($value3, $value4)
+ *     )
+ *
+ * @param string $lang Languague code to be prepended to $path such as "en/foo/bar". It will be useful for site language switch redirect
  * @return void
  */
 function _self($queryStr=array(), $lang=''){
@@ -571,11 +578,13 @@ function _self($queryStr=array(), $lang=''){
  * Header redirect to a specific location
  * @param string $path Routing path such as "foo/bar"; NULL for the current path
  * @param array $queryStr Query string as
- * 	array(
- * 		$value1, // no key here
- * 		'key1' => $value2,
- * 		'key3' => $value3 or array($value3, $value4)
- * 	)
+ *
+ *     array(
+ *       $value1, // no key here
+ *       'key1' => $value2,
+ *       'key3' => $value3 or array($value3, $value4)
+ *     )
+ *
  * @param string $lang The Languague code to be prepended to $path such as "en/foo/bar".
  *   It will be useful for site language switch redirect
  * @param int $status The HTTP status code - 301 for permanent redirect;
@@ -600,8 +609,8 @@ function _redirect($path=NULL, $queryStr=array(), $lang='', $status=NULL){
 }
 /**
  * Header redirect to a specific location by sending 301 status code
- * @param string $path Routing path such as "foo/bar"; NULL for the current path
- * @param array $queryStr Query string as
+ * @param string $path     Routing path such as "foo/bar"; NULL for the current path
+ * @param array  $queryStr Query string as
  * 	array(
  * 		$value1, // no key here
  * 		'key1' => $value2,
@@ -712,9 +721,9 @@ function _arg($index = NULL, $path = NULL) {
 		$query = '-' . $index . '/';
 		$pos = strpos($path, $query);
 		if($pos !== false){
-			$start 	= $pos + strlen($query);
-			$path 	= substr($path, $start);
-			$end 	= strpos($path, '/-');
+			$start  = $pos + strlen($query);
+			$path  = substr($path, $start);
+			$end   = strpos($path, '/-');
 			if($end) $path 	= substr($path, 0, $end);
 			if(substr_count($path, '/')){
 				return explode('/', $path);
@@ -748,11 +757,11 @@ function _getLangInURI(){
 		$lc_languages = array('en' => 'English');
 	}
 
-	$baseURL 	= trim(_cfg('baseURL'), '/');
-	$baseURL 	= ($baseURL) ? "/$baseURL/" : '/';
-	$baseURL 	= str_replace('/', '\/', $baseURL); // escape literal `/`
-	$baseURL 	= str_replace('.', '\.', $baseURL); // escape literal `.`
-	$regex 		= '/^('.$baseURL.')\b('.implode('|', array_keys($lc_languages)).'){1}\b(\/?)/i';
+	$baseURL = trim(_cfg('baseURL'), '/');
+	$baseURL = ($baseURL) ? "/$baseURL/" : '/';
+	$baseURL = str_replace('/', '\/', $baseURL); // escape literal `/`
+	$baseURL = str_replace('.', '\.', $baseURL); // escape literal `.`
+	$regex   = '/^('.$baseURL.')\b('.implode('|', array_keys($lc_languages)).'){1}\b(\/?)/i';
 
 	if(preg_match($regex, $_SERVER['REQUEST_URI'], $matches)){
 		return $matches[2];
@@ -864,7 +873,7 @@ if(!function_exists('_fstr')){
 /**
  * Format a string
  *
- * @param string $value A text string to be formatted
+ * @param string|array $value A text string or array of text strings to be formatted
  * @param string $glue The glue string between each element
  * @param string $lastGlue The glue string between the last two elements
  *
@@ -875,11 +884,11 @@ if(!function_exists('_fstr')){
 		if(!is_array($value)){
 			return ($value == '') ? $lc_nullFill : nl2br($value);
 		}elseif(is_array($value) && sizeof($value) > 1){
-			$last 			= array_slice($value, -2, 2);
-			$lastImplode 	= implode(' '.$lastGlue.' ', $last);
-			$first 			= array_slice($value, 0, sizeof($value)-2);
-			$firstImplode 	= implode($glue, $first);
-			$finalImplode 	= ($firstImplode)? $firstImplode.$glue.$lastImplode : $lastImplode;
+			$last          = array_slice($value, -2, 2);
+			$lastImplode   = implode(' '.$lastGlue.' ', $last);
+			$first         = array_slice($value, 0, sizeof($value)-2);
+			$firstImplode  = implode($glue, $first);
+			$finalImplode  = ($firstImplode)? $firstImplode.$glue.$lastImplode : $lastImplode;
 			return $finalImplode;
 		}else{
 			return nl2br($value[0]);
@@ -915,7 +924,7 @@ if(!function_exists('_fnum')){
 
 if(!function_exists('_fnumSmart')){
 /**
- * Format a number in a smarter way, i.e., decimal places are omitted where necessary.
+ * Format a number in a smarter way, i.e., decimal places are omitted when necessary.
  * Given the 2 decimal places, the value 5.00 will be shown 5 whereas the value 5.01 will be shown as it is.
  *
  * @param int $value A number to be formatted
@@ -1118,13 +1127,13 @@ if(!function_exists('_slug')){
  */
 	function _slug($string, $table='', $condition=NULL){
 		$specChars = array('`','~','!','@','#','$','%','\^','&','*','(',')','=','+','x','{','}','[',']',':',';',"'",'"','<','>','\\','|','?','/',',');
-		$table 	= ltrim($table, db_prefix());
-		$slug 	= strtolower(trim($string));
-		$slug 	= trim($slug, '-');
+		$table  = ltrim($table, db_prefix());
+		$slug   = strtolower(trim($string));
+		$slug   = trim($slug, '-');
 		# clear special characters
-		$slug 	= preg_replace('/(&amp;|&quot;|&#039;|&lt;|&gt;)/i', '', $slug);
-		$slug 	= str_replace($specChars, '', $slug);
-		$slug 	= str_replace(array(' ', '.'), '-', $slug);
+		$slug   = preg_replace('/(&amp;|&quot;|&#039;|&lt;|&gt;)/i', '', $slug);
+		$slug   = str_replace($specChars, '', $slug);
+		$slug   = str_replace(array(' ', '.'), '-', $slug);
 
 		if(is_array($condition)){
 			$condition = db_condition($condition);
@@ -1160,9 +1169,9 @@ if(!function_exists('_slug')){
  * @return string the SQL date string if the given date is valid, otherwise NULL
  */
 function _sqlDate($date, $givenFormat='dmy', $separator='-'){
-	$dt 	= explode($separator, $date);
-	$format = str_split($givenFormat);
-	$ft 	= array_flip($format);
+	$dt      = explode($separator, $date);
+	$format  = str_split($givenFormat);
+	$ft      = array_flip($format);
 
 	$y = $dt[$ft['y']];
 	$m = $dt[$ft['m']];
@@ -1446,7 +1455,7 @@ function _isBot(){
 	$userAgent = $_SERVER['HTTP_USER_AGENT'];
 	if(empty($userAgent)) return false;
 	foreach($bots as $bot){
-	   if(false !== strpos(strtolower($userAgent), strtolower($bot))){
+		if(false !== strpos(strtolower($userAgent), strtolower($bot))){
 			return true;
 		}
 	}

@@ -3,12 +3,12 @@
  * This file is part of the PHPLucidFrame library.
  * Core utility for system routing
  *
- * @package		LC\Helpers\Routing
- * @since		PHPLucidFrame v 1.0.0
- * @copyright	Copyright (c), PHPLucidFrame.
- * @author 		Sithu K. <hello@sithukyaw.com>
- * @link 		http://phplucidframe.sithukyaw.com
- * @license		http://www.opensource.org/licenses/mit-license.php MIT License
+ * @package     LC\Helpers\Routing
+ * @since       PHPLucidFrame v 1.0.0
+ * @copyright   Copyright (c), PHPLucidFrame.
+ * @author      Sithu K. <hello@sithukyaw.com>
+ * @link        http://phplucidframe.sithukyaw.com
+ * @license     http://www.opensource.org/licenses/mit-license.php MIT License
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.txt
@@ -153,7 +153,7 @@ function route_search(){
 		$seg[0] = $sites[LC_NAMESPACE];
 	}
 
-	if(strripos($q, '.php') !== false){
+	if(strripos($q, '.php') !== false){ # if the path ends with ".php"
 		$path = implode('/', $seg);
 		if(file_exists($path)) return $path;
 	}
