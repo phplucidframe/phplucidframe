@@ -42,6 +42,8 @@ class File{
 	private $extensions;
 	/** @var const Type of file resize */
 	private $resize = FILE_RESIZE_BOTH;
+	/** @var string The original uploaded file name */
+	private $originalFileName;
 	/** @var string The file name generated */
 	private $fileNameBased;
 
@@ -59,6 +61,12 @@ class File{
 	 */
 	public function set($key, $value){
 		$this->$key = $value;
+	}
+	/**
+	 * Getter for the orignal uploaded file name
+	 */
+	public function getOriginalFileName(){
+		return $this->originalFileName;
 	}
 	/**
 	 * Getter for the file name generated
@@ -84,6 +92,7 @@ class File{
 		$path 			= $this->uploadPath;
 
 		if($fileName && $uploadedFile){
+			$this->originalFileName = $fileName;
 
 			if( !(is_array($this->dimensions) && count($this->dimensions)) ){
 				$newFileName = $this->getNewFileName($fileName);
