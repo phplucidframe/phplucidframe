@@ -32,6 +32,8 @@ define('FILE_RESIZE_WIDTH', 'width');
  * Helper for file processing system
  */
 class File{
+	/** @var string The uniqued name string for this instance */
+	private $name;
 	/** @var string The uniqued string ID to append to the file name */
 	private $uniqueId;
 	/** @var array The dimension to be created for image upload */
@@ -50,7 +52,9 @@ class File{
 	/**
 	 * Constructor
 	 */
-	public function File(){
+	public function File($name=''){
+		$this->uniqueId = $this->getUniqueId();
+		$this->name = ($name) ? $name : $this->uniqueId;
 		$this->extensions = array('jpg', 'jpeg', 'png', 'gif');
 	}
 	/**
@@ -60,7 +64,12 @@ class File{
 	 * @return void
 	 */
 	public function set($key, $value){
-		$this->$key = $value;
+		# if $uniqueId is explicitly given and $name was not explicity given
+		# make $name and $uniqueId same
+		if($key === 'uniqueId' && $value & $this->name === $this->uniqueId){
+			$this->name = $value;
+		}
+		$this->{$key} = $value;
 	}
 	/**
 	 * Getter for the orignal uploaded file name
