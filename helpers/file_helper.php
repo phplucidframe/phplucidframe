@@ -72,6 +72,17 @@ class File{
 		$this->{$key} = $value;
 	}
 	/**
+	 * Getter for the class properties
+	 * @param string $key The property name
+	 * @return mixed $value The value of the property or null if $name does not exist.
+	 */
+	public function get($key){
+		if(isset($this->{$key})){
+			return $this->{$key};
+		}
+		return null;
+	}
+	/**
 	 * Getter for the orignal uploaded file name
 	 */
 	public function getOriginalFileName(){
