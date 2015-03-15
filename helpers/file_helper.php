@@ -15,6 +15,19 @@
  */
 
 /**
+ * @ignore Flag for image resize to the fitted dimension to the given dimension
+ */
+define('FILE_RESIZE_BOTH', 'both');
+/**
+ * @ignore Flag for image resize to the given height, but width is aspect ratio of the height
+ */
+define('FILE_RESIZE_HEIGHT', 'height');
+/**
+ * @ignore Flag for image resize to the given width, but height is aspect ratio of the width
+ */
+define('FILE_RESIZE_WIDTH', 'width');
+
+/**
  * This class is part of the PHPLucidFrame library.
  * Helper for file processing system
  */
@@ -297,16 +310,3 @@ class File{
 		return '<img '.$attrHTML.' />';
 	}
 }
-
-/**
- * @ignore Flag for image resize to the fitted dimension to the given dimension
- */
-define('FILE_RESIZE_BOTH', 'both');
-/**
- * @ignore Flag for image resize to the given height, but width is aspect ratio of the height
- */
-define('FILE_RESIZE_HEIGHT', 'height');
-/**
- * @ignore Flag for image resize to the given width, but height is aspect ratio of the width
- */
-define('FILE_RESIZE_WIDTH', 'width');
