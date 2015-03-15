@@ -144,17 +144,19 @@ class File{
 	 */
 	private function getNewFileName($file, $width=0){
 		$info = pathinfo($file);
-		$uniqueId = $this->getUniqueId();
-		# get the suffix
+		# replace spaces, periods and underscores with dashes
+		$justName = str_replace(array(' ', '.', '_'), '-', $info['filename']);
+		# clean special characters
+		$sChars   = array('"', "'", ',', '~', '`', '!', '@', '#', '$', '%', '&', '*', '(', ')', '[', ']', '{', '}', '|', '\\', '/');
+		$justName = str_replace($sChars, '', $justName);
+		# remove continuous dashes
+		$justName = preg_replace('/[\-]+/', '-', $justName);
+		# add uffix to the file name
 		$suffix = '';
 		if($width) $suffix .= '-' . $width;
-		$suffix .= '-' . $uniqueId;
-		# clean spaces and periods and replace with dashes
-		$justName = str_replace(array(' ', '.'), '-', $info['filename']);
-		$justName = preg_replace('/[\-]+/', '-', $justName);
-		$justName = preg_replace("/['\"]+/", '', $justName);
+		$suffix .= '-' . $this->uniqueId;
 		$fileName = $justName . $suffix . '.' . $info['extension'];
-		$this->fileNameBased = $justName . '-' . $uniqueId . $info['extension'];
+		$this->fileNameBased = $justName . '-' . $this->uniqueId . $info['extension'];
 		return $fileName;
 	}
 	/**
