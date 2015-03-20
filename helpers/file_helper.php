@@ -48,6 +48,8 @@ class File{
 	private $originalFileName;
 	/** @var string The file name generated */
 	private $fileNameBased;
+	/** @var array The uploaded file information */
+	private $uploads;
 
 	/**
 	 * Constructor
@@ -99,17 +101,27 @@ class File{
 	 * If the uploaded file is image, this will create the various images according to the given $dimension
 	 *
 	 * @param array $file The uploaded file information from $_FILES['xxx']
-	 * @param array Th array of the uploaded files,
-	 *  for example,
-	 *  uploaded[dimension] = "file-name" for image files or uploaded[] = "file-name" for the files of other types
+	 *
+	 * @return  array The array of the uploaded file information:
+	 *
+	 *     array(
+	 *       'name'     => 'Name of the input element',
+	 *       'fileName' => 'The original file name',
+	 *       'extension'=> 'The selected and uploaded file extension',
+	 *       'dir'      => 'The uploaded directory',
+	 *       'uploads'  => array(
+	 *         'dimension (WxH) or index' => 'The uploaded file name like return from basename()'
+	 *       )
+	 *     )
+	 *
 	 */
 	public function upload($file){
-		$fileName 		= stripslashes($file['name']);
-		$uploadedFile 	= $file['tmp_name'];
-		$info 			= pathinfo($fileName);
-		$extension 		= strtolower($info['extension']);
-		$uploaded 		= false;
-		$path 			= $this->uploadPath;
+		$fileName     = stripslashes($file['name']);
+		$uploadedFile = $file['tmp_name'];
+		$info         = pathinfo($fileName);
+		$extension    = strtolower($info['extension']);
+		$uploaded     = null;
+		$path         = $this->uploadPath;
 
 		if($fileName && $uploadedFile){
 			$this->originalFileName = $fileName;
@@ -160,7 +172,18 @@ class File{
 				}
 			}
 		}
-		return $uploaded;
+
+		if($uploaded){
+			$this->uploads = array(
+				'name'     => $this->name,
+				'fileName' => $this->originalFileName,
+				'extension'=> $extension,
+				'dir'      => $this->uploadPath,
+				'uploads'  => $uploaded
+			);
+		}
+
+		return $this->uploads;
 	}
 	/**
 	 * Get a new file name, e.g., original-file-name-[imageWidth]-[uniqueId].ext
