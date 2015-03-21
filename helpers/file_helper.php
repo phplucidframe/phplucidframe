@@ -48,8 +48,6 @@ class File{
 	private $dimensions;
 	/** @var string The upload directory path */
 	private $uploadPath;
-	/** @var array The allowed file extensions */
-	private $extensions;
 	/** @var const Type of file resize */
 	private $resize = FILE_RESIZE_BOTH;
 	/** @var string The original uploaded file name */
@@ -67,7 +65,6 @@ class File{
 	public function File($name=''){
 		$this->uniqueId = $this->getUniqueId();
 		$this->name = ($name) ? $name : $this->uniqueId;
-		$this->extensions = array('jpg', 'jpeg', 'png', 'gif');
 	}
 	/**
 	 * Setter for the class properties
