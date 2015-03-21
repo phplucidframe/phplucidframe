@@ -580,6 +580,14 @@ ul.social-icons li a:hover.tw{
 	background: url('../images/social-icons.gif') -29px -26px no-repeat;
 }
 
+ul.social-icons li a.gplus{
+	background: url('../images/social-icons.gif') -58px 0 no-repeat;
+}
+
+ul.social-icons li a:hover.gplus{
+	background: url('../images/social-icons.gif') -58px -26px no-repeat;
+}
+
 /*************/
 /* MINI-PAGE */
 /*************/
