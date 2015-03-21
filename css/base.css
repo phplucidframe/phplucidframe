@@ -1537,6 +1537,89 @@ table.formView.tableView tr.toggle td {
 	border-color:#fff;
 }
 
+/********************/
+/* AsynFileUploader */
+/********************/
+
+.asynfileuploader {
+	cursor: default;
+	overflow: hidden;
+}
+
+.asynfileuploader-progress {
+	display: none;
+	width: 100px;
+}
+
+.asynfileuploader-progress div {
+	background: url(../images/asyn-file-uploader/throbber.gif) repeat-x;
+	border: 1px #000 solid;
+	border-radius: 5px;
+	moz-border-radius: 5px;
+	webkit-border-radius: 5px;
+	height: 15px;
+}
+
+.asynfileuploader-button {
+	cursor: pointer;
+	display: inline-block;
+	padding: 0;
+	position: relative;
+	margin: 0;
+	vertical-align: middle;
+	zoom: 1;
+}
+
+.asynfileuploader-button span {
+	display: inline-block;
+	font-weight: bold;
+	font-size: 11px;
+	height: 22px;
+	margin-left: 13px;
+	padding: 8px 15px 0 3px;
+}
+
+.asynfileuploader iframe {
+	border: none;
+	cursor: pointer;
+	filter: alpha(opacity:0);
+	height: 28px;
+	left: 0;
+	opacity: 0;
+	position: absolute;
+	top: 0;
+	width: 95px;
+}
+
+.asynfileuploader-delete {
+	display: inline-block;
+	height: 16px;
+	margin-left: 3px;
+	margin-top: 3px;
+	width: 16px;
+	vertical-align: text-bottom;
+}
+
+.asynfileuploader-delete a {
+	background: url(../images/asyn-file-uploader/delete.png) no-repeat;
+	display: inline-block;
+	height: 16px;
+	width: 16px;
+}
+
+.asynfileuploader-delete span {
+	display: none;
+}
+
+.asynfileuploader-file-info {
+	display: block;
+}
+
+.asynfileuploader-error {
+	display: none;
+	padding: 2px 0;
+}
+
 /******/
 /* IE */
 /******/
