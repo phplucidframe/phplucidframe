@@ -26,6 +26,14 @@ define('FILE_RESIZE_HEIGHT', 'height');
  * @ignore Flag for image resize to the given width, but height is aspect ratio of the width
  */
 define('FILE_RESIZE_WIDTH', 'width');
+/**
+ * @ignore File upload error flag for the failure of `move_uploaded_file()`
+ */
+define('FILE_UPLOAD_ERR_MOVE', 100);
+/**
+ * @ignore File upload error flag for the failure of image creation of GD functions
+ */
+define('FILE_UPLOAD_ERR_IMAGE_CREATE', 101);
 
 /**
  * This class is part of the PHPLucidFrame library.
@@ -50,6 +58,8 @@ class File{
 	private $fileNameBased;
 	/** @var array The uploaded file information */
 	private $uploads;
+	/** @var array The file upload error information */
+	private $error;
 
 	/**
 	 * Constructor
@@ -97,6 +107,59 @@ class File{
 		return $this->fileNameBased;
 	}
 	/**
+	 * Getter for the property `error`
+	 * @return array The array of error information
+	 *
+	 *     array(
+	 *       'code' => 'Error code',
+	 *       'message' => 'Error message'
+	 *     )
+	 *
+	 */
+	public function getError(){
+		return $this->error;
+	}
+	/**
+	 * Get file upload error message for the given error code
+	 * @param  int $code The error code
+	 * @return string The error message
+	 */
+	public function getErrorMessage($code){
+		switch ($code) {
+			case UPLOAD_ERR_INI_SIZE:
+				$message = _t('The uploaded file exceeds the upload_max_filesize directive in php.ini.');
+				break;
+			case UPLOAD_ERR_FORM_SIZE:
+				$message = _t('The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form.');
+				break;
+			case UPLOAD_ERR_PARTIAL:
+				$message = _t('The uploaded file was only partially uploaded.');
+				break;
+			case UPLOAD_ERR_NO_FILE:
+				$message = _t('No file was uploaded.');
+				break;
+			case UPLOAD_ERR_NO_TMP_DIR:
+				$message = _t('Missing a temporary folder.');
+				break;
+			case UPLOAD_ERR_CANT_WRITE:
+				$message = _t('Failed to write file to disk.');
+				break;
+			case UPLOAD_ERR_EXTENSION:
+				$message = _t('File upload stopped by extension.');
+				break;
+			case FILE_UPLOAD_ERR_MOVE:
+				$message = _t('The uploaded file is not valid.');
+				break;
+			case FILE_UPLOAD_ERR_IMAGE_CREATE:
+				$message = _t('Failed to create image from the uploaded file.');
+				break;
+			default:
+				$message = _t('Unknown upload error.');
+				break;
+		}
+		return $message;
+	}
+	/**
 	 * Move the uploaded file into the given directory.
 	 * If the uploaded file is image, this will create the various images according to the given $dimension
 	 *
@@ -123,13 +186,18 @@ class File{
 		$uploaded     = null;
 		$path         = $this->uploadPath;
 
-		if($fileName && $uploadedFile){
+		if($fileName && $file['error'] === UPLOAD_ERR_OK){
 			$this->originalFileName = $fileName;
 
 			if( !(is_array($this->dimensions) && count($this->dimensions)) ){
 				$newFileName = $this->getNewFileName($fileName);
 				if(move_uploaded_file($uploadedFile, $path . $newFileName)){
 					$uploaded = array($newFileName);
+				}else{
+					$this->error = array(
+						'code' => FILE_UPLOAD_ERR_MOVE,
+						'message' => $this->getErrorMessage(FILE_UPLOAD_ERR_MOVE)
+					);
 				}
 			}else{
 				if($extension == "jpg" || $extension == "jpeg" ){
@@ -169,8 +237,18 @@ class File{
 						$uploaded[$dimension] = $newFileName;
 					}
 					if($img) imagedestroy($img);
+				}else{
+					$this->error = array(
+						'code' => FILE_UPLOAD_ERR_IMAGE_CREATE,
+						'message' => $this->getErrorMessage(FILE_UPLOAD_ERR_IMAGE_CREATE)
+					);
 				}
 			}
+		}else{
+			$this->error = array(
+				'code' => $file['error'],
+				'message' => $this->getErrorMessage($file['error'])
+			);
 		}
 
 		if($uploaded){
