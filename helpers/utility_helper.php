@@ -1450,6 +1450,7 @@ function _isBot(){
 		'Feedfetcher-Google',
 		'ASPSeek',
 		'simpy',
+		'ips-agent',
 		'Libwww-perl'
 	);
 	$userAgent = $_SERVER['HTTP_USER_AGENT'];
