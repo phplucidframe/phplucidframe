@@ -847,19 +847,17 @@ span.invalid {
 /* TABLE DIV */
 /*************/
 
-.table
-{
+.table {
 	margin: 5px 0;
 }
 
 .table .title .col,
-.table .row .col
-{
+.table .row .col {
 	float: left;
 	padding: 3px;
 }
 
-.table .row .col.col1{
+.table .row .col.col1 {
 	float:none;
 }
 
@@ -872,7 +870,7 @@ span.invalid {
 	padding:5px 0;
 }
 
-.table .row label{
+.table .row label {
 	display: inline-block;
 	padding-bottom: 2px;
 }
@@ -913,41 +911,16 @@ span.invalid {
 	width: 142px;
 }
 
-.table .col.col-145 {
-	width: 145px;
+.table .col.col-150 {
+	width: 150px;
 }
 
-.table .col.col-302
-{
-	width:302px;
-	padding:0px;
+.table .col.col-300 {
+	width: 300px;
 }
 
-.table .col.col-321
-{
-	width:321px;
-}
-
-.table .col.col-420
-{
-	width:420px;
-	margin-right:25px;
-}
-
-.table .col.col-497
-{
-	width:497px;
-}
-
-.table .row .col a
-{
-	padding: 5px;
-	display:block;
-}
-
-.table .row .col a:hover
-{
-	text-decoration: none;
+.table .col.col-400 {
+	width: 400px;
 }
 
 /********/
