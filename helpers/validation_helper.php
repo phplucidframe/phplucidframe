@@ -599,7 +599,7 @@ class Validation{
 		if( !in_array($type, array('single', 'multi')) ) $type = 'multi';
 		self::$errors = array();
 		foreach($validations as $id => $v){
-			if(	is_array($v['rules']) ){
+			if( isset($v['rules']) && is_array($v['rules']) ){
 				foreach($v['rules'] as $rule){
 					$success = true;
 					$caption = ( !isset($v['caption']) ) ? $id : $v['caption'];
