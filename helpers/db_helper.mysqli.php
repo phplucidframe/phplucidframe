@@ -375,16 +375,18 @@ function db_extract($sql, $args=array(), $resultType=LC_FETCH_OBJECT){
 	}
 	$data = array();
 	if($result = db_query($sql, $args)){
-		while(true){
-			if($resultType == LC_FETCH_ARRAY){
-				$row = db_fetchArray($result);
-			}elseif($resultType == LC_FETCH_ASSOC){
-				$row = db_fetchAssoc($result);
+		while($row = db_fetchAssoc($result)){
+			if(count($row) == 2 && array_keys($row) === array('key', 'value')){
+				$data[$row['key']] = $row['value'];
 			}else{
-				$row = db_fetchObject($result);
+				if($resultType == LC_FETCH_ARRAY){
+					$data[] = array_values($row);
+				}elseif($resultType == LC_FETCH_OBJECT){
+					$data[] = (object) $row;
+				}else{
+					$data[] = $row;
+				}
 			}
-			if(!$row) break;
-			$data[] = $row;
 		}
 	}
 	return count($data) ? $data : false;
