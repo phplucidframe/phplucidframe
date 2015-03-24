@@ -363,7 +363,8 @@ function db_fetchResult($sql, $args=array()){
  *   The possible values for this parameter are the constants **LC_FETCH_OBJECT**, **LC_FETCH_ASSOC**, or **LC_FETCH_ARRAY**.
  *   Default to **LC_FETCH_OBJECT**.
  *
- * @return array The result array of objects or associated arrays or index arrays
+ * @return array|boolean The result array of objects or associated arrays or index arrays.
+ *   If the result not found, return false.
  */
 function db_extract($sql, $args=array(), $resultType=LC_FETCH_OBJECT){
 	if(is_numeric($args)){
@@ -386,7 +387,7 @@ function db_extract($sql, $args=array(), $resultType=LC_FETCH_OBJECT){
 			$data[] = $row;
 		}
 	}
-	return $data;
+	return count($data) ? $data : false;
 }
 
 if(!function_exists('db_insert')){
