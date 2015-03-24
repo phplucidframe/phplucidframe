@@ -14,7 +14,8 @@
  * with this source code in the file LICENSE.txt
  */
 
-$_route_paths = array();
+/** @type array Array of the custom route configuration */
+$lc_routes = array();
 
 /**
  * @internal
@@ -187,9 +188,10 @@ function route_path(){
  * @internal
  * Define the custom routing path
  */
-function route_create($path=''){
-	global $_route_paths;
-	if(!empty($path)) $_route_paths[] = $path;
+function route_map($path, $to=''){
+	global $lc_routes;
+	$lc_routes[$path] = $to;
+
 }
 /**
  * Return the absolute URL path appended the query string if necessary
