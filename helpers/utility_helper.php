@@ -189,6 +189,7 @@ function _script(){
 	$script .= 'LC.lang = "'._lang().'";';
 	$script .= 'LC.baseURL = "'._cfg('baseURL').'/";';
 	$script .= 'LC.route = "'._r().'";';
+	$script .= 'LC.cleanRoute = "'._cfg('cleanRoute').'";';
 	$script .= 'LC.namespace = "'.LC_NAMESPACE.'";';
 	$script .= 'LC.sites = '.(is_array($sites) && count($sites) ? json_encode($sites) : 'false').';';
 	$script .= 'LC.sitewideWarnings = '.json_encode($sitewideWarnings).';';

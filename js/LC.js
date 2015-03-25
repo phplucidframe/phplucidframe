@@ -130,7 +130,7 @@ var Form = {
 
 		var $action = $form.attr('action');
 		if(!$action){
-			$form.attr('action', Page.url(LC.route) + 'action.php');
+			$form.attr('action', Page.url(LC.cleanRoute) + 'action.php');
 		}
 
 		if( $form.find('input[type=file]').size() ){

@@ -29,10 +29,21 @@ $_page = ROOT . $q;
 if(!file_exists($_page)){
 	# Get the complete path with app/
 	$_page = APP_ROOT . $q;
+	# Find the clean route
+	$_seg = explode('/', $q);
+	if(is_dir($_page)){
+		_cfg('cleanRoute', $q);
+	}else{
+		array_pop($_seg); # remove the last element
+		_cfg('cleanRoute', implode('/', $_seg));
+	}
+	unset($_seg);
 }
 
 # if it is a directory, it should have index.php
-if(is_dir($_page)) $_page .= '/index.php';
+if(is_dir($_page)){
+	$_page .= '/index.php';
+}
 
 if(!empty($_page) && file_exists($_page)){
 	include $_page;

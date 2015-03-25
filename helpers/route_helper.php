@@ -16,6 +16,8 @@
 
 /** @type array Array of the custom route configuration */
 $lc_routes = array();
+/** @type string The clean route without query string or without file name */
+$lc_cleanRoute = '';
 
 /**
  * @internal
@@ -51,6 +53,7 @@ function route_init(){
 	// path before passing it on to PHP. This is a problem when the path contains
 	// e.g. "&" or "%" that have special meanings in URLs and must be encoded.
 	$_GET[ROUTE] = route_request();
+	_cfg('cleanRoute', $_GET[ROUTE]);
 }
 /**
  * @internal
@@ -154,9 +157,14 @@ function route_search(){
 		$seg[0] = $sites[LC_NAMESPACE];
 	}
 
-	if(strripos($q, '.php') !== false){ # if the path ends with ".php"
-		$path = implode('/', $seg);
-		if(file_exists($path)) return $path;
+	$path = implode('/', $seg);
+	if(file_exists($path)){
+		if(count($seg) > 1){
+			_cfg('cleanRoute', implode('/', array_slice($seg, 0, count($seg)-1)));
+		}else{
+			_cfg('cleanRoute', '');
+		}
+		return $path;
 	}
 
 	$append	= array('/index.php', '.php');
@@ -165,8 +173,12 @@ function route_search(){
 		# ~/path/to/the-given-name/index.php
 		# ~/path/to/the-given-name.php
 		foreach($append as $a){
-			$path = implode('/', array_slice($seg, 0, $i)) . $a;
-			if(file_exists($path)) return $path;
+			$cleanRoute = implode('/', array_slice($seg, 0, $i));
+			$path = $cleanRoute . $a;
+			if(file_exists($path)){
+				_cfg('cleanRoute', rtrim($cleanRoute, '/'));
+				return $path;
+			}
 		}
 	}
 	return false;
