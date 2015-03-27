@@ -16,10 +16,10 @@
 </ul>
 <p>
 	<a href="http://phplucidframe.sithukyaw.com" class="button green">Download LucidFrame</a>
-	<a href="<?php echo _url('blog'); ?>" class="button">AJAX List Example</a>
-	<a href="<?php echo _url('articles'); ?>" class="button">Ordinary List Example</a>
+	<a href="<?php echo _url('example/blog'); ?>" class="button">AJAX List Example</a>
+	<a href="<?php echo _url('example/articles'); ?>" class="button">Ordinary List Example</a>
 	<a href="<?php echo _url('blog/2/url-rewrite-to-a-lucid-page-including-a-form-example'); ?>" class="button">AJAX Form Example</a>
-	<a href="<?php echo _url('asyn-file-uploader'); ?>" class="button black">AsynFileUploader Example</a>
+	<a href="<?php echo _url('example/asyn-file-uploader'); ?>" class="button black">AsynFileUploader Example</a>
 </p>
 
 <?php include( _i('inc/tpl/footer.php') ); ?>
