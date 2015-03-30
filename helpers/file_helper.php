@@ -61,6 +61,7 @@ class File{
 
 	/**
 	 * Constructor
+	 * @param string $name The unique name
 	 */
 	public function File($name=''){
 		$this->uniqueId = $this->getUniqueId();
@@ -480,7 +481,7 @@ class AsynFileUploader{
 	/**
 	 * Constructor
 	 *
-	 * @param string/array anonymous The input file name or The array of propertie/value pairs
+	 * @param string/array anonymous The input file name or The array of property/value pairs
 	 */
 	public function AsynFileUploader(){
 		$this->name                 = 'file';
@@ -880,4 +881,3 @@ class AsynFileUploader{
 		<?php
 	}
 }
-

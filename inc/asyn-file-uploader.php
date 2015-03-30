@@ -1,4 +1,20 @@
 <?php
+/**
+ * This file is part of the PHPLucidFrame library.
+ *
+ * This file performs the file upload process and file delete process of AsynFileUploader
+ *
+ * @package     LC
+ * @since       PHPLucidFrame v 1.3.0
+ * @copyright   Copyright (c), PHPLucidFrame.
+ * @author      Sithu K. <hello@sithukyaw.com>
+ * @link        http://phplucidframe.sithukyaw.com
+ * @license     http://www.opensource.org/licenses/mit-license.php MIT License
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.txt
+ */
+
 chdir('../');
 require_once('bootstrap.php');
 

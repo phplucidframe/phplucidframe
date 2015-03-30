@@ -8,7 +8,7 @@
  * The `onUpload` hook for an AsynFileUploader to do database operation
  * regarding to the uploaded files
  *
- * @param  array The   array of the uploaded file information:
+ * @param  array $file The array of the uploaded file information:
  *
  *     array(
  *       'name'     => 'Name of the input element',
@@ -67,7 +67,7 @@ function example_photoDelete($ids){
  * The `onUpload` hook for an AsynFileUploader to do database operation
  * regarding to the uploaded files
  *
- * @param  array The   array of the uploaded file information:
+ * @param  array $file The array of the uploaded file information:
  *
  *     array(
  *       'name'     => 'Name of the input element',

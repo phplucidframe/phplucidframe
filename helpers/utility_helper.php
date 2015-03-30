@@ -283,7 +283,7 @@ function _img($file){
 if(!function_exists('_image')){
 /**
  * Display an image fitting into the desired dimension
- * It expects the file existing in one of the directories ./files (`FILE`) and ./images (`IMAGE`)
+ * It expects the file existing in one of the directories `./files` (the constant `FILE`) and `./images` (the constant `IMAGE`)
  * This function has dependency on file_helper. If there is no file_helper found,
  * the arguments `$dimension` and `$attributes` will be ignored.
  *
@@ -329,7 +329,7 @@ if(!function_exists('_pr')){
  * Displays information about a variable in a way that's readable by humans.
  * If given a string, integer or float, the value itself will be printed. If given an array, values will be presented in a format that shows keys and elements.
  *
- * @param mixed mixed The variable to debug
+ * @param mixed $input The variable to debug
  * @param boolean $pre TRUE to print using `<pre>`, otherwise FALSE
  *
  * @return void
@@ -852,9 +852,9 @@ function _breadcrumb(/*[mixed $args [, mixed $... ]]*/){
 /**
  * Shorten a string for the given length
  *
- * @param string  $str A plain text string to be shorten
+ * @param string  $str    A plain text string to be shorten
  * @param integer $length The character count
- * @param boolean $trail To append "..." or not. NULL to not show
+ * @param boolean $trail  To append `...` or not. `NULL` to not show
  *
  * @return string The shortent text string
  */
@@ -874,9 +874,9 @@ if(!function_exists('_fstr')){
 /**
  * Format a string
  *
- * @param string|array $value A text string or array of text strings to be formatted
- * @param string $glue The glue string between each element
- * @param string $lastGlue The glue string between the last two elements
+ * @param string|array $value    A text string or array of text strings to be formatted
+ * @param string       $glue     The glue string between each element
+ * @param string       $lastGlue The glue string between the last two elements
  *
  * @return string The formatted text string
  */
@@ -901,9 +901,9 @@ if(!function_exists('_fnum')){
 /**
  * Format a number
  *
- * @param int $value A number to be formatted
- * @param int $decimals The decimal places. Default is 2.
- * @param string $unit The unit appended to the number (optional)
+ * @param int    $value    A number to be formatted
+ * @param int    $decimals The decimal places. Default is 2.
+ * @param string $unit     The unit appended to the number (optional)
  *
  * @return string The formatted number
  */
@@ -963,7 +963,7 @@ if(!function_exists('_fdate')){
 /**
  * Format a date
  *
- * @param  string $date A date to be formatted
+ * @param  string $date   A date to be formatted
  * @param  string $format The date format; The config variable will be used if it is not passed
  * @return string The formatted date
  */
@@ -978,8 +978,8 @@ if(!function_exists('_fdatetime')){
 /**
  * Format a date/time
  *
- * @param string $dateTime A date/time to be formatted
- * @param string $format The date/time format; The config variable will be used if it is not passed
+ * @param  string $dateTime  A date/time to be formatted
+ * @param  string $format    The date/time format; The config variable will be used if it is not passed
  * @return string The formatted date/time
  */
 	function _fdatetime($dateTime, $format=''){
@@ -992,8 +992,8 @@ if(!function_exists('_ftimeAgo')){
 /**
  * Display elapsed time in wording, e.g., 2 hours ago, 1 year ago, etc.
  *
- * @param timestamp|string $time The elapsed time in unix timestamp or date/time string
- * @param string $format The date/time format to show when 4 days passed
+ * @param timestamp|string $time   The elapsed time in unix timestamp or date/time string
+ * @param string           $format The date/time format to show when 4 days passed
  * @return string
  */
 	function _ftimeAgo($time, $format = 'M j Y'){
@@ -1031,12 +1031,12 @@ if(!function_exists('_msg')){
 /**
  * Print or return the message formatted with HTML
  *
- * @param mixed $msg A message string or Array of message strings
- * @param string $class The CSS class name
- * @param mixed $return What is expected to return from this function.
+ * @param mixed  $msg     A message string or Array of message strings
+ * @param string $class   The CSS class name
+ * @param mixed  $return  What is expected to return from this function.
  *  `NULL` (default) no return and just print it.
  *  `html` return HTML.
- * @param string $display Display the message on the spot or not
+ * @param string $display  Display the message on the spot or not
  *
  * @return string The formatted date
  */
@@ -1073,18 +1073,18 @@ if(!function_exists('_msg')){
 /**
  * Find the size of the given file.
  *
- * @param string $file The file name (file must exist)
- * @param int $digits Number of precisions
- * @param array $sizes Array of size units, e.g., array("TB","GB","MB","KB","B"). Default is array("MB","KB","B")
+ * @param string $file   The file name (file must exist)
+ * @param int    $digits Number of precisions
+ * @param array  $sizes  Array of size units, e.g., array("TB","GB","MB","KB","B"). Default is array("MB","KB","B")
  *
- * @return string|bool Size (B, KiB, MiB, GiB, TiB, PiB, EiB, ZiB, YiB) or boolean
+ * @return string|bool The size unit (B, KiB, MiB, GiB, TiB, PiB, EiB, ZiB, YiB) or `FALSE` for non-existence file
  */
 function _filesize($file, $digits = 2, $sizes = array("MB","KB","B")) {
 	if (is_file($file)) {
 		$filePath = $file;
 		if (!realpath($filePath)) {
 			$filePath = $_SERVER["DOCUMENT_ROOT"].$filePath;
-       	}
+		}
 		$filePath = $file;
 		$fileSize = filesize($filePath);
 		$total = count($sizes);
@@ -1099,9 +1099,9 @@ function _filesize($file, $digits = 2, $sizes = array("MB","KB","B")) {
 if(!function_exists('_randomCode')){
 /**
  * Generate a random string from the given array of letters.
- * @param int $length The length of required random string
- * @param array $letters Array of letters from which randomized string is derived from. Default is a to z and 0 to 9.
- * @return string Random string of requried length
+ * @param  int    $length   The length of required random string
+ * @param  array  $letters  Array of letters from which randomized string is derived from. Default is a to z and 0 to 9.
+ * @return string The random string of requried length
  */
 	function _randomCode($length=5, $letters = array()){
 		# Letters & Numbers for default
@@ -1120,9 +1120,9 @@ if(!function_exists('_slug')){
 /**
  * Generate a slug of human-readable keywords
  *
- * @param string 		$string 	Text to slug
- * @param string 		$table 		Table name to check in. If it is empty, no check in the table
- * @param string|array	$condition 	Condition to append table check-in, e.g, 'fieldName != value' or array('fieldName !=' => value)
+ * @param string        $string     Text to slug
+ * @param string        $table      Table name to check in. If it is empty, no check in the table
+ * @param string|array  $condition  Condition to append table check-in, e.g, `fieldName != value` or `array('fieldName !=' => value)`
  *
  * @return string The generated slug
  */
@@ -1163,9 +1163,9 @@ if(!function_exists('_slug')){
 /**
  * Return the SQL date (Y-m-d) from the given date and format
  *
- * @param string $date Date to convert
+ * @param string $date        Date to convert
  * @param string $givenFormat Format for the given date
- * @param string $separator Separator in the date. Default is dash "-"
+ * @param string $separator   Separator in the date. Default is dash "-"
  *
  * @return string the SQL date string if the given date is valid, otherwise NULL
  */
@@ -1198,8 +1198,8 @@ function _encrypt($text){
 /**
  * Decrypts the given text using security salt if mcrypt extension is enabled, otherwise return the original encrypted string
  *
- * @param 	string $text Text to be decrypted
- * @return 	string The decrypted text
+ * @param   string $text Text to be decrypted
+ * @return  string The decrypted text
  */
 function _decrypt($text){
 	$secret = _cfg('securitySecret');
@@ -1211,8 +1211,8 @@ $_meta = array();
 /**
  * Simple quick helper function for <meta> tag attribute values
  *
- * @param  string $key 		The <meta> tag name
- * @param  string $value 	If the value is empty, this is a Getter fuction; otherwise Setter function
+ * @param  string $key   The <meta> tag name
+ * @param  string $value If the value is empty, this is a Getter fuction; otherwise Setter function
  * @return void
  */
 function _meta($key, $value=''){
@@ -1237,12 +1237,12 @@ function _meta($key, $value=''){
  *  - User <user@example.com>
  *  - User <user@example.com>, Another User <anotheruser@example.com>*
  *
- * @param string $from 		The sender of the mail
- * @param string $to 		The receiver or receivers of the mail
- * @param string $subject 	Subject of the email to be sent.
- * @param string $message 	Message to be sent
- * @param string $cc 		The CC receiver or receivers of the mail
- * @param string $bcc 		The Bcc receiver or receivers of the mail
+ * @param string  $from     The sender of the mail
+ * @param string  $to       The receiver or receivers of the mail
+ * @param string  $subject  Subject of the email to be sent.
+ * @param string  $message  Message to be sent
+ * @param string  $cc       The CC receiver or receivers of the mail
+ * @param string  $bcc      The Bcc receiver or receivers of the mail
  *
  * @return boolean Returns TRUE if the mail was successfully accepted for delivery, FALSE otherwise
  */
@@ -1270,9 +1270,9 @@ function _mail($from, $to, $subject='', $message='', $cc='', $bcc=''){
  * Get translation strings from the POST array
  * and prepare to insert or update into the table according to the specified fields
  *
- * @param array  $post The POST array
+ * @param array  $post   The POST array
  * @param array  $fields The array of field name and input name mapping, e.g., array('fieldName' => 'inputName')
- * @param string $lang The language code to fetch (if it is not provided, all languages will be fetched)
+ * @param string $lang   The language code to fetch (if it is not provided, all languages will be fetched)
  *
  * @return array The data array
  */
@@ -1300,13 +1300,13 @@ function _postTranslationStrings($post, $fields, $lang=NULL){
 }
 /**
  * Get translation strings from the query result
- * and return the array of $i18n[fieldName][lang] = $value
+ * and return the array of `$i18n[fieldName][lang] = $value`
  *
- * @param object|array $data The query result
- * @param array|string $fields The array of field names to get data, e.g., 'fieldName' or array('fieldName1', 'fieldName2')
- * @param string $lang The language code to fetch (if it is not provided, all languages will be fetched)
+ * @param object|array $data   The query result
+ * @param array|string $fields The array of field names to get data, e.g., 'fieldName' or `array('fieldName1', 'fieldName2')`
+ * @param string       $lang   The language code to fetch (if it is not provided, all languages will be fetched)
  *
- * @return array|object The array or object of translation strings
+ * @return array|object        The array or object of translation strings
  */
 function _getTranslationStrings($data, $fields, $lang=NULL){
 	global $lc_defaultLang;
@@ -1341,9 +1341,9 @@ function _getTranslationStrings($data, $fields, $lang=NULL){
  * Get the values by providing dot notation string key
  * Set the values by providing dot notation string key
  *
- * @param string $key The string separated by dot (peroid)
- * @param string $scope What scope in which the values will be stored - global or session
- * @param mixed $value The optional value to set or updated
+ * @param string  $key       The string separated by dot (peroid)
+ * @param string  $scope     What scope in which the values will be stored - global or session
+ * @param mixed   $value     The optional value to set or updated
  * @param boolean $serialize The value is to be serialized or not
  *
  * @return mixed The value assigned
@@ -1429,7 +1429,7 @@ function __dotNotationToArray($key, $scope='global', $value='', $serialize=false
 }
 /**
  * Detect the current page visited by a search bot or crawler
- * @return boolean TRUE if it is a bot's visit; otherwise FALSE
+ * @return boolean `TRUE` if it is a bot's visit; otherwise `FALSE`
  * @see http://www.useragentstring.com/pages/Crawlerlist/  /
  */
 function _isBot(){

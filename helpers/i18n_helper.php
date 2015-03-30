@@ -111,6 +111,12 @@ function i18n_load(){
 	# parse the file
 	session_delete("i18n.{$lc_lang}");
 
+	/**
+	 * Thanks to CakePHP for the po file parsing logic in the do...while loop
+	 * @package  Cake.I18n
+	 * @version  1.2.0.4116
+	 * @license  http://www.opensource.org/licenses/mit-license.php MIT License
+	 */
 	$type = 0;
 	$translations = array();
 	$translationKey = '';
