@@ -135,6 +135,7 @@ if( $moduleForm = _readyloader('form_helper') ) require_once $moduleForm;
 _unloader('form_helper', HELPER);
 
 # File helper (unloadable from /inc/autoload.php)
+if( $file = _i( 'helpers/file_helper.php', false) ) include_once $file;
 if( $moduleFile = _readyloader('file_helper') ) require_once $moduleFile;
 _unloader('file_helper', HELPER);
 

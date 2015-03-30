@@ -8,10 +8,10 @@
 
 <h3><?php echo $blog->title; ?></h3>
 <p>
-	This is an example page which shows URL Rewrite rule in <code class="inline">.htacccess</code> how to rewrite URL to this page. The rule is mapping to <code class="inline">/app/blog-page/index.php</code>.
+	This is an example page which shows URL Rewrite rule in <code class="inline">.htacccess</code> how to rewrite URL to this page. The rule is mapping to <code class="inline">/app/example/blog-page/index.php</code>.
 	<code>
-	# ~/blog/99/foo-bar to ~/app/blog-page/?lang=~&id=99&slug=foo-bar<br>
-	RewriteRule ^(([a-z]{2}|[a-z]{2}-[A-Z]{2})/)?blog/([0-9]+)/(.*)$ app/index.php?lang=$1&id=$3&slug=$4&route=blog-page [NC,L]
+	# ~/blog/99/foo-bar to ~/app/example/blog-page/?lang=~&id=99&slug=foo-bar<br>
+	RewriteRule ^(([a-z]{2}|[a-z]{2}-[A-Z]{2})/)?blog/([0-9]+)/(.*)$ app/index.php?lang=$1&id=$3&slug=$4&route=example/blog-page [NC,L]
 	</code>
 </p>
 <p>This page also shows AJAX form example below. You can check the form validation and handling in <code class="inline">/app/blog-page/action.php</code>.</p>
@@ -52,7 +52,7 @@
 				<td colspan="2"></td>
 				<td class="entry">
 					<input type="submit" name="btnSubmit" value="<?php echo _t('Post Comment'); ?>" class="button green" />
-					<a href="<?php echo _url('blog'); ?>" class="button black"><?php echo _t('Cancel'); ?></a>
+					<a href="<?php echo _url('example/blog'); ?>" class="button black"><?php echo _t('Cancel'); ?></a>
 				</td>
 			</tr>
 		</table>

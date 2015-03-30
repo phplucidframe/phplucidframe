@@ -2,6 +2,7 @@
 #################################################
 /files/sessions/
 /files/cache/
+/files/tmp/
 
 # OS generated files #
 ######################
