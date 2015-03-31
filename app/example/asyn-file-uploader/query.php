@@ -3,7 +3,7 @@
  * The query.php (optional) should retrieve and process data from database and make it available to view.php.
  */
 
-$id = _arg(1);
+$id = _arg(2);
 
 ### The following commented section works with the sample database ###
 
