@@ -33,7 +33,7 @@
 function example_photoUpload($file, $post){
 	$ids = array();
 	$sql = 'SELECT postId FROM '.db_prefix().'post_image WHERE pimgId = :id';
-	if( $postId = db_fetch($sql, array(':id' => $post['photo-id'][0])) ){
+	if( isset($post['photo-id']) && $postId = db_fetch($sql, array(':id' => $post['photo-id'][0])) ){
 		if( db_delete_multi('post_image', array('pimgId' => $post['photo-id'])) ){
 			foreach($file['uploads'] as $dimension => $file){
 				$width = current(explode('x', $dimension));
@@ -59,7 +59,9 @@ function example_photoUpload($file, $post){
  * @return boolean TRUE on success; otherwise FALSE
  */
 function example_photoDelete($ids){
-	return db_delete_multi('post_image', array('pimgId' => $ids));
+	if($ids){
+		return db_delete_multi('post_image', array('pimgId' => $ids));
+	}
 }
 
 /**
@@ -91,7 +93,7 @@ function example_photoDelete($ids){
 function example_docUpload($file, $post){
 	$ids = array();
 	$docId = isset($post['doc-id']) ? $post['doc-id'] : 0;
-	if( db_delete_multi('document', array('docId' => $docId)) ){
+	if( $docId && db_delete_multi('document', array('docId' => $docId)) ){
 		foreach($file['uploads'] as $file){
 			# Save new file names in db
 			db_insert('document', array(
@@ -112,6 +114,8 @@ function example_docUpload($file, $post){
  * @return boolean TRUE on success; otherwise FALSE
  */
 function example_docDelete($ids){
-	return db_delete_multi('document', array('docId' => $ids));
+	if($ids){
+		return db_delete_multi('document', array('docId' => $ids));
+	}
 }
 
