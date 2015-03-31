@@ -3,12 +3,12 @@
  * This file is part of the PHPLucidFrame library.
  * Core utility for the database layer. Basic functioning of the database system.
  *
- * @package		LC\Helpers\Database
- * @since		PHPLucidFrame v 1.0.0
- * @copyright	Copyright (c), PHPLucidFrame.
- * @author 		Sithu K. <hello@sithukyaw.com>
- * @link 		http://phplucidframe.sithukyaw.com
- * @license		http://www.opensource.org/licenses/mit-license.php MIT License
+ * @package     LC\Helpers\Database
+ * @since       PHPLucidFrame v 1.0.0
+ * @copyright   Copyright (c), PHPLucidFrame.
+ * @author      Sithu K. <hello@sithukyaw.com>
+ * @link        http://phplucidframe.sithukyaw.com
+ * @license     http://www.opensource.org/licenses/mit-license.php MIT License
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.txt
@@ -363,7 +363,8 @@ function db_fetchResult($sql, $args=array()){
  *   The possible values for this parameter are the constants **LC_FETCH_OBJECT**, **LC_FETCH_ASSOC**, or **LC_FETCH_ARRAY**.
  *   Default to **LC_FETCH_OBJECT**.
  *
- * @return array The result array of objects or associated arrays or index arrays
+ * @return array|boolean The result array of objects or associated arrays or index arrays.
+ *   If the result not found, return false.
  */
 function db_extract($sql, $args=array(), $resultType=LC_FETCH_OBJECT){
 	if(is_numeric($args)){
@@ -374,19 +375,21 @@ function db_extract($sql, $args=array(), $resultType=LC_FETCH_OBJECT){
 	}
 	$data = array();
 	if($result = db_query($sql, $args)){
-		while(true){
-			if($resultType == LC_FETCH_ARRAY){
-				$row = db_fetchArray($result);
-			}elseif($resultType == LC_FETCH_ASSOC){
-				$row = db_fetchAssoc($result);
+		while($row = db_fetchAssoc($result)){
+			if(count($row) == 2 && array_keys($row) === array('key', 'value')){
+				$data[$row['key']] = $row['value'];
 			}else{
-				$row = db_fetchObject($result);
+				if($resultType == LC_FETCH_ARRAY){
+					$data[] = array_values($row);
+				}elseif($resultType == LC_FETCH_OBJECT){
+					$data[] = (object) $row;
+				}else{
+					$data[] = $row;
+				}
 			}
-			if(!$row) break;
-			$data[] = $row;
 		}
 	}
-	return $data;
+	return count($data) ? $data : false;
 }
 
 if(!function_exists('db_insert')){
@@ -790,7 +793,7 @@ function db_condition($cond=array(), $type='AND'){
 /**
  * Build the SQL WHERE clause AND condition from the various condition arrays
  *
- * @deprecated 1.2.0
+ * @deprecated 1.2.0 Use `db_and()` instead
  * @param array $cond The condition array, for example
  *
  *     array(
@@ -832,7 +835,7 @@ function db_and($cond=array()){
 /**
  * Build the SQL WHERE clause OR condition from the various condition arrays
  *
- * @deprecated 1.2.0
+ * @deprecated 1.2.0 Use `db_or()` instead
  * @param array $cond The condition array, for example
  *
  *     array(

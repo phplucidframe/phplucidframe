@@ -3,12 +3,12 @@
  * This file is part of the PHPLucidFrame library.
  * Core utility for internationalization
  *
- * @package		LC\Helpers\Internationalization
- * @since		PHPLucidFrame v 1.0.0
- * @copyright	Copyright (c), PHPLucidFrame.
- * @author 		Sithu K. <hello@sithukyaw.com>
- * @link 		http://phplucidframe.sithukyaw.com
- * @license		http://www.opensource.org/licenses/mit-license.php MIT License
+ * @package     LC\Helpers\Internationalization
+ * @since       PHPLucidFrame v 1.0.0
+ * @copyright   Copyright (c), PHPLucidFrame.
+ * @author      Sithu K. <hello@sithukyaw.com>
+ * @link        http://phplucidframe.sithukyaw.com
+ * @license     http://www.opensource.org/licenses/mit-license.php MIT License
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.txt
@@ -23,7 +23,7 @@
  *
  * @return string The translated string
  */
-function _t($str /*[, mixed $args [, mixed $... ]]*/){
+function _t($str/*[, mixed $args [, mixed $... ]]*/){
 	global $lc_lang;
 	global $lc_translation;
 	global $lc_translationEnabled;
@@ -88,7 +88,7 @@ function _tc($fileName, $args=array()){
  * @param string $filename Text .po file to load
  * @return mixed Array of translations on success or FALSE on failure
  */
-function i18n_load() {
+function i18n_load(){
 	global $lc_lang;
 	global $lc_translation;
 	global $lc_translationEnabled;
@@ -98,7 +98,7 @@ function i18n_load() {
 	$filename = I18N . $lc_lang.'.po';
 	if(!file_exists($filename)) return false;
 	# Open the po file
-	if (!$file = fopen($filename, 'r')) {
+	if(!$file = fopen($filename, 'r')){
 		session_delete("i18n.{$lc_lang}");
 		return false;
 	}
@@ -111,6 +111,12 @@ function i18n_load() {
 	# parse the file
 	session_delete("i18n.{$lc_lang}");
 
+	/**
+	 * Thanks to CakePHP for the po file parsing logic in the do...while loop
+	 * @package  Cake.I18n
+	 * @version  1.2.0.4116
+	 * @license  http://www.opensource.org/licenses/mit-license.php MIT License
+	 */
 	$type = 0;
 	$translations = array();
 	$translationKey = '';
@@ -119,55 +125,55 @@ function i18n_load() {
 
 	do {
 		$line = trim(fgets($file));
-		if ($line === '' || $line[0] === '#') {
+		if($line === '' || $line[0] === '#'){
 			continue;
 		}
-		if (preg_match("/msgid[[:space:]]+\"(.+)\"$/i", $line, $regs)) {
+		if(preg_match("/msgid[[:space:]]+\"(.+)\"$/i", $line, $regs)){
 			$type = 1;
 			$translationKey = strtolower(stripcslashes($regs[1]));
-		} elseif (preg_match("/msgid[[:space:]]+\"\"$/i", $line, $regs)) {
+		}elseif(preg_match("/msgid[[:space:]]+\"\"$/i", $line, $regs)){
 			$type = 2;
 			$translationKey = '';
-		} elseif (preg_match("/^\"(.*)\"$/i", $line, $regs) && ($type == 1 || $type == 2 || $type == 3)) {
+		}elseif(preg_match("/^\"(.*)\"$/i", $line, $regs) && ($type == 1 || $type == 2 || $type == 3)){
 			$type = 3;
 			$translationKey .= strtolower(stripcslashes($regs[1]));
-		} elseif (preg_match("/msgstr[[:space:]]+\"(.+)\"$/i", $line, $regs) && ($type == 1 || $type == 3) && $translationKey) {
+		}elseif(preg_match("/msgstr[[:space:]]+\"(.+)\"$/i", $line, $regs) && ($type == 1 || $type == 3) && $translationKey){
 			$translations[$translationKey] = stripcslashes($regs[1]);
 			$type = 4;
-		} elseif (preg_match("/msgstr[[:space:]]+\"\"$/i", $line, $regs) && ($type == 1 || $type == 3) && $translationKey) {
+		}elseif(preg_match("/msgstr[[:space:]]+\"\"$/i", $line, $regs) && ($type == 1 || $type == 3) && $translationKey){
 			$type = 4;
 			$translations[$translationKey] = '';
-		} elseif (preg_match("/^\"(.*)\"$/i", $line, $regs) && $type == 4 && $translationKey) {
+		}elseif(preg_match("/^\"(.*)\"$/i", $line, $regs) && $type == 4 && $translationKey){
 			$translations[$translationKey] .= stripcslashes($regs[1]);
-		} elseif (preg_match("/msgid_plural[[:space:]]+\".*\"$/i", $line, $regs)) {
+		}elseif(preg_match("/msgid_plural[[:space:]]+\".*\"$/i", $line, $regs)){
 			$type = 6;
-		} elseif (preg_match("/^\"(.*)\"$/i", $line, $regs) && $type == 6 && $translationKey) {
+		}elseif(preg_match("/^\"(.*)\"$/i", $line, $regs) && $type == 6 && $translationKey){
 			$type = 6;
-		} elseif (preg_match("/msgstr\[(\d+)\][[:space:]]+\"(.+)\"$/i", $line, $regs) && ($type == 6 || $type == 7) && $translationKey) {
+		}elseif(preg_match("/msgstr\[(\d+)\][[:space:]]+\"(.+)\"$/i", $line, $regs) && ($type == 6 || $type == 7) && $translationKey){
 			$plural = $regs[1];
 			$translations[$translationKey][$plural] = stripcslashes($regs[2]);
 			$type = 7;
-		} elseif (preg_match("/msgstr\[(\d+)\][[:space:]]+\"\"$/i", $line, $regs) && ($type == 6 || $type == 7) && $translationKey) {
+		}elseif(preg_match("/msgstr\[(\d+)\][[:space:]]+\"\"$/i", $line, $regs) && ($type == 6 || $type == 7) && $translationKey){
 			$plural = $regs[1];
 			$translations[$translationKey][$plural] = '';
 			$type = 7;
-		} elseif (preg_match("/^\"(.*)\"$/i", $line, $regs) && $type == 7 && $translationKey) {
+		}elseif(preg_match("/^\"(.*)\"$/i", $line, $regs) && $type == 7 && $translationKey){
 			$translations[$translationKey][$plural] .= stripcslashes($regs[1]);
-		} elseif (preg_match("/msgstr[[:space:]]+\"(.+)\"$/i", $line, $regs) && $type == 2 && !$translationKey) {
+		}elseif(preg_match("/msgstr[[:space:]]+\"(.+)\"$/i", $line, $regs) && $type == 2 && !$translationKey){
 			$header .= stripcslashes($regs[1]);
 			$type = 5;
-		} elseif (preg_match("/msgstr[[:space:]]+\"\"$/i", $line, $regs) && !$translationKey) {
+		}elseif(preg_match("/msgstr[[:space:]]+\"\"$/i", $line, $regs) && !$translationKey){
 			$header = '';
 			$type = 5;
-		} elseif (preg_match("/^\"(.*)\"$/i", $line, $regs) && $type == 5) {
+		}elseif(preg_match("/^\"(.*)\"$/i", $line, $regs) && $type == 5){
 			$header .= stripcslashes($regs[1]);
-		} else {
+		}else{
 			unset($translations[$translationKey]);
 			$type = 0;
 			$translationKey = '';
 			$plural = 0;
 		}
-	} while (!feof($file));
+	}while(!feof($file));
 	fclose($file);
 
 	$merge[''] = $header;

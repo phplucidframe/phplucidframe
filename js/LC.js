@@ -2,12 +2,12 @@
  * This file is part of the PHPLucidFrame library.
  * Core Javascript utility
  *
- * @package		LC\js
- * @since		PHPLucidFrame v 1.0.0
- * @copyright	Copyright (c), PHPLucidFrame.
- * @author 		Sithu K. <hello@sithukyaw.com>
- * @link 		http://phplucidframe.sithukyaw.com
- * @license		http://www.opensource.org/licenses/mit-license.php MIT License
+ * @package     LC\js
+ * @since       PHPLucidFrame v 1.0.0
+ * @copyright   Copyright (c), PHPLucidFrame.
+ * @author      Sithu K. <hello@sithukyaw.com>
+ * @link        http://phplucidframe.sithukyaw.com
+ * @license     http://www.opensource.org/licenses/mit-license.php MIT License
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.txt
@@ -130,7 +130,7 @@ var Form = {
 
 		var $action = $form.attr('action');
 		if(!$action){
-			$form.attr('action', Page.url(LC.route) + 'action.php');
+			$form.attr('action', Page.url(LC.cleanRoute) + 'action.php');
 		}
 
 		if( $form.find('input[type=file]').size() ){
@@ -489,6 +489,286 @@ var Page = {
 
 // Add under the namespace "LC"
 LC.Page = Page;
+
+LC.AsynFileUploader = {
+	/** @var object Available hooks */
+	hook: {
+		/**
+		 * Hook to run just after file is uploaded
+		 * The following parameter is thrown into the hook
+		 *
+		 * @param string name           The file input element name
+		 *
+		 * @param object file           The uploaded file information
+		 * @param string file.name      The file input name
+		 * @param string file.id        The HTML id for the file browsing button
+		 * @param string file.fileName  The original file name to be displayed
+		 * @param string file.extension The uploaded file extension
+		 * @param string file.url       The actual file URL
+		 * @param string file.caption   The caption if the uploaded file is image
+		 * @param array  file.uploads   The uploaded file or files by dimensions
+		 */
+		afterUpload: function(name, file){
+			if(typeof(LC.AsynFileUploader.hooks[name]) === 'object' && typeof(LC.AsynFileUploader.hooks[name].afterUpload) === 'function'){
+				LC.AsynFileUploader.hooks[name].afterUpload(name, file);
+			}
+		},
+		/**
+		 * Hook to run just after file is deleted
+		 * The following parameter is thrown into the hook
+		 *
+		 * @param string name         The file input element name
+		 *
+		 * @param object data         The information about deletion
+		 * @param string data.name    The file input element name
+		 * @param string data.success TRUE if file deletion succeeded; otherwise FALSE
+		 * @param string data.error   The error message if file deletion failed
+		 * @param string data.ids     Array of IDs deleted from DB
+		 * @param string data.files   Array of file names deleted from hard drive
+		 */
+		afterDelete: function(name, data){
+			if(typeof(LC.AsynFileUploader.hooks[name]) === 'object' && typeof(LC.AsynFileUploader.hooks[name].afterDelete) === 'function'){
+				LC.AsynFileUploader.hooks[name].afterDelete(name, data);
+			}
+		},
+		/**
+		 * Hook to run when the file upload fails with error
+		 *
+		 * @param string name  The file input element name
+		 *
+		 * @param object error       The error object
+		 * @param string error.id    The HTML ID which is generally given the validation key option in PHP
+		 * @param string error.plain The error message in plain format
+		 * @param string error.html  The error message in HTML format
+		 */
+		onError: function(name, error){
+			if(typeof(LC.AsynFileUploader.hooks[name]) === 'object' && typeof(LC.AsynFileUploader.hooks[name].onError) === 'function'){
+				LC.AsynFileUploader.hooks[name].onError(name, error);
+			}else{
+				$('#asynfileuploader-error-' + name).html(error.html);
+				$('#asynfileuploader-error-' + name).show();
+			}
+		}
+	},
+	/**
+	 * @var array User-defined hooks by file input name that can be defined using `LC.AsynFileUploader.addHook()`
+	 *    The available hooks are `afterUpload`, `afterDelete`, `onError`
+	 * @see `LC.AsynFileUploader.hook` and `LC.AsynFileUploader.addHook()`
+	 */
+	hooks: [],
+	/** @var array The file extensions allowed for image preview */
+	previewAllowedExtensions: ['jpg', 'jpeg', 'png', 'gif'],
+	/** @var boolean Flag if the delete process is still in progress or not */
+	deleteInProgress: false,
+	/** @var string The original HTML preview element */
+	originalPreview: {
+		content: null,
+		width: 'auto',
+		aRel: '',
+		aTarget: ''
+	},
+	/**
+	 * Initialization
+	 * @param string name The name of the file input
+	 */
+	init: function(name){
+		var $button       = $('#asynfileuploader-' + name + ' .button');
+		var $progress     = $('#asynfileuploader-progress-' + name);
+		var $iframe       = $('#asynfileuploader-frame-' + name);
+		var borderTop     = parseInt($button.css('borderTopWidth'));
+		var borderBottom  = parseInt($button.css('borderBottomWidth'));
+
+		borderTop     = isNaN(borderTop) ? 0 : borderTop;
+		borderBottom  = isNaN(borderBottom) ? 0 : borderBottom;
+
+		$progress.width($button.width());
+		$progress.height($button.height() + borderTop + borderBottom);
+		$iframe.width($button.width());
+		$iframe.height($button.height() + borderTop + borderBottom);
+
+		$('#asynfileuploader-delete-' +name + ' a').click(function(){
+			LC.AsynFileUploader.delete($(this));
+		});
+
+		$('#asynfileuploader-error-' + name).click(function(){
+			$(this).slideUp(function(){
+				$(this).html('');
+			});
+		});
+	},
+	/**
+	 * Do the image preview if there is a placeholder found
+	 * @param object file           The uploaded file information
+	 * @param string file.name      The file input name
+	 * @param string file.id        The HTML id for the file browsing button
+	 * @param string file.fileName  The original file name to be displayed
+	 * @param string file.extension The uploaded file extension
+	 * @param string file.url       The actual file URL
+	 * @param string file.caption   The caption if the uploaded file is image
+	 * @param array  file.uploads   The uploaded file or files by dimensions
+	 *
+	 * OR
+	 *
+	 * @param string file The file input name
+	 */
+	preview: function(file){
+		if(typeof(file) === 'object'){
+			var $preview   = $('#' + file.name + '-preview');
+			var $hyperLink = $preview.parent();
+			var $content   = '<div class="thumbnail-preview-ext">' + file.extension + '</div>';
+			if($preview.size()) {
+				if(LC.AsynFileUploader.originalPreview.content === null){
+					LC.AsynFileUploader.originalPreview.content = $preview.html();
+					LC.AsynFileUploader.originalPreview.width = $preview.width();
+					if($hyperLink.is('a')){
+						LC.AsynFileUploader.originalPreview.aRel = $hyperLink.attr('rel');
+						LC.AsynFileUploader.originalPreview.aTarget = $hyperLink.attr('target');
+					}
+				}
+
+				if($.inArray(file.extension.toLowerCase(), LC.AsynFileUploader.previewAllowedExtensions) !== -1){
+					$content = '<img src="' + file.url + '" alt="' + file.fileName + '" title="' + file.fileName + '" height="' + $preview.height() + '" />';
+				}
+
+				if($hyperLink.is('a')){
+					$hyperLink.attr('href', file.url);
+					$hyperLink.attr('rel', file.url);
+					if(!$hyperLink.attr('target')){
+						$hyperLink.attr('target', '_blank');
+					}
+				}else{
+					$content = '<a href="' + file.url + '" rel="' + file.url + '" target="_blank">' + $img + '</a>';
+				}
+
+				$preview.html($content);
+
+				var $img = $preview.find('img');
+				if($img.size()){
+					$img.load(function(){
+						if($img.width() > LC.AsynFileUploader.originalPreview.width){
+							$img.css('margin-left', Math.floor(($img.width() - LC.AsynFileUploader.originalPreview.width) / 2) * -1);
+						}
+					});
+				}
+			}
+			$('#asynfileuploader-delete-' + file.name).show();
+		}else{
+			var $preview = $('#' + file + '-preview');
+			var $hyperLink = $preview.parent();
+			if($preview.size()) {
+				$preview.html(LC.AsynFileUploader.originalPreview.content);
+				if($hyperLink.is('a')){
+					$hyperLink.attr('href', '#');
+					if(LC.AsynFileUploader.originalPreview.aRel){
+						$hyperLink.attr('rel', LC.AsynFileUploader.originalPreview.aRel);
+					}else{
+						$hyperLink.removeAttr('rel');
+					}
+					if(LC.AsynFileUploader.originalPreview.aTarget){
+						$hyperLink.attr('target', LC.AsynFileUploader.originalPreview.aTarget);
+					}else{
+						$hyperLink.removeAttr('target');
+					}
+				}
+			}
+			$('#asynfileuploader-delete-' + file.name).hide();
+		}
+	},
+	/**
+	 * Run just after file is uploaded
+	 * doing the image preview and run custom hook if defined
+	 * @param object file           The uploaded file information
+	 * @param string file.name      The file input name
+	 * @param string file.id        The HTML id for the file browsing button
+	 * @param string file.fileName  The original file name to be displayed
+	 * @param string file.extension The uploaded file extension
+	 * @param string file.url       The actual file URL
+	 * @param string file.caption   The caption if the uploaded file is image
+	 * @param array  file.uploads   The uploaded file or files by dimensions
+	 */
+	onUpload: function(file) {
+		LC.AsynFileUploader.preview(file);
+		LC.AsynFileUploader.hook.afterUpload(file.name, file);
+	},
+	/**
+	 * POST to server to unlink the files
+	 * @param object trigger The HTML element that is clicked by user to delete file.
+	 */
+	delete: function(trigger){
+		// prevent asynchronous clicks
+		if(LC.AsynFileUploader.deleteInProgress === true){
+			return false;
+		}
+
+		var name      = $(trigger).parent().attr('id').replace(/asynfileuploader-delete-/i, '');
+		var url       = $('iframe#asynfileuploader-frame-' + name).attr('src').split('?')[0] || '';
+		var hook      = $(trigger).attr('rel');
+		var ids       = [];
+		var fileNames = [];
+
+		// prerequisites
+		if( !(url && name) ){
+			return false;
+		}
+
+		LC.AsynFileUploader.deleteInProgress = true;
+		// Get ids and file names
+		// ids to delete from db
+		// fileNames to unlink
+		$('#asynfileuploader-value-' + name + ' input[name^="' + name + '"]').each(function(i, elem){
+			if($(elem).attr('name').indexOf('-id[]') !== -1){
+				ids.push($(elem).val());
+			}else{
+				fileNames.push($(elem).val());
+			}
+		});
+
+		$('#asynfileuploader-error-' + name).html('').hide();
+		$('#asynfileuploader-button-' + name).hide();
+		$('#asynfileuploader-progress-' + name).show();
+
+		$.post(url, {
+			action: 'delete',
+			name: name,
+			ids: (ids.length) ? ids : '',
+			files: (fileNames) ? fileNames : '',
+			dir: $('input[name="' + name + '-dir"]').val(),
+			onDelete: hook
+		}, function(data) {
+			if(data.success){
+				// hide the displayed file name and the delete button
+				$('#asynfileuploader-name-' + name).hide();
+				$('#asynfileuploader-delete-' + name).hide();
+				// clear the values
+				$('#' + name + '-fileName').val();
+				$('#' + name + '-uniqueId').val();
+				$('#asynfileuploader-value-' + name).html('<input type="hidden" name="' + name + '" value="" />');
+				// cancel preview if image
+				LC.AsynFileUploader.preview(name);
+			}else{
+				alert(data.error);
+			}
+			$('#asynfileuploader-button-' + name).show();
+			$('#asynfileuploader-progress-' + name).hide();
+			LC.AsynFileUploader.deleteInProgress = false;
+			LC.AsynFileUploader.hook.afterDelete(name, data);
+		}, 'json');
+	},
+	/**
+	 * Define user-defined hook
+	 * @param string   name The file input element name
+	 * @param string   hook The hook name: `afterUpload`, `afterDelete` or `onError`
+	 * @param function func The function definition
+	 */
+	addHook: function(name, hook, func){
+		if($.inArray($.trim(hook), ['afterUpload', 'afterDelete', 'onError']) !== -1){
+			if(typeof(LC.AsynFileUploader.hooks[name]) === 'undefined'){
+				LC.AsynFileUploader.hooks[name] = [];
+			}
+			LC.AsynFileUploader.hooks[name][hook] = func;
+		}
+	}
+};
 
 $(document).ready( function(){
 	LC.Page.initialize();

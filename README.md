@@ -31,6 +31,7 @@ Although it is stated as mini framework, it supports a wide range of web applica
 - Rename it as **LucidFrame** or your project name.
 - Copy `/inc/config.default.php` and rename it to `/inc/config.php`
 - Copy `/inc/site.config.default.php` and rename it to `/inc/site.config.php`.
+- (Optional) Copy `/inc/tpl/head.php` to `/app/inc/tpl/head.php` if you want to update it.
 - Check `http://localhost/LucidFrame` or `http://localhost/YourProjectName` in your browser.
 
 **Note:** If you have your own project folder name other than **LucidFrame**, you should change `$lc_baseURL` in `/inc/config.php` in accordance with your project name.
@@ -39,11 +40,11 @@ Although it is stated as mini framework, it supports a wide range of web applica
 
 You can also install LucidFrame using [Composer](http://getcomposer.org/).
 
-    composer require lucidframe/phplucidframe:~1.2.0
+    composer require lucidframe/phplucidframe:~1.3.0
 
 OR
 
-	php composer.phar require lucidframe/phplucidframe:~1.2.0
+    php composer.phar require lucidframe/phplucidframe:~1.3.0
 
 ## Furthermore on Installation
 
@@ -65,7 +66,7 @@ In this case, you have to set and leave `$lc_baseURL` empty.
 
 By default, LucidFrame has home page routing which is defined as `$lc_homeRouting` in `/inc/config.php`. It maps to `/app/home/index.php`. You could have `home.php` or `welcome.php` or whatever you like. However, LucidFrame encourages a structured page organization. You can check the sample page folders and codes in the application folder`/app` of the release.
 
-You can also configure the other settings in `/inc/config.php` and `/inc/site.config.php` according to your requirement.
+You can also configure the other settings in `/inc/config.php` and `/inc/site.config.php` or `/app/inc/site.config.php` according to your requirement.
 
 You can generate the application secret `/inc/.secret` at [phplucidframe.sithukyaw.com/hash-generator](http://phplucidframe.sithukyaw.com/hash-generator).
 

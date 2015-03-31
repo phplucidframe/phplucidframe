@@ -7,18 +7,20 @@
  * Database, Session, loading additional configuration files.
  * This file includes the resources that provide global functions/constants that your application uses.
  *
- * @package		LC
- * @since		PHPLucidFrame v 1.0.0
- * @copyright	Copyright (c), PHPLucidFrame.
- * @author 		Sithu K. <hello@sithukyaw.com>
- * @link 		http://phplucidframe.sithukyaw.com
- * @license		http://www.opensource.org/licenses/mit-license.php MIT License
+ * @package     LC
+ * @since       PHPLucidFrame v 1.0.0
+ * @copyright   Copyright (c), PHPLucidFrame.
+ * @author      Sithu K. <hello@sithukyaw.com>
+ * @link        http://phplucidframe.sithukyaw.com
+ * @license     http://www.opensource.org/licenses/mit-license.php MIT License
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.txt
  */
 
-define('APP_DIR', 'app');
+if( !defined('APP_DIR') ){
+	define('APP_DIR', 'app');
+}
 define('_DS_', DIRECTORY_SEPARATOR);
 
 if( !defined('APP_ROOT') ){
@@ -39,21 +41,21 @@ if(strcasecmp(APP_ROOT, ROOT) === 0){
 }
 
 # path to inc/ folder
-define('INC', ROOT.'inc/');
+define('INC', ROOT.'inc'._DS_);
 # path to helpers/ folder
-define('HELPER', ROOT.'helpers/');
+define('HELPER', ROOT.'helpers'._DS_);
 # path to i18n/ folder
-define('I18N', ROOT.'i18n/');
+define('I18N', ROOT.'i18n'._DS_);
 # path to vendor/ folder
-define('VENDOR', ROOT.'vendor/');
+define('VENDOR', ROOT.'vendor'._DS_);
 # path to business/ folder
-define('BUSINESS', ROOT.'business/');
+define('BUSINESS', ROOT.'business'._DS_);
 # path to files/ folder
-define('FILE', ROOT.'files/');
+define('FILE', ROOT.'files'._DS_);
 # path to images/ folder
-define('IMAGE', ROOT.'images/');
+define('IMAGE', ROOT.'images'._DS_);
 # path to files/cache filder
-define('CACHE', FILE.'cache/');
+define('CACHE', FILE.'cache'._DS_);
 
 # System prerequisites
 require_once INC . 'lc.inc';
@@ -133,6 +135,7 @@ if( $moduleForm = _readyloader('form_helper') ) require_once $moduleForm;
 _unloader('form_helper', HELPER);
 
 # File helper (unloadable from /inc/autoload.php)
+if( $file = _i( 'helpers/file_helper.php', false) ) include_once $file;
 if( $moduleFile = _readyloader('file_helper') ) require_once $moduleFile;
 _unloader('file_helper', HELPER);
 

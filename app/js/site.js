@@ -24,7 +24,7 @@ LC.Page.Home = { /* just example */
 }
 
 LC.Page.Blog = {
-	url : LC.Page.url('blog'), /* mapping directory */
+	url : LC.Page.url('example/blog'), /* mapping directory */
 	/* Initialization of the blog page */
 	init : function(){
 		LC.Page.Blog.list();
