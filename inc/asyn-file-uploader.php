@@ -33,7 +33,7 @@ if(count($_POST) && isset($_POST['action']) && $_POST['action'] === 'delete' && 
 			$files[] = $file;
 		}
 		// invoke custom delete hook (if any)
-		if($post['onDelete']){
+		if($post['onDelete'] && function_exists($post['onDelete'])){
 			call_user_func($post['onDelete'], $post['ids']);
 		}
 	}
