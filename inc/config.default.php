@@ -41,6 +41,25 @@ define('ROUTE', 'route');
  * All session variable names will be prefixed with this
  */
 define('S_PREFIX', '__LucidFrame__');
+
+# $lc_env: The setting for running environment: `development` or `production`
+$lc_env = 'development';
+# $lc_debugLevel: The debug level. If $lc_env = 'production', this is not considered.
+# `1` - show fatal errors, parse errors, but no PHP startup errors
+# `2` - show fatal errors, parse errors, warnings and notices
+# `3` - show all errors and warnings, except of level E_STRICT prior to PHP 5.4.0.
+# `int level` - set your own error reporting level. The parameter is either an integer representing a bit field, or named constants
+#  @see http://php.net/manual/en/errorfunc.configuration.php#ini.error-reporting
+$lc_debugLevel = 3;
+
+# $lc_siteName: Site Name
+$lc_siteName = 'LucidFrame';
+# $lc_baseURL: No trailing slash (only if it is located in a sub-directory)
+# Leave blank if it is located in the document root
+$lc_baseURL = 'LucidFrame';
+# $lc_siteDomain: Site Domain Name
+$lc_siteDomain = $_SERVER['HTTP_HOST'];
+
 /**
  * Session configuration.
  *
@@ -86,25 +105,9 @@ $lc_databases = array(
 		'collation'	=> 'utf8_general_ci'
 	)
 );
-
-# $lc_env: The setting for running environment: `development` or `production`
-$lc_env = 'development';
-# $lc_debugLevel: The debug level. If $lc_env = 'production', this is not considered.
-# `1` - show fatal errors, parse errors, but no PHP startup errors
-# `2` - show fatal errors, parse errors, warnings and notices
-# `3` - show all errors and warnings, except of level E_STRICT prior to PHP 5.4.0.
-# `int level` - set your own error reporting level. The parameter is either an integer representing a bit field, or named constants
-#  @see http://php.net/manual/en/errorfunc.configuration.php#ini.error-reporting
-$lc_debugLevel = 3;
 # $lc_defaultDbConnection: The default database connection
 $lc_defaultDbConnection = 'default';
-# $lc_siteName: Site Name
-$lc_siteName = 'LucidFrame';
-# $lc_siteDomain: Site Domain Name
-$lc_siteDomain = $_SERVER['HTTP_HOST'];
-# $lc_baseURL: No trailing slash (only if it is located in a sub-directory)
-# Leave blank if it is located in the document root
-$lc_baseURL = 'LucidFrame';
+
 # $lc_sites: consider sub-directories as additional site roots and namespaces
 /**
  * ### Syntax
