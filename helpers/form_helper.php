@@ -156,6 +156,24 @@ class Form{
 		}
 	}
 	/**
+	 * Permits you to set the value to a rich text editor or any input where HTML source is required to be rendered.
+	 * Allows you to safely use HTML and characters such as quotes within form elements without breaking out of the form
+	 *
+	 * @param string $name The input element field name
+	 * @param mixed $defaultValue The default value of the input element (optional)
+	 *
+	 * @return mixed The value of the input element
+	 */
+	public static function htmlValue($name, $defaultValue=NULL){
+		if(count($_POST)){
+			if(!isset($_POST[$name])) return '';
+			$value = _xss($_POST[$name]);
+			return _h($value);
+		}else{
+			return _h($defaultValue);
+		}
+	}
+	/**
 	 * Allow you to select the option of a drop-down list.
 	 *
 	 * @param string $name The field name of the drop-down list
