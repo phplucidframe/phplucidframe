@@ -52,7 +52,7 @@ if(!empty($_page) && file_exists($_page)){
 		include( _i('inc/tpl/'.$matches[2].'.php') );
 	}else{
 		$_page = route_search();
-		if($_page){
+		if($_page && is_file($_page) && file_exists($_page)){
 			include $_page;
 		}else{
 			include( _i('inc/tpl/404.php') );
