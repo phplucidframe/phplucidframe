@@ -587,7 +587,7 @@ LC.AsynFileUploader = {
 		$iframe.height($button.height() + borderTop + borderBottom);
 
 		$('#asynfileuploader-delete-' +name + ' a').click(function(){
-			LC.AsynFileUploader.delete($(this));
+			LC.AsynFileUploader.deleteFile($(this));
 		});
 
 		$('#asynfileuploader-error-' + name).click(function(){
@@ -694,7 +694,7 @@ LC.AsynFileUploader = {
 	 * POST to server to unlink the files
 	 * @param object trigger The HTML element that is clicked by user to delete file.
 	 */
-	delete: function(trigger){
+	deleteFile: function(trigger){
 		// prevent asynchronous clicks
 		if(LC.AsynFileUploader.deleteInProgress === true){
 			return false;
