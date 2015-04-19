@@ -572,7 +572,7 @@ LC.AsynFileUploader = {
 	 * @param string name The name of the file input
 	 */
 	init: function(name){
-		var $button       = $('#asynfileuploader-' + name + ' .button');
+		var $button       = $('#asynfileuploader-' + name + ' .asynfileuploader-button');
 		var $progress     = $('#asynfileuploader-progress-' + name);
 		var $iframe       = $('#asynfileuploader-frame-' + name);
 		var borderTop     = parseInt($button.css('borderTopWidth'));
