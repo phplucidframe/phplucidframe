@@ -88,7 +88,7 @@ var Form = {
 	 * IE placeholder attribute fix
 	 */
 	placeholderIE : function(){
-		if($.browser.msie && $.browser.version <= 8.0 ){
+		if($('html').hasClass('ie7') || $('html').hasClass('ie8')){
 			$inputs = $('[placeholder]');
 			$inputs.focus(function() {
 				var input = $(this);
