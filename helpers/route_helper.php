@@ -158,7 +158,7 @@ function route_search(){
 	}
 
 	$path = implode('/', $seg);
-	if(file_exists($path)){
+	if(is_file($path) && file_exists($path)){
 		if(count($seg) > 1){
 			_cfg('cleanRoute', implode('/', array_slice($seg, 0, count($seg)-1)));
 		}else{
@@ -175,7 +175,7 @@ function route_search(){
 		foreach($append as $a){
 			$cleanRoute = implode('/', array_slice($seg, 0, $i));
 			$path = $cleanRoute . $a;
-			if(file_exists($path)){
+			if(is_file($path) && file_exists($path)){
 				_cfg('cleanRoute', rtrim($cleanRoute, '/'));
 				return $path;
 			}

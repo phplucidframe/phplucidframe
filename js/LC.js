@@ -88,7 +88,7 @@ var Form = {
 	 * IE placeholder attribute fix
 	 */
 	placeholderIE : function(){
-		if($.browser.msie && $.browser.version <= 8.0 ){
+		if($('html').hasClass('ie7') || $('html').hasClass('ie8')){
 			$inputs = $('[placeholder]');
 			$inputs.focus(function() {
 				var input = $(this);
@@ -572,7 +572,7 @@ LC.AsynFileUploader = {
 	 * @param string name The name of the file input
 	 */
 	init: function(name){
-		var $button       = $('#asynfileuploader-' + name + ' .button');
+		var $button       = $('#asynfileuploader-' + name + ' .asynfileuploader-button');
 		var $progress     = $('#asynfileuploader-progress-' + name);
 		var $iframe       = $('#asynfileuploader-frame-' + name);
 		var borderTop     = parseInt($button.css('borderTopWidth'));
@@ -587,7 +587,7 @@ LC.AsynFileUploader = {
 		$iframe.height($button.height() + borderTop + borderBottom);
 
 		$('#asynfileuploader-delete-' +name + ' a').click(function(){
-			LC.AsynFileUploader.delete($(this));
+			LC.AsynFileUploader.deleteFile($(this));
 		});
 
 		$('#asynfileuploader-error-' + name).click(function(){
@@ -694,7 +694,7 @@ LC.AsynFileUploader = {
 	 * POST to server to unlink the files
 	 * @param object trigger The HTML element that is clicked by user to delete file.
 	 */
-	delete: function(trigger){
+	deleteFile: function(trigger){
 		// prevent asynchronous clicks
 		if(LC.AsynFileUploader.deleteInProgress === true){
 			return false;

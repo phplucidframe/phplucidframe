@@ -153,7 +153,7 @@ if(count($_FILES)){
 			'html' => _msg(Validation::$errors, 'error', 'html')
 		);
 		$existingFiles = $post[$name];
-		if(is_array($existingFiles) && count($existingFiles)){
+		if(is_array($existingFiles) && count($existingFiles) && $existingFiles[0]){
 			$data['filesUploaded'] = $existingFiles;
 		}
 	}
@@ -171,31 +171,32 @@ if(count($_FILES)){
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>AsyncFileUploader</title>
 	<script language="javascript">
-		var parent = window.parent;
-		var d = window.parent.document;
+		var parent = window.top;
+		var $ = window.top.jQuery;
 		var interval = null;
-		var data = <?php echo json_encode($data); ?>
+		var data = <?php echo json_encode($data); ?>;
 
 		function startAutoUpload(){
 			if(interval) clearTimeout(interval);
 			interval = setTimeout( function(){
-				d.getElementById(data.id).style.display   = 'none';
-				d.getElementById('asynfileuploader-progress-' + data.name).style.display = 'block';
-				d.getElementById('asynfileuploader-delete-' + data.name).style.display = 'none';
-				d.getElementById('asynfileuploader-error-' + data.name).innerHTML = '';
-				d.getElementById('asynfileuploader-error-' + data.name).style.display = 'none';
-				if(d.getElementById('asynfileuploader-name-' + data.name)){
-					d.getElementById('asynfileuploader-name-' + data.name).style.display = 'none';
+				$(data.id).hide();
+				$('#asynfileuploader-progress-' + data.name).show();
+				$('#asynfileuploader-delete-' + data.name).hide();
+				$('#asynfileuploader-error-' + data.name).html('');
+				$('#asynfileuploader-error-' + data.name).hide();
+				if($('#asynfileuploader-name-' + data.name).size()){
+					$('#asynfileuploader-name-' + data.name).hide();
 				}
 				if(data.disabledButtons.length){
-					data.disabledButtons.forEach(function(button){
-						if(d.getElementById(button)){
-							d.getElementById(button).disabled = true;
+					for(var i=0; i<data.disabledButtons.length; i++){
+						var $button = $('#'+data.disabledButtons[i]);
+						if($button.size()){
+							$button.attr('disabled', 'disabled');
 						}
-					});
+					}
 				}
 				// post the existing files if any
-				document.getElementById('asynfileuploader-value-' + data.name).innerHTML = d.getElementById('asynfileuploader-value-' + data.name).innerHTML;
+				$('#asynfileuploader-value-' + data.name).html($('#asynfileuploader-value-' + data.name).html());
 				// submit the upload form
 				document.fileupload.submit();
 			}, 1000 );
@@ -214,16 +215,16 @@ if(count($_FILES)){
 </html>
 <script type="text/javascript">
 	// Progress off
-	d.getElementById(data.id).style.display = 'inline-block';
-	d.getElementById('asynfileuploader-progress-' + data.name).style.display = 'none';
+	$('#'+data.id).css('display', 'inline-block');
+	$('#asynfileuploader-progress-' + data.name).hide();
 	if(data.success){
-		if(d.getElementById('asynfileuploader-name-' + data.name)){
-			d.getElementById('asynfileuploader-name-' + data.name).innerHTML = '<a href="' + data.displayFileLink + '" target="_blank">' + data.displayFileName + '</a>';
-			d.getElementById('asynfileuploader-name-' + data.name).style.display = 'inline-block';
+		if($('#asynfileuploader-name-' + data.name)){
+			$('#asynfileuploader-name-' + data.name).html('<a href="' + data.displayFileLink + '" target="_blank">' + data.displayFileName + '</a>');
+			$('#asynfileuploader-name-' + data.name).css('display', 'inline-block');
 		}
 		// POSTed values
-		d.getElementById('asynfileuploader-fileName-' + data.name).value = data.displayFileName;
-		d.getElementById('asynfileuploader-uniqueId-' + data.name).value = data.uniqueId;
+		$('#asynfileuploader-fileName-' + data.name).val(data.displayFileName);
+		$('#asynfileuploader-uniqueId-' + data.name).val(data.uniqueId);
 		// The file uploaded or The array of files uploaded
 		var inputs = '';
 		if(data.filesUploaded.length === 0){
@@ -231,18 +232,21 @@ if(count($_FILES)){
 			inputs += '<input type="hidden" name="' + data.name + '" value="" />';
 		}else{
 			// multiple files uploaded in the case of image by dimensions
-			data.filesUploaded.forEach(function(fname){
+			for(var i=0; i<data.filesUploaded.length; i++){
+				var fname = data.filesUploaded[i];
 				inputs += '<input type="hidden" name="' + data.name + '[]" value="' + fname + '" />';
-			});
-			data.dimensions.forEach(function(dimension){
+			}
+			for(var i=0; i<data.dimensions.length; i++){
+				var dimension = data.dimensions[i];
 				inputs += '<input type="hidden" name="' + data.name + '-dimensions[]" value="' + dimension + '" />';
-			});
+			}
 			// if there are IDs saved in database related to the uploaded files
-			data.savedIds.forEach(function(id){
+			for(var i=0; i<data.savedIds.length; i++){
+				var id = data.savedIds[i];
 				inputs += '<input type="hidden" name="' + data.name + '-id[]" value="' + id + '" />';
-			});
+			}
 		}
-		d.getElementById('asynfileuploader-value-' + data.name).innerHTML= inputs;
+		$('#asynfileuploader-value-' + data.name).html(inputs);
 		// run hook
 		window.parent.LC.AsynFileUploader.onUpload({
 			name:       data.name,
@@ -260,18 +264,19 @@ if(count($_FILES)){
 		}
 		if(data.filesUploaded.length){
 			// if there is any file uploaded previously
-			d.getElementById('asynfileuploader-delete-' + data.name).style.display = 'inline-block';
-			if(d.getElementById('asynfileuploader-name-' + data.name)){
-				d.getElementById('asynfileuploader-name-' + data.name).style.display = 'inline-block';
+			$('#asynfileuploader-delete-' + data.name).css('display', 'inline-block');
+			if($('#asynfileuploader-name-' + data.name).size()){
+				$('#asynfileuploader-name-' + data.name).css('display', 'inline-block');
 			}
 		}
 	}
 	// re-enable buttons
 	if(data.disabledButtons.length){
-		data.disabledButtons.forEach(function(button){
-			if(d.getElementById(button)){
-				d.getElementById(button).disabled = false;
+		for(var i=0; i<data.disabledButtons.length; i++){
+			var $button = $('#'+data.disabledButtons[i]);
+			if($button.size()){
+				$button.attr('disabled', 'disabled');
 			}
-		});
+		}
 	}
 </script>
