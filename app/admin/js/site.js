@@ -60,8 +60,6 @@ LC.Page.Category = {
 	url : LC.Page.url('admin/category'), /* mapping directory */
 	/* Initialize the Category page */
 	init : function(){
-		/* Load list */
-		LC.Page.Category.list();
 		/* delete confirmation */
 		$( "#dialog-confirm" ).dialog({
 			modal: true,
@@ -90,6 +88,9 @@ LC.Page.Category = {
 		$( "#btnNew" ).click(function(){
 			LC.Page.Category.create();
 		});
+
+		/* Load list */
+		LC.Page.Category.list();
 	},
 	/* Load the list */
 	list : function(param){
@@ -152,8 +153,6 @@ LC.Page.User = {
 		url : LC.Page.url('admin/user/list'), /* mapping directory */
 		/* Initialize the page */
 		init : function(){
-			/* Load list */
-			LC.Page.User.List.list();
 			/* delete confirmation */
 			$( "#dialog-confirm" ).dialog({
 				modal: true,
@@ -186,6 +185,8 @@ LC.Page.User = {
 			$( "#btnNew" ).click(function(){
 				window.location = LC.Page.url('admin/user/setup');
 			});
+			/* Load list */
+			LC.Page.User.List.list();
 		},
 		/* Load the list */
 		list : function(param){

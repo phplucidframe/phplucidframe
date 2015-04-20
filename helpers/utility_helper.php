@@ -224,25 +224,40 @@ function _addvar($name, $value=''){
  * @param string $file An absolute file path or just file name.
  *  The file name only will be prepended the folder name js/ and it will be looked in every sub-sites "js" folder
  *
- * @return void
+ * @return boolean True
  */
 function _js($file){
 	if( stripos($file, 'http') === 0 ){
-		echo '<script src="'. $file .'" type="text/javascript"></script>';
-		return;
+		echo '<script src="' . $file . '" type="text/javascript"></script>';
+		return true;
 	}
-	$file = 'js/'.$file;
-	$file = _i($file);
-	if( stripos($file, 'http') === 0 ){
-		$fileWithSystemPath = str_replace(WEB_ROOT, ROOT, $file);
+
+	if( stripos($file, 'jquery-ui') === 0 ){
+		$file = (stripos($file, '.js') !== false) ? $file : 'jquery-ui.min.js';
+		echo '<script src="'. WEB_ROOT . 'js/vendor/jquery-ui/' . $file . '" type="text/javascript"></script>';
+		return true;
+	}
+
+	if( stripos($file, 'jquery') === 0 ){
+		$file = (stripos($file, '.js') !== false) ? $file : 'jquery.min.js';
+		echo '<script src="'. WEB_ROOT . 'js/vendor/jquery/' . $file . '" type="text/javascript"></script>';
+		return true;
+	}
+
+	$includeFile = 'js/' . $file;
+	$includeFile = _i($includeFile);
+	if( stripos($includeFile, 'http') === 0 ){
+		$fileWithSystemPath = str_replace(WEB_ROOT, ROOT, $includeFile);
 		if(file_exists($fileWithSystemPath)){
-			echo '<script src="'. $file .'" type="text/javascript"></script>';
-		}
-	}else{
-		if(file_exists(ROOT.'js/'.$file)){
-			echo '<script src="'. WEB_ROOT . 'js/' . $file .'" type="text/javascript"></script>';
+			echo '<script src="' . $includeFile . '" type="text/javascript"></script>';
+			return true;
 		}
 	}
+
+	if( file_exists(ROOT . 'js/' . $file) ){
+		echo '<script src="'. WEB_ROOT . 'js/' . $file . '" type="text/javascript"></script>';
+	}
+	return true;
 }
 /**
  * CSS file include helper
@@ -254,21 +269,29 @@ function _js($file){
  */
 function _css($file){
 	if( stripos($file, 'http') === 0 ){
-		echo '<link href="'. $file .'" rel="stylesheet" type="text/css" />';
-		return;
+		echo '<link href="' . $file . '" rel="stylesheet" type="text/css" />';
+		return true;
 	}
-	$file = 'css/'.$file;
-	$file = _i($file);
-	if( stripos($file, 'http') === 0 ){
+
+	if( stripos($file, 'jquery-ui') === 0 ){
+		echo '<link href="' . WEB_ROOT . 'js/vendor/jquery-ui/jquery-ui.min.css" rel="stylesheet" type="text/css" />';
+		return true;
+	}
+
+	$includeFile = 'css/' . $file;
+	$includeFile = _i($includeFile);
+	if( stripos($includeFile, 'http') === 0 ){
 		$fileWithSystemPath = str_replace(WEB_ROOT, ROOT, $file);
 		if(file_exists($fileWithSystemPath)){
-			echo '<link href="'. $file .'" rel="stylesheet" type="text/css" />';
-		}
-	}else{
-		if(file_exists(ROOT.'css/'.$file)){
-			echo '<link href="'. WEB_ROOT . 'css/' . $file .'" rel="stylesheet" type="text/css" />';
+			echo '<link href="' . $file . '" rel="stylesheet" type="text/css" />';
+			return true;
 		}
 	}
+
+	if(file_exists(ROOT . 'css/' . $file)){
+		echo '<link href="' . WEB_ROOT . 'css/' . $file . '" rel="stylesheet" type="text/css" />';
+	}
+	return true;
 }
 /**
  * Get the absolute image file name
