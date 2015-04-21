@@ -147,7 +147,7 @@
 			$.ajax({
 				type: "POST",
 				url: url,
-				dataType: 'script',
+				dataType: 'json',
 				data: values,
 				success: Form.submitHandler
 			});
@@ -158,12 +158,11 @@
 		 * LC.Form.submitHandler()
 		 * Ajax form submit handling
 		 */
-		submitHandler : function(){
-			if(arguments.length == 1) response = arguments[0];
-			if(typeof response == 'object'){
-				var $form 	 = $('#'+response.formId);
+		submitHandler : function(response, status, xhr){
+			if(response){
+				var $form  = $('#'+response.formId);
 				var $message = $form.find('.message').filter(':first');
-				if(response.error){
+				if(response.error && response.error.length > 0){
 					var errHtml = '<ul>';
 					$.each( response.error, function(i, err){
 						if(err.htmlID){
