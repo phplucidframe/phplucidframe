@@ -360,7 +360,7 @@ class Pager{
 				echo '</a>';
 				echo '</'.$this->childTag.'>';
 			}else{
-				'<'.$this->childTag.' class="last-disabled">';
+				echo '<'.$this->childTag.' class="last-disabled">';
 				if($imagePath){
 					echo '<img border="0" src="'.$imagePath.'end_disabled.png" />';
 				}else{
