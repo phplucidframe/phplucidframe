@@ -15,10 +15,13 @@
 	<li>MySQL 5.0+ with MySQLi enabled.</li>
 </ul>
 <p>
-	<a href="http://phplucidframe.sithukyaw.com" class="button green">Download LucidFrame</a>
+	<a href="http://phplucidframe.sithukyaw.com" class="button large green">Download LucidFrame</a>
+</p>
+<p>
 	<a href="<?php echo _url('example/blog'); ?>" class="button">AJAX List Example</a>
 	<a href="<?php echo _url('example/articles'); ?>" class="button">Ordinary List Example</a>
-	<a href="<?php echo _url('blog/2/url-rewrite-to-a-lucid-page-including-a-form-example'); ?>" class="button">AJAX Form Example</a>
+	<a href="<?php echo _url('blog/2/url-rewrite-to-a-lucid-page-including-a-form-example'); ?>" class="button green">AJAX Form Example</a>
+	<a href="<?php echo _url('example/comment'); ?>" class="button green">Generic Form Example</a>
 	<a href="<?php echo _url('example/asyn-file-uploader'); ?>" class="button black">AsynFileUploader Example</a>
 </p>
 
