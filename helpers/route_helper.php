@@ -230,15 +230,19 @@ function route_url($path=NULL, $queryStr=array(), $lang=''){
 	if($lang === false) $forceExcludeLangInURL = true;
 	else $forceExcludeLangInURL = false;
 
-	if(strtolower($path) == 'home'){
-		if(isset($GLOBALS['lc_homeRouting']) && $GLOBALS['lc_homeRouting']) $path = $GLOBALS['lc_homeRouting'];
-	}
-
-	if($path && is_string($path)){
-		$path = rtrim($path, '/');
+	if( stripos($path, 'http') === 0 ){
+		return $path;
 	}else{
-		$r = (_isRewriteRule()) ? REQUEST_URI : route_path();
-		$path = route_updateQueryStr($r, $queryStr);
+		if(strtolower($path) == 'home'){
+			if(isset($GLOBALS['lc_homeRouting']) && $GLOBALS['lc_homeRouting']) $path = $GLOBALS['lc_homeRouting'];
+		}
+
+		if($path && is_string($path)){
+			$path = rtrim($path, '/');
+		}else{
+			$r = (_isRewriteRule()) ? REQUEST_URI : route_path();
+			$path = route_updateQueryStr($r, $queryStr);
+		}
 	}
 
 	$q = '';
