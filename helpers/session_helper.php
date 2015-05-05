@@ -126,18 +126,27 @@ if(!function_exists('flash_set')){
  * Set the flash message in session
  * This function is overwritable from the custom helpers/session_helper.php
  *
- * @param string $msg The message to be shown
- * @param string $name The optional session name to store the message
+ * @param mixed  $msg   The message or array of messages to be shown
+ * @param string $name  The optional session name to store the message
  * @param string $class The HTML class name; default is success
  *
  * @return void
  */
 	function flash_set($msg, $name='', $class='success'){
-		$msg = '<span class="'.$class.'">'.$msg.'</span>';
-		$msg = '<div class="message '.$class.'" style="display:block;"><ul><li>'.$msg.'</li></ul></div>';
+		$msgHTML  = '<div class="message '.$class.'" style="display:block;">';
+		$msgHTML .= '<ul>';
+		if(is_array($msg)){
+			foreach($msg as $m){
+				$msgHTML .= '<li><span class="'.$class.'">'.$m.'</span></li>';
+			}
+		}else{
+			$msgHTML .= '<li><span class="'.$class.'">'.$msg.'</span></li>';
+		}
+		$msgHTML .= '</ul>';
+		$msgHTML .= '</div>';
 
-		if($name) $_SESSION[S_PREFIX.'flashMessage'][$name] = $msg;
-		else $_SESSION[S_PREFIX.'flashMessage'] = $msg;
+		if($name) $_SESSION[S_PREFIX.'flashMessage'][$name] = $msgHTML;
+		else $_SESSION[S_PREFIX.'flashMessage'] = $msgHTML;
 	}
 }
 
