@@ -28,8 +28,8 @@ function security_prerequisite(){
 	}
 }
 /**
- * Strips HTML tags in the value to prevent from XSS attack. It should be called for GET values.
- * @param  mixed $get The value or The array of values being stripped.
+ * Sanitize input values from GET
+ * @param  mixed $get The value or The array of values being sanitized.
  * @return mixed The cleaned value
  */
 function _get($get){
@@ -38,7 +38,7 @@ function _get($get){
 			if(is_array($value)){
 				$get[$name] = _get($value);
 			}else{
-				$value = strip_tags(trim($value));
+				$value = _sanitize($value);
 				$value = urldecode($value);
 				$get[$name] = $value;
 			}
@@ -50,8 +50,8 @@ function _get($get){
 	}
 }
 /**
- * Strips HTML tags in the value to prevent from XSS attack. It should be called for POST values.
- * @param  mixed $post The value or The array of values being stripped.
+ * Sanitize input values from POST
+ * @param  mixed $post The value or The array of values being sanitized.
  * @return mixed the cleaned value
  */
 function _post($post){
@@ -61,15 +61,13 @@ function _post($post){
 				$post[$name] = _post($value);
 			}else{
 				$value = stripslashes($value);
-				$value = htmlspecialchars($value, ENT_QUOTES);
-				$value = strip_tags(trim($value));
+				$value = _sanitize($value);
 				$post[$name] = $value;
 			}
 		}
 	}else{
 		$value = stripslashes($post);
-		$value = htmlspecialchars($value, ENT_QUOTES);
-		$value = strip_tags(trim($post));
+		$value = _sanitize($value);
 		return $value;
 	}
 	return $post;
@@ -94,4 +92,12 @@ function _xss($value){
 		$value = preg_replace( $pattern, '', trim(stripslashes($value)));
 	}
 	return $value;
+}
+/**
+ * Sanitize strings
+ * @param  mixed $input Value to filter
+ * @return mixed The filtered value
+ */
+function _sanitize($input){
+	return htmlspecialchars(trim($input), ENT_NOQUOTES);
 }
