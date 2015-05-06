@@ -58,7 +58,7 @@ $lc_siteName = 'LucidFrame';
 # Leave blank if it is located in the document root
 $lc_baseURL = 'LucidFrame';
 # $lc_siteDomain: Site Domain Name
-$lc_siteDomain = $_SERVER['HTTP_HOST'];
+$lc_siteDomain = _host();
 
 /**
  * Session configuration.

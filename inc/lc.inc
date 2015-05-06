@@ -124,6 +124,12 @@ function _i($file, $recursive=true){
 	}
 }
 /**
+ * Get the host name or server name
+ */
+function _host(){
+	return !isset($_SERVER['HTTP_HOST']) ? isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : php_uname('n') : $_SERVER['HTTP_HOST'];
+}
+/**
  * @internal
  * Load running environment settings
  * Initalize the site language(s), error reporting
