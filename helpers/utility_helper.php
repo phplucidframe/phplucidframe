@@ -417,7 +417,9 @@ function _g($key, $value=''){
  * @return string The converted string
  */
 function _h($string){
-	return htmlspecialchars(stripslashes($string), ENT_QUOTES); # ENT_QUOTES will convert both double and single quotes.
+	$string = stripslashes($string);
+	$string = htmlspecialchars_decode($string, ENT_QUOTES);
+	return htmlspecialchars($string, ENT_QUOTES); # ENT_QUOTES will convert both double and single quotes.
 }
 /**
  * Get the current site language code
