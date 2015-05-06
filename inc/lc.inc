@@ -70,7 +70,9 @@ function _i($file, $recursive=true){
 		$lc_languages = array('en' => 'English');
 	}
 
-	$requestURI = trim(ltrim($_SERVER['REQUEST_URI'], '/'.$lc_baseURL)); # /base-dir/path/to/sub/dir to path/to/sub/dir
+	$REQUEST_URI = $_SERVER['REQUEST_URI'];
+
+	$requestURI = trim(ltrim($REQUEST_URI, '/'.$lc_baseURL)); # /base-dir/path/to/sub/dir to path/to/sub/dir
 	$request 	= explode('/', $requestURI);
 
 	$needle = $request[0];
@@ -180,8 +182,10 @@ function __envLoader(){
 		$lc_languages = array('en' => 'English');
 	}
 
-	$requestURI = trim(ltrim($_SERVER['REQUEST_URI'], '/'.$lc_baseURL)); # /base-dir/path/to/sub/dir to path/to/sub/dir
-	$requestURI = substr( $_SERVER['REQUEST_URI'], strpos($_SERVER['REQUEST_URI'], '/'.$lc_baseURL) + strlen($lc_baseURL) + 1 );
+	$REQUEST_URI = $_SERVER['REQUEST_URI'];
+
+	$requestURI = trim(ltrim($REQUEST_URI, '/'.$lc_baseURL)); # /base-dir/path/to/sub/dir to path/to/sub/dir
+	$requestURI = substr($REQUEST_URI, strpos($REQUEST_URI, '/'.$lc_baseURL) + strlen($lc_baseURL) + 1);
 	$requestURI = ltrim($requestURI, '/');
 	$request 	= explode('/', $requestURI);
 	$lc_namespace = $request[0];

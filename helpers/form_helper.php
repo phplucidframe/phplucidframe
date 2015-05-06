@@ -72,7 +72,7 @@ class Form{
 		# check token first
 		if($token == $postedToken){
 			# check referer if it is requesting in the same site
-			if($_SERVER['HTTP_REFERER'] && _cfg('siteDomain')){
+			if(isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] && _cfg('siteDomain')){
 				$siteDomain	= _cfg('siteDomain');
 				$siteDomain	= preg_replace('/^www\./', '', $siteDomain);
 				$parsedURL	= parse_url($_SERVER['HTTP_REFERER']);

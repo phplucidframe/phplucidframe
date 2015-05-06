@@ -754,6 +754,10 @@ function _getLangInURI(){
 	global $lc_baseURL;
 	global $lc_languages;
 
+	if(!isset($_SERVER['REQUEST_URI'])){
+		return false;
+	}
+
 	if( !is_array($lc_languages) ){
 		$lc_languages = array('en' => 'English');
 	}
@@ -1433,6 +1437,9 @@ function __dotNotationToArray($key, $scope='global', $value='', $serialize=false
  * @see http://www.useragentstring.com/pages/Crawlerlist/  /
  */
 function _isBot(){
+	if(!isset($_SERVER['HTTP_USER_AGENT'])) return false;
+	$userAgent = $_SERVER['HTTP_USER_AGENT'];
+	if(empty($userAgent)) return false;
 	$bots = array(
 		'Googlebot',
 		'Slurp',
@@ -1454,8 +1461,6 @@ function _isBot(){
 		'ips-agent',
 		'Libwww-perl'
 	);
-	$userAgent = $_SERVER['HTTP_USER_AGENT'];
-	if(empty($userAgent)) return false;
 	foreach($bots as $bot){
 		if(false !== strpos(strtolower($userAgent), strtolower($bot))){
 			return true;
