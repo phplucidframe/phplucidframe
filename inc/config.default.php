@@ -85,6 +85,7 @@ $lc_siteDomain = $_SERVER['HTTP_HOST'];
  *      `host` varchar(128) NOT NULL DEFAULT '',
  *      `timestamp` int(11) unsigned DEFAULT NULL,
  *      `session` longblob NOT NULL DEFAULT '',
+ *      `useragent` varchar(255) NOT NULL DEFAULT '',
  *      PRIMARY KEY (`sid`)
  *    );
  *

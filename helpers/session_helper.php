@@ -138,12 +138,13 @@ function __session_write($sessionId, $data){
 	global $_conn;
 	$record = array(
 		'id' => $sessionId,
-		'host' => $_SERVER['REMOTE_ADDR'],
+		'host' => isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '',
 		'timestamp' => time(),
-		'data' => $data
+		'session' => $data,
+		'useragent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''
 	);
-	$sql = 'REPLACE INTO '.LC_SESSION_TABLE.' (sid, host, timestamp, session)
-			VALUES (":id", ":host", ":timestamp", ":data")';
+	$sql = 'REPLACE INTO '.LC_SESSION_TABLE.' (sid, host, timestamp, session, useragent)
+			VALUES (":id", ":host", ":timestamp", ":session", ":useragent")';
 	return db_query($sql, $record) ? true : false;
 }
 /**
