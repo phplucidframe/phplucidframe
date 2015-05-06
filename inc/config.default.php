@@ -68,27 +68,32 @@ $lc_siteDomain = _host();
  *
  * ## Options
  *
- * - `name` - The name of the session to use. Defaults to 'LCSESSID'
- * - `use_cookies` - Whether cookies will be used to store the session id on the client side. Defaults to 1 (enabled).
- * - `use_only_cookies` - Whether the module will *only* use cookies to store the session id on the client side. Defaults to 1 (enabled).
- * - `use_trans_sid` - Transparent sid support is enabled or not
- * - `cache_limiter` - The cache control method used for session pages: nocache (default), private, private_no_expire, or public.
- * - `cookie_httponly` - Marks the cookie as accessible only through the HTTP protocol.
- * - `gc_divisor` - The probability that the gc (garbage collection) process is started on every session initialization. Default to 100.
- * - `gc_probability` - In conjunction with `gc_divisor` is used to manage probability that the gc (garbage collection) routine is started. Default to 1.
- * - `gc_maxlifetime` - The number of minutes after which data will be seen as 'garbage' and potentially cleaned up. Defaults to 240 minutes.
- * - `cookie_lifetime`- The number of minutes you want session cookies to live for. Defaults to 180 minutes
- *    The value 0 means "until the browser is closed.". Defaults to 180 mintues.
- * - `cookie_path` - The path to set in the session cookie. Defaults to '/'
- * - `save_path`- The path of the directory used to save session data. Defaults to ''.
+ * - `table`: The table name without prefix that stores the session data. It is only applicable to database session
+ * - `name`: The name of the session to use. Defaults to 'LCSESSID'
+ * - `gc_maxlifetime`: The number of minutes after which data will be seen as 'garbage' and potentially cleaned up. Defaults to 240 minutes.
+ * - `cookie_lifetime`: The number of minutes you want session cookies live for. The value 0 means "until the browser is closed.". Defaults to 180 minutes.
+ * - `cookie_path`: The path to set in the session cookie. Defaults to '/'
+ * - `save_path`: The path of the directory used to save session data. It is only applicable to default file handler session management. Defaults to ''.
+ * - @see
+ *    more options at http://php.net/manual/en/session.configuration.php
+ *    you can set any valid option without the prefix `session.`
  *
- * see more options at http://php.net/manual/en/session.configuration.php
+ * ## Minimum table schema requirement for database session
+ *
+ *    CREATE TABLE `lc_sessions` (
+ *      `sid` varchar(64) NOT NULL DEFAULT '',
+ *      `host` varchar(128) NOT NULL DEFAULT '',
+ *      `timestamp` int(11) unsigned DEFAULT NULL,
+ *      `session` longblob NOT NULL DEFAULT '',
+ *      `useragent` varchar(255) NOT NULL DEFAULT '',
+ *      PRIMARY KEY (`sid`)
+ *    );
  *
  * The hook `session_beforeStart()` is available to define in /app/helpers/session_helper.php
  * so that you could do something before session starts.
  */
 $lc_session = array(
-	'type' => 'default', // no need to change this for the time being
+	'type' => 'default', // default or database
 	'options' => array(
 	)
 );
