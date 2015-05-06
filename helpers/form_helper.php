@@ -105,36 +105,21 @@ class Form{
 			if(count(self::$error) == 0 && empty(self::$message)) return;
 		}
 
-		if(sizeof(self::$error)){
-			$errorStr = json_encode(self::$error);
-		}else{
-			$errorStr = "''";
-		}
+		$response = array(
+			'formId'   => self::$id,
+			'success'  => (self::$success) ? true : false,
+			'error'    => self::$error,
+			'msg'      => self::$message,
+			'redirect' => self::$redirect,
+			'callback' => self::$callback
+		);
 
 		if( $ajaxResponse ){
-		?>
-			var response = {
-				'formId' 	: '<?php echo self::$id; ?>',
-				'success' 	: <?php echo (self::$success) ? 1 : 0; ?>,
-				'error' 	: <?php echo $errorStr; ?>,
-				'msg' 		: "<?php echo addslashes(self::$message); ?>",
-				'redirect' 	: '<?php echo self::$redirect; ?>',
-				'callback' 	: '<?php echo self::$callback; ?>'
-			};
-		<?php
+			echo json_encode($response);
 		}else{
-		?>
-		<script type="text/javascript">
-			LC.Form.submitHandler({
-				'formId' 	: '<?php echo self::$id; ?>',
-				'success' 	: <?php echo (self::$success) ? 1 : 0; ?>,
-				'error' 	: <?php echo $errorStr; ?>,
-				'msg' 		: "<?php echo addslashes(self::$message); ?>",
-				'redirect' 	: '<?php echo self::$redirect; ?>',
-				'callback' 	: '<?php echo self::$callback; ?>'
-			});
-		</script>
-		<?php
+			echo '<script type="text/javascript">';
+			echo 'LC.Form.submitHandler(' . json_encode($response) . ')';
+			echo '</script>';
 		}
 	}
 	/**

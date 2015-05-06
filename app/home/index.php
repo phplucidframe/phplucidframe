@@ -17,5 +17,5 @@ include('query.php');
 </body>
 </html>
 <script type="text/javascript">
-	Page.Home.init();
+	LC.Page.Home.init();
 </script>
