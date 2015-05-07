@@ -99,7 +99,7 @@ function db_prerequisite($namespace='default'){
  */
 function db_connect($namespace='default'){
 	global $_conn;
-	global $_db;
+	global $_DB;
 	$conf = db_config($namespace);
 	# Connection
 	$_conn = mysqli_connect($conf['host'], $conf['username'], $conf['password']);
@@ -115,10 +115,10 @@ function db_connect($namespace='default'){
 		db_query('SET NAMES utf8 COLLATE ' . db_collation());
 	}
 	# Select DB
-	$_db = mysqli_select_db($_conn, $conf['database']);
-	if (!$_db) {
+	if (!mysqli_select_db($_conn, $conf['database'])) {
 		die('Can\'t use  : ' . $conf['database'] .' - '. mysqli_error($_conn));
 	}
+	$_DB = $conf['database'];
 }
 /**
  * Sets the default client character set
