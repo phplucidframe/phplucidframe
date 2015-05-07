@@ -110,8 +110,8 @@ $lc_databases = array(
 		'collation'	=> 'utf8_general_ci'
 	)
 );
-# $lc_defaultDbConnection: The default database connection
-$lc_defaultDbConnection = 'default';
+# $lc_defaultDbSource: The default database connection
+$lc_defaultDbSource = 'default';
 
 # $lc_sites: consider sub-directories as additional site roots and namespaces
 /**

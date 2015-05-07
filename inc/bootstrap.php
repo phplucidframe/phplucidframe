@@ -69,13 +69,13 @@ if( $file = _i( 'helpers/utility_helper.php', false) ) include_once $file;
 require_once HELPER . 'utility_helper.php';
 
 # DB configuration & DB helper (required)
-if(isset($lc_databases[$lc_defaultDbConnection]) && is_array($lc_databases[$lc_defaultDbConnection]) && $lc_databases[$lc_defaultDbConnection]['engine']){
+if(isset($lc_databases[$lc_defaultDbSource]) && is_array($lc_databases[$lc_defaultDbSource]) && $lc_databases[$lc_defaultDbSource]['engine']){
 	if( $file = _i( 'helpers/db_helper.php', false) ) include_once $file;
-	require_once HELPER . 'db_helper.'.$lc_databases[$lc_defaultDbConnection]['engine'].'.php';
+	require_once HELPER . 'db_helper.'.$lc_databases[$lc_defaultDbSource]['engine'].'.php';
 
-	if(db_host($lc_defaultDbConnection) && db_user($lc_defaultDbConnection) && db_name($lc_defaultDbConnection)){
+	if(db_host($lc_defaultDbSource) && db_user($lc_defaultDbSource) && db_name($lc_defaultDbSource)){
 		# Start DB connection
-		db_connect($lc_defaultDbConnection);
+		db_connect($lc_defaultDbSource);
 	}
 }
 
