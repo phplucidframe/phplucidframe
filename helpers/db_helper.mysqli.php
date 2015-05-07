@@ -121,6 +121,16 @@ function db_connect($namespace='default'){
 	$_DB = $conf['database'];
 }
 /**
+ * Switch to the given database from the currently active database
+ * @param string $namespace Namespace of the configuration to read from
+ * @return void
+ */
+function db_switch($namespace='default'){
+	global $_conn;
+	db_close();
+	db_connect($namespace);
+}
+/**
  * Sets the default client character set
  *
  * @param  string $charset The charset to be set as default.
@@ -129,6 +139,14 @@ function db_connect($namespace='default'){
 function db_setCharset($charset){
 	global $_conn;
 	return mysqli_set_charset( $_conn , $charset );
+}
+/**
+ * Closes a previously opened database connection
+ * @return boolean Returns TRUE on success or FALSE on failure.
+ */
+function db_close(){
+	global $_conn;
+	return $_conn ? mysqli_close($_conn) : true;
 }
 /**
  * Make the generated query returned from the query executing functions
@@ -898,3 +916,31 @@ function db_exp($field, $value, $exp=''){
 		'field' => $field
 	);
 }
+/**
+### operators
+> , >= , < , <= , !=, BETWEEN, NOT BETWEEN, IN, NOT, LIKE                  , NOT LIKE
+gt, gte, lt, lte, ne, between, nbetween   , in, not, like%%, like%~, like~%, nlike%%, nlike%~, nlike~%
+
+$query = db_select('table1 a1', '[fields]');
+$query->add(db_join('table2 a2', 'fk1', '[fields]'));
+$query->add(db_join('table3 a3', 'a2.pk2 = a3.fk2', '[fields]'));
+$query->add(
+	db_where(
+		db_and(
+			array('name' => 'a project'),
+			db_or(
+				array(
+					'id' => array(1, 2, 3),
+					'id >' => 10
+				)
+			)
+		)
+	)
+);
+$query->add(db_order());
+$query->add(db_group());
+$query->add(db_having());
+$query->add(db_limit());
+$query->run();
+
+*/
