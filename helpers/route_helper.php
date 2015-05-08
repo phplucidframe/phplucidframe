@@ -87,19 +87,19 @@ function route_request() {
 	} elseif (isset($_SERVER['REQUEST_URI'])) {
 		// This request is either a clean URL, or 'index.php', or nonsense.
 		// Extract the path from REQUEST_URI.
-		$request_path = urldecode(strtok($_SERVER['REQUEST_URI'], '?'));
-		$request_path = str_replace($lc_baseURL, '', ltrim($request_path, '/'));
-		$request_path = ltrim($request_path, '/');
+		$requestPath = urldecode(strtok($_SERVER['REQUEST_URI'], '?'));
+		$requestPath = str_replace($lc_baseURL, '', ltrim($requestPath, '/'));
+		$requestPath = ltrim($requestPath, '/');
 
 		$lang = _getLangInURI();
 		if ($lang) {
 			$lc_lang = $lang;
-			$path = trim($request_path, '/');
+			$path = trim($requestPath, '/');
 			if (strpos($path, $lc_lang) === 0) {
 				$path = substr($path, strlen($lang));
 			}
 		} else {
-			$path = trim($request_path);
+			$path = trim($requestPath);
 		}
 
 		// If the path equals the script filename, either because 'index.php' was
