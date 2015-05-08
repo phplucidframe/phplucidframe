@@ -45,12 +45,13 @@ function _t($str/*[, mixed $args [, mixed $... ]]*/) {
 		$lowerStr = strtolower($str);
 		if ( isset($lc_translation[$lc_lang][$lowerStr]) && !empty($lc_translation[$lc_lang][$lowerStr]) ) {
 			$translated = $lc_translation[$lc_lang][$lowerStr];
-			if (is_array($translated)) $str = $translated[0];
-			else $str = $translated;
+			$str = (is_array($translated)) ? $translated[0] : $translated;
 		}
 	}
 
-	if (isset($translated)) $po[$str] = $translated;
+	if (isset($translated)) {
+		$po[$str] = $translated;
+	}
 	return (count($args)) ? vsprintf($str, $args) : $str;
 }
 /**
@@ -96,7 +97,10 @@ function i18n_load() {
 	if ($lc_translationEnabled == false) return false;
 
 	$filename = I18N . $lc_lang.'.po';
-	if (!file_exists($filename)) return false;
+	if (!file_exists($filename)) {
+		return false;
+	}
+
 	# Open the po file
 	if (!$file = fopen($filename, 'r')) {
 		session_delete("i18n.{$lc_lang}");

@@ -21,9 +21,13 @@ ob_start('_flush');
 $q = route_path();
 
 # if the route is empty, get it from the config
-if (empty($q) && $lc_homeRouting) $q = $lc_homeRouting;
+if (empty($q) && $lc_homeRouting) {
+	$q = $lc_homeRouting;
+}
 # if it is still empty, set it to the system default
-if (empty($q)) $q = 'home';
+if (empty($q)) {
+	$q = 'home';
+}
 # Get the complete path to root
 $_page = ROOT . $q;
 if (!file_exists($_page)) {

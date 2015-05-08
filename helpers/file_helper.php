@@ -385,13 +385,11 @@ class File {
 				$desiredWidth 	= floor(($imgWidth/$imgHeight) * $desiredHeight);
 				$imgWidth 		= $desiredWidth;
 				$imgHeight 		= $desiredHeight;
-			}
-			elseif ($desiredWidth > 0 && $desiredHeight == 0) { # resized to width
+			} elseif ($desiredWidth > 0 && $desiredHeight == 0) { # resized to width
 				$desiredHeight = floor(($imgHeight/$imgWidth) * $desiredWidth);
 				$imgWidth 		= $desiredWidth;
 				$imgHeight 		= $desiredHeight;
-			}
-			elseif ($desiredWidth > 0 && $desiredHeight > 0) { # resized both
+			} elseif ($desiredWidth > 0 && $desiredHeight > 0) { # resized both
 				$scale = min($desiredWidth/$imgWidth, $desiredHeight/$imgHeight);
 				# new width for the image
 				$imgWidth  = floor($scale * $imgWidth);

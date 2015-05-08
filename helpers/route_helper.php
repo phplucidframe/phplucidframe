@@ -107,7 +107,7 @@ function route_request() {
 		// $_SERVER['REQUEST_URI'] even when it wasn't provided in the URL (some
 		// versions of Microsoft IIS do this), the front page should be served.
 		if ($path == basename($_SERVER['PHP_SELF'])) {
-		  $path = '';
+			$path = '';
 		}
 	} else {
 		// This is the front page.
@@ -253,11 +253,17 @@ function route_url($path=NULL, $queryStr=array(), $lang='') {
 				$value = urlencode($value);
 			}
 			if (is_numeric($key)) {
-				if ($lc_cleanURL) $q .= '/' . $value;
-				else $q .= '&'.$value;
+				if ($lc_cleanURL) {
+					$q .= '/' . $value;
+				} else {
+					$q .= '&'.$value;
+				}
 			} else {
-				if ($lc_cleanURL) $q .= '/-' . $key . '/' . $value;
-				else $q .= '&' . $key . '=' . $value;
+				if ($lc_cleanURL) {
+					$q .= '/-' . $key . '/' . $value;
+				} else {
+					$q .= '&' . $key . '=' . $value;
+				}
 			}
 		}
 	}
@@ -275,8 +281,11 @@ function route_url($path=NULL, $queryStr=array(), $lang='') {
 
 	$url = WEB_ROOT;
 	if ($lang && $lc_translationEnabled && !$forceExcludeLangInURL) {
-		if ($lc_cleanURL) $url .= $lang.'/';
-		else $q .= '&lang=' . $lang;
+		if ($lc_cleanURL) {
+			$url .= $lang.'/';
+		} else {
+			$q .= '&lang=' . $lang;
+		}
 	}
 
 	if (strtolower($path) == 'home') $path = '';
@@ -311,14 +320,15 @@ function route_updateQueryStr($path, &$queryStr=array()) {
 				if ($route) {
 					if (is_string($key)) {
 						$regex = '/(\-'.$key.'\/)';
-						if (is_array($route)) $regex .= '('.implode('\/', $route).'+)';
-						else $regex .= '('.$route.'+)';
+						if (is_array($route)) {
+							$regex .= '('.implode('\/', $route).'+)';
+						} else {
+							$regex .= '('.$route.'+)';
+						}
 						$regex .= '/i';
-					}
-					elseif (is_numeric($key)) {
+					} elseif (is_numeric($key)) {
 						$regex = '/\b('.$route.') {1}\b/i';
-					}
-					else{
+					} else{
 						continue;
 					}
 				} else { # if the key could not be retrieved from URI, skip it
@@ -331,8 +341,11 @@ function route_updateQueryStr($path, &$queryStr=array()) {
 					} else {
 						$value = urlencode($value);
 					}
-					if (is_numeric($key)) $path = preg_replace($regex, $value, $path); # no key
-					else $path = preg_replace($regex, '-'.$key.'/'.$value, $path);
+					if (is_numeric($key)) {
+						$path = preg_replace($regex, $value, $path); # no key
+					} else {
+						$path = preg_replace($regex, '-'.$key.'/'.$value, $path);
+					}
 					unset($queryStr[$key]); # removed the replaced query string from the array
 				}
 			}

@@ -48,7 +48,9 @@ function db_host($namespace='default') {
  */
 function db_name($namespace='default') {
 	$conf = db_config($namespace);
-	if (!isset($conf['database'])) die('Database name is not set.');
+	if (!isset($conf['database'])) {
+		die('Database name is not set.');
+	}
 	return $conf['database'];
 }
 /**
@@ -57,7 +59,9 @@ function db_name($namespace='default') {
  */
 function db_user($namespace='default') {
 	$conf = db_config($namespace);
-	if (!isset($conf['username'])) die('Database username is not set.');
+	if (!isset($conf['username'])) {
+		die('Database username is not set.');
+	}
 	return $conf['username'];
 }
 /**
@@ -563,8 +567,11 @@ if (!function_exists('db_update')) {
 				continue;
 			}
 
-			if (is_null($value)) $fields[] = $field . ' = NULL';
-			else $fields[] = $field . ' = "' . db_escapeString($value) . '"';
+			if (is_null($value)) {
+				$fields[] = $field . ' = NULL';
+			} else {
+				$fields[] = $field . ' = "' . db_escapeString($value) . '"';
+			}
 
 			if ($i === $slugIndex && $useSlug === true) { # $data[1] is slug
 				$slug = db_escapeString($value);
@@ -583,7 +590,9 @@ if (!function_exists('db_update')) {
 				$cond = $condition;
 			}
 
-			if (empty($cond)) return false;
+			if (empty($cond)) {
+				return false;
+			}
 			$notCond = 'NOT ( ' . $cond . ' )';
 
 			if ($lc_useDBAutoFields) {
@@ -641,10 +650,14 @@ if (!function_exists('db_delete')) {
 		if (is_array($condition)) {
 			$condition = db_condition($condition);
 		}
-		if ($condition) $condition = ' WHERE '.$condition;
+		if ($condition) {
+			$condition = ' WHERE '.$condition;
+		}
 
 		$sql = 'DELETE FROM ' . $table . $condition . ' LIMIT 1';
-		if (_g('db_printQuery')) return $sql;
+		if (_g('db_printQuery')) {
+			return $sql;
+		}
 
 		ob_start(); # to capture error return
 		db_query($sql);
@@ -658,8 +671,7 @@ if (!function_exists('db_delete')) {
 				return false;
 			}
 		}
-		if (db_errorNo() == 0) return true;
-		else return false;
+		return (db_errorNo() == 0) ? true : false;
 	}
 }
 if (!function_exists('db_delete_multi')) {
@@ -698,10 +710,14 @@ if (!function_exists('db_delete_multi')) {
 		if (is_array($condition)) {
 			$condition = db_condition($condition);
 		}
-		if ($condition) $condition = ' WHERE '.$condition;
+		if ($condition) {
+			$condition = ' WHERE '.$condition;
+		}
 
 		$sql = 'DELETE FROM ' . $table . $condition;
-		if (_g('db_printQuery')) return $sql;
+		if (_g('db_printQuery')) {
+			return $sql;
+		}
 
 		ob_start(); # to capture error return
 		db_query($sql);
@@ -710,8 +726,7 @@ if (!function_exists('db_delete_multi')) {
 		if ($return && db_errorNo() > 0) { # if there is any error
 			return false;
 		}
-		if (db_errorNo() == 0) return true;
-		else return false;
+		return (db_errorNo() == 0) ? true : false;
 	}
 }
 /**
@@ -731,8 +746,12 @@ if (!function_exists('db_delete_multi')) {
  * @return string The built condition WHERE clause
  */
 function db_condition($cond=array(), $type='AND') {
-	if (!is_array($cond)) return $cond;
-	if (empty($cond)) return '';
+	if (!is_array($cond)) {
+		return $cond;
+	}
+	if (empty($cond)) {
+		return '';
+	}
 	$type 		= strtoupper($type);
 	$condition 	= array();
 	$operators 	= array(
@@ -804,8 +823,11 @@ function db_condition($cond=array(), $type='AND') {
 			}
 		}
 	}
-	if (count($condition)) $condition = implode(" {$type} ", $condition);
-	else $condition = '';
+	if (count($condition)) {
+		$condition = implode(" {$type} ", $condition);
+	} else {
+		$condition = '';
+	}
 	return $condition;
 }
 /**

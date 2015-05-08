@@ -37,7 +37,9 @@
  * @see php.net/ob_start
  */
 function _flush($buffer, $phase) {
-	if (function_exists('__flush')) return __flush($buffer, $phase); # Run the hook if any
+	if (function_exists('__flush')) {
+		return __flush($buffer, $phase); # Run the hook if any
+	}
 
 	$posHtml = stripos($buffer, '<html');
 	$posHead = stripos($buffer, '<head');
@@ -70,14 +72,24 @@ function _flush($buffer, $phase) {
 		}
 
 		if (array_key_exists('class', $attributes)) { # if there is class attribute provided
-			if ($IE) $attributes['class'][1] .= ' ie ' . $IEVersion;
-			if (_multilingual()) $attributes['class'][1] .= ' ' . _lang();
+			if ($IE) {
+				$attributes['class'][1] .= ' ie ' . $IEVersion;
+			}
+			if (_multilingual()) {
+				$attributes['class'][1] .= ' ' . _lang();
+			}
 		} else { # if there is not class attributes provided
 			if ($IE || _multilingual()) {
 				$value = array();
-				if ($IE) $value[] = 'ie ' . $IEVersion; # ie class
-				if (_multilingual()) $value[] = _lang(); # lang class
-				if (count($value)) $attributes['class'] = array('class', implode(' ', $value));
+				if ($IE) {
+					$value[] = 'ie ' . $IEVersion; # ie class
+				}
+				if (_multilingual()) {
+					$value[] = _lang(); # lang class
+				}
+				if (count($value)) {
+					$attributes['class'] = array('class', implode(' ', $value));
+				}
 			}
 		}
 
@@ -161,10 +173,12 @@ function _unloader($name, $path=HELPER) {
  */
 function _readyloader($name, $path=HELPER) {
 	global $lc_autoload;
-	if (stripos($name, '.php') === false) $file = $path . $name . '.php';
-	else $file = $name;
-	if (array_search($file, $lc_autoload) !== false && is_file($file) && file_exists($file)) return $file;
-	return false;
+	if (stripos($name, '.php') === false) {
+		$file = $path . $name . '.php';
+	} else {
+		$file = $name;
+	}
+	return (array_search($file, $lc_autoload) !== false && is_file($file) && file_exists($file)) ? $file : false;
 }
 /**
  * Declare global JS variables
@@ -199,9 +213,13 @@ function _script() {
 	$jsVars = _cfg('jsVars');
 	if (count($jsVars)) {
 		foreach ($jsVars as $name => $val) {
-			if (is_array($val)) $script .= 'LC.'.$name.' = '.json_encode($val).';';
-			elseif (is_numeric($val)) $script .= 'LC.'.$name.' = '.$val.';';
-			else $script .= 'LC.'.$name.' = "'.$val.'";';
+			if (is_array($val)) {
+				$script .= 'LC.'.$name.' = '.json_encode($val).';';
+			} elseif (is_numeric($val)) {
+				$script .= 'LC.'.$name.' = '.$val.';';
+			} else {
+				$script .= 'LC.'.$name.' = "'.$val.'";';
+			}
 		}
 	}
 	$script .= '</script>';
@@ -362,9 +380,14 @@ if (!function_exists('_pr')) {
 		if (is_array($input) || is_object($input)) {
 			print_r($input);
 		} else {
-			if (is_bool($input)) var_dump($input);
-			else echo $input;
-			if ($pre == false) echo '<br>';
+			if (is_bool($input)) {
+				var_dump($input);
+			} else {
+				echo $input;
+			}
+			if ($pre == false) {
+				echo '<br>';
+			}
 		}
 		if ($pre) echo '</pre>';
 	}
@@ -381,9 +404,13 @@ if (!function_exists('_dump')) {
  * @return void
  */
 	function _dump($input, $pre=true) {
-		if ($pre) echo '<pre>';
+		if ($pre) {
+			echo '<pre>';
+		}
 		var_dump($input);
-		if ($pre) echo '</pre>';
+		if ($pre) {
+			echo '</pre>';
+		}
 	}
 }
 /**
@@ -394,8 +421,12 @@ if (!function_exists('_dump')) {
  * @return mixed The value of the config variable
  */
 function _cfg($key='', $value='') {
-	if (empty($key)) return NULL;
-	if (strrpos($key, 'lc_') === 0) $key = substr($key, 3);
+	if (empty($key)) {
+		return NULL;
+	}
+	if (strrpos($key, 'lc_') === 0) {
+		$key = substr($key, 3);
+	}
 	$key = 'lc_' . $key;
 	return (count(func_get_args()) == 2) ? __dotNotationToArray($key, 'global', $value) : __dotNotationToArray($key, 'global');
 }
@@ -407,7 +438,9 @@ function _cfg($key='', $value='') {
  * @return mixed The value of the global variable
  */
 function _g($key, $value='') {
-	if (empty($key)) return NULL;
+	if (empty($key)) {
+		return NULL;
+	}
 	return (count(func_get_args()) == 2) ? __dotNotationToArray($key, 'global', $value) : __dotNotationToArray($key, 'global');
 }
 /**
@@ -437,9 +470,10 @@ function _lang() {
  * @return string The language code
  */
 function _getLang() {
-	if (function_exists('__getLang')) return __getLang(); # run the hook if any
-	if (_arg('lang')) $lang = _arg('lang');
-	else $lang = _defaultLang();
+	if (function_exists('__getLang')) {
+		return __getLang(); # run the hook if any
+	}
+	$lang = (_arg('lang')) ? _arg('lang') : _defaultLang();
 	return ($lang) ? $lang : _defaultLang();
 }
 /**
@@ -459,8 +493,12 @@ function _langs($excepts=NULL) {
 	$langs = array();
 	if ($excepts) {
 		foreach ($lc_languages as $lcode => $lname) {
-			if (is_array($excepts) && in_array($lcode, $excepts)) continue;
-			if (is_string($excepts) && $lcode == $excepts) continue;
+			if (is_array($excepts) && in_array($lcode, $excepts)) {
+				continue;
+			}
+			if (is_string($excepts) && $lcode == $excepts) {
+				continue;
+			}
 			$langs[$lcode] = $lname;
 		}
 	} else {
@@ -475,7 +513,9 @@ function _langs($excepts=NULL) {
  */
 function _queryLang($lang=NULL) {
 	global $lc_lang;
-	if (!$lang) $lang = $lc_lang;
+	if (!$lang) {
+		$lang = $lc_lang;
+	}
 	return str_replace('-', '_', $lang);
 }
 /**
@@ -485,7 +525,9 @@ function _queryLang($lang=NULL) {
  */
 function _urlLang($lang=NULL) {
 	global $lc_lang;
-	if (!$lang) $lang = $lc_lang;
+	if (!$lang) {
+		$lang = $lc_lang;
+	}
 	return str_replace('_', '-', $lang);
 }
 /**
@@ -505,11 +547,16 @@ function _defaultQueryLang() {
  * @return string The language name as per defined in /inc/config.php
  */
 function _langName($lang='') {
-	if (!_multilingual()) return '';
+	if (!_multilingual()) {
+		return '';
+	}
 	global $lc_languages;
 	$lang = str_replace('_', '-', $lang);
-	if (isset($lc_languages[$lang])) return $lc_languages[$lang];
-	else return $lc_languages[_cfg('defaultLang')];
+	if (isset($lc_languages[$lang])) {
+		return $lc_languages[$lang];
+	} else {
+		return $lc_languages[_cfg('defaultLang')];
+	}
 }
 /**
  * Get the current site is multi-lingual or not
@@ -625,8 +672,11 @@ function _redirect($path=NULL, $queryStr=array(), $lang='', $status=NULL) {
 		header('Location: ' . $path);
 		exit;
 	}
-	if ($path == 'self') $url = _self(NULL, $lang);
-	else $url = route_url($path, $queryStr, $lang);
+	if ($path == 'self') {
+		$url = _self(NULL, $lang);
+	} else {
+		$url = route_url($path, $queryStr, $lang);
+	}
 	if ($status === 301) {
 		header("HTTP/1.1 301 Moved Permanently");
 	}
@@ -685,8 +735,9 @@ $lc_canonical = '';
  */
 function _canonical($url=NULL) {
 	global $lc_canonical;
-	if (!is_null($url)) $lc_canonical = $url;
-	else{
+	if (!is_null($url)) {
+		$lc_canonical = $url;
+	} else {
 		return (_cfg('canonical')) ? _cfg('canonical') : _url();
 	}
 }
@@ -742,23 +793,23 @@ function _arg($index = NULL, $path = NULL) {
 		if (isset($arguments[$index])) {
 			return strip_tags(trim($arguments[$index]));
 		}
-	}
-	elseif (is_string($index)) {
+	} elseif (is_string($index)) {
 		$query = '-' . $index . '/';
 		$pos = strpos($path, $query);
 		if ($pos !== false) {
 			$start  = $pos + strlen($query);
 			$path  = substr($path, $start);
 			$end   = strpos($path, '/-');
-			if ($end) $path 	= substr($path, 0, $end);
+			if ($end) {
+				$path = substr($path, 0, $end);
+			}
 			if (substr_count($path, '/')) {
 				return explode('/', $path);
 			} else {
 				return $path;
 			}
 		}
-	}
-	elseif (is_null($index)) {
+	} elseif (is_null($index)) {
 		return explode('/', str_replace('/-', '/', $path));
 	}
 
@@ -834,12 +885,17 @@ function _title(/*[mixed $args [, mixed $... ]]*/) {
 	}
 
 	$lc_titleSeparator = trim($lc_titleSeparator);
-	if ($lc_titleSeparator) $lc_titleSeparator = ' '.$lc_titleSeparator.' ';
-	else $lc_titleSeparator = ' ';
+	if ($lc_titleSeparator) {
+		$lc_titleSeparator = ' '.$lc_titleSeparator.' ';
+	} else {
+		$lc_titleSeparator = ' ';
+	}
 
 	if (count($title)) {
 		$title = implode($lc_titleSeparator, $title);
-		if ($lc_siteName) $title .= ' | '.$lc_siteName;
+		if ($lc_siteName) {
+			$title .= ' | '.$lc_siteName;
+		}
 		return $title;
 	}
 	return $lc_siteName;
@@ -872,7 +928,9 @@ function _notEmpty($value) {
 function _breadcrumb(/*[mixed $args [, mixed $... ]]*/) {
 	global $lc_breadcrumbSeparator;
 	$args = func_get_args();
-	if (!$lc_breadcrumbSeparator) $lc_breadcrumbSeparator = '&raquo;';
+	if (!$lc_breadcrumbSeparator) {
+		$lc_breadcrumbSeparator = '&raquo;';
+	}
 	if (count($args) == 1 && is_array($args[0])) {
 		$args = $args[0];
 	}
@@ -889,7 +947,9 @@ function _breadcrumb(/*[mixed $args [, mixed $... ]]*/) {
  */
 function _shorten($str, $length=50, $trail='...') {
 	$str = strip_tags(trim($str));
-	if (strlen($str) <= $length) return $str;
+	if (strlen($str) <= $length) {
+		return $str;
+	}
 	$short = trim(substr($str, 0, $length));
 	$lastSpacePos = strrpos($short, ' ');
 	if ($lastSpacePos !== false) {
@@ -997,9 +1057,10 @@ if (!function_exists('_fdate')) {
  * @return string The formatted date
  */
 	function _fdate($date, $format='') {
-		if (!$format) $format = _cfg('dateFormat');
-		if (is_string($date)) return date($format, strtotime($date));
-		else return date($format, $date);
+		if (!$format) {
+			$format = _cfg('dateFormat');
+		}
+		return (is_string($date)) ? date($format, strtotime($date)) : date($format, $date);
 	}
 }
 
@@ -1032,25 +1093,19 @@ if (!function_exists('_ftimeAgo')) {
 		$secElapsed = $now - $time;
 		if ($secElapsed <= 60) {
 			return _t('just now');
-		}
-		elseif ($secElapsed <= 3540) {
+		} elseif ($secElapsed <= 3540) {
 			$min = $now - $time;
 			$min = round($min/60);
 			return _t('%d minutes ago', $min);
-		}
-		elseif ($secElapsed <= 3660 ) {
+		} elseif ($secElapsed <= 3660 ) {
 			return _t('1 hour ago');
-		}
-		elseif (date('j-n-y', $now) == date('j-n-y', $time)) {
+		} elseif (date('j-n-y', $now) == date('j-n-y', $time)) {
 			return date("g:i a", $time);
-		}
-		elseif (date('j-n-y', mktime(0, 0, 0, date('n', $now),date('j', $now)-1, date('Y', $now))) == date('j-n-y',$time)) {
+		} elseif (date('j-n-y', mktime(0, 0, 0, date('n', $now),date('j', $now)-1, date('Y', $now))) == date('j-n-y',$time)) {
 			return _t('yesterday');
-		}
-		elseif ($secElapsed <= 345600 ) {
+		} elseif ($secElapsed <= 345600 ) {
 			return date('l', $time);
-		}
-		else{
+		} else {
 			return date($format, $time);
 		}
 	}
@@ -1080,8 +1135,11 @@ if (!function_exists('_msg')) {
 			if (count($msg) > 0) {
 				$html .= '<ul>';
 				foreach ($msg as $m) {
-					if (is_string($m)) $html .= '<li>'.$m.'</li>';
-					elseif (is_array($msg) && isset($m['msg'])) $html .= '<li>'.$m['msg'].'</li>';
+					if (is_array($msg) && isset($m['msg'])) {
+						$html .= '<li>'.$m['msg'].'</li>';
+					} else {
+						$html .= '<li>'.$m.'</li>';
+					}
 				}
 				$html .= '</ul>';
 			} else {
@@ -1171,9 +1229,13 @@ if (!function_exists('_slug')) {
 
 		while (1 && $table) {
 			$sql = 'SELECT slug FROM '.$table.' WHERE slug = ":alias"';
-			if ($condition) $sql .= ' AND '.$condition;
+			if ($condition) {
+				$sql .= ' AND '.$condition;
+			}
 			if ($result = db_query($sql, array(':alias' => $slug))) {
-				if (db_numRows($result) == 0) break;
+				if (db_numRows($result) == 0) {
+					break;
+				}
 				$segments = explode('-', $slug);
 				if ( sizeof($segments) > 1 && is_numeric($segments[sizeof($segments)-1]) ) {
 					$index = array_pop($segments);
@@ -1221,7 +1283,9 @@ function _sqlDate($date, $givenFormat='dmy', $separator='-') {
  */
 function _encrypt($text) {
 	$secret = _cfg('securitySecret');
-	if (!$secret || !function_exists('mcrypt_encrypt')) return md5($text);
+	if (!$secret || !function_exists('mcrypt_encrypt')) {
+		return md5($text);
+	}
 	return trim(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $secret, $text, MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND))));
 }
 /**
@@ -1232,7 +1296,9 @@ function _encrypt($text) {
  */
 function _decrypt($text) {
 	$secret = _cfg('securitySecret');
-	if (!$secret || !function_exists('mcrypt_encrypt')) return $text;
+	if (!$secret || !function_exists('mcrypt_encrypt')) {
+		return $text;
+	}
 	return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $secret, base64_decode($text), MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND)));
 }
 
@@ -1248,8 +1314,7 @@ function _meta($key, $value='') {
 	global $_meta;
 	$value = trim($value);
 	if (empty($value)) {
-		if (isset($_meta[$key])) return $_meta[$key];
-		else return '';
+		return (isset($_meta[$key])) ? $_meta[$key] : '';
 	} else {
 		if (in_array($key, array('description', 'og:description', 'twitter:description', 'gp:description'))) {
 			$value = trim(substr($value, 0, 200));
@@ -1343,7 +1408,9 @@ function _getTranslationStrings($data, $fields, $lang=NULL) {
 	$isObject = is_object($data);
 	$data = (array) $data;
 	$i18n = array();
-	if (is_string($fields)) $fields = array($fields);
+	if (is_string($fields)) {
+		$fields = array($fields);
+	}
 	foreach ($fields as $name) {
 		if ($lang) {
 			$lcode = _queryLang($lang);
@@ -1378,10 +1445,18 @@ function _getTranslationStrings($data, $fields, $lang=NULL) {
  * @return mixed The value assigned
  */
 function __dotNotationToArray($key, $scope='global', $value='', $serialize=false) {
-	if (empty($key)) return NULL;
-	if (!in_array($scope, array('global', 'session'))) return NULL;
-	if (!in_array($scope, array('global', 'session')) && !is_array($scope)) return NULL;
-	if (is_array($scope)) $input = &$scope;
+	if (empty($key)) {
+		return NULL;
+	}
+	if (!in_array($scope, array('global', 'session'))) {
+		return NULL;
+	}
+	if (!in_array($scope, array('global', 'session')) && !is_array($scope)) {
+		return NULL;
+	}
+	if (is_array($scope)) {
+		$input = &$scope;
+	}
 
 	$type = (count(func_get_args()) > 2) ? 'setter' : 'getter';
 	$keys = explode(".", $key);
@@ -1396,30 +1471,33 @@ function __dotNotationToArray($key, $scope='global', $value='', $serialize=false
 	if ($type == 'getter' && $justOneLevelKey) { # just one-level key
 		if ($scope == 'session') {
 			$firstKey = S_PREFIX . $firstKey;
-			if (array_key_exists($firstKey, $_SESSION)) return $_SESSION[$firstKey];
-			return NULL;
+			return (array_key_exists($firstKey, $_SESSION)) ? $_SESSION[$firstKey] : NULL;
 		}
 		elseif ($scope == 'global') {
-			if (array_key_exists($firstKey, $GLOBALS)) return $GLOBALS[$firstKey];
-			return NULL;
+			return (array_key_exists($firstKey, $GLOBALS)) ? $GLOBALS[$firstKey] : NULL;
 		}
 		elseif (is_array($scope) && isset($input)) {
-			if (array_key_exists($firstKey, $input)) return $input[$firstKey];
-			return NULL;
+			return (array_key_exists($firstKey, $input)) ? $input[$firstKey] : NULL;
 		}
 	}
 
 	if ($scope == 'session') {
 		$firstKey = S_PREFIX . $firstKey;
-		if (!array_key_exists($firstKey, $_SESSION)) $_SESSION[$firstKey] = NULL;
+		if (!array_key_exists($firstKey, $_SESSION)) {
+			$_SESSION[$firstKey] = NULL;
+		}
 		$current = &$_SESSION[$firstKey];
 	}
 	elseif ($scope == 'global') {
-		if (!array_key_exists($firstKey, $GLOBALS)) $GLOBALS[$firstKey] = NULL;
+		if (!array_key_exists($firstKey, $GLOBALS)) {
+			$GLOBALS[$firstKey] = NULL;
+		}
 		$current = &$GLOBALS[$firstKey];
 	}
 	elseif (is_array($scope) && isset($input)) {
-		if (!array_key_exists($firstKey, $input)) $input[$firstKey] = NULL;
+		if (!array_key_exists($firstKey, $input)) {
+			$input[$firstKey] = NULL;
+		}
 		$current = &$input[$firstKey];
 	}
 
@@ -1449,9 +1527,7 @@ function __dotNotationToArray($key, $scope='global', $value='', $serialize=false
 			$current = ($serialize) ? serialize($value) : $value;
 		}
 		return $current;
-	}
-	# Get the values if it is getter
-	elseif ($type == 'getter') {
+	} elseif ($type == 'getter') { # Get the values if it is getter
 		return ($count) ? (isset($current[$lastKey]) ? $current[$lastKey] : NULL)  : $current;
 	}
 	return NULL;
@@ -1462,9 +1538,13 @@ function __dotNotationToArray($key, $scope='global', $value='', $serialize=false
  * @see http://www.useragentstring.com/pages/Crawlerlist/  /
  */
 function _isBot() {
-	if (!isset($_SERVER['HTTP_USER_AGENT'])) return false;
+	if (!isset($_SERVER['HTTP_USER_AGENT'])) {
+		return false;
+	}
 	$userAgent = $_SERVER['HTTP_USER_AGENT'];
-	if (empty($userAgent)) return false;
+	if (empty($userAgent)) {
+		return false;
+	}
 	$bots = array(
 		'Googlebot',
 		'Slurp',

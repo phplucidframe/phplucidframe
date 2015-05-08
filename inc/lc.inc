@@ -79,8 +79,7 @@ function _i($file, $recursive=true) {
 	# Clean lang code in URL
 	if (array_key_exists($needle, $lc_languages)) {
 		array_shift($request);
-		if (count($request)) $needle = $request[0];
-		else $needle = '';
+		$needle = count($request) ? $request[0] : '';
 	}
 
 	if ( LC_NAMESPACE == '' ) {
@@ -111,7 +110,9 @@ function _i($file, $recursive=true) {
 			$fileWithPath = $value . $file;
 			return $fileWithPath;
 		}
-		if ($recursive == false) break;
+		if ($recursive == false) {
+			break;
+		}
 	}
 
 	if (strstr($_SERVER['PHP_SELF'], APP_DIR)) {
@@ -148,7 +149,9 @@ function __envLoader() {
 	global $lc_minifyHTML;
 
 	$lc_env = strtolower($lc_env);
-	if (!in_array($lc_env, array('development', 'production'))) $lc_env = 'production';
+	if (!in_array($lc_env, array('development', 'production'))) {
+		$lc_env = 'production';
+	}
 	if ($lc_env == 'production') {
 		error_reporting(0);
 		ini_set('display_errors', 0);
@@ -194,8 +197,7 @@ function __envLoader() {
 	if (array_key_exists($lc_namespace, $lc_languages)) {
 		array_shift($request);
 		$requestURI = ltrim(ltrim($requestURI, $lc_namespace), '/'); # clean the language code from URI
-		if (count($request)) $lc_namespace = $request[0];
-		else $lc_namespace = '';
+		$lc_namespace = count($request) ? $request[0] : '';
 	}
 
 	if ( !(isset($lc_sites) && is_array($lc_sites) && array_key_exists($lc_namespace, $lc_sites)) ) {
@@ -217,6 +219,5 @@ function __envLoader() {
  */
 function __secret() {
 	$file = INC . '.secret';
-	if (is_file($file) && file_exists($file)) return trim(file_get_contents($file));
-	return '';
+	return (is_file($file) && file_exists($file)) ? trim(file_get_contents($file)) : '';
 }

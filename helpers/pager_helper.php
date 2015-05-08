@@ -55,7 +55,9 @@ class Pager {
 	 * @param string $pageQueryStr The customized page query string name
 	 */
 	public function Pager($pageQueryStr='') {
-		if ($pageQueryStr) $this->pageQueryStr = $pageQueryStr;
+		if ($pageQueryStr) {
+			$this->pageQueryStr = $pageQueryStr;
+		}
 		$page = _arg($this->pageQueryStr);
 		$this->page = ( $page ) ? $page : 1;
 	}
@@ -65,8 +67,12 @@ class Pager {
 	 * @param mixed $value The value to be set to the property
 	 */
 	public function set($key, $value='') {
-		if (isset($this->$key)) $this->$key = $value;
-		if ($key == 'htmlTag') $this->setHtmlTag($value);
+		if (isset($this->$key)) {
+			$this->$key = $value;
+		}
+		if ($key == 'htmlTag') {
+			$this->setHtmlTag($value);
+		}
 	}
 	/**
 	 * Getter functions for the properties
@@ -74,8 +80,7 @@ class Pager {
 	 * @return mixed The value of the property
 	 */
 	public function get($key) {
-		if (isset($this->$key)) return $this->$key;
-		return '';
+		return (isset($this->$key)) ? $this->$key : '';
 	}
 	/**
 	 * @internal
@@ -135,7 +140,9 @@ class Pager {
 			return false;
 		}
 
-		if (!is_numeric($this->page)) $this->page = 1;
+		if (!is_numeric($this->page)) {
+			$this->page = 1;
+		}
 		$this->offset = ($this->page - 1) * $this->itemsPerPage;
 
 		$nav = array();
@@ -144,9 +151,9 @@ class Pager {
 
 		$maxPage = ceil($this->total/$this->itemsPerPage);
 		if ($this->page <= $this->pageNumLimit) {
-		  $startPage = 1;
+			$startPage = 1;
 		} else {
-		  $startPage = (floor(($this->page-1) / $this->pageNumLimit) * $this->pageNumLimit)+1;
+			$startPage = (floor(($this->page-1) / $this->pageNumLimit) * $this->pageNumLimit)+1;
 		}
 
 		$j = 0;
@@ -211,7 +218,9 @@ class Pager {
 			if ($allPagesCount < $this->pageNumLimit) {
 				$page = $this->page - 1;
 				$filledPageCount = $this->pageNumLimit - $allPagesCount;
-				if (isset($nav['beforePages'])) $filledPageCount += count($nav['beforePages']);
+				if (isset($nav['beforePages'])) {
+					$filledPageCount += count($nav['beforePages']);
+				}
 				$x = 0;
 				while ($filledPageCount != $x) {
 					$filledPages[] = $page;

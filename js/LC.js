@@ -510,7 +510,9 @@
 
 			featureName = featureName.toLowerCase();
 
-			if ( elm.style[featureName] !== undefined ) { feature = true; }
+			if ( elm.style[featureName] !== undefined ) {
+				feature = true;
+			}
 
 			if ( feature === false ) {
 				featurenameCapital = featureName.charAt(0).toUpperCase() + featureName.substr(1);

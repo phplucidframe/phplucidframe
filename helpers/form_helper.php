@@ -102,7 +102,9 @@ class Form {
 			self::$error = $errors;
 			$ajaxResponse = false;
 			# if no error message and no other message, no need to respond
-			if (count(self::$error) == 0 && empty(self::$message)) return;
+			if (count(self::$error) == 0 && empty(self::$message)) {
+				return;
+			}
 		}
 
 		$response = array(
@@ -133,7 +135,9 @@ class Form {
 	 */
 	public static function value($name, $defaultValue=NULL) {
 		if (count($_POST)) {
-			if (!isset($_POST[$name])) return '';
+			if (!isset($_POST[$name])) {
+				return '';
+			}
 			$value = _post($_POST[$name]);
 			return _h($value);
 		} else {
@@ -151,7 +155,9 @@ class Form {
 	 */
 	public static function htmlValue($name, $defaultValue=NULL) {
 		if (count($_POST)) {
-			if (!isset($_POST[$name])) return '';
+			if (!isset($_POST[$name])) {
+				return '';
+			}
 			$value = _xss($_POST[$name]);
 			return _h($value);
 		} else {
@@ -197,13 +203,21 @@ class Form {
 			$name = preg_replace('/(\[\])$/', '', $name); // group[] will be replaced as group
 			if (!isset($_POST[$name])) return '';
 			$postedValue = _post($_POST[$name]);
-			if (is_array($postedValue) && in_array($value, $postedValue)) return true;
-			elseif ($value == $postedValue) return true;
-			else return false;
+			if (is_array($postedValue) && in_array($value, $postedValue)) {
+				return true;
+			} elseif ($value == $postedValue) {
+				return true;
+			} else {
+				return false;
+			}
 		} else {
-			if (is_array($defaultValue) && in_array($value, $defaultValue)) return true;
-			elseif ($value == $defaultValue) return true;
-			else return false;
+			if (is_array($defaultValue) && in_array($value, $defaultValue)) {
+				return true;
+			} elseif ($value == $defaultValue) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 	}
 }

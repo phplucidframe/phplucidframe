@@ -78,9 +78,7 @@ function auth_prerequisite() {
  * Sometimes, the Auth session name should be different upon directory (namespace)
  */
 function auth_namespace() {
-	if (LC_NAMESPACE) $name = 'AuthUser.' . LC_NAMESPACE;
-	else $name = 'AuthUser.default';
-	return $name;
+	return (LC_NAMESPACE) ? 'AuthUser.' . LC_NAMESPACE : 'AuthUser.default';
 }
 /**
  * Get the authenticate user object from Session
@@ -110,8 +108,7 @@ function auth_isAnonymous() {
 	$auth = auth_prerequisite();
 	$field 	 = $auth['fields']['id'];
 	$session = auth_get();
-	if (is_object($session) && $session->$field > 0) return false;
-	else return true;
+	return (is_object($session) && $session->$field > 0) ? false : true;
 }
 /**
  * Check if a user is authenticated
@@ -129,12 +126,13 @@ if (!function_exists('auth_role')) {
  * @return boolean
  */
 	function auth_role($role) {
-		if (auth_isAnonymous()) return false;
+		if (auth_isAnonymous()) {
+			return false;
+		}
 		$auth  	 = auth_prerequisite();
 		$field 	 = $auth['fields']['role'];
 		$session = auth_get();
-		if ($session->$field == $role) return true;
-		return false;
+		return ($session->$field == $role) ? true : false;
 	}
 }
 
@@ -160,7 +158,9 @@ if (!function_exists('auth_access')) {
  * @return boolean
  */
 	function auth_access($perm) {
-		if (auth_isAnonymous()) return false;
+		if (auth_isAnonymous()) {
+			return false;
+		}
 		$sess = auth_get();
 		if (in_array($perm, $sess->permissions)) {
 			return true;

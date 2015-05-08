@@ -256,8 +256,11 @@ if (!function_exists('flash_set')) {
 		$msgHTML .= '</ul>';
 		$msgHTML .= '</div>';
 
-		if ($name) $_SESSION[S_PREFIX.'flashMessage'][$name] = $msgHTML;
-		else $_SESSION[S_PREFIX.'flashMessage'] = $msgHTML;
+		if ($name) {
+			$_SESSION[S_PREFIX.'flashMessage'][$name] = $msgHTML;
+		} else {
+			$_SESSION[S_PREFIX.'flashMessage'] = $msgHTML;
+		}
 	}
 }
 
@@ -307,7 +310,9 @@ if (!function_exists('flash_get')) {
  * @return void
  */
 function cookie_set($name, $value, $expiry=0, $path='/', $domain='', $secure=false, $httpOnly=false) {
-	if (!$domain) $domain = _cfg('siteDomain');
+	if (!$domain) {
+		$domain = _cfg('siteDomain');
+	}
 	$name = preg_replace('/^('.S_PREFIX.')/', '', $name);
 	$name = S_PREFIX . $name;
 	if ($expiry > 0) $expiry = time() + $expiry;
@@ -324,11 +329,12 @@ function cookie_set($name, $value, $expiry=0, $path='/', $domain='', $secure=fal
  *  The entire $_COOKIE array if $name is not provided.
  */
 function cookie_get($name='') {
-	if (empty($name)) return $_COOKIE;
+	if (empty($name)) {
+		return $_COOKIE;
+	}
 	$name = preg_replace('/^('.S_PREFIX.')/', '', $name);
 	$name = S_PREFIX . $name;
-	if (isset($_COOKIE[$name])) return $_COOKIE[$name];
-	else return NULL;
+	return (isset($_COOKIE[$name])) ? $_COOKIE[$name] : NULL;
 }
 /**
  * Delete a cookie
@@ -340,7 +346,9 @@ function cookie_get($name='') {
  * @return bool TRUE for the successful delete; FALSE for no delete.
  */
 function cookie_delete($name, $path='/') {
-	if (empty($name)) return $_COOKIE;
+	if (empty($name)) {
+		return $_COOKIE;
+	}
 	$name = preg_replace('/^('.S_PREFIX.')/', '', $name);
 	$name = S_PREFIX . $name;
 	if (isset($_COOKIE[$name])) {
