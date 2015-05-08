@@ -842,7 +842,7 @@ function _getLangInURI() {
 	$baseURL = ($baseURL) ? "/$baseURL/" : '/';
 	$baseURL = str_replace('/', '\/', $baseURL); // escape literal `/`
 	$baseURL = str_replace('.', '\.', $baseURL); // escape literal `.`
-	$regex   = '/^('.$baseURL.')\b('.implode('|', array_keys($lc_languages)).') {1}\b(\/?)/i';
+	$regex   = '/^('.$baseURL.')\b('.implode('|', array_keys($lc_languages)).'){1}\b(\/?)/i';
 
 	if (preg_match($regex, $_SERVER['REQUEST_URI'], $matches)) {
 		return $matches[2];
@@ -1472,11 +1472,9 @@ function __dotNotationToArray($key, $scope='global', $value='', $serialize=false
 		if ($scope == 'session') {
 			$firstKey = S_PREFIX . $firstKey;
 			return (array_key_exists($firstKey, $_SESSION)) ? $_SESSION[$firstKey] : NULL;
-		}
-		elseif ($scope == 'global') {
+		} elseif ($scope == 'global') {
 			return (array_key_exists($firstKey, $GLOBALS)) ? $GLOBALS[$firstKey] : NULL;
-		}
-		elseif (is_array($scope) && isset($input)) {
+		} elseif (is_array($scope) && isset($input)) {
 			return (array_key_exists($firstKey, $input)) ? $input[$firstKey] : NULL;
 		}
 	}
@@ -1487,14 +1485,12 @@ function __dotNotationToArray($key, $scope='global', $value='', $serialize=false
 			$_SESSION[$firstKey] = NULL;
 		}
 		$current = &$_SESSION[$firstKey];
-	}
-	elseif ($scope == 'global') {
+	} elseif ($scope == 'global') {
 		if (!array_key_exists($firstKey, $GLOBALS)) {
 			$GLOBALS[$firstKey] = NULL;
 		}
 		$current = &$GLOBALS[$firstKey];
-	}
-	elseif (is_array($scope) && isset($input)) {
+	} elseif (is_array($scope) && isset($input)) {
 		if (!array_key_exists($firstKey, $input)) {
 			$input[$firstKey] = NULL;
 		}

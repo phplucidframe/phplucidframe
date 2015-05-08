@@ -327,7 +327,7 @@ function route_updateQueryStr($path, &$queryStr=array()) {
 						}
 						$regex .= '/i';
 					} elseif (is_numeric($key)) {
-						$regex = '/\b('.$route.') {1}\b/i';
+						$regex = '/\b('.$route.'){1}\b/i';
 					} else{
 						continue;
 					}
