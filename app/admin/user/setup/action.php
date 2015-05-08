@@ -1,6 +1,6 @@
 <?php
 $success = false;
-if(sizeof($_POST)){
+if (sizeof($_POST)) {
 	$post = _post($_POST);
 	extract($post);
 
@@ -45,8 +45,8 @@ if(sizeof($_POST)){
 		);
 	}
 
-	if(Validation::check($validations) == true){
-		if($hidEditId){
+	if (Validation::check($validations) == true) {
+		if ($hidEditId) {
 			$data = array(
 				'uid'		=> $hidEditId,
 				'fullName' 	=> $txtFullName,
@@ -54,13 +54,13 @@ if(sizeof($_POST)){
 				'email' 	=> $txtEmail,
 				'role'		=> $cboRole,
 			);
-			if( !empty($txtPwd) ){
+			if ( !empty($txtPwd) ) {
 				$data['password'] = $txtPwd;
 			}
-			if(db_update('user', $data)){
+			if (db_update('user', $data)) {
 				$success = true;
 			}
-		}else{
+		} else {
 			$auth = $_auth;
 			$data = array(
 				'fullName' 	=> $txtFullName,
@@ -69,16 +69,16 @@ if(sizeof($_POST)){
 				'password'	=> _encrypt($txtPwd),
 				'role'		=> $cboRole,
 			);
-			if(db_insert('user', $data)){
+			if (db_insert('user', $data)) {
 				$success = true;
 			}
 		}
 
-		if($success){
+		if ($success) {
 			Form::set('success', true);
 			Form::set('redirect', _url('admin/user/list'));
 		}
-	}else{
+	} else {
 		Form::set('error', Validation::$errors);
 	}
 }

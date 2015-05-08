@@ -27,8 +27,8 @@ $pager->calculate();
 $sql = 'SELECT * FROM '.db_prefix().' post
 		ORDER BY post.title DESC
 		LIMIT '.$pager->get('offset').', '.$pager->get('itemsPerPage');
-if($result = db_query($sql))
-	if(db_numRows($result)){
+if ($result = db_query($sql))
+	if (db_numRows($result)) {
 		# render HTML here
 	}
 }
@@ -67,8 +67,8 @@ $pager->calculate();
 
 $blog = array_slice($blog, $pager->get('offset'), $pager->get('itemsPerPage'));
 
-if(count($blog)){
-	foreach($blog as $id => $b){
+if (count($blog)) {
+	foreach ($blog as $id => $b) {
 		$id++;
 		$b = (object) $b;
 	?>
@@ -85,7 +85,7 @@ if(count($blog)){
 		<div class="pager-records"><?php echo _t('Total %d records', $totalRecords); ?></div>
 	</div>
 	<?php
-}else{
+} else {
 	?>
 	<div class="noRecord"><?php echo _t('There is no record.'); ?></div>
 	<?php

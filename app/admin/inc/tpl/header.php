@@ -25,14 +25,14 @@
 				<a href="<?php echo _url('home'); ?>" id="logo"><?php echo _cfg('siteName'); ?></a>
 				<ul id="menu" class="clearfix">
 					<li>
-						<a href="<?php echo _url('admin/post'); ?>" <?php if(_arg(1) == 'post') echo 'class="active"'; ?>><?php echo _t('Posts'); ?></a>
+						<a href="<?php echo _url('admin/post'); ?>" <?php if (_arg(1) == 'post') echo 'class="active"'; ?>><?php echo _t('Posts'); ?></a>
 					</li>
 					<li>
-						<a href="<?php echo _url('admin/category'); ?>" <?php if(_arg(1) == 'category') echo 'class="active"'; ?>><?php echo _t('Categories'); ?></a>
+						<a href="<?php echo _url('admin/category'); ?>" <?php if (_arg(1) == 'category') echo 'class="active"'; ?>><?php echo _t('Categories'); ?></a>
 					</li>
-					<?php if(auth_isAdmin()){ ?>
+					<?php if (auth_isAdmin()) { ?>
 					<li>
-						<a href="<?php echo _url('admin/user'); ?>" <?php if(_arg(1) == 'user') echo 'class="active"'; ?>><?php echo _t('Users'); ?></a>
+						<a href="<?php echo _url('admin/user'); ?>" <?php if (_arg(1) == 'user') echo 'class="active"'; ?>><?php echo _t('Users'); ?></a>
 					</li>
 					<?php } ?>
 				</ul>

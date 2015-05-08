@@ -23,7 +23,7 @@ $lc_cleanRoute = '';
  * @internal
  * Initialize URL routing
  */
-function route_init(){
+function route_init() {
 	if (!isset($_SERVER['HTTP_REFERER'])) {
 		$_SERVER['HTTP_REFERER'] = '';
 	}
@@ -70,22 +70,21 @@ function route_request() {
 	global $lc_lang;
 	global $lc_cleanURL;
 
-	if(_getLangInURI() === false){
+	if (_getLangInURI() === false) {
 		$lc_lang = $lang = _cfg('defaultLang');
 	}
 
 	if (isset($_GET[ROUTE]) && is_string($_GET[ROUTE])) {
 		// This is a request with a ?route=foo/bar query string.
 		$path = $_GET[ROUTE];
-		if(isset($_GET['lang']) && $_GET['lang']){
+		if (isset($_GET['lang']) && $_GET['lang']) {
 			$lang = strip_tags(urldecode($_GET['lang']));
 			$lang = rtrim($lang, '/');
-			if( array_key_exists($lang, $lc_languages) ){
+			if ( array_key_exists($lang, $lc_languages) ) {
 				$lc_lang = $lang;
 			}
 		}
-	}
-	elseif (isset($_SERVER['REQUEST_URI'])) {
+	} elseif (isset($_SERVER['REQUEST_URI'])) {
 		// This request is either a clean URL, or 'index.php', or nonsense.
 		// Extract the path from REQUEST_URI.
 		$request_path = urldecode(strtok($_SERVER['REQUEST_URI'], '?'));
@@ -93,13 +92,13 @@ function route_request() {
 		$request_path = ltrim($request_path, '/');
 
 		$lang = _getLangInURI();
-		if($lang){
+		if ($lang) {
 			$lc_lang = $lang;
 			$path = trim($request_path, '/');
-			if(strpos($path, $lc_lang) === 0){
+			if (strpos($path, $lc_lang) === 0) {
 				$path = substr($path, strlen($lang));
 			}
-		}else{
+		} else {
 			$path = trim($request_path);
 		}
 
@@ -110,8 +109,7 @@ function route_request() {
 		if ($path == basename($_SERVER['PHP_SELF'])) {
 		  $path = '';
 		}
-	}
-	else {
+	} else {
 		// This is the front page.
 		$path = '';
 	}
@@ -123,7 +121,7 @@ function route_request() {
 
 	$protocol = current(explode('/', $_SERVER['SERVER_PROTOCOL']));
 	$base = strtolower($protocol) . '://' . $_SERVER['HTTP_HOST'];
-	if($lc_baseURL) $base .= '/' . $lc_baseURL;
+	if ($lc_baseURL) $base .= '/' . $lc_baseURL;
 
 	/**
 	 * @ignore Path to the web root
@@ -147,35 +145,35 @@ function route_request() {
  *
  * @return mixed The path if found; otherwise return false
  */
-function route_search(){
+function route_search() {
 	$q 		= route_path();
 	$seg 	= explode('/', $q);
 	$count 	= sizeof($seg);
 	$sites 	= _cfg('sites');
 
-	if($seg[0] == LC_NAMESPACE && is_array($sites) && array_key_exists(LC_NAMESPACE, $sites)){
+	if ($seg[0] == LC_NAMESPACE && is_array($sites) && array_key_exists(LC_NAMESPACE, $sites)) {
 		$seg[0] = $sites[LC_NAMESPACE];
 	}
 
 	$path = implode('/', $seg);
-	if(is_file($path) && file_exists($path)){
-		if(count($seg) > 1){
+	if (is_file($path) && file_exists($path)) {
+		if (count($seg) > 1) {
 			_cfg('cleanRoute', implode('/', array_slice($seg, 0, count($seg)-1)));
-		}else{
+		} else {
 			_cfg('cleanRoute', '');
 		}
 		return $path;
 	}
 
 	$append	= array('/index.php', '.php');
-	for($i=$count; $i>0; $i--){
+	for ($i=$count; $i>0; $i--) {
 		# try to look for
 		# ~/path/to/the-given-name/index.php
 		# ~/path/to/the-given-name.php
-		foreach($append as $a){
+		foreach ($append as $a) {
 			$cleanRoute = implode('/', array_slice($seg, 0, $i));
 			$path = $cleanRoute . $a;
-			if(is_file($path) && file_exists($path)){
+			if (is_file($path) && file_exists($path)) {
 				_cfg('cleanRoute', rtrim($cleanRoute, '/'));
 				return $path;
 			}
@@ -189,9 +187,9 @@ function route_search(){
  * Alias `_r()`
  * @return string
  */
-function route_path(){
+function route_path() {
 	$path = '';
-	if(isset($_GET[ROUTE])){
+	if (isset($_GET[ROUTE])) {
 		$path = urldecode($_GET[ROUTE]);
 	}
 	return $path;
@@ -200,7 +198,7 @@ function route_path(){
  * @internal
  * Define the custom routing path
  */
-function route_map($path, $to=''){
+function route_map($path, $to='') {
 	global $lc_routes;
 	$lc_routes[$path] = $to;
 
@@ -222,74 +220,74 @@ function route_map($path, $to=''){
  * @return string
  *
  */
-function route_url($path=NULL, $queryStr=array(), $lang=''){
+function route_url($path=NULL, $queryStr=array(), $lang='') {
 	global $lc_cleanURL;
 	global $lc_translationEnabled;
 	global $lc_sites;
 
-	if($lang === false) $forceExcludeLangInURL = true;
+	if ($lang === false) $forceExcludeLangInURL = true;
 	else $forceExcludeLangInURL = false;
 
-	if( stripos($path, 'http') === 0 ){
+	if ( stripos($path, 'http') === 0 ) {
 		return $path;
-	}else{
-		if(strtolower($path) == 'home'){
-			if(isset($GLOBALS['lc_homeRouting']) && $GLOBALS['lc_homeRouting']) $path = $GLOBALS['lc_homeRouting'];
+	} else {
+		if (strtolower($path) == 'home') {
+			if (isset($GLOBALS['lc_homeRouting']) && $GLOBALS['lc_homeRouting']) $path = $GLOBALS['lc_homeRouting'];
 		}
 
-		if($path && is_string($path)){
+		if ($path && is_string($path)) {
 			$path = rtrim($path, '/');
-		}else{
+		} else {
 			$r = (_isRewriteRule()) ? REQUEST_URI : route_path();
 			$path = route_updateQueryStr($r, $queryStr);
 		}
 	}
 
 	$q = '';
-	if($queryStr && is_array($queryStr) && count($queryStr)){
-		foreach($queryStr as $key => $value){
-			if(is_array($value)){
+	if ($queryStr && is_array($queryStr) && count($queryStr)) {
+		foreach ($queryStr as $key => $value) {
+			if (is_array($value)) {
 				$v = array_map('urlencode', $value);
 				$value = implode('/', $v);
-			}else{
+			} else {
 				$value = urlencode($value);
 			}
-			if(is_numeric($key)){
-				if($lc_cleanURL) $q .= '/' . $value;
+			if (is_numeric($key)) {
+				if ($lc_cleanURL) $q .= '/' . $value;
 				else $q .= '&'.$value;
-			}else{
-				if($lc_cleanURL) $q .= '/-' . $key . '/' . $value;
+			} else {
+				if ($lc_cleanURL) $q .= '/-' . $key . '/' . $value;
 				else $q .= '&' . $key . '=' . $value;
 			}
 		}
 	}
 
-	if(is_array($lc_sites) && array_key_exists(LC_NAMESPACE, $lc_sites)){
-		$regex = '/\b^('.$lc_sites[LC_NAMESPACE].'){1}\b/i';
+	if (is_array($lc_sites) && array_key_exists(LC_NAMESPACE, $lc_sites)) {
+		$regex = '/\b^('.$lc_sites[LC_NAMESPACE].') {1}\b/i';
 		$path = preg_replace($regex, LC_NAMESPACE, $path);
 	}
 
 	# If URI contains the language code, force to include it in the URI
 	$l = _getLangInURI();
-	if(empty($lang) && $l){
+	if (empty($lang) && $l) {
 		$lang = $l;
 	}
 
 	$url = WEB_ROOT;
-	if($lang && $lc_translationEnabled && !$forceExcludeLangInURL){
-		if($lc_cleanURL) $url .= $lang.'/';
+	if ($lang && $lc_translationEnabled && !$forceExcludeLangInURL) {
+		if ($lc_cleanURL) $url .= $lang.'/';
 		else $q .= '&lang=' . $lang;
 	}
 
-	if(strtolower($path) == 'home') $path = '';
+	if (strtolower($path) == 'home') $path = '';
 
-	if($lc_cleanURL){
+	if ($lc_cleanURL) {
 		$url .= $path . $q;
-	}else{
+	} else {
 		$url .= $path . '?' . ltrim($q, '&');
 		$url = trim($url, '?');
 	}
-	$url = preg_replace('/(\s){1,}/', '+', $url); # replace the space with "+"
+	$url = preg_replace('/(\s) {1,}/', '+', $url); # replace the space with "+"
 	return $url;
 }
 /**
@@ -304,41 +302,41 @@ function route_url($path=NULL, $queryStr=array(), $lang=''){
  * 	)
  * @return string The updated route path
  */
-function route_updateQueryStr($path, &$queryStr=array()){
+function route_updateQueryStr($path, &$queryStr=array()) {
 	global $lc_cleanURL;
-	if(count($queryStr)){
-		if($lc_cleanURL){ # For clean URLs like /path/query/str/-key/value
-			foreach($queryStr as $key => $value){
+	if (count($queryStr)) {
+		if ($lc_cleanURL) { # For clean URLs like /path/query/str/-key/value
+			foreach ($queryStr as $key => $value) {
 				$route = _arg($key, $path);
-				if($route){
-					if(is_string($key)){
+				if ($route) {
+					if (is_string($key)) {
 						$regex = '/(\-'.$key.'\/)';
-						if(is_array($route)) $regex .= '('.implode('\/', $route).'+)';
+						if (is_array($route)) $regex .= '('.implode('\/', $route).'+)';
 						else $regex .= '('.$route.'+)';
 						$regex .= '/i';
 					}
-					elseif(is_numeric($key)){
-						$regex = '/\b('.$route.'){1}\b/i';
+					elseif (is_numeric($key)) {
+						$regex = '/\b('.$route.') {1}\b/i';
 					}
 					else{
 						continue;
 					}
-				}else{ # if the key could not be retrieved from URI, skip it
+				} else { # if the key could not be retrieved from URI, skip it
 					continue;
 				}
-				if(preg_match($regex, $path)){ # find the key in URI
-					if(is_array($value)){
+				if (preg_match($regex, $path)) { # find the key in URI
+					if (is_array($value)) {
 						$v = array_map('urlencode', $value);
 						$value = implode('/', $v);
-					}else{
+					} else {
 						$value = urlencode($value);
 					}
-					if(is_numeric($key)) $path = preg_replace($regex, $value, $path); # no key
+					if (is_numeric($key)) $path = preg_replace($regex, $value, $path); # no key
 					else $path = preg_replace($regex, '-'.$key.'/'.$value, $path);
 					unset($queryStr[$key]); # removed the replaced query string from the array
 				}
 			}
-		}else{ # For unclean URLs like /path/query/str?key=value
+		} else { # For unclean URLs like /path/query/str?key=value
 			parse_str($_SERVER['QUERY_STRING'], $serverQueryStr);
 			$queryStr = array_merge($serverQueryStr, $queryStr);
 		}

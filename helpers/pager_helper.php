@@ -18,7 +18,7 @@
  * This class is part of the PHPLucidFrame library.
  * Helper for pagination
  */
-class Pager{
+class Pager {
 	/** @var int The current page no. */
 	private $page 			= 1;
 	/** @var int The customized query string name for "page" */
@@ -54,8 +54,8 @@ class Pager{
 	 * Constructor
 	 * @param string $pageQueryStr The customized page query string name
 	 */
-	public function Pager($pageQueryStr=''){
-		if($pageQueryStr) $this->pageQueryStr = $pageQueryStr;
+	public function Pager($pageQueryStr='') {
+		if ($pageQueryStr) $this->pageQueryStr = $pageQueryStr;
 		$page = _arg($this->pageQueryStr);
 		$this->page = ( $page ) ? $page : 1;
 	}
@@ -64,17 +64,17 @@ class Pager{
 	 * @param string $key The property name
 	 * @param mixed $value The value to be set to the property
 	 */
-	public function set($key, $value=''){
-		if(isset($this->$key)) $this->$key = $value;
-		if($key == 'htmlTag') $this->setHtmlTag($value);
+	public function set($key, $value='') {
+		if (isset($this->$key)) $this->$key = $value;
+		if ($key == 'htmlTag') $this->setHtmlTag($value);
 	}
 	/**
 	 * Getter functions for the properties
 	 * @param string $key The property name
 	 * @return mixed The value of the property
 	 */
-	public function get($key){
-		if(isset($this->$key)) return $this->$key;
+	public function get($key) {
+		if (isset($this->$key)) return $this->$key;
 		return '';
 	}
 	/**
@@ -83,11 +83,11 @@ class Pager{
 	 * @param string $value The HTML tag - <table>, <ul> or <div>
 	 * @return void
 	 */
-	private function setHtmlTag($tag='<table>'){
-		if(!in_array($tag, array('<table>','<ul>', '<div>'))){
+	private function setHtmlTag($tag='<table>') {
+		if (!in_array($tag, array('<table>','<ul>', '<div>'))) {
 			$this->htmlTag = '<table>';
 		}
-		switch($this->htmlTag){
+		switch($this->htmlTag) {
 			case '<table>':
 				$this->parentOpenTag 	= '<table class="pager" border="0" cellpadding="0" cellspacing="0"><tr>';
 				$this->parentCloseTag 	= '</tr></table>';
@@ -128,14 +128,14 @@ class Pager{
 	 * 		[lastPageEnable] => xx
 	 * 	)
 	 */
-	public function calculate(){
+	public function calculate() {
 
-		if( ! ($this->page && $this->itemsPerPage && $this->pageNumLimit && $this->total) ){
+		if ( ! ($this->page && $this->itemsPerPage && $this->pageNumLimit && $this->total) ) {
 			$this->enabled = false;
 			return false;
 		}
 
-		if(!is_numeric($this->page)) $this->page = 1;
+		if (!is_numeric($this->page)) $this->page = 1;
 		$this->offset = ($this->page - 1) * $this->itemsPerPage;
 
 		$nav = array();
@@ -143,9 +143,9 @@ class Pager{
 		$nav['thisPage'] = $this->page;
 
 		$maxPage = ceil($this->total/$this->itemsPerPage);
-		if($this->page <= $this->pageNumLimit){
+		if ($this->page <= $this->pageNumLimit) {
 		  $startPage = 1;
-		}else{
+		} else {
 		  $startPage = (floor(($this->page-1) / $this->pageNumLimit) * $this->pageNumLimit)+1;
 		}
 
@@ -153,32 +153,32 @@ class Pager{
 		$k = 0;
 		$nav['beforePages'] = array();
 		$nav['afterPages'] = array();
-		for($pageCount=0, $i = $startPage ; $i<=$maxPage; $i++){
-			if($i < $this->page){
+		for ($pageCount=0, $i = $startPage ; $i<=$maxPage; $i++) {
+			if ($i < $this->page) {
 				$nav['beforePages'][$j] = $i;
 				$j++;
 			}
 
-			if($i > $this->page){
+			if ($i > $this->page) {
 				$nav['afterPages'][$k] = $i;
 				$k++;
 			}
 
 			$pageCount ++;
-			if($pageCount == $this->pageNumLimit) # display page number only.
+			if ($pageCount == $this->pageNumLimit) # display page number only.
 			break;
 		}
 
 		# First Page
-		if ($this->page > 1){
+		if ($this->page > 1) {
 			$nav['firstPageNo'] = 1;
 			$nav['firstPageEnable'] = 1;
-		}else{
+		} else {
 			$nav['firstPageEnable'] = 0;
 		}
 
 		# Previous Page
-		if ($this->page > 1){
+		if ($this->page > 1) {
 			$nav['prePageNo'] = $this->page-1;
 			$nav['prePageEnable'] = 1;
 		} else{
@@ -194,26 +194,26 @@ class Pager{
 			$nav['lastPageNo'] = $maxPage;
 			$nav['lastPageEnable'] = 1;
 
-		}else{
+		} else {
 			$nav['nextPageEnable'] = 0;
 			$nav['lastPageEnable'] = 0;
 		}
 		# Display multi page or not
-		if(($maxPage <= 1) || ($this->page > $maxPage)){
+		if (($maxPage <= 1) || ($this->page > $maxPage)) {
 			$this->enabled = false;
-		}else{
+		} else {
 			$this->enabled = true;
 		}
 
 		# if page count is less than page num limit, fill page num till page num limit
-		if($maxPage > $this->pageNumLimit){
+		if ($maxPage > $this->pageNumLimit) {
 			$allPagesCount = count($nav['beforePages']) + count($nav['afterPages']) + 1;
-			if($allPagesCount < $this->pageNumLimit){
+			if ($allPagesCount < $this->pageNumLimit) {
 				$page = $this->page - 1;
 				$filledPageCount = $this->pageNumLimit - $allPagesCount;
-				if(isset($nav['beforePages'])) $filledPageCount += count($nav['beforePages']);
+				if (isset($nav['beforePages'])) $filledPageCount += count($nav['beforePages']);
 				$x = 0;
-				while($filledPageCount != $x){
+				while ($filledPageCount != $x) {
 					$filledPages[] = $page;
 					$page--;
 					$x++;
@@ -230,61 +230,61 @@ class Pager{
 	/**
 	 * Display the pagination
 	 */
-	public function display(){
+	public function display() {
 		$url 		= ($this->url) ? $this->url : NULL;
 		$ajax 		= $this->ajax;
 		$imagePath 	= isset($this->imagePath) ? $this->imagePath : '';
 
 		$this->setHtmlTag($this->htmlTag);
 
-		if($this->enabled && $this->result){
+		if ($this->enabled && $this->result) {
 			extract($this->result);
 
 			echo $this->parentOpenTag;
 			# first
-			if($firstPageEnable){
+			if ($firstPageEnable) {
 				echo '<'.$this->childTag.' class="first-enabled">';
-				if($ajax){
+				if ($ajax) {
 					echo '<a href="'._url($url).'" rel="'.$firstPageNo.'">';
-				}else{
+				} else {
 					echo '<a href="'._url($url, array($this->pageQueryStr => $firstPageNo)).'">';
 				}
-				if($imagePath){
+				if ($imagePath) {
 					echo '<img border="0" src="'.$imagePath.'start.png" />';
-				}else{
+				} else {
 					echo '<label>'._t('First').'</label>';
 				}
 				echo '</a>';
 				echo '</'.$this->childTag.'>';
-			}else{
+			} else {
 				echo '<'.$this->childTag.' class="first-disabled">';
-				if($imagePath){
+				if ($imagePath) {
 					echo '<img border="0" src="'.$imagePath.'start_disabled.png" />';
-				}else{
+				} else {
 					echo '<label>'._t('First').'</label>';
 				}
 				echo '</'.$this->childTag.'>';
 			}
 			# prev
-			if($prePageEnable){
+			if ($prePageEnable) {
 				echo '<'.$this->childTag.' class="prev-enabled">';
-				if($ajax){
+				if ($ajax) {
 					echo '<a href="'._url($url).'" rel="'.$prePageNo.'">';
-				}else{
+				} else {
 					echo '<a href="'._url($url, array($this->pageQueryStr => $prePageNo)).'">';
 				}
-				if($imagePath){
+				if ($imagePath) {
 					echo '<img border="0" src="'.$imagePath.'previous.png" />';
-				}else{
+				} else {
 					echo '<label>'._t('&laquo; Prev').'</label>';
 				}
 				echo '</a>';
 				echo '</'.$this->childTag.'>';
-			}else{
+			} else {
 				echo '<'.$this->childTag.' class="prev-disabled">';
-				if($imagePath){
+				if ($imagePath) {
 					echo '<img border="0" src="'.$imagePath.'previous_disabled.png" />';
-				}else{
+				} else {
 					echo '<label>'._t('&laquo; Prev').'</label>';
 				}
 				echo '</'.$this->childTag.'>';
@@ -292,12 +292,12 @@ class Pager{
 			echo '<'.$this->childTag.' class="pages">';
 
 			# before pages
-			if(isset($beforePages) && $beforePages){
-				foreach($beforePages as $oneBeforePage){
+			if (isset($beforePages) && $beforePages) {
+				foreach ($beforePages as $oneBeforePage) {
 					echo '<span>';
-					if($ajax){
+					if ($ajax) {
 						echo '<a href="'._url($url).'" rel="'.$oneBeforePage.'">'.$oneBeforePage.'</a>';
-					}else{
+					} else {
 						echo '<a href="'._url($url, array($this->pageQueryStr => $oneBeforePage)).'">'.$oneBeforePage.'</a>';
 					}
 					echo '</span>';
@@ -306,12 +306,12 @@ class Pager{
 			echo '<span class="currentPage">'.$thisPage.'</span>';
 
 			# after pages
-			if(isset($afterPages) && $afterPages){
-				foreach($afterPages as $oneAfterPage){
+			if (isset($afterPages) && $afterPages) {
+				foreach ($afterPages as $oneAfterPage) {
 					echo '<span>';
-					if($ajax){
+					if ($ajax) {
 						echo '<a href="'._url($url).'" rel="'.$oneAfterPage.'">'.$oneAfterPage.'</a>';
-					}else{
+					} else {
 						echo '<a href="'._url($url, array($this->pageQueryStr => $oneAfterPage)).'">'.$oneAfterPage.'</a>';
 					}
 					echo '</span>';
@@ -320,50 +320,50 @@ class Pager{
 			echo '</'.$this->childTag.'>';
 
 			# next
-			if($nextPageEnable){
+			if ($nextPageEnable) {
 				echo '<'.$this->childTag.' class="next-enabled">';
-				if($ajax){
+				if ($ajax) {
 					echo '<a href="'._url($url).'" rel="'.$nextPageNo.'">';
-				}else{
+				} else {
 					echo '<a href="'._url($url, array($this->pageQueryStr => $nextPageNo)).'">';
 				}
-				if($imagePath){
+				if ($imagePath) {
 					echo '<img border="0" src="'.$imagePath.'next.png" />';
-				}else{
+				} else {
 					echo '<label>'._t('Next &raquo;').'</label>';
 				}
 				echo '</a>';
 				echo '</'.$this->childTag.'>';
-			}else{
+			} else {
 				echo '<'.$this->childTag.' class="next-disabled">';
-				if($imagePath){
+				if ($imagePath) {
 					echo '<img border="0" src="'.$imagePath.'next_disabled.png" />';
-				}else{
+				} else {
 					echo '<label>'._t('Next &raquo;').'</label>';
 				}
 				echo '</'.$this->childTag.'>';
 			}
 
 			# last
-			if($lastPageEnable){
+			if ($lastPageEnable) {
 				echo '<'.$this->childTag.' class="last-enabled">';
-				if($ajax){
+				if ($ajax) {
 					echo '<a href="'._url($url).'" rel="'.$lastPageNo.'">';
-				}else{
+				} else {
 					echo '<a href="'._url($url, array($this->pageQueryStr => $lastPageNo)).'">';
 				}
-				if($imagePath){
+				if ($imagePath) {
 					echo '<img border="0" src="'.$imagePath.'end.png" />';
-				}else{
+				} else {
 					echo '<label>'._t('Last').'</label>';
 				}
 				echo '</a>';
 				echo '</'.$this->childTag.'>';
-			}else{
+			} else {
 				echo '<'.$this->childTag.' class="last-disabled">';
-				if($imagePath){
+				if ($imagePath) {
 					echo '<img border="0" src="'.$imagePath.'end_disabled.png" />';
-				}else{
+				} else {
 					echo '<label>'._t('Last').'</label>';
 				}
 				echo '</'.$this->childTag.'>';

@@ -30,12 +30,12 @@
  *
  * @return array The array of inserted IDs
  */
-function example_photoUpload($file, $post){
+function example_photoUpload($file, $post) {
 	$ids = array();
 	$sql = 'SELECT postId FROM '.db_prefix().'post_image WHERE pimgId = :id';
-	if( isset($post['photo-id']) && $postId = db_fetch($sql, array(':id' => $post['photo-id'][0])) ){
-		if( db_delete_multi('post_image', array('pimgId' => $post['photo-id'])) ){
-			foreach($file['uploads'] as $dimension => $file){
+	if ( isset($post['photo-id']) && $postId = db_fetch($sql, array(':id' => $post['photo-id'][0])) ) {
+		if ( db_delete_multi('post_image', array('pimgId' => $post['photo-id'])) ) {
+			foreach ($file['uploads'] as $dimension => $file) {
 				$width = current(explode('x', $dimension));
 				# Save new file names in db
 				db_insert('post_image', array(
@@ -58,8 +58,8 @@ function example_photoUpload($file, $post){
  * @param array $ids The IDs to delete
  * @return boolean TRUE on success; otherwise FALSE
  */
-function example_photoDelete($ids){
-	if($ids){
+function example_photoDelete($ids) {
+	if ($ids) {
 		return db_delete_multi('post_image', array('pimgId' => $ids));
 	}
 }
@@ -90,11 +90,11 @@ function example_photoDelete($ids){
  *
  * @return array The array of inserted IDs
  */
-function example_docUpload($file, $post){
+function example_docUpload($file, $post) {
 	$ids = array();
 	$docId = isset($post['doc-id']) ? $post['doc-id'] : 0;
-	if( $docId && db_delete_multi('document', array('docId' => $docId)) ){
-		foreach($file['uploads'] as $file){
+	if ( $docId && db_delete_multi('document', array('docId' => $docId)) ) {
+		foreach ($file['uploads'] as $file) {
 			# Save new file names in db
 			db_insert('document', array(
 				'docFileName' => $file,
@@ -113,8 +113,8 @@ function example_docUpload($file, $post){
  * @param array $ids The IDs to delete
  * @return boolean TRUE on success; otherwise FALSE
  */
-function example_docDelete($ids){
-	if($ids){
+function example_docDelete($ids) {
+	if ($ids) {
 		return db_delete_multi('document', array('docId' => $ids));
 	}
 }

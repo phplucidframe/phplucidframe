@@ -6,7 +6,7 @@
  */
 $success = false;
 
-if(sizeof($_POST)){
+if (sizeof($_POST)) {
 	$post = _post($_POST);
 	extract($post);
 
@@ -30,16 +30,16 @@ if(sizeof($_POST)){
 	$validations = array(
 	);
 
-	if(Validation::check($validations) == true){
+	if (Validation::check($validations) == true) {
 		/**
 		Database operations here
 		*/
 
-		if($success){
+		if ($success) {
 			Form::set('success', true);
 			Form::set('redirect', _url('home'));
 		}
-	}else{
+	} else {
 		Form::set('error', Validation::$errors);
 	}
 }

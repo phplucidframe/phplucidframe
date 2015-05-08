@@ -5,10 +5,10 @@ $lang 		= _getLang();
 $pageTitle 	= _t('Add New Post');
 $id 		= 0;
 $id 		= _arg(3);
-if($id){
+if ($id) {
 	$pageTitle = _t('Edit Post');
-}else{
-	if($lang != _defaultLang()) _redirect('admin/post/setup/', NULL, _defaultLang());
+} else {
+	if ($lang != _defaultLang()) _redirect('admin/post/setup/', NULL, _defaultLang());
 }
 
 include('query.php');

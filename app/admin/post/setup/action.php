@@ -1,6 +1,6 @@
 <?php
 $success = false;
-if(sizeof($_POST)){
+if (sizeof($_POST)) {
 	$post 	= _post($_POST);
 	$post['txtBody'] = _xss($_POST['txtBody']);	# if it is populated by Rich Text Editor
 	extract($post);
@@ -23,8 +23,8 @@ if(sizeof($_POST)){
 		'rules' 	=> array('mandatory')
 	);
 
-	if(Form::validate() && Validation::check($validations) == true){
-		if($hidEditId){ # edit
+	if (Form::validate() && Validation::check($validations) == true) {
+		if ($hidEditId) { # edit
 			$data = array(
 				'postId' 	=> $hidEditId,
 				'postTitle_'.$hidLang => $txtTitle,
@@ -32,23 +32,23 @@ if(sizeof($_POST)){
 				'catId'		=> $cboCategory,
 			);
 
-			if($hidLang == $lc_defaultLang){ # default langugage
+			if ($hidLang == $lc_defaultLang) { # default langugage
 				$useSlug = true;
 				$data['postTitle'] 	= $txtTitle;
 				$data['postBody'] 	= $txtBody;
-			}else{
+			} else {
 				$useSlug = false;
 			}
 
-			if(isset($txtSlug) && $txtSlug){ # if user entered slug manually
+			if (isset($txtSlug) && $txtSlug) { # if user entered slug manually
 				$postSlug = _slug($txtSlug, $table='post', array('postId !=' => $hidEditId));
 				$data['slug'] = $postSlug;
 			}
 
-			if(db_update('post', $data, $useSlug)){
+			if (db_update('post', $data, $useSlug)) {
 				$success = true;
 			}
-		}else{ # new
+		} else { # new
 			$data = array(
 				'postTitle' => $txtTitle,
 				'postBody' 	=> $txtBody,
@@ -58,19 +58,19 @@ if(sizeof($_POST)){
 				'uid'		=> $_auth->uid
 			);
 
-			if(isset($txtSlug) && $txtSlug){ # if user entered slug manually
+			if (isset($txtSlug) && $txtSlug) { # if user entered slug manually
 				$postSlug = _slug($txtSlug, $table='post', $condition=NULL);
 				$data['slug'] = $postSlug;
 			}
-			if(db_insert('post', $data)){
+			if (db_insert('post', $data)) {
 				$success = true;
 			}
 		}
-		if($success){
+		if ($success) {
 			Form::set('success', true);
 			Form::set('redirect', _url('admin/post/list'));
 		}
-	}else{
+	} else {
 		Form::set('error', Validation::$errors);
 	}
 }

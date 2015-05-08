@@ -24,8 +24,8 @@ $sql = "SELECT u.* FROM ".db_prefix()."user as u
 		LIMIT ".$pager->get('offset').", ".$pager->get('itemsPerPage');
 $result = db_query($sql, $args);
 
-if($result){
-	if(db_numRows($result)){
+if ($result) {
+	if (db_numRows($result)) {
 	?>
 	<table cellpadding="0" cellspacing="0" border="0" class="list users">
 		<tr class="label">
@@ -36,7 +36,7 @@ if($result){
            	<td><?php echo _t('User Role') ?></td>
 		</tr>
 		<?php
-		while($row = db_fetchObject($result)){
+		while ($row = db_fetchObject($result)) {
 			// Edit & delete flag
 			$edit = true;
 			$delete = true;
@@ -52,7 +52,7 @@ if($result){
 	                    <a href="<?php echo _url('admin/user/setup',array($row->uid)); ?>" class="edit" title="Edit" >
 	                        <span><?php echo _t('Edit'); ?></span>
 	                    </a>
-	                <?php }else{ ?>
+	                <?php } else { ?>
 	                	<span class="edit disabled"></span>
 	                <?php } ?>
 	            </td>
@@ -84,7 +84,7 @@ if($result){
 	</table>
 	<div class="pager-container"><?php echo $pager->display(); ?></div>
 	<?php
-	}else{
+	} else {
 	?>	<div class="no-record"><?php echo _t("You don't have any user! %sLet's go create a new user!%s", '<a href="'._url('admin/user/setup').'">', '</a>'); ?></div>
 	<?php
 	}

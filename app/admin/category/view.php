@@ -25,11 +25,11 @@
 				<td class="entry"><input type="text" name="txtName" id="txtName" size="30" /></td>
 			</tr>
 			<?php $langs = _langs(_defaultLang()); ?>
-			<?php foreach($langs as $lcode => $lname){ ?>
+			<?php foreach ($langs as $lcode => $lname) { ?>
 			<tr>
 				<td class="label">
 					<?php echo _t('Name'); ?>
-					<?php if(_langName($lcode)){ ?>
+					<?php if (_langName($lcode)) { ?>
 					<label class="lang">(<?php echo _langName($lcode); ?>)</label>
 					<?php } ?>
 				</td>
