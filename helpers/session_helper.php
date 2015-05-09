@@ -83,6 +83,8 @@ function __session_init() {
 	session_start();
 }
 /**
+ * @internal
+ *
  * A callback for Database Session save handler
  * The open callback executed when the session is being opened.
  *
@@ -92,6 +94,8 @@ function __session_open() {
 	return true;
 }
 /**
+ * @internal
+ *
  * A callback for database Session save handler
  * The close callback executed when the session is being opened.
  *
@@ -107,6 +111,8 @@ function __session_close() {
 	return true;
 }
 /**
+ * @internal
+ *
  * A callback for database Session save handler
  * The read callback is executed when the session starts or when `session_start()` is called
  * Used to read from a database session
@@ -123,6 +129,8 @@ function __session_read($sessionId) {
 	return ($data) ? $data : false;
 }
 /**
+ * @internal
+ *
  * A callback for database Session save handler
  * The write callback is called when the session needs to be saved and closed.
  * Helper function called on write for database sessions.
@@ -148,6 +156,8 @@ function __session_write($sessionId, $data) {
 	return db_query($sql, $record) ? true : false;
 }
 /**
+ * @internal
+ *
  * A callback for database Session save handler
  * This destroy callback is executed when a session is destroyed with `session_destroy()`
  * It is called on the destruction of a database session.
@@ -160,6 +170,8 @@ function __session_destroy($sessionId) {
 	return db_delete(LC_SESSION_TABLE, array('sid' => $sessionId)) ? true : false;
 }
 /**
+ * @internal
+ *
  * A callback for database Session save handler
  * The garbage collector callback is invoked internally by PHP periodically in order to purge old database session data
  *
