@@ -2,7 +2,7 @@ LC.Page.Post = {
 	Setup : {
 		url : LC.Page.url('admin/post/setup'), /* mapping directory */
 		/* Initialize the page */
-		init : function(mode) {
+		init : function() {
 		}
 	},
 	List : {
@@ -12,23 +12,23 @@ LC.Page.Post = {
 		init : function(lang) {
 			LC.Page.Post.List.list(lang);
 			/* delete confirmation */
-			$( "#dialog-confirm" ).dialog({
+			$('#dialog-confirm').dialog({
 				modal: true,
 				autoOpen: false,
 				resizable: false,
 				height: 133,
 				buttons: {
 					OK: function() {
-						$(this).dialog( "close" );
+						$(this).dialog('close');
 						LC.Page.Post.List.doDelete();
 					},
 					Cancel: function() {
-						$(this).dialog( "close" );
+						$(this).dialog('close');
 					}
 				}
 			});
 
-			$( "#btnNew" ).click(function() {
+			$('#btnNew').click(function() {
 				window.location = LC.Page.url('admin/post/setup');
 			});
 		},
@@ -38,7 +38,7 @@ LC.Page.Post = {
 		},
 		/* Do delete action upon confirm OK */
 		doDelete : function() {
-			LC.Page.request("POST", // type
+			LC.Page.request('POST', // type
 				LC.Page.Post.List.url + 'action.php', // page to post
 				{ // data to post
 					hidDeleteId: $('#hidDeleteId').val(),
@@ -50,34 +50,34 @@ LC.Page.Post = {
 			);
 		},
 		list : function(lang) {
-			LC.Page.Post.List.queryStr = { lang: lang }
+			LC.Page.Post.List.queryStr = { lang: lang };
 			LC.Page.request( 'list', LC.Page.Post.List.url + 'list.php', LC.Page.Post.List.queryStr );
 		}
 	}
-}
+};
 
 LC.Page.Category = {
 	url : LC.Page.url('admin/category'), /* mapping directory */
 	/* Initialize the Category page */
 	init : function() {
 		/* delete confirmation */
-		$( "#dialog-confirm" ).dialog({
+		$('#dialog-confirm').dialog({
 			modal: true,
 			autoOpen: false,
 			resizable: false,
 			height: 133,
 			buttons: {
 				OK: function() {
-					$(this).dialog( "close" );
+					$(this).dialog('close');
 					LC.Page.Category.doDelete();
 				},
 				Cancel: function() {
-					$(this).dialog( "close" );
+					$(this).dialog('close');
 				}
 			}
 		});
 		/* Add/Edit area */
-		$( "#dialog-category" ).dialog({
+		$('#dialog-category').dialog({
 			modal: true,
 			autoOpen: false,
 			resizable: false,
@@ -85,7 +85,7 @@ LC.Page.Category = {
 			minHeight: 120
 		});
 
-		$( "#btnNew" ).click(function() {
+		$('#btnNew').click(function() {
 			LC.Page.Category.create();
 		});
 
@@ -111,9 +111,11 @@ LC.Page.Category = {
 			$form.find('#hidEditId').val( id );
 			$form.find('input[name=txtName]').val($data.catName);
 			// load data for the other translation text boxes
-			if (typeof $data.catName_i18n != 'undefined') {
-				for (c in $data.catName_i18n) {
-					$form.find('input[name=txtName_'+c+']').val($data.catName_i18n[c]);
+			if (typeof $data.catName_i18n !== 'undefined') {
+				for (var c in $data.catName_i18n) {
+					if ($data.catName_i18n.instances.hasOwnProperty(c)) {
+						$form.find('input[name=txtName_'+c+']').val($data.catName_i18n[c]);
+					}
 				}
 			}
 			$('#dialog-category').dialog( 'open' );
@@ -126,7 +128,7 @@ LC.Page.Category = {
 	},
 	/* Do delete action upon confirm OK */
 	doDelete : function() {
-		LC.Page.request("POST", // type
+		LC.Page.request('POST', // type
 			LC.Page.Category.url + 'action.php', // page to post
 			{ // data to post
 				hidDeleteId: $('#hidDeleteId').val(),
@@ -144,7 +146,7 @@ LC.Page.User = {
 		url : LC.Page.url('admin/user/setup'), /* mapping directory */
 		/* Initialize the page */
 		init : function() {
-			$( "#btnCancel" ).click(function() {
+			$('#btnCancel').click(function() {
 				window.location = LC.Page.url('admin/user/list');
 			});
 		}
@@ -154,23 +156,23 @@ LC.Page.User = {
 		/* Initialize the page */
 		init : function() {
 			/* delete confirmation */
-			$( "#dialog-confirm" ).dialog({
+			$('#dialog-confirm').dialog({
 				modal: true,
 				autoOpen: false,
 				resizable: false,
 				height: 133,
 				buttons: {
 					OK: function() {
-						$(this).dialog( "close" );
+						$(this).dialog('close');
 						LC.Page.User.List.doDelete();
 					},
 					Cancel: function() {
-						$(this).dialog( "close" );
+						$(this).dialog('close');
 					}
 				}
 			});
 			/* Add/Edit  */
-			$( "#dialog-warning" ).dialog({
+			$('#dialog-warning').dialog({
 				modal: true,
 				autoOpen: false,
 				resizable: false,
@@ -178,11 +180,11 @@ LC.Page.User = {
 				minHeight: 90,
 				buttons: {
 					OK: function() {
-						$(this).dialog( "close" );
+						$(this).dialog('close');
 					}
 				}
 			});
-			$( "#btnNew" ).click(function() {
+			$('#btnNew').click(function() {
 				window.location = LC.Page.url('admin/user/setup');
 			});
 			/* Load list */
@@ -205,7 +207,7 @@ LC.Page.User = {
 		},
 		/* Do delete action upon confirm OK */
 		doDelete : function() {
-			LC.Page.request("POST", // type
+			LC.Page.request('POST', // type
 				LC.Page.User.List.url + 'action.php', // page to post
 				{ // data to post
 					hidDeleteId: $('#hidDeleteId').val(),
@@ -217,4 +219,4 @@ LC.Page.User = {
 			);
 		}
 	}
-}
+};

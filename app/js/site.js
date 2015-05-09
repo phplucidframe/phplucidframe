@@ -2,17 +2,17 @@
 LC.Page.init = function() { /* just example */
 	LC.Page.Language.init();
 	LC.Page.Sidebar.init();
-}
+};
 
 LC.Page.Language = { /* just example */
 	init : function() {
 	}
-}
+};
 
 LC.Page.Sidebar = { /* just example */
 	init : function() {
 	}
-}
+};
 
 LC.Page.Home = { /* just example */
 	url : LC.Page.url('home'), /* mapping directory */
@@ -21,7 +21,7 @@ LC.Page.Home = { /* just example */
 		console.log('This is home page.');
 		console.log(LC.Page.Home.url);
 	}
-}
+};
 
 LC.Page.Blog = {
 	url : LC.Page.url('example/blog'), /* mapping directory */
@@ -32,7 +32,7 @@ LC.Page.Blog = {
 	list : function() {
 		LC.Page.request( 'list', LC.Page.Blog.url + 'list.php' );
 	}
-}
+};
 
 $(function() {
 	LC.Page.init();
