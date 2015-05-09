@@ -70,7 +70,8 @@ function route_request() {
 	global $lc_lang;
 	global $lc_cleanURL;
 
-	if (_getLangInURI() === false) {
+	$lang = _getLangInURI();
+	if ($lang === false) {
 		$lc_lang = $lang = _cfg('defaultLang');
 	}
 
@@ -91,7 +92,6 @@ function route_request() {
 		$requestPath = str_replace($lc_baseURL, '', ltrim($requestPath, '/'));
 		$requestPath = ltrim($requestPath, '/');
 
-		$lang = _getLangInURI();
 		if ($lang) {
 			$lc_lang = $lang;
 			$path = trim($requestPath, '/');
