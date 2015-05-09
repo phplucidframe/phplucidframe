@@ -32,26 +32,26 @@ function route_init() {
 	}
 
 	if (isset($_SERVER['HTTP_HOST'])) {
-		// As HTTP_HOST is user input, ensure it only contains characters allowed
-		// in hostnames. See RFC 952 (and RFC 2181).
-		// $_SERVER['HTTP_HOST'] is lowercased here per specifications.
+		# As HTTP_HOST is user input, ensure it only contains characters allowed
+		# in hostnames. See RFC 952 (and RFC 2181).
+		# $_SERVER['HTTP_HOST'] is lowercased here per specifications.
 		$_SERVER['HTTP_HOST'] = strtolower($_SERVER['HTTP_HOST']);
 		if (!_validHost($_SERVER['HTTP_HOST'])) {
-			// HTTP_HOST is invalid, e.g. if containing slashes it may be an attack.
+			# HTTP_HOST is invalid, e.g. if containing slashes it may be an attack.
 			header($_SERVER['SERVER_PROTOCOL'] . ' 400 Bad Request');
 			exit;
 		}
 	}
 	else {
-		// Some pre-HTTP/1.1 clients will not send a Host header. Ensure the key is
-		// defined for E_ALL compliance.
+		# Some pre-HTTP/1.1 clients will not send a Host header. Ensure the key is
+		# defined for E_ALL compliance.
 		$_SERVER['HTTP_HOST'] = '';
 	}
-	// When clean URLs are enabled, emulate ?route=foo/bar using REQUEST_URI. It is
-	// not possible to append the query string using mod_rewrite without the B
-	// flag (this was added in Apache 2.2.8), because mod_rewrite unescapes the
-	// path before passing it on to PHP. This is a problem when the path contains
-	// e.g. "&" or "%" that have special meanings in URLs and must be encoded.
+	# When clean URLs are enabled, emulate ?route=foo/bar using REQUEST_URI. It is
+	# not possible to append the query string using mod_rewrite without the B
+	# flag (this was added in Apache 2.2.8), because mod_rewrite unescapes the
+	# path before passing it on to PHP. This is a problem when the path contains
+	# e.g. "&" or "%" that have special meanings in URLs and must be encoded.
 	$_GET[ROUTE] = route_request();
 	_cfg('cleanRoute', $_GET[ROUTE]);
 }
@@ -75,7 +75,7 @@ function route_request() {
 	}
 
 	if (isset($_GET[ROUTE]) && is_string($_GET[ROUTE])) {
-		// This is a request with a ?route=foo/bar query string.
+		# This is a request with a ?route=foo/bar query string.
 		$path = $_GET[ROUTE];
 		if (isset($_GET['lang']) && $_GET['lang']) {
 			$lang = strip_tags(urldecode($_GET['lang']));
@@ -85,8 +85,8 @@ function route_request() {
 			}
 		}
 	} elseif (isset($_SERVER['REQUEST_URI'])) {
-		// This request is either a clean URL, or 'index.php', or nonsense.
-		// Extract the path from REQUEST_URI.
+		# This request is either a clean URL, or 'index.php', or nonsense.
+		# Extract the path from REQUEST_URI.
 		$requestPath = urldecode(strtok($_SERVER['REQUEST_URI'], '?'));
 		$requestPath = str_replace($lc_baseURL, '', ltrim($requestPath, '/'));
 		$requestPath = ltrim($requestPath, '/');
@@ -102,21 +102,21 @@ function route_request() {
 			$path = trim($requestPath);
 		}
 
-		// If the path equals the script filename, either because 'index.php' was
-		// explicitly provided in the URL, or because the server added it to
-		// $_SERVER['REQUEST_URI'] even when it wasn't provided in the URL (some
-		// versions of Microsoft IIS do this), the front page should be served.
+		# If the path equals the script filename, either because 'index.php' was
+		# explicitly provided in the URL, or because the server added it to
+		# $_SERVER['REQUEST_URI'] even when it wasn't provided in the URL (some
+		# versions of Microsoft IIS do this), the front page should be served.
 		if ($path == basename($_SERVER['PHP_SELF'])) {
 			$path = '';
 		}
 	} else {
-		// This is the front page.
+		# This is the front page.
 		$path = '';
 	}
 
-	// Under certain conditions Apache's RewriteRule directive prepends the value
-	// assigned to $_GET[ROUTE] with a slash. Moreover we can always have a trailing
-	// slash in place, hence we need to normalize $_GET[ROUTE].
+	# Under certain conditions Apache's RewriteRule directive prepends the value
+	# assigned to $_GET[ROUTE] with a slash. Moreover we can always have a trailing
+	# slash in place, hence we need to normalize $_GET[ROUTE].
 	$path = trim($path, '/');
 
 	$protocol = current(explode('/', $_SERVER['SERVER_PROTOCOL']));
