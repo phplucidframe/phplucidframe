@@ -1,6 +1,10 @@
 <?php
-if(_meta('description')) $lc_metaDescription = _meta('description');
-if(_meta('keywords'))    $lc_metaKeywords = _meta('keywords');
+if (_meta('description')) {
+	$lc_metaDescription = _meta('description');
+}
+if (_meta('keywords')) {
+	$lc_metaKeywords = _meta('keywords');
+}
 
 $ogTitle    = (_meta('og:title')) ? _meta('og:title') : _cfg('siteName');
 $ogURL      = (_meta('og:url')) ? _meta('og:url') : _url();

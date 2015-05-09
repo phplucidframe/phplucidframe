@@ -1,12 +1,23 @@
 @charset "utf-8";
-/**************/
-/* RESPONSIVE */
-/**************/
-@media screen and min-width 680px {
 
+@media screen and ( min-width : 980px ) {
+	/* Desktop */
 }
 
-@media screen and max-width 680px {
+@media screen and ( max-width : 979px ) {
+	/* Tablet */
+	.container {
+		width: auto;
+	}
+
+	#header {
+		height: auto;
+		min-height: 81px;
+	}
+}
+
+@media screen and ( max-width : 500px ) {
+	/* Mobile */
 	body {
 		font-size: 11px;
 	}
@@ -19,7 +30,7 @@
 		display: block;
 	}
 
-	table.form td.labelSeperator {
+	table.form td.labelSeperator, table.form td.labelSeparator {
 		display: none;
 		border: none;
 	}
@@ -30,12 +41,7 @@
 		min-height: 22px;
 	}
 
-	#overlay #processing,#page-loading #processing {
+	#overlay #processing, #page-loading #processing {
 		left: 10%;
 	}
-
-}
-
-@media screen and max-width 380px {
-
 }

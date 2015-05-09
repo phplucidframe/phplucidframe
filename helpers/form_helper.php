@@ -18,7 +18,7 @@
  * This class is part of the PHPLucidFrame library.
  * Helper for AJAX form handling and form validation
  */
-class Form{
+class Form {
 	/** @var string The HTML form ID */
 	private static $id;
 	/** @var array The error messages and their associated HTML ID */
@@ -34,11 +34,11 @@ class Form{
 	/**
 	 * Constructor
 	 */
-	public static function init(){
-		self::$id 		= '';
-		self::$error 	= array();
-		self::$success 	= false;
-		self::$message 	= '';
+	public static function init() {
+		self::$id       = '';
+		self::$error    = array();
+		self::$success  = false;
+		self::$message  = '';
 		self::$redirect = '';
 		self::$callback = '';
 	}
@@ -48,14 +48,14 @@ class Form{
 	 * @param mixed $value The value to be set
 	 * @return void
 	 */
-	public static function set($key, $value=''){
+	public static function set($key, $value='') {
 		self::$$key = $value;
 	}
 	/**
 	 * Form token generation
 	 * @return void
 	 */
-	public static function token(){
+	public static function token() {
 		$token = _encrypt(time());
 		session_set(_cfg('formTokenName'), $token);
 		echo '<input type="hidden" name="lc_formToken_'._cfg('formTokenName').'" value="'.$token.'" />';
@@ -64,25 +64,25 @@ class Form{
 	 * Form token validation
 	 * @return void
 	 */
-	public static function validate(){
-		if(!isset($_POST['lc_formToken_'._cfg('formTokenName')])) return false;
-		$token 			= _decrypt(session_get(_cfg('formTokenName')));
-		$postedToken 	= _decrypt(_post($_POST['lc_formToken_'._cfg('formTokenName')]));
-		$result 		= false;
+	public static function validate() {
+		if (!isset($_POST['lc_formToken_'._cfg('formTokenName')])) return false;
+		$token        = _decrypt(session_get(_cfg('formTokenName')));
+		$postedToken  = _decrypt(_post($_POST['lc_formToken_'._cfg('formTokenName')]));
+		$result       = false;
 		# check token first
-		if($token == $postedToken){
+		if ($token == $postedToken) {
 			# check referer if it is requesting in the same site
-			if(isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] && _cfg('siteDomain')){
-				$siteDomain	= _cfg('siteDomain');
-				$siteDomain	= preg_replace('/^www\./', '', $siteDomain);
-				$parsedURL	= parse_url($_SERVER['HTTP_REFERER']);
+			if (isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] && _cfg('siteDomain')) {
+				$siteDomain = _cfg('siteDomain');
+				$siteDomain = preg_replace('/^www\./', '', $siteDomain);
+				$parsedURL  = parse_url($_SERVER['HTTP_REFERER']);
 				$parsedURL['host'] = preg_replace('/^www\./', '', $parsedURL['host']);
-				if( strcasecmp($siteDomain, $parsedURL['host']) == 0 ){
+				if ( strcasecmp($siteDomain, $parsedURL['host']) == 0 ) {
 					$result = true;
 				}
 			}
 		}
-		if($result == false){
+		if ($result == false) {
 			Validation::addError('', _t('Error occured during form submission. Please refresh the page to try again.'));
 			return false;
 		}
@@ -94,15 +94,17 @@ class Form{
 	 * @param array $errors The array of the errors (it is used only for generic form processing)
 	 * @return void
 	 */
-	public static function respond($formId, $errors=NULL){
+	public static function respond($formId, $errors=NULL) {
 		self::$id = $formId;
 		$errorStr = '';
 		$ajaxResponse = true;
-		if(is_array($errors)){
+		if (is_array($errors)) {
 			self::$error = $errors;
 			$ajaxResponse = false;
 			# if no error message and no other message, no need to respond
-			if(count(self::$error) == 0 && empty(self::$message)) return;
+			if (count(self::$error) == 0 && empty(self::$message)) {
+				return;
+			}
 		}
 
 		$response = array(
@@ -114,9 +116,9 @@ class Form{
 			'callback' => self::$callback
 		);
 
-		if( $ajaxResponse ){
+		if ( $ajaxResponse ) {
 			echo json_encode($response);
-		}else{
+		} else {
 			echo '<script type="text/javascript">';
 			echo 'LC.Form.submitHandler(' . json_encode($response) . ')';
 			echo '</script>';
@@ -131,12 +133,14 @@ class Form{
 	 *
 	 * @return mixed The value of the input element
 	 */
-	public static function value($name, $defaultValue=NULL){
-		if(count($_POST)){
-			if(!isset($_POST[$name])) return '';
+	public static function value($name, $defaultValue=NULL) {
+		if (count($_POST)) {
+			if (!isset($_POST[$name])) {
+				return '';
+			}
 			$value = _post($_POST[$name]);
 			return _h($value);
-		}else{
+		} else {
 			return _h($defaultValue);
 		}
 	}
@@ -149,12 +153,14 @@ class Form{
 	 *
 	 * @return mixed The value of the input element
 	 */
-	public static function htmlValue($name, $defaultValue=NULL){
-		if(count($_POST)){
-			if(!isset($_POST[$name])) return '';
+	public static function htmlValue($name, $defaultValue=NULL) {
+		if (count($_POST)) {
+			if (!isset($_POST[$name])) {
+				return '';
+			}
 			$value = _xss($_POST[$name]);
 			return _h($value);
-		}else{
+		} else {
 			return _h($defaultValue);
 		}
 	}
@@ -167,7 +173,7 @@ class Form{
 	 *
 	 * @return string `'selected="selected"'` if the option is found, otherwise the empty string returned
 	 */
-	public static function selected($name, $value, $defaultValue=NULL){
+	public static function selected($name, $value, $defaultValue=NULL) {
 		return (self::inputSelection($name, $value, $defaultValue)) ? 'selected="selected"' : '';
 	}
 	/**
@@ -179,7 +185,7 @@ class Form{
 	 *
 	 * @return string `'checked="checked"'` if the option is found, otherwise the empty string returned
 	 */
-	public static function checked($name, $value, $defaultValue=NULL){
+	public static function checked($name, $value, $defaultValue=NULL) {
 		return (self::inputSelection($name, $value, $defaultValue)) ? 'checked="checked"' : '';
 	}
 	/**
@@ -192,18 +198,26 @@ class Form{
 	 *
 	 * @return bool TRUE if the option is found, otherwise FALSE
 	 */
-	private static function inputSelection($name, $value, $defaultValue=NULL){
-		if(count($_POST)){
+	private static function inputSelection($name, $value, $defaultValue=NULL) {
+		if (count($_POST)) {
 			$name = preg_replace('/(\[\])$/', '', $name); // group[] will be replaced as group
-			if(!isset($_POST[$name])) return '';
+			if (!isset($_POST[$name])) return '';
 			$postedValue = _post($_POST[$name]);
-			if(is_array($postedValue) && in_array($value, $postedValue)) return true;
-			elseif($value == $postedValue) return true;
-			else return false;
-		}else{
-			if(is_array($defaultValue) && in_array($value, $defaultValue)) return true;
-			elseif($value == $defaultValue) return true;
-			else return false;
+			if (is_array($postedValue) && in_array($value, $postedValue)) {
+				return true;
+			} elseif ($value == $postedValue) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			if (is_array($defaultValue) && in_array($value, $defaultValue)) {
+				return true;
+			} elseif ($value == $defaultValue) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 	}
 }

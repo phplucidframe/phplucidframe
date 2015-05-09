@@ -55,10 +55,10 @@ $lc_validationMessages = array(
  * @internal
  * Initialize the validation messages
  */
-function __validation_init(){
+function __validation_init() {
 	global $lc_validationMessages;
 	$i18nEnabled = function_exists('_t');
-	foreach($lc_validationMessages as $key => $msg){
+	foreach ($lc_validationMessages as $key => $msg) {
 		$lc_validationMessages[$key] = ($i18nEnabled) ? _t($msg) : $msg;
 	}
 	Validation::set('messages', $lc_validationMessages);
@@ -68,9 +68,13 @@ function __validation_init(){
  * @param mixed $value The value being checked
  * @return boolean TRUE if the value contains something other than whitespace, FALSE otherwise
  */
-function validate_mandatory($value){
-	if(is_array($value) && empty($value['name'])) return false; # file upload
-	if(is_array($value) && count($value) == 0) return false; 	# other grouped inputs
+function validate_mandatory($value) {
+	if (is_array($value) && empty($value['name'])) {
+		return false; # file upload
+	}
+	if (is_array($value) && count($value) == 0) {
+		return false; # other grouped inputs
+	}
 	if (empty($value) && $value != '0') {
 		return false;
 	}
@@ -81,15 +85,15 @@ function validate_mandatory($value){
  * @param array $value The array of values to check
  * @return boolean TRUE if one of the fields are not empty, FALSE otherwise
  */
-function validate_mandatoryOne($value){
-	if(is_array($value)){
+function validate_mandatoryOne($value) {
+	if (is_array($value)) {
 		$value = array_unique($value);
 		$empty = true;
-		foreach($value as $v){
-			if(preg_match('/[^\s]+/', $v)) $empty = false; # if one of the value is not empty
+		foreach ($value as $v) {
+			if (preg_match('/[^\s]+/', $v)) $empty = false; # if one of the value is not empty
 		}
 		return !$empty;
-	}else{
+	} else {
 		return preg_match('/[^\s]+/', $value);
 	}
 }
@@ -98,14 +102,14 @@ function validate_mandatoryOne($value){
  * @param array $value The array of values being checked
  * @return boolean TRUE if all of the fields are not empty, FALSE otherwise
  */
-function validate_mandatoryAll($value){
-	if(is_array($value)){
+function validate_mandatoryAll($value) {
+	if (is_array($value)) {
 		$value = array_unique($value);
-		foreach($value as $v){
-			if(preg_match('/[\s]+/', $v)) return false; # if one of the value is empty
+		foreach ($value as $v) {
+			if (preg_match('/[\s]+/', $v)) return false; # if one of the value is empty
 		}
 		return true;
-	}else{
+	} else {
 		return preg_match('/[^\s]+/', $value);
 	}
 }
@@ -114,7 +118,7 @@ function validate_mandatoryAll($value){
  * @param string $value The value being checked
  * @return boolean TRUE for non-zero, FALSE otherwise
  */
-function validate_notAllowZero($value){
+function validate_notAllowZero($value) {
 	$value = trim($value);
 	return ($value == '0' || $value == 0) ? false : true;
 }
@@ -123,8 +127,10 @@ function validate_notAllowZero($value){
  * @param mixed $value The value being checked
  * @return boolean 	TRUE if the value contains only integer or letters, FALSE otherwise
  */
-function validate_alphaNumeric($value){
-	if(empty($value)) return true;
+function validate_alphaNumeric($value) {
+	if (empty($value)) {
+		return true;
+	}
 	return preg_match('/^[A-Za-z0-9]+$/', $value);
 }
 /**
@@ -132,8 +138,10 @@ function validate_alphaNumeric($value){
  * @param mixed $value The value being checked
  * @return boolean TRUE if the value contains only integer, letters or spaces, FALSE otherwise
  */
-function validate_alphaNumericSpace($value){
-	if(empty($value)) return true;
+function validate_alphaNumericSpace($value) {
+	if (empty($value)) {
+		return true;
+	}
 	return preg_match('/^[A-Za-z0-9 ]+$/', $value);
 }
 /**
@@ -141,8 +149,10 @@ function validate_alphaNumericSpace($value){
  * @param mixed $value The value being checked
  * @return boolean 	TRUE if the value contains only integer, letters or dashes, FALSE otherwise
  */
-function validate_alphaNumericDash($value){
-	if(empty($value)) return true;
+function validate_alphaNumericDash($value) {
+	if (empty($value)) {
+		return true;
+	}
 	return preg_match('/^[A-Za-z0-9\-]+$/', $value);
 }
 /**
@@ -158,9 +168,13 @@ function validate_numeric($value) {
  * @param mixed $value The value being checked
  * @return boolean TRUE if the value contains numbers and dashes only, FALSE otherwise
  */
-function validate_numericDash($value){
-	if(is_numeric($value) && strlen($value) == 1) return true;
-	if(empty($value)) return true;
+function validate_numericDash($value) {
+	if (is_numeric($value) && strlen($value) == 1) {
+		return true;
+	}
+	if (empty($value)) {
+		return true;
+	}
 	return preg_match('/^([0-9])+([0-9\-])*([0-9])+$/', $value);
 }
 /**
@@ -168,9 +182,13 @@ function validate_numericDash($value){
  * @param string $value The value being checked
  * @return boolean TRUE if the value contains numbers and spaces only, FALSE otherwise
  */
-function validate_numericSpace($value){
-	if(is_numeric($value) && strlen($value) == 1) return true;
-	if(empty($value)) return true;
+function validate_numericSpace($value) {
+	if (is_numeric($value) && strlen($value) == 1) {
+		return true;
+	}
+	if (empty($value)) {
+		return true;
+	}
 	return preg_match('/^[0-9 ]+$/', $value);
 }
 /**
@@ -178,8 +196,10 @@ function validate_numericSpace($value){
  * @param mixed $value The value being checked
  * @return boolean TRUE if the value does not contain special characters, FALSE otherwise
  */
-function validate_username($value){
-	if(empty($value)) return true;
+function validate_username($value) {
+	if (empty($value)) {
+		return true;
+	}
 	return preg_match('/^([A-Za-z])+([A-Za-z0-9_\-\.])*([A-Za-z0-9])+$/', $value);
 }
 /**
@@ -189,9 +209,11 @@ function validate_username($value){
  * @see http://en.wikipedia.org/wiki/Natural_number
  *   http://math.about.com/od/mathhelpandtutorials/a/Understanding-Classification-Of-Numbers.htm
  */
-function validate_naturalNumber($value){
+function validate_naturalNumber($value) {
 	$value = trim($value);
-	if($value == '') return true;
+	if ($value == '') {
+		return true;
+	}
 	return preg_match('/^[1-9][0-9]*$/', $value);
 }
 /**
@@ -200,9 +222,11 @@ function validate_naturalNumber($value){
  * @return boolean TRUE if the value is whole number, FALSE otherwise
  * @see http://math.about.com/od/mathhelpandtutorials/a/Understanding-Classification-Of-Numbers.htm
  */
-function validate_wholeNumber($value){
+function validate_wholeNumber($value) {
 	$value = trim($value);
-	if($value == '') return true;
+	if ($value == '') {
+		return true;
+	}
 	return preg_match('/^(?:0|[1-9][0-9]*)$/', $value);
 }
 /**
@@ -211,9 +235,11 @@ function validate_wholeNumber($value){
  * @return boolean TRUE if the value is integer, FALSE otherwise
  * @see http://math.about.com/od/mathhelpandtutorials/a/Understanding-Classification-Of-Numbers.htm
  */
-function validate_integer($value){
+function validate_integer($value) {
 	$value = trim($value);
-	if($value == '') return true;
+	if ($value == '') {
+		return true;
+	}
 	return preg_match('/^[-]?(?:0|[1-9][0-9]*)$/', $value);
 }
 /**
@@ -222,9 +248,11 @@ function validate_integer($value){
  * @return boolean TRUE if the value is rational number, FALSE otherwise
  * @see http://math.about.com/od/mathhelpandtutorials/a/Understanding-Classification-Of-Numbers.htm
  */
-function validate_rationalNumber($value){
+function validate_rationalNumber($value) {
 	$value = trim($value);
-	if($value == '') return true;
+	if ($value == '') {
+		return true;
+	}
 	return preg_match('/^[-]?[0-9]*[\.]?[0-9]+$/', $value);
 }
 /**
@@ -233,9 +261,11 @@ function validate_rationalNumber($value){
  * @return boolean TRUE if the value is positive rational number, FALSE otherwise
  * @see http://math.about.com/od/mathhelpandtutorials/a/Understanding-Classification-Of-Numbers.htm
  */
-function validate_positiveRationalNumber($value){
+function validate_positiveRationalNumber($value) {
 	$value = trim($value);
-	if($value == '') return true;
+	if ($value == '') {
+		return true;
+	}
 	return preg_match('/^[0-9]*[\.]?[0-9]+$/', $value);
 }
 /**
@@ -243,9 +273,11 @@ function validate_positiveRationalNumber($value){
  * @param mixed $value The value being checked
  * @return boolean TRUE if the value is a valid email address, FALSE otherwise
  */
-function validate_email($value){
+function validate_email($value) {
 	$value = trim($value);
-	if($value == '') return true;
+	if ($value == '') {
+		return true;
+	}
 	return preg_match('/^[A-Za-z0-9]([A-Za-z0-9]|_|\.|\-)*@([a-z0-9]|\.|\-)+\.[a-z]{2,4}$/', $value);
 }
 /**
@@ -253,8 +285,10 @@ function validate_email($value){
  * @param mixed $value The value being checked
  * @return boolean TRUE if the value has letters, numbers and dashes only, FALSE otherwise
  */
-function validate_domain($value){
-	if(empty($value)) return true;
+function validate_domain($value) {
+	if (empty($value)) {
+		return true;
+	}
 	return preg_match('/^([a-z])+([a-z0-9\-])*([a-z0-9])+$/i', $value);
 }
 /**
@@ -262,18 +296,20 @@ function validate_domain($value){
  * @param mixed $value The value being checked
  * @return boolean TRUE if the value is a valid absolute web address, FALSE otherwise
  */
-function validate_url($value){
-	if(empty($value)) return true;
+function validate_url($value) {
+	if (empty($value)) {
+		return true;
+	}
 
 	# General regular expression for URL
-	$regExp = '/^((http|https|ftp):\/\/)?([a-z0-9\-_]+\.){2,4}([[:alnum:]]){2,4}([[:alnum:]\/+=%&_\.~?\-]*)$/';
+	$regExp = '/^((http|https|ftp):\/\/)?([a-z0-9\-_]+\.) {2,4}([[:alnum:]]) {2,4}([[:alnum:]\/+=%&_\.~?\-]*)$/';
 
 	# Get host name from URL
 	preg_match("/^((http|https|ftp):\/\/)?([^\/]+)/i", $value, $matches);
 	$host = $matches[3];
 	# Checking host name
-	if(!strstr($host, "@")){
-		if(preg_match($regExp, $value)){
+	if (!strstr($host, "@")) {
+		if (preg_match($regExp, $value)) {
 		# Ok with general regular expression
 			# Analyze host segment of URL
 			$hostParts = explode(".", $host);
@@ -282,14 +318,14 @@ function validate_url($value){
 			$suffix = (strstr($hostParts[count($hostParts)-1], '?')) ? reset(explode('?', $hostParts[count($hostParts)-1])) : $hostParts[count($hostParts)-1];
 
 			# IF last segment is valid && URL not contains 4w
-			if(preg_match("/^[a-z]{2,4}$/", $suffix) && ! strstr($value, "wwww")) return true;
-		}else{
+			if (preg_match("/^[a-z]{2,4}$/", $suffix) && ! strstr($value, "wwww")) return true;
+		} else {
 		# IF not OK with general regular expression
 			# Regular Expression for URL
 			$urlExp = "/^(([a-z0-9]|_|\-)+\.)+[a-z]{2,4}$/";
 
 			# IF valid URL && URL not contains 4 w
-			if(preg_match($urlExp, $value) && ! strstr($value, "wwww")) return true;
+			if (preg_match($urlExp, $value) && ! strstr($value, "wwww")) return true;
 		} # End of Check if URL
 	} # End of Check Host Name
 
@@ -351,7 +387,7 @@ function validate_between($value, $min, $max) {
  * @return mixed `1` if the pattern matches given value, `0` if it does not, or `FALSE` if an error occurred.
  * @see http://php.net/manual/en/function.preg-match.php
  */
-function validate_custom($value, $pattern){
+function validate_custom($value, $pattern) {
 	if (empty($value) && $value != '0') {
 		return true;
 	}
@@ -363,10 +399,16 @@ function validate_custom($value, $pattern){
  * @param array $extensions The Array of file extensions such as `array('jpg', 'jpeg', 'png', 'gif')`
  * @return boolean TRUE if the uploaded file extension is allowed according to the given extensions, FALSE otherwise
  */
-function validate_fileExtension($value, $extensions = array('jpg', 'jpeg', 'png', 'gif')){
-	if(!is_array($value)) return true;
-	if(!file_exists($value['tmp_name'])) return true;
-	if(empty($value['name'])) return true;
+function validate_fileExtension($value, $extensions = array('jpg', 'jpeg', 'png', 'gif')) {
+	if (!is_array($value)) {
+		return true;
+	}
+	if (!file_exists($value['tmp_name'])) {
+		return true;
+	}
+	if (empty($value['name'])) {
+		return true;
+	}
 	$ext = explode('.', $value['name']);
 	$ext = strtolower(end($ext));
 	return (in_array($ext, $extensions)) ? true : false;
@@ -378,10 +420,14 @@ function validate_fileExtension($value, $extensions = array('jpg', 'jpeg', 'png'
  * @return boolean TRUE if the uploaded file does not exceed the given file size, FALSE otherwise
  */
 function validate_fileMaxSize($value, $maxSize = NULL) {
-	if(!is_array($value)) return true;
-	if(is_null($maxSize)) return true;
-	$fileSize 	= $value['size'];
-	$maxSize 	= $maxSize * 1024 * 1024; # in bytes
+	if (!is_array($value)) {
+		return true;
+	}
+	if (is_null($maxSize)) {
+		return true;
+	}
+	$fileSize = $value['size'];
+	$maxSize = $maxSize * 1024 * 1024; # in bytes
 	return ($fileSize <= $maxSize);
 }
 /**
@@ -393,12 +439,15 @@ function validate_fileMaxSize($value, $maxSize = NULL) {
  *  TRUE if the image uploaded dimension does not exceed the given max width and height;
  *  FALSE otherwise
  */
-function validate_fileMaxDimension($value, $maxWidth, $maxHeight){
-	if(!is_array($value)) return true;
-	if(!file_exists($value['tmp_name'])) return true;
+function validate_fileMaxDimension($value, $maxWidth, $maxHeight) {
+	if (!is_array($value)) {
+		return true;
+	}
+	if (!file_exists($value['tmp_name'])) {
+		return true;
+	}
 	list($width, $height) = getimagesize($value['tmp_name']);
-	if($width <= $maxWidth && $height <= $maxHeight) return true;
-	return false;
+	return ($width <= $maxWidth && $height <= $maxHeight) ? true : false;
 }
 /**
  * Validation of image file upload for exact width and height
@@ -409,12 +458,15 @@ function validate_fileMaxDimension($value, $maxWidth, $maxHeight){
  *  TRUE if the image uploaded dimension same as the given max width and height;
  *  FALSE otherwise
  */
-function validate_fileExactDimension($value, $width, $height){
-	if(!is_array($value)) return true;
-	if(!file_exists($value['tmp_name'])) return true;
+function validate_fileExactDimension($value, $width, $height) {
+	if (!is_array($value)) {
+		return true;
+	}
+	if (!file_exists($value['tmp_name'])) {
+		return true;
+	}
 	list($w, $h) = getimagesize($value['tmp_name']);
-	if($w == $width && $h == $height) return true;
-	return false;
+	return ($w == $width && $h == $height) ? true : false;
 }
 /**
  * Validation of image file upload for max width only
@@ -424,9 +476,13 @@ function validate_fileExactDimension($value, $width, $height){
  *  TRUE if the uploaded image does not exceed the maximum width allowed;
  *  FALSE otherwise
  */
-function validate_fileMaxWidth($value, $maxWidth){
-	if(!is_array($value)) return true;
-	if(!file_exists($value['tmp_name'])) return true;
+function validate_fileMaxWidth($value, $maxWidth) {
+	if (!is_array($value)) {
+		return true;
+	}
+	if (!file_exists($value['tmp_name'])) {
+		return true;
+	}
 	list($width, $height) = getimagesize($value['tmp_name']);
 	return ($width <= $maxWidth);
 }
@@ -438,9 +494,13 @@ function validate_fileMaxWidth($value, $maxWidth){
  *  TRUE if the uploaded image does not exceed the maximum height allowed;
  *  FALSE otherwise
  */
-function validate_fileMaxHeight($value, $maxHeight){
-	if(!is_array($value)) return true;
-	if(!file_exists($value['tmp_name'])) return true;
+function validate_fileMaxHeight($value, $maxHeight) {
+	if (!is_array($value)) {
+		return true;
+	}
+	if (!file_exists($value['tmp_name'])) {
+		return true;
+	}
 	list($width, $height) = getimagesize($value['tmp_name']);
 	return ($height <= $maxHeight);
 }
@@ -474,8 +534,10 @@ function validate_ip($value, $type = 'both') {
  *
  * @return bool TRUE on success; FALSE on failure
  */
-function validate_date($value, $format = 'y-m-d'){
-	if(empty($value)) return true;
+function validate_date($value, $format = 'y-m-d') {
+	if (empty($value)) {
+		return true;
+	}
 	$value = trim($value);
 	$format = strtolower($format);
 	$separators = array('/', '-', '.');
@@ -483,19 +545,21 @@ function validate_date($value, $format = 'y-m-d'){
 	$cleanFormat = preg_replace('/'.$sepGroup.'/', '', $format); // remove the separators from the format
 	$pattern = '';
 
-	if(in_array($cleanFormat, array('dmy', 'mdy'))){
+	if (in_array($cleanFormat, array('dmy', 'mdy'))) {
 		$pattern = '/^([\d]{1,2})'.$sepGroup.'([\d]{1,2})'.$sepGroup.'([\d]{4})$/'; // dmy or mdy
-	}
-	else{
+	} else {
 		$pattern = '/^([\d]{4})'.$sepGroup.'([\d]{1,2})'.$sepGroup.'([\d]{1,2})$/'; // ymd
 	}
-	if($pattern && preg_match_all($pattern, $value, $matches)){
-		if($matches[2][0] != $matches[4][0]) return false; // inconsisitent separators
-		elseif(!in_array($matches[2][0], $separators)) return false; // invalid separator
-		$sep	= $matches[2][0]; // the separator using
-		$dt 	= explode($sep, $value);
+	if ($pattern && preg_match_all($pattern, $value, $matches)) {
+		if ($matches[2][0] != $matches[4][0]) {
+			return false; // inconsisitent separators
+		} elseif (!in_array($matches[2][0], $separators)) {
+			return false; // invalid separator
+		}
+		$sep    = $matches[2][0]; // the separator using
+		$dt     = explode($sep, $value);
 		$format = str_split($cleanFormat);
-		$ft 	= array_flip($format);
+		$ft     = array_flip($format);
 		$y = $dt[$ft['y']];
 		$m = $dt[$ft['m']];
 		$d = $dt[$ft['d']];
@@ -519,20 +583,29 @@ function validate_date($value, $format = 'y-m-d'){
  *
  * @return bool TRUE on success; FALSE on failure
  */
-function validate_time($value, $timeFormat = 'both'){
-	if(empty($value)) return true;
+function validate_time($value, $timeFormat = 'both') {
+	if (empty($value)) {
+		return true;
+	}
 	$value = trim($value);
 	$regex = array(
 		'24' => '/^([01]?[0-9]|2[0-3]):([0-5][0-9])(:[0-5][0-9])?$/', // 24-hour format
 		'12' => '/^(0?[0-9]|1[0-2]):([0-5][0-9])(:[0-5][0-9])?\s*(am|pm)$/i' // 12-hour format
 	);
 
-	if(!in_array($timeFormat, array('both', '12', '24'))) $timeFormat = 'both';
-	if($timeFormat === 'both') $test = $regex;
-	else $test = array($regex[$timeFormat]);
+	if (!in_array($timeFormat, array('both', '12', '24'))) {
+		$timeFormat = 'both';
+	}
+	if ($timeFormat === 'both') {
+		$test = $regex;
+	} else {
+		$test = array($regex[$timeFormat]);
+	}
 
-	foreach($test as $pattern){
-		if(preg_match($pattern, $value)) return true;
+	foreach ($test as $pattern) {
+		if (preg_match($pattern, $value)) {
+			return true;
+		}
 	}
 	return false;
 }
@@ -550,15 +623,17 @@ function validate_time($value, $timeFormat = 'both'){
  *
  * @return bool TRUE on success; FALSE on failure
  */
-function validate_datetime($value, $dateFormat = 'y-m-d', $timeFormat = 'both'){
-	if(empty($value)) return true;
+function validate_datetime($value, $dateFormat = 'y-m-d', $timeFormat = 'both') {
+	if (empty($value)) {
+		return true;
+	}
 	$value = trim($value);
 	$generalPattern = '/^([\d]{1,4}[-\/.][\d]{1,2}[-\/.][\d]{1,4})(\s+.{4,}\s*(am|pm)?)$/i';
-	if(preg_match_all($generalPattern, $value, $matches)){
+	if (preg_match_all($generalPattern, $value, $matches)) {
 		$date = $matches[1][0];
 		$time = $matches[2][0];
 		return validate_date($date, $dateFormat) && validate_time($time, $timeFormat);
-	}else{
+	} else {
 		return false;
 	}
 }
@@ -567,8 +642,7 @@ function validate_datetime($value, $dateFormat = 'y-m-d', $timeFormat = 'both'){
  * This class is part of the PHPLucidFrame library.
  * Form validation helper
  */
-class Validation{
-
+class Validation {
 	/** @var array The array of the error messages upon validation */
 	public 	static $errors = array();
 	/** @var array The array of default error messages */
@@ -579,7 +653,7 @@ class Validation{
 	/**
 	 * @internal
 	 */
-	public static function set($key, $value=''){
+	public static function set($key, $value='') {
 		self::$$key = $value;
 	}
 	/**
@@ -592,198 +666,271 @@ class Validation{
 	 *
 	 * @return void
 	 */
-	public static function check($validations, $type='multi'){
+	public static function check($validations, $type='multi') {
 		Form::init();
 
 		$type = strtolower($type);
-		if( !in_array($type, array('single', 'multi')) ) $type = 'multi';
+		if ( !in_array($type, array('single', 'multi')) ) {
+			$type = 'multi';
+		}
 		self::$errors = array();
-		foreach($validations as $id => $v){
-			if( isset($v['rules']) && is_array($v['rules']) ){
-				foreach($v['rules'] as $rule){
+		foreach ($validations as $id => $v) {
+			if ( isset($v['rules']) && is_array($v['rules']) ) {
+				foreach ($v['rules'] as $rule) {
 					$success = true;
 					$caption = ( !isset($v['caption']) ) ? $id : $v['caption'];
 
-					if(is_array($v['value']) && in_array($rule, self::$batchRules)){
+					if (is_array($v['value']) && in_array($rule, self::$batchRules)) {
 						# Batch validation rules may be applied for array of values
 						$values = $v['value'];
 						$func = 'validate_'.$rule;
-						if( function_exists($func) ){
+						if ( function_exists($func) ) {
 							$success = call_user_func_array($func, array($values));
-							if(!$success) self::setError($id, $rule, $v);
+							if (!$success) {
+								self::setError($id, $rule, $v);
+							}
 							continue; # go to the next rule
 						}
 						# if array of values, the validation function (apart from the batch validation functions) will be applied to each value
-					}else{
-						if(!is_array($v['value']) || (is_array($v['value']) && array_key_exists('tmp_name',$v['value']))){
+					} else {
+						if (!is_array($v['value']) || (is_array($v['value']) && array_key_exists('tmp_name',$v['value']))) {
 							$values = array($v['value']);
-						}else{
+						} else {
 							$values = $v['value'];
 						}
 
 					}
 
-					foreach($values as $value){
+					foreach ($values as $value) {
 						# Custom validation function
-						if(strstr($rule, 'validate_')){
+						if (strstr($rule, 'validate_')) {
 							$args = array($value);
-							if(isset($v['parameters']) && is_array($v['parameters'])){
-								if(isset($v['parameters'][$rule])) $params = $v['parameters'][$rule];
-								else $params = $v['parameters'];
+							if (isset($v['parameters']) && is_array($v['parameters'])) {
+								$params = (isset($v['parameters'][$rule])) ? $v['parameters'][$rule] : $v['parameters'];
 								$args = array_merge($args, $params);
 							}
 							$success = call_user_func_array($rule, $args);
-							if(!$success) self::setError($id, $rule, $v);
-						}else{
+							if (!$success) {
+								self::setError($id, $rule, $v);
+							}
+						} else {
 						# Pre-defined validation functions
 							$func = 'validate_'.$rule;
-							if(function_exists($func)){
-								switch($rule){
+							if (function_exists($func)) {
+								switch($rule) {
 									case 'min':
 										# Required property: min
-										if(!isset($v['min'])) continue;
+										if (!isset($v['min'])) {
+											continue;
+										}
 										$success = call_user_func_array($func, array($value, $v['min']));
-										if(!$success) self::setError($id, $rule, $v, $v['min']);
+										if (!$success) {
+											self::setError($id, $rule, $v, $v['min']);
+										}
 										break;
 
 									case 'max':
 										# Required property: max
-										if(!isset($v['max'])) continue;
+										if (!isset($v['max'])) {
+											continue;
+										}
 										$success = call_user_func_array($func, array($value, $v['max']));
-										if(!$success) self::setError($id, $rule, $v, $v['max']);
+										if (!$success) {
+											self::setError($id, $rule, $v, $v['max']);
+										}
 										break;
 
 									case 'minLength':
 										# Required property: min
-										if(!isset($v['min'])) continue;
+										if (!isset($v['min'])) {
+											continue;
+										}
 										$success = call_user_func_array($func, array($value, $v['min']));
-										if(!$success) self::setError($id, $rule, $v, $v['min']);
+										if (!$success) {
+											self::setError($id, $rule, $v, $v['min']);
+										}
 										break;
 
 									case 'maxLength':
 										# Required property: max
-										if(!isset($v['max'])) continue;
+										if (!isset($v['max'])) {
+											continue;
+										}
 										$success = call_user_func_array($func, array($value, $v['max']));
-										if(!$success) self::setError($id, $rule, $v, $v['max']);
+										if (!$success) {
+											self::setError($id, $rule, $v, $v['max']);
+										}
 										break;
 
 									case 'between':
 										# Required property: min|max
-										if(!isset($v['min']) || !isset($v['max'])) continue;
+										if (!isset($v['min']) || !isset($v['max'])) {
+											continue;
+										}
 										$success = call_user_func_array($func, array($value, $v['min'], $v['max']));
-										if(!$success) self::setError($id, $rule, $v, $v['min'], $v['max']);
+										if (!$success) {
+											self::setError($id, $rule, $v, $v['min'], $v['max']);
+										}
 										break;
 
 									case 'ip':
 										# Required property: protocol
 										$v['protocol'] = (!isset($v['protocol']) || ( isset($v['protocol']) && !in_array($v['protocol'], array('ipv4','ipv6')) )) ? 'ipv4' : $v['protocol'];
 										$success = call_user_func_array($func, array($value, $v['protocol']));
-										if(!$success) self::setError($id, $rule, $v);
+										if (!$success) {
+											self::setError($id, $rule, $v);
+										}
 										break;
 
 									case 'custom':
 										# Required property: pattern
-										if(!isset($v['pattern'])) continue;
+										if (!isset($v['pattern'])) {
+											continue;
+										}
 										$success = call_user_func_array($func, array($value, $v['pattern']));
-										if(!$success) self::setError($id, $rule, $v);
+										if (!$success) {
+											self::setError($id, $rule, $v);
+										}
 										break;
 
 									case 'fileMaxSize':
 										# Required property: maxSize
-										if(!isset($v['maxSize'])) continue;
+										if (!isset($v['maxSize'])) {
+											continue;
+										}
 										$success = call_user_func_array($func, array($value, $v['maxSize']));
-										if(!$success) self::setError($id, $rule, $v, $v['maxSize']);
+										if (!$success) {
+											self::setError($id, $rule, $v, $v['maxSize']);
+										}
 										break;
 
 									case 'fileMaxWidth':
 										# Required property: maxWidth
-										if(!isset($v['maxWidth'])) continue;
+										if (!isset($v['maxWidth'])) {
+											continue;
+										}
 										$success = call_user_func_array($func, array($value, $v['maxWidth']));
-										if(!$success) self::setError($id, $rule, $v, $v['maxWidth']);
+										if (!$success) {
+											self::setError($id, $rule, $v, $v['maxWidth']);
+										}
 										break;
 
 									case 'fileMaxHeight':
 										# Required property: maxHeight
-										if(!isset($v['maxHeight'])) continue;
+										if (!isset($v['maxHeight'])) {
+											continue;
+										}
 										$success = call_user_func_array($func, array($value, $v['maxHeight']));
-										if(!$success) self::setError($id, $rule, $v, $v['maxHeight']);
+										if (!$success) {
+											self::setError($id, $rule, $v, $v['maxHeight']);
+										}
 										break;
 
 									case 'fileMaxDimension':
 										# Required property: maxWidth, maxHeight
-										if(!isset($v['maxWidth']) || !isset($v['maxHeight'])) continue;
+										if (!isset($v['maxWidth']) || !isset($v['maxHeight'])) {
+											continue;
+										}
 										$success = call_user_func_array($func, array($value, $v['maxWidth'], $v['maxHeight']));
-										if(!$success) self::setError($id, $rule, $v, $v['maxWidth'], $v['maxHeight']);
+										if (!$success) {
+											self::setError($id, $rule, $v, $v['maxWidth'], $v['maxHeight']);
+										}
 										break;
 
 									case 'fileExactDimension':
 										# Required property: width, height
-										if(!isset($v['width']) || !isset($v['height'])) continue;
+										if (!isset($v['width']) || !isset($v['height'])) {
+											continue;
+										}
 										$success = call_user_func_array($func, array($value, $v['width'], $v['height']));
-										if(!$success) self::setError($id, $rule, $v, $v['width'], $v['height']);
+										if (!$success) {
+											self::setError($id, $rule, $v, $v['width'], $v['height']);
+										}
 										break;
 
 									case 'fileExtension':
 										# Required property: extensions
-										if(!isset($v['extensions'])) continue;
+										if (!isset($v['extensions'])) {
+											continue;
+										}
 										$success = call_user_func_array($func, array($value, $v['extensions']));
-										if(!$success) self::setError($id, $rule, $v, implode(', ', $v['extensions']));
+										if (!$success) {
+											self::setError($id, $rule, $v, implode(', ', $v['extensions']));
+										}
 										break;
 
 									case 'date':
 										# Optional property: dateFormat
-										if(!isset($v['dateFormat']) || (isset($v['dateFormat']) && empty($v['dateFormat']))) $v['dateFormat'] = 'y-m-d';
+										if (!isset($v['dateFormat']) || (isset($v['dateFormat']) && empty($v['dateFormat']))) {
+											$v['dateFormat'] = 'y-m-d';
+										}
 										$success = call_user_func_array($func, array($value, $v['dateFormat']));
-										if(!$success) self::setError($id, $rule, $v, $v['dateFormat']);
+										if (!$success) {
+											self::setError($id, $rule, $v, $v['dateFormat']);
+										}
 										break;
 
 									case 'time':
 										# Optional property: $timeFormat
-										if(!isset($v['timeFormat']) || (isset($v['timeFormat']) && empty($v['timeFormat']))) $v['timeFormat'] = 'both';
+										if (!isset($v['timeFormat']) || (isset($v['timeFormat']) && empty($v['timeFormat']))) {
+											$v['timeFormat'] = 'both';
+										}
 										$success = call_user_func_array($func, array($value, $v['timeFormat']));
-										if(!$success) self::setError($id, $rule, $v, ($v['timeFormat'] === 'both') ? '12/24-hour' : $v['timeFormat'].'-hour');
+										if (!$success) {
+											self::setError($id, $rule, $v, ($v['timeFormat'] === 'both') ? '12/24-hour' : $v['timeFormat'].'-hour');
+										}
 										break;
 
 									case 'datetime':
 										# Optional property: dateFormat, timeFormat
-										if(!isset($v['dateFormat']) || (isset($v['dateFormat']) && empty($v['dateFormat']))) $v['dateFormat'] = 'y-m-d';
-										if(!isset($v['timeFormat']) || (isset($v['timeFormat']) && empty($v['timeFormat']))) $v['timeFormat'] = 'both';
+										if (!isset($v['dateFormat']) || (isset($v['dateFormat']) && empty($v['dateFormat']))) {
+											$v['dateFormat'] = 'y-m-d';
+										}
+										if (!isset($v['timeFormat']) || (isset($v['timeFormat']) && empty($v['timeFormat']))) {
+											$v['timeFormat'] = 'both';
+										}
 										$success = call_user_func_array($func, array($value, $v['dateFormat'], $v['timeFormat']));
-										if(!$success) self::setError($id, $rule, $v, $v['dateFormat'], ($v['timeFormat'] === 'both') ? '12/24-hour' : $v['timeFormat'].'-hour');
+										if (!$success) {
+											self::setError($id, $rule, $v, $v['dateFormat'], ($v['timeFormat'] === 'both') ? '12/24-hour' : $v['timeFormat'].'-hour');
+										}
 										break;
 
 									default:
 										$success = call_user_func_array($func, array($value));
-										if(!$success) self::setError($id, $rule, $v);
+										if (!$success) {
+											self::setError($id, $rule, $v);
+										}
 								}
-								if(!$success){
-									if($type == 'single') break 3;
+								if (!$success) {
+									if ($type == 'single') {
+										break 3;
+									}
 									continue 3;
 								}
-							} # if(function_exists($func))
-						} # if(strstr($rule, 'validate_'))
-					} # foreach($values as $value)
-				} # foreach($v['rules'] as $rule)
-			} # if(	is_array($v['rules']) )
-		} # foreach($validations as $id => $v)
+							} # if (function_exists($func))
+						} # if (strstr($rule, 'validate_'))
+					} # foreach ($values as $value)
+				} # foreach ($v['rules'] as $rule)
+			} # if (	is_array($v['rules']) )
+		} # foreach ($validations as $id => $v)
 		return (count(self::$errors)) ? false : true;
 	}
 	/**
 	 * @internal
 	 */
-	private static function setError($id, $rule, $element){
-		$caption = $element['caption'];
-		$msg 	 = ( isset(self::$messages[$rule]) ) ? self::$messages[$rule] : self::$messages['default'];
-		$msg 	 = ( isset($element['messages'][$rule]) ) ? $element['messages'][$rule] : $msg;
+	private static function setError($id, $rule, $element) {
+		$caption  = $element['caption'];
+		$msg      = ( isset(self::$messages[$rule]) ) ? self::$messages[$rule] : self::$messages['default'];
+		$msg      = ( isset($element['messages'][$rule]) ) ? $element['messages'][$rule] : $msg;
 		$args = func_get_args();
-		if(count($args) > 3){
+		if (count($args) > 3) {
 			$args = array_slice($args, 3);
 			array_unshift($args, $caption);
 			self::$errors[] = array(
 				"msg" => vsprintf($msg, $args),
 				"htmlID" => $id
 			);
-		}else{
+		} else {
 			self::$errors[] = array(
 				'msg' => sprintf( $msg, $caption ),
 				'htmlID' => $id
@@ -798,7 +945,7 @@ class Validation{
 	 *
 	 * @return void
 	 */
-	public static function addError($id, $msg){
+	public static function addError($id, $msg) {
 		self::$errors[] = array(
 			'msg' => sprintf( $msg ),
 			'htmlID' => $id

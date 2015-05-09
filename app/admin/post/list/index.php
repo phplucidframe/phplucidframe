@@ -14,7 +14,7 @@ $pageTitle = _t('Posts');
 </body>
 </html>
 <script type="text/javascript">
-$(function(){
+$(function() {
 	LC.Page.Post.List.init('<?php echo _getLang();?>');
 });
 </script>

@@ -5,9 +5,9 @@ $user->username	= '';
 $user->email	= '';
 $user->role		= '';
 
-if($id){
+if ($id) {
 	$sql = 'SELECT * FROM '.db_prefix().'user WHERE uid = :uid LIMIT 1';
-	if($result = db_query($sql, array(':uid' => $id))){
+	if ($result = db_query($sql, array(':uid' => $id))) {
 		$user = db_fetchObject($result);
 	}
 }

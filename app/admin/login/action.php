@@ -1,7 +1,7 @@
 <?php
 $success = false;
 $error = false;
-if(sizeof($_POST)){
+if (sizeof($_POST)) {
 	$post = _post($_POST);
 	extract($post);
 
@@ -19,14 +19,14 @@ if(sizeof($_POST)){
 		)
 	);
 
-	if(Form::validate() == true && Validation::check($validations) == true){
+	if (Form::validate() == true && Validation::check($validations) == true) {
 		$args = array();
 		$sql = 'SELECT u.* FROM ' . db_prefix() . 'user u
 				WHERE LOWER(username) = ":value"
 				LIMIT 1';
 		$args[':value'] = strtolower($txtUsername);
 
-		if($result = db_query($sql, $args)){
+		if ($result = db_query($sql, $args)) {
 			if (! db_numRows($result)) {
 				# Other follow-up errors checkup (if any)
 				Validation::addError('Username', 'Username does not exists.');
@@ -46,16 +46,16 @@ if(sizeof($_POST)){
 			}
 		}
 
-		if($error){
+		if ($error) {
 			Form::set('error', Validation::$errors);
 		}
 
-		if($success){
+		if ($success) {
 			Form::set('success', true);
 			Form::set('redirect', _url('admin/post'));
 		}
 
-	}else{
+	} else {
 		Form::set('error', Validation::$errors);
 	}
 }

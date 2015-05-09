@@ -6,7 +6,7 @@
  */
 $success = false;
 
-if(sizeof($_POST)){
+if (sizeof($_POST)) {
 	$post = _post($_POST);
 	extract($post);
 
@@ -41,7 +41,7 @@ if(sizeof($_POST)){
 	);
 
 	/* form token check && input validation check */
-	if(Form::validate() === true && Validation::check($validations) === true){
+	if (Form::validate() === true && Validation::check($validations) === true) {
 		/**
 		* //// Database operation example
 		*
@@ -52,18 +52,18 @@ if(sizeof($_POST)){
 		* 	'comment'	=> $txaComment
 		* );
 		*
-		* if(db_insert('comment', $data, $useSlug = false)){ // if the third parameter is omitted, your table must have a field "slug".
+		* if (db_insert('comment', $data, $useSlug = false)) { // if the third parameter is omitted, your table must have a field "slug".
 		*	$commentId = db_insertId();
 		* 	$success = true;
 		* }
 		*/
 		$success = true; # this should be set to true only when db operation is successful.
-		if($success){
+		if ($success) {
 			Form::set('success', true);
 			flash_set(_t('Your comment has been posted.'));
 			_redirect();
 		}
-	}else{
+	} else {
 		Form::set('error', Validation::$errors);
 	}
 }

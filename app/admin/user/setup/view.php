@@ -42,8 +42,8 @@
 					<td class="labelSeperator">:</td>
 					<td class="entry">
 						<select name="cboRole">
-							<option value="editor" <?php if($user->role == 'editor') echo 'selected="selected"'; ?>>Editor</option>
-							<option value="admin" <?php if($user->role == 'admin') echo 'selected="selected"'; ?>>Administrator</option>
+							<option value="editor" <?php if ($user->role == 'editor') echo 'selected="selected"'; ?>>Editor</option>
+							<option value="admin" <?php if ($user->role == 'admin') echo 'selected="selected"'; ?>>Administrator</option>
 						</select>
 					</td>
 				</tr>

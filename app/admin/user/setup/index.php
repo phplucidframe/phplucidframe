@@ -3,9 +3,9 @@ include( _i('inc/authenticate.php') );
 
 $id = _arg(3);
 
-if($id){
+if ($id) {
 	$pageTitle = 'Edit User';
-}else{
+} else {
 	$id = 0;
 	$pageTitle = 'Add New User';
 }
@@ -23,7 +23,7 @@ include('query.php');
 </body>
 </html>
 <script type="text/javascript">
-$(function(){
+$(function() {
 	LC.Page.User.Setup.init();
 });
 </script>

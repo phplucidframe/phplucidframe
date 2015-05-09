@@ -1,6 +1,6 @@
 <?php include( _i('inc/tpl/header.php') ); ?>
 <h4><?php echo $pageTitle; ?></h4>
-<?php if($id) include( APP_ROOT . 'admin/inc/language-selection.php' ); ?>
+<?php if ($id) include( APP_ROOT . 'admin/inc/language-selection.php' ); ?>
 <div class="table clear">
 	<form method="post" id="frmPost" name="frmPost" action="<?php echo _url('admin/post/setup/action.php'); ?>">
 		<input type="hidden" name="hidLang" value="<?php echo $lang; ?>" />
@@ -10,7 +10,7 @@
 			<label><?php echo _t('Title').' ('._langName($lang).')'.$lc_reqSign; ?></label>
 			<div><input type="text" name="txtTitle" id="txtTitle" size="120" value="<?php echo $post->postTitle;?>" class="<?php echo $lang; ?>" /></div>
 		</div>
-		<?php if(auth_isAdmin() && $lang == $lc_defaultLang){ ?>
+		<?php if (auth_isAdmin() && $lang == $lc_defaultLang) { ?>
 		<div class="row">
 			<label><?php echo _t('Slug'); ?> (<?php echo _t("Leave blank unless you want to customize this"); ?>)</label>
 			<div><input type="text" name="txtSlug" id="txtSlug" size="120" value="<?php echo $post->slug;?>"></div>
@@ -22,8 +22,8 @@
 				<select name="cboCategory" class="<?php echo $lang; ?>">
 					<option value=""><?php echo _t('Select Category'); ?></option>
 					<?php
-					if($resultCat){
-						while($row = db_fetchObject($resultCat)){
+					if ($resultCat) {
+						while ($row = db_fetchObject($resultCat)) {
 							$row = _getTranslationStrings($row, 'catName', $lang);
 							$selected = ($row->catId == $post->catId) ? 'selected="selected"' : '';
 						?>

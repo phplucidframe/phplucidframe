@@ -29,8 +29,8 @@ $sql = "SELECT a.postId, a.slug, a.postTitle, a.postTitle_".$lang." postTitle_i1
 $result = db_query($sql);
 	$lang = _urlLang($lang);
 
-if($result){
-	if(db_numRows($result)){
+if ($result) {
+	if (db_numRows($result)) {
 	?>
 	<table cellpadding="0" cellspacing="0" border="0" class="list news">
 		<tr class="label">
@@ -45,7 +45,7 @@ if($result){
 
 		</tr>
 		<?php
-		while($row = db_fetchObject($result)){
+		while ($row = db_fetchObject($result)) {
 			$row->postTitle = ($row->postTitle_i18n) ? $row->postTitle_i18n : $row->postTitle;
 			$row->postBody 	= ($row->postBody_i18n) ? $row->postBody_i18n : $row->postBody;
 			$row->catName 	= ($row->catName_i18n) ? $row->catName_i18n : $row->catName;
@@ -72,7 +72,7 @@ if($result){
 	</table>
 	<div class="pager-container"><?php echo $pager->display(); ?></div>
 	<?php
-	}else{
+	} else {
 	?>	<div class="no-record"><?php echo _t("You don't have any post! %sLet's go make a new post!%s", '<a href="'._url('admin/post/setup').'">', '</a>'); ?></div>
 	<?php
 	}
