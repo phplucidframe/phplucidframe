@@ -35,10 +35,10 @@ class Form {
 	 * Constructor
 	 */
 	public static function init() {
-		self::$id 		= '';
-		self::$error 	= array();
-		self::$success 	= false;
-		self::$message 	= '';
+		self::$id       = '';
+		self::$error    = array();
+		self::$success  = false;
+		self::$message  = '';
 		self::$redirect = '';
 		self::$callback = '';
 	}
@@ -66,16 +66,16 @@ class Form {
 	 */
 	public static function validate() {
 		if (!isset($_POST['lc_formToken_'._cfg('formTokenName')])) return false;
-		$token 			= _decrypt(session_get(_cfg('formTokenName')));
-		$postedToken 	= _decrypt(_post($_POST['lc_formToken_'._cfg('formTokenName')]));
-		$result 		= false;
+		$token        = _decrypt(session_get(_cfg('formTokenName')));
+		$postedToken  = _decrypt(_post($_POST['lc_formToken_'._cfg('formTokenName')]));
+		$result       = false;
 		# check token first
 		if ($token == $postedToken) {
 			# check referer if it is requesting in the same site
 			if (isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] && _cfg('siteDomain')) {
-				$siteDomain	= _cfg('siteDomain');
-				$siteDomain	= preg_replace('/^www\./', '', $siteDomain);
-				$parsedURL	= parse_url($_SERVER['HTTP_REFERER']);
+				$siteDomain = _cfg('siteDomain');
+				$siteDomain = preg_replace('/^www\./', '', $siteDomain);
+				$parsedURL  = parse_url($_SERVER['HTTP_REFERER']);
 				$parsedURL['host'] = preg_replace('/^www\./', '', $parsedURL['host']);
 				if ( strcasecmp($siteDomain, $parsedURL['host']) == 0 ) {
 					$result = true;

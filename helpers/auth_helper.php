@@ -105,8 +105,8 @@ function auth_clear() {
  * Check if a user is not authenticated
  */
 function auth_isAnonymous() {
-	$auth = auth_prerequisite();
-	$field 	 = $auth['fields']['id'];
+	$auth    = auth_prerequisite();
+	$field   = $auth['fields']['id'];
 	$session = auth_get();
 	return (is_object($session) && $session->$field > 0) ? false : true;
 }
@@ -129,9 +129,9 @@ if (!function_exists('auth_role')) {
 		if (auth_isAnonymous()) {
 			return false;
 		}
-		$auth  	 = auth_prerequisite();
-		$field 	 = $auth['fields']['role'];
-		$session = auth_get();
+		$auth     = auth_prerequisite();
+		$field    = $auth['fields']['role'];
+		$session  = auth_get();
 		return ($session->$field == $role) ? true : false;
 	}
 }

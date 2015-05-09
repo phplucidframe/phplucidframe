@@ -687,11 +687,13 @@ function _redirect($path=NULL, $queryStr=array(), $lang='', $status=NULL) {
  * Header redirect to a specific location by sending 301 status code
  * @param string $path     Routing path such as "foo/bar"; NULL for the current path
  * @param array  $queryStr Query string as
- * 	array(
- * 		$value1, // no key here
- * 		'key1' => $value2,
- * 		'key3' => $value3 or array($value3, $value4)
- * 	)
+ *
+ *     array(
+ *       $value1, // no key here
+ *       'key1' => $value2,
+ *       'key3' => $value3 or array($value3, $value4)
+ *     )
+ *
  * @param string $lang Languague code to be prepended to $path such as "en/foo/bar". It will be useful for site language switch redirect
  * @return void
  */

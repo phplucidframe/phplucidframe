@@ -73,7 +73,7 @@ function validate_mandatory($value) {
 		return false; # file upload
 	}
 	if (is_array($value) && count($value) == 0) {
-		return false; 	# other grouped inputs
+		return false; # other grouped inputs
 	}
 	if (empty($value) && $value != '0') {
 		return false;
@@ -426,8 +426,8 @@ function validate_fileMaxSize($value, $maxSize = NULL) {
 	if (is_null($maxSize)) {
 		return true;
 	}
-	$fileSize 	= $value['size'];
-	$maxSize 	= $maxSize * 1024 * 1024; # in bytes
+	$fileSize = $value['size'];
+	$maxSize = $maxSize * 1024 * 1024; # in bytes
 	return ($fileSize <= $maxSize);
 }
 /**
@@ -556,10 +556,10 @@ function validate_date($value, $format = 'y-m-d') {
 		} elseif (!in_array($matches[2][0], $separators)) {
 			return false; // invalid separator
 		}
-		$sep	= $matches[2][0]; // the separator using
-		$dt 	= explode($sep, $value);
+		$sep    = $matches[2][0]; // the separator using
+		$dt     = explode($sep, $value);
 		$format = str_split($cleanFormat);
-		$ft 	= array_flip($format);
+		$ft     = array_flip($format);
 		$y = $dt[$ft['y']];
 		$m = $dt[$ft['m']];
 		$d = $dt[$ft['d']];
@@ -919,9 +919,9 @@ class Validation {
 	 * @internal
 	 */
 	private static function setError($id, $rule, $element) {
-		$caption = $element['caption'];
-		$msg 	 = ( isset(self::$messages[$rule]) ) ? self::$messages[$rule] : self::$messages['default'];
-		$msg 	 = ( isset($element['messages'][$rule]) ) ? $element['messages'][$rule] : $msg;
+		$caption  = $element['caption'];
+		$msg      = ( isset(self::$messages[$rule]) ) ? self::$messages[$rule] : self::$messages['default'];
+		$msg      = ( isset($element['messages'][$rule]) ) ? $element['messages'][$rule] : $msg;
 		$args = func_get_args();
 		if (count($args) > 3) {
 			$args = array_slice($args, 3);

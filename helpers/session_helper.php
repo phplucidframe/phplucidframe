@@ -294,15 +294,15 @@ if (!function_exists('flash_get')) {
  * Send a cookie
  * Convenience method for setcookie()
  *
- * @param string $name The name of the cookie. 'cookiename' is called as cookie_get('cookiename') or $_COOKIE['cookiename']
- * @param mixed $value The value of the cookie. This value is stored on the clients computer
- * @param int $expiry The time the cookie expires. This is a Unix timestamp so is in number of seconds since the epoch.
+ * @param string $name     The name of the cookie. 'cookiename' is called as cookie_get('cookiename') or $_COOKIE['cookiename']
+ * @param mixed  $value    The value of the cookie. This value is stored on the clients computer
+ * @param int    $expiry   The time the cookie expires. This is a Unix timestamp so is in number of seconds since the epoch.
  *  In other words, you'll most likely set this with the time() function plus the number of seconds before you want it to expire.
  *  If f set to 0, or omitted, the cookie will expire at the end of the session
- * @param string $path The path on the server in which the cookie will be available on. The default path '/' will make it available to the entire domain.
- * @param string $domain The domain that the cookie is available to. If it is not set, it depends on the configuration variable $lc_siteDomain.
- * @param bool $secure Indicates that the cookie should only be transmitted over a secure HTTPS connection from the client
- * @param bool $httpOnly When TRUE the cookie will be made accessible only through the HTTP protocol.
+ * @param string $path     The path on the server in which the cookie will be available on. The default path '/' will make it available to the entire domain.
+ * @param string $domain   The domain that the cookie is available to. If it is not set, it depends on the configuration variable $lc_siteDomain.
+ * @param bool   $secure   Indicates that the cookie should only be transmitted over a secure HTTPS connection from the client
+ * @param bool   $httpOnly When TRUE the cookie will be made accessible only through the HTTP protocol.
  *  This means that the cookie won't be accessible by scripting languages, such as JavaScript
  *
  * @see http://php.net/manual/en/function.setcookie.php

@@ -37,9 +37,9 @@ function route_init() {
 		// $_SERVER['HTTP_HOST'] is lowercased here per specifications.
 		$_SERVER['HTTP_HOST'] = strtolower($_SERVER['HTTP_HOST']);
 		if (!_validHost($_SERVER['HTTP_HOST'])) {
-		  // HTTP_HOST is invalid, e.g. if containing slashes it may be an attack.
-		  header($_SERVER['SERVER_PROTOCOL'] . ' 400 Bad Request');
-		  exit;
+			// HTTP_HOST is invalid, e.g. if containing slashes it may be an attack.
+			header($_SERVER['SERVER_PROTOCOL'] . ' 400 Bad Request');
+			exit;
 		}
 	}
 	else {
@@ -146,10 +146,10 @@ function route_request() {
  * @return mixed The path if found; otherwise return false
  */
 function route_search() {
-	$q 		= route_path();
-	$seg 	= explode('/', $q);
-	$count 	= sizeof($seg);
-	$sites 	= _cfg('sites');
+	$q     = route_path();
+	$seg   = explode('/', $q);
+	$count = sizeof($seg);
+	$sites = _cfg('sites');
 
 	if ($seg[0] == LC_NAMESPACE && is_array($sites) && array_key_exists(LC_NAMESPACE, $sites)) {
 		$seg[0] = $sites[LC_NAMESPACE];
@@ -210,11 +210,13 @@ function route_map($path, $to='') {
  *
  * @param string $path Routing path such as "foo/bar"; NULL for the current path
  * @param array $queryStr Query string as
- * 	array(
- * 		$value1, // no key here
- * 		'key1' => $value2,
- * 		'key3' => $value3 or array($value3, $value4)
- * 	)
+ *
+ *     array(
+ *       $value1, // no key here
+ *       'key1' => $value2,
+ *       'key3' => $value3 or array($value3, $value4)
+ *     )
+ *
  * @param string $lang Languague code to be prepended to $path such as "en/foo/bar". It will be useful for site language switch redirect
  *
  * @return string
@@ -304,11 +306,13 @@ function route_url($path=NULL, $queryStr=array(), $lang='') {
  *
  * @param string $path The route path which may contain the query string
  * @param array $queryStr Query string as
- * 	array(
- * 		$value1, // no key here
- * 		'key1' => $value2,
- * 		'key3' => $value3 or array($value3, $value4)
- * 	)
+ *
+ *     array(
+ *       $value1, // no key here
+ *       'key1' => $value2,
+ *       'key3' => $value3 or array($value3, $value4)
+ *     )
+ *
  * @return string The updated route path
  */
 function route_updateQueryStr($path, &$queryStr=array()) {

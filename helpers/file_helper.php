@@ -382,13 +382,13 @@ class File {
 
 		if ($imgWidth > $desiredWidth || $imgHeight > $desiredHeight) { # scale down
 			if ($desiredWidth == 0 && $desiredHeight > 0) { # resized to height
-				$desiredWidth 	= floor(($imgWidth/$imgHeight) * $desiredHeight);
-				$imgWidth 		= $desiredWidth;
-				$imgHeight 		= $desiredHeight;
+				$desiredWidth = floor(($imgWidth/$imgHeight) * $desiredHeight);
+				$imgWidth     = $desiredWidth;
+				$imgHeight    = $desiredHeight;
 			} elseif ($desiredWidth > 0 && $desiredHeight == 0) { # resized to width
-				$desiredHeight = floor(($imgHeight/$imgWidth) * $desiredWidth);
-				$imgWidth 		= $desiredWidth;
-				$imgHeight 		= $desiredHeight;
+				$desiredHeight  = floor(($imgHeight/$imgWidth) * $desiredWidth);
+				$imgWidth       = $desiredWidth;
+				$imgHeight      = $desiredHeight;
 			} elseif ($desiredWidth > 0 && $desiredHeight > 0) { # resized both
 				$scale = min($desiredWidth/$imgWidth, $desiredHeight/$imgHeight);
 				# new width for the image
@@ -424,12 +424,12 @@ class File {
 		if (isset($attributes['style']) && $attributes['style']) {
 			$style .= $attributes['style'];
 		}
-		$attributes['src']		= $fileName;
-		$attributes['alt'] 		= _h($caption);
-		$attributes['title'] 	= _h($caption);
-		$attributes['width'] 	= $imgWidth;
-		$attributes['height'] 	= $imgHeight;
-		$attributes['style'] 	= $style;
+		$attributes['src']    = $fileName;
+		$attributes['alt']    = _h($caption);
+		$attributes['title']  = _h($caption);
+		$attributes['width']  = $imgWidth;
+		$attributes['height'] = $imgHeight;
+		$attributes['style']  = $style;
 
 		$attrHTML = '';
 		foreach ($attributes as $key => $value) {

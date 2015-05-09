@@ -20,27 +20,27 @@
  */
 class Pager {
 	/** @var int The current page no. */
-	private $page 			= 1;
+	private $page = 1;
 	/** @var int The customized query string name for "page" */
-	private $pageQueryStr	= 'page';
+	private $pageQueryStr = 'page';
 	/** @var int No. of items per page to display */
-	private $itemsPerPage 	= 15;
+	private $itemsPerPage = 15;
 	/** @var int How many page no. to show in the pagination */
-	private $pageNumLimit 	= 5;
+	private $pageNumLimit = 5;
 	/** @var string The absolute image directory path where the navigaion arrow images reside */
-	private $imagePath 		= '';
+	private $imagePath = '';
 	/** @var boolean AJAX pager or not */
-	private $ajax 			= false;
+	private $ajax = false;
 	/** @var string The URL to request if it is different than the current URL; it must be relative to APP ROOT */
-	private $url 			= '';
+	private $url = '';
 	/** @var int Total number of records for the pager */
-	private $total 			= 0;
+	private $total = 0;
 	/** @var int The calculated offset for the page */
-	private $offset 		= 0;
+	private $offset = 0;
 	/** @var boolean The page is enabled or not */
-	private $enabled 		= true;
+	private $enabled = true;
 	/** @var string HTML tag for the pagination display; default is <table>. <ul> and <div> are also allowed. */
-	private $htmlTag		= '<table>';
+	private $htmlTag = '<table>';
 	/** @var string HTML tag for internal use */
 	private $parentOpenTag;
 	/** @var string HTML tag for internal use */
@@ -94,18 +94,18 @@ class Pager {
 		}
 		switch($this->htmlTag) {
 			case '<table>':
-				$this->parentOpenTag 	= '<table class="pager" border="0" cellpadding="0" cellspacing="0"><tr>';
-				$this->parentCloseTag 	= '</tr></table>';
+				$this->parentOpenTag = '<table class="pager" border="0" cellpadding="0" cellspacing="0"><tr>';
+				$this->parentCloseTag = '</tr></table>';
 				$this->childTag = 'td';
 				break;
 			case '<ul>':
-				$this->parentOpenTag 	= '<ul class="pager">';
-				$this->parentCloseTag 	= '</ul>';
+				$this->parentOpenTag = '<ul class="pager">';
+				$this->parentCloseTag = '</ul>';
 				$this->childTag = 'li';
 				break;
 			case '<div>':
-				$this->parentOpenTag 	= '<div class="pager">';
-				$this->parentCloseTag 	= '</div>';
+				$this->parentOpenTag = '<div class="pager">';
+				$this->parentCloseTag = '</div>';
 				$this->childTag = 'div';
 				break;
 		}

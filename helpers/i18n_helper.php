@@ -28,9 +28,9 @@ function _t($str/*[, mixed $args [, mixed $... ]]*/) {
 	global $lc_translation;
 	global $lc_translationEnabled;
 
-	$args 	= func_get_args();
-	$str  	= array_shift($args);
-	$str 	= trim($str);
+	$args  = func_get_args();
+	$str   = array_shift($args);
+	$str   = trim($str);
 
 	if ($lc_translationEnabled == false) {
 		return (count($args)) ? vsprintf($str, $args) : $str;

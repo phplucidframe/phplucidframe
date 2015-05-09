@@ -92,7 +92,7 @@ function db_prerequisite($namespace='default') {
 		$error = new stdClass();
 		$error->message = 'Required to configure $lc_databases in "/inc/config.php". It is not allowed to configure in the application-level file "/app/inc/site.config.php".';
 		$error->message = array(function_exists('_t') ? _t($error->message) : $error->message);
-		$error->type 	= 'sitewide-message error';
+		$error->type    = 'sitewide-message error';
 		include( _i('inc/tpl/site.error.php') );
 		exit;
 	}
@@ -534,8 +534,8 @@ if (!function_exists('db_update')) {
 			$useSlug = true;
 		}
 
-		$table 	= ltrim($table, db_prefix());
-		$table 	= db_prefix().$table;
+		$table  = ltrim($table, db_prefix());
+		$table  = db_prefix().$table;
 
 		# Invoke the hook db_update_[table_name] if any
 		$hook = 'db_update_' . strtolower($table);
@@ -552,13 +552,15 @@ if (!function_exists('db_update')) {
 			$useSlug = false;
 		}
 
-		$fields = array();
-		$slug = '';
-		$cond = '';
-		$notCond = '';
-		$i = 0;
-		$slugIndex = 1;
-		if ($condition) $slugIndex = 0;
+		$fields     = array();
+		$slug       = '';
+		$cond       = '';
+		$notCond    = '';
+		$i          = 0;
+		$slugIndex  = 1;
+		if ($condition) {
+			$slugIndex = 0;
+		}
 		foreach ($data as $field => $value) {
 			if ($i === 0 && !$condition) {
 				# $data[0] is for PK condition, but only if $condition is not provided
@@ -752,9 +754,9 @@ function db_condition($cond=array(), $type='AND') {
 	if (empty($cond)) {
 		return '';
 	}
-	$type 		= strtoupper($type);
-	$condition 	= array();
-	$operators 	= array(
+	$type      = strtoupper($type);
+	$condition = array();
+	$operators = array(
 		'=', '>=', '<=', '>', '<', '!=', '<>',
 		'between', 'nbetween',
 		'like', 'like%%', 'like%~', 'like~%',
@@ -773,9 +775,10 @@ function db_condition($cond=array(), $type='AND') {
 	);
 
 	foreach ($cond as $field => $value) {
-		$field = trim($field);
+		$field    = trim($field);
 		$fieldOpr = explode(' ', $field);
-		$field = trim($fieldOpr[0]);
+		$field    = trim($fieldOpr[0]);
+
 		$opr = (count($fieldOpr) === 2) ? trim($fieldOpr[1]) : '=';
 
 		# check if any operator is given in the field
@@ -923,11 +926,13 @@ function db_or($cond=array()) {
  * @param mixed $value The value for the field
  * @param string $exp The SQL expression
  * @return array The condition array, for example
- *	array(
- *		'value'  => $value,
- *		'exp >=' => $exp,
- *		'field 	 => $field
- *	)
+ *
+ *     array(
+ *       'value'  => $value,
+ *       'exp >=' => $exp,
+ *       'field 	 => $field
+ *     )
+ *
  */
 function db_exp($field, $value, $exp='') {
 	if ($exp) $field = strtoupper($field) . '(' . $value . ')';
