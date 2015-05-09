@@ -69,10 +69,13 @@ function route_request() {
 	global $lc_languages;
 	global $lc_lang;
 	global $lc_cleanURL;
+	global $lc_langInURI;
 
-	$lang = _getLangInURI();
-	if ($lang === false) {
+	$lc_langInURI = _getLangInURI();
+	if ($lc_langInURI === false) {
 		$lc_lang = $lang = _cfg('defaultLang');
+	} else {
+		$lc_lang = $lang = $lc_langInURI;
 	}
 
 	if (isset($_GET[ROUTE]) && is_string($_GET[ROUTE])) {
@@ -226,6 +229,7 @@ function route_url($path=NULL, $queryStr=array(), $lang='') {
 	global $lc_cleanURL;
 	global $lc_translationEnabled;
 	global $lc_sites;
+	global $lc_langInURI;
 
 	if ($lang === false) $forceExcludeLangInURL = true;
 	else $forceExcludeLangInURL = false;
@@ -276,9 +280,12 @@ function route_url($path=NULL, $queryStr=array(), $lang='') {
 	}
 
 	# If URI contains the language code, force to include it in the URI
-	$l = _getLangInURI();
-	if (empty($lang) && $l) {
-		$lang = $l;
+	if (is_null($lc_langInURI)) {
+		$lc_langInURI = _getLangInURI();
+	}
+
+	if (empty($lang) && $lc_langInURI) {
+		$lang = $lc_langInURI;
 	}
 
 	$url = WEB_ROOT;
