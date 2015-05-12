@@ -534,6 +534,7 @@ class AsynFileUploader {
 	}
 	/**
 	 * Setter for the property `caption`
+	 * @param string $caption The caption for image uploaded
 	 */
 	public function setCaption($caption) {
 		$this->caption = $caption;
@@ -592,12 +593,14 @@ class AsynFileUploader {
 	}
 	/**
 	 * Setter for the property `extensions`
+	 * @param array $extensions The array of extensions such as `array('jpg', 'png', 'gif')`
 	 */
 	public function setExtensions($extensions) {
 		$this->extensions = $extensions;
 	}
 	/**
 	 * Setter for the property `dimensions`
+	 * @param array $dimensions The array of extensions such as `array('600x400', '300x200')`
 	 */
 	public function setDimensions($dimensions) {
 		$this->dimensions = $dimensions;
