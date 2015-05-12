@@ -100,7 +100,13 @@ function _xss($value) {
 function _sanitize($input) {
 	return htmlspecialchars(trim($input), ENT_NOQUOTES);
 }
-
+/**
+ * @internal
+ *
+ * Strips javascript tags in the value to prevent from XSS attack
+ * @param mixed $value The value being stripped.
+ * @return mixed the cleaned value
+ */
 function __xss($value) {
 	$value = trim(stripslashes($value));
 	$ascii = '[\x00-\x20|&\#x0A;|&\#x0D;|&\#x09;|&\#14;|<|!|\-|>]*';
