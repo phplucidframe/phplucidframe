@@ -113,7 +113,7 @@ LC.Page.Category = {
 			// load data for the other translation text boxes
 			if (typeof $data.catName_i18n !== 'undefined') {
 				for (var c in $data.catName_i18n) {
-					if ($data.catName_i18n.instances.hasOwnProperty(c)) {
+					if ($data.catName_i18n.hasOwnProperty(c)) {
 						$form.find('input[name=txtName_'+c+']').val($data.catName_i18n[c]);
 					}
 				}
