@@ -6,7 +6,7 @@
  */
 $success = false;
 
-if(sizeof($_POST)){
+if (sizeof($_POST)) {
 	$post = _post($_POST);
 
 	$validations = array(
@@ -32,7 +32,7 @@ if(sizeof($_POST)){
 		),
 	);
 
-	if(Form::validate() && Validation::check($validations) == true){
+	if (Form::validate() && Validation::check($validations) == true) {
 		/**
 		For "photo",
 			$post['photo']             = Array of the file names saved in disk
@@ -64,7 +64,7 @@ if(sizeof($_POST)){
 
 //		db_delete_multi('post_image', array('postId' => 1)); # postId == 1 is for example
 //
-//		for($i=0; $i<count($post['photo']); $i++){
+//		for ($i=0; $i<count($post['photo']); $i++) {
 //			$img = $post['photo'][$i];
 //
 //			### Here, you may want to move the uploaded image to the other directory ###
@@ -80,11 +80,11 @@ if(sizeof($_POST)){
 //		}
 
 		$success = true;
-		if($success){
+		if ($success) {
 			Form::set('success', true);
 			Form::set('callback', 'postOutput('.json_encode($post).')');
 		}
-	}else{
+	} else {
 		Form::set('error', Validation::$errors);
 	}
 }

@@ -1,6 +1,10 @@
 <?php
-if(_meta('description')) $lc_metaDescription = _meta('description');
-if(_meta('keywords'))    $lc_metaKeywords = _meta('keywords');
+if (_meta('description')) {
+	$lc_metaDescription = _meta('description');
+}
+if (_meta('keywords')) {
+	$lc_metaKeywords = _meta('keywords');
+}
 
 $ogTitle    = (_meta('og:title')) ? _meta('og:title') : _cfg('siteName');
 $ogURL      = (_meta('og:url')) ? _meta('og:url') : _url();
@@ -46,9 +50,9 @@ $gpDesc     = (_meta('gp:description')) ? _meta('gp:description') : _cfg('metaDe
 <link rel="shortcut icon" href="<?php echo _img('favicon.ico'); ?>" type="image/x-icon" />
 <?php _css('base.css'); ?>
 <?php _css('base.'._lang().'.css'); ?>
-<?php _css('jquery-ui-theme/custom/jquery-ui.custom.min.css'); ?>
-<?php _js('jquery-1.7.1.min.js'); ?>
-<?php _js('jquery-ui-1.8.17.custom.min.js'); ?>
+<?php _css('jquery-ui'); ?>
+<?php _js('jquery'); ?>
+<?php _js('jquery-ui'); ?>
 <?php _script(); ?>
 <?php _js('LC.js'); ?>
 <?php _js('site.js'); ?>

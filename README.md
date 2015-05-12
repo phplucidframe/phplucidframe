@@ -31,7 +31,7 @@ Although it is stated as mini framework, it supports a wide range of web applica
 - Rename it as **LucidFrame** or your project name.
 - Copy `/inc/config.default.php` and rename it to `/inc/config.php`
 - Copy `/inc/site.config.default.php` and rename it to `/inc/site.config.php`.
-- (Optional) Copy `/inc/tpl/head.php` to `/app/inc/tpl/head.php` if you want to update it.
+- (Optional, but recommended) Copy `/inc/tpl/head.php` to `/app/inc/tpl/head.php` if you want to update it.
 - Check `http://localhost/LucidFrame` or `http://localhost/YourProjectName` in your browser.
 
 **Note:** If you have your own project folder name other than **LucidFrame**, you should change `$lc_baseURL` in `/inc/config.php` in accordance with your project name.
@@ -40,15 +40,15 @@ Although it is stated as mini framework, it supports a wide range of web applica
 
 You can also install LucidFrame using [Composer](http://getcomposer.org/).
 
-    composer require lucidframe/phplucidframe:~1.3.0
+    composer require lucidframe/phplucidframe:~1.5.0
 
 OR
 
-    php composer.phar require lucidframe/phplucidframe:~1.3.0
+    php composer.phar require lucidframe/phplucidframe:~1.5.0
 
 ## Furthermore on Installation
 
-Make sure you have `mod_rewrite` activated on your server / in your environment.
+**URL Rewrite** : Make sure you have `mod_rewrite` activated on your server / in your environment.
 Some guidelines:
 
 - [XAMPP for Windows](http://www.leonardaustin.com/blog/technical/enable-mod_rewrite-in-xampp/)
@@ -58,17 +58,22 @@ Some guidelines:
 - [AMPPS on Windows/Mac OS](http://www.softaculous.com/board/index.php?tid=3634&title=AMPPS_rewrite_enable/disable_option%3F_please%3F)
 - [MAMP on Mac OS](http://stackoverflow.com/questions/7670561/how-to-get-htaccess-to-work-on-mamp)
 
-You could have a folder whatever name you like or even virtual host in your development environment.
+**Based URL** : You could have a folder whatever name you like or even virtual host in your development environment.
 Just change the configuration variable `$lc_baseURL` in `/inc/config.php` in accordance with your folder name or virtual host name.
 
-In your production environment, you may not have a folder and you could upload the framework files directly to your web server document root.
+**Home Routing** : In your production environment, you may not have a folder and you could upload the framework files directly to your web server document root.
 In this case, you have to set and leave `$lc_baseURL` empty.
 
-By default, LucidFrame has home page routing which is defined as `$lc_homeRouting` in `/inc/config.php`. It maps to `/app/home/index.php`. You could have `home.php` or `welcome.php` or whatever you like. However, LucidFrame encourages a structured page organization. You can check the sample page folders and codes in the application folder`/app` of the release.
+By default, LucidFrame has home page routing which is defined as `$lc_homeRouting` in `/inc/config.php`. It maps to `/app/home/index.php`. You could have `home.php` or `welcome.php` or whatever you like. However, LucidFrame encourages a structured page organization. You can check the recommended structure in the sample page folders and codes `/app/home` and `/app/example/` of the release.
 
-You can also configure the other settings in `/inc/config.php` and `/inc/site.config.php` or `/app/inc/site.config.php` according to your requirement.
+**Additional Site Settings** : You can also configure the other settings in `/inc/config.php` and `/inc/site.config.php` or `/app/inc/site.config.php` according to your requirement.
 
-You can generate the application secret `/inc/.secret` at [phplucidframe.sithukyaw.com/hash-generator](http://phplucidframe.sithukyaw.com/hash-generator).
+**Secret** : You can generate the application secret `/inc/.secret` at [phplucidframe.sithukyaw.com/hash-generator](http://phplucidframe.sithukyaw.com/hash-generator).
+
+**CSS Template** : LucidFrame provides you a default site CSS template. The file is `/css/base.css`. No matter you want to use it or not, you may do one of the following two ways to make your site easily upgradable in the future:
+
+ 1. create your own file in `/css` or `/app/css` with whatever name you like and update your `/inc/tpl/head.php` or `/app/inc/tpl/head.php` by including your file. Then you can override the rules of `/css/base.css` or write your own rules in your file.
+ 2. copy `/css/base.css` to `/app/css/base.css` and update it to your need. Then you don't have to update `head.php`.
 
 ## Demo with Sample Administration Module
 

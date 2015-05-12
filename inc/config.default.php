@@ -41,6 +41,25 @@ define('ROUTE', 'route');
  * All session variable names will be prefixed with this
  */
 define('S_PREFIX', '__LucidFrame__');
+
+# $lc_env: The setting for running environment: `development` or `production`
+$lc_env = 'development';
+# $lc_debugLevel: The debug level. If $lc_env = 'production', this is not considered.
+# `1` - show fatal errors, parse errors, but no PHP startup errors
+# `2` - show fatal errors, parse errors, warnings and notices
+# `3` - show all errors and warnings, except of level E_STRICT prior to PHP 5.4.0.
+# `int level` - set your own error reporting level. The parameter is either an integer representing a bit field, or named constants
+#  @see http://php.net/manual/en/errorfunc.configuration.php#ini.error-reporting
+$lc_debugLevel = 3;
+
+# $lc_siteName: Site Name
+$lc_siteName = 'LucidFrame';
+# $lc_baseURL: No trailing slash (only if it is located in a sub-directory)
+# Leave blank if it is located in the document root
+$lc_baseURL = 'LucidFrame';
+# $lc_siteDomain: Site Domain Name
+$lc_siteDomain = _host();
+
 /**
  * Session configuration.
  *
@@ -49,27 +68,32 @@ define('S_PREFIX', '__LucidFrame__');
  *
  * ## Options
  *
- * - `name` - The name of the session to use. Defaults to 'LCSESSID'
- * - `use_cookies` - Whether cookies will be used to store the session id on the client side. Defaults to 1 (enabled).
- * - `use_only_cookies` - Whether the module will *only* use cookies to store the session id on the client side. Defaults to 1 (enabled).
- * - `use_trans_sid` - Transparent sid support is enabled or not
- * - `cache_limiter` - The cache control method used for session pages: nocache (default), private, private_no_expire, or public.
- * - `cookie_httponly` - Marks the cookie as accessible only through the HTTP protocol.
- * - `gc_divisor` - The probability that the gc (garbage collection) process is started on every session initialization. Default to 100.
- * - `gc_probability` - In conjunction with `gc_divisor` is used to manage probability that the gc (garbage collection) routine is started. Default to 1.
- * - `gc_maxlifetime` - The number of minutes after which data will be seen as 'garbage' and potentially cleaned up. Defaults to 240 minutes.
- * - `cookie_lifetime`- The number of minutes you want session cookies to live for. Defaults to 180 minutes
- *    The value 0 means "until the browser is closed.". Defaults to 180 mintues.
- * - `cookie_path` - The path to set in the session cookie. Defaults to '/'
- * - `save_path`- The path of the directory used to save session data. Defaults to ''.
+ * - `table`: The table name without prefix that stores the session data. It is only applicable to database session
+ * - `name`: The name of the session to use. Defaults to 'LCSESSID'
+ * - `gc_maxlifetime`: The number of minutes after which data will be seen as 'garbage' and potentially cleaned up. Defaults to 240 minutes.
+ * - `cookie_lifetime`: The number of minutes you want session cookies live for. The value 0 means "until the browser is closed.". Defaults to 180 minutes.
+ * - `cookie_path`: The path to set in the session cookie. Defaults to '/'
+ * - `save_path`: The path of the directory used to save session data. It is only applicable to default file handler session management. Defaults to ''.
+ * - @see
+ *    more options at http://php.net/manual/en/session.configuration.php
+ *    you can set any valid option without the prefix `session.`
  *
- * see more options at http://php.net/manual/en/session.configuration.php
+ * ## Minimum table schema requirement for database session
+ *
+ *    CREATE TABLE `lc_sessions` (
+ *      `sid` varchar(64) NOT NULL DEFAULT '',
+ *      `host` varchar(128) NOT NULL DEFAULT '',
+ *      `timestamp` int(11) unsigned DEFAULT NULL,
+ *      `session` longblob NOT NULL DEFAULT '',
+ *      `useragent` varchar(255) NOT NULL DEFAULT '',
+ *      PRIMARY KEY (`sid`)
+ *    );
  *
  * The hook `session_beforeStart()` is available to define in /app/helpers/session_helper.php
  * so that you could do something before session starts.
  */
 $lc_session = array(
-	'type' => 'default', // no need to change this for the time being
+	'type' => 'default', // default or database
 	'options' => array(
 	)
 );
@@ -86,25 +110,9 @@ $lc_databases = array(
 		'collation'	=> 'utf8_general_ci'
 	)
 );
+# $lc_defaultDbSource: The default database connection
+$lc_defaultDbSource = 'default';
 
-# $lc_env: The setting for running environment: `development` or `production`
-$lc_env = 'development';
-# $lc_debugLevel: The debug level. If $lc_env = 'production', this is not considered.
-# `1` - show fatal errors, parse errors, but no PHP startup errors
-# `2` - show fatal errors, parse errors, warnings and notices
-# `3` - show all errors and warnings, except of level E_STRICT prior to PHP 5.4.0.
-# `int level` - set your own error reporting level. The parameter is either an integer representing a bit field, or named constants
-#  @see http://php.net/manual/en/errorfunc.configuration.php#ini.error-reporting
-$lc_debugLevel = 3;
-# $lc_defaultDbConnection: The default database connection
-$lc_defaultDbConnection = 'default';
-# $lc_siteName: Site Name
-$lc_siteName = 'LucidFrame';
-# $lc_siteDomain: Site Domain Name
-$lc_siteDomain = $_SERVER['HTTP_HOST'];
-# $lc_baseURL: No trailing slash (only if it is located in a sub-directory)
-# Leave blank if it is located in the document root
-$lc_baseURL = 'LucidFrame';
 # $lc_sites: consider sub-directories as additional site roots and namespaces
 /**
  * ### Syntax

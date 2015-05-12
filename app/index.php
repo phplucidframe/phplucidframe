@@ -21,19 +21,23 @@ ob_start('_flush');
 $q = route_path();
 
 # if the route is empty, get it from the config
-if(empty($q) && $lc_homeRouting) $q = $lc_homeRouting;
+if (empty($q) && $lc_homeRouting) {
+	$q = $lc_homeRouting;
+}
 # if it is still empty, set it to the system default
-if(empty($q)) $q = 'home';
+if (empty($q)) {
+	$q = 'home';
+}
 # Get the complete path to root
 $_page = ROOT . $q;
-if(!file_exists($_page)){
+if (!file_exists($_page)) {
 	# Get the complete path with app/
 	$_page = APP_ROOT . $q;
 	# Find the clean route
 	$_seg = explode('/', $q);
-	if(is_dir($_page)){
+	if (is_dir($_page)) {
 		_cfg('cleanRoute', $q);
-	}else{
+	} else {
 		array_pop($_seg); # remove the last element
 		_cfg('cleanRoute', implode('/', $_seg));
 	}
@@ -41,20 +45,20 @@ if(!file_exists($_page)){
 }
 
 # if it is a directory, it should have index.php
-if(is_dir($_page)){
+if (is_dir($_page)) {
 	$_page .= '/index.php';
 }
 
-if(!empty($_page) && file_exists($_page)){
+if (!empty($_page) && file_exists($_page)) {
 	include $_page;
-}else{
-	if(preg_match('/(.*)(401|403|404){1}$/', $_page, $matches)){
+} else {
+	if (preg_match('/(.*)(401|403|404) {1}$/', $_page, $matches)) {
 		include( _i('inc/tpl/'.$matches[2].'.php') );
-	}else{
+	} else {
 		$_page = route_search();
-		if($_page){
+		if ($_page && is_file($_page) && file_exists($_page)) {
 			include $_page;
-		}else{
+		} else {
 			include( _i('inc/tpl/404.php') );
 		}
 	}

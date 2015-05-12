@@ -3,7 +3,7 @@
  * This file is part of the PHPLucidFrame library.
  *
  * The template file for the critical site errors display.
- * You can copy this to /app/inc/tpl/404.php and update it according to your need.
+ * You can copy this to /app/inc/tpl/site.error.php and update it according to your need.
  *
  * @package     LC
  * @since       PHPLucidFrame v 1.0.0

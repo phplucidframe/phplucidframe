@@ -34,10 +34,10 @@
 					// $file->isDeletable(false);
 					$file->setOnUpload('example_photoUpload'); # This hook is defined in /app/helpers/file_helper.php
 					$file->setOnDelete('example_photoDelete'); # This hook is defined in /app/helpers/file_helper.php
-					if(isset($images) && $images){ # $images is retrieved in query.php
+					if (isset($images) && $images) { # $images is retrieved in query.php
 						$file->setValue($images);
 						# The following is an alternative of setValue()
-						// foreach($images as $key => $value){
+						// foreach ($images as $key => $value) {
 						//	$file->addValue($key, $value);
 						// }
 					}
@@ -64,7 +64,7 @@
 					$file->setExtensions(array('pdf', 'doc', 'docx', 'odt', 'ods', 'txt'));
 					$file->setOnUpload('example_docUpload'); # This hook is defined in /app/helpers/file_helper.php
 					$file->setOnDelete('example_docDelete'); # This hook is defined in /app/helpers/file_helper.php
-					if(isset($doc) && $doc){
+					if (isset($doc) && $doc) {
 						$file->setValue($doc);
 					}
 					$file->html(array(

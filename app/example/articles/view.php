@@ -8,10 +8,10 @@
 
 <h3><?php echo $pageTitle; ?></h3>
 <?php
-// if($result){
-// 	while($a = db_fetchObject($result))){
-if(count($articles)){
-	foreach($articles as $id => $a){
+// if ($result) {
+// 	while ($a = db_fetchObject($result))) {
+if (count($articles)) {
+	foreach ($articles as $id => $a) {
 		$id++;
 		$a = (object) $a;
 	?>
@@ -28,7 +28,7 @@ if(count($articles)){
 		<div class="pager-records"><?php echo _t('Total %d records', $totalRecords); ?></div>
 	</div>
 	<?php
-}else{
+} else {
 	?>
 	<div class="noRecord"><?php echo _t('There is no record.'); ?></div>
 	<?php

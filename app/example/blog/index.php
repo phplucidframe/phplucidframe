@@ -18,7 +18,7 @@ _meta('description', $pageTitle.': '._cfg('metaDescription'));
 </body>
 </html>
 <script type="text/javascript">
-$(function(){
-	Page.Blog.init();
+$(function() {
+	LC.Page.Blog.init();
 });
 </script>

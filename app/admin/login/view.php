@@ -4,9 +4,9 @@
 		<div class="logo"><img src="<?php echo _img('logo.png'); ?>" /></div>
 		<div class="form">
 			<?php
-			if($msg = flash_get()){
+			if ($msg = flash_get()) {
 				echo $msg;
-			}else{ ?>
+			} else { ?>
 				<div class="message error"></div>
 			<?php
 			} ?>

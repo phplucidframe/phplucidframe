@@ -15,7 +15,7 @@ $pageTitle = _t('Categories');
 </body>
 </html>
 <script language="javascript">
-$(function(){
+$(function() {
 	LC.Page.Category.init();
 });
 </script>

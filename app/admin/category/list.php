@@ -22,8 +22,8 @@ $sql = 'SELECT c.* FROM '.db_prefix().'category AS c
 		ORDER BY catName
 		LIMIT '.$pager->get('offset').', '.$pager->get('itemsPerPage');
 
-if($result = db_query($sql)){
-	if(db_numRows($result)){
+if ($result = db_query($sql)) {
+	if (db_numRows($result)) {
 		$langs = _langs(_defaultLang());
 	?>
 	<table cellpadding="0" cellspacing="0" border="0" class="list">
@@ -33,11 +33,11 @@ if($result = db_query($sql)){
 				<span>Name</span>
 				<label class="lang">(<?php echo _langName(); ?>)</label>
 			</td>
-			<?php if($langs){ ?>
-				<?php foreach($langs as $lcode => $lname){ ?>
+			<?php if ($langs) { ?>
+				<?php foreach ($langs as $lcode => $lname) { ?>
 				<td>
 					<span>Name</span>
-					<?php if(_langName($lcode)){ ?>
+					<?php if (_langName($lcode)) { ?>
 					<label class="lang">(<?php echo _langName($lcode); ?>)</label>
 					<?php } ?>
 				</td>
@@ -45,7 +45,7 @@ if($result = db_query($sql)){
 			<?php } ?>
 		</tr>
 		<?php
-		while($row = db_fetchObject($result)){
+		while ($row = db_fetchObject($result)) {
 			$data = array(
 				'catId' 	=> $row->catId,
 				'catName' 	=> $row->catName,
@@ -69,12 +69,12 @@ if($result = db_query($sql)){
 				<td class="colName">
 					<?php echo $row->catName; ?>
 				</td>
-				<?php if($langs){ ?>
-					<?php foreach($langs as $lcode => $lname){ ?>
+				<?php if ($langs) { ?>
+					<?php foreach ($langs as $lcode => $lname) { ?>
 					<td class="colName <?php echo $lcode; ?>">
 						<?php
 						$lcode = _queryLang($lcode);
-						if(isset($i18n['catName_i18n'][$lcode])) echo $i18n['catName_i18n'][$lcode];
+						if (isset($i18n['catName_i18n'][$lcode])) echo $i18n['catName_i18n'][$lcode];
 						else echo '&nbsp;';
 						?>
 					</td>
@@ -87,7 +87,7 @@ if($result = db_query($sql)){
 	</table>
 	<div class="pager-container"><?php echo $pager->display(); ?></div>
 	<?php
-	}else{
+	} else {
 	?>	<div class="no-record"><?php echo _t('There is no item found. Click "Add New Category" to add a new category.'); ?></div>
 	<?php
 	}
