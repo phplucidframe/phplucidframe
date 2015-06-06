@@ -64,7 +64,7 @@ class Form {
 	 * Form token validation
 	 * @return void
 	 */
-	public static function validate() {
+	public static function validate($validations=null) {
 		if (!isset($_POST['lc_formToken_'._cfg('formTokenName')])) return false;
 		$token        = _decrypt(session_get(_cfg('formTokenName')));
 		$postedToken  = _decrypt(_post($_POST['lc_formToken_'._cfg('formTokenName')]));
@@ -86,6 +86,11 @@ class Form {
 			Validation::addError('', _t('Error occured during form submission. Please refresh the page to try again.'));
 			return false;
 		}
+
+		if ($validations && Validation::check($validations) === false) {
+			return false;
+		}
+
 		return true;
 	}
 	/**
