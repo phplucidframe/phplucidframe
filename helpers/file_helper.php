@@ -28,23 +28,56 @@ class File extends \SplFileInfo {
 	/** @var string The upload directory path */
 	private $uploadPath;
 	/** @var const Type of file resize */
-	private $resize = FILE_RESIZE_BOTH;
+	private $resize;
 	/** @var string The original uploaded file name */
 	private $originalFileName;
 	/** @var string The file name generated */
-	private $fileNameBased;
+	private $fileName;
 	/** @var array The uploaded file information */
 	private $uploads;
 	/** @var array The file upload error information */
 	private $error;
+	/** @var array The image filter setting */
+	private $imageFilterSet;
 
 	/**
 	 * Constructor
-	 * @param string $name The unique name
+	 * @param string $fileName Path to the file
 	 */
-	public function File($name='') {
-		$this->uniqueId = $this->getUniqueId();
-		$this->name = ($name) ? $name : $this->uniqueId;
+	public function File($fileName='') {
+		$this->name = $fileName;
+		$this->uploadPath = FILE . 'tmp' . _DS_;
+		$this->defaultImageFilterSet();
+		if ($fileName) {
+			parent::__construct($fileName);
+		}
+	}
+	/**
+	 * Set default image filter set and merge with user's options
+	 * @return object File
+	 */
+	private function defaultImageFilterSet() {
+		$this->imageFilterSet = array(
+			'maxDimension' => '800x600',
+			'resizeMode'   => FILE_RESIZE_BOTH,
+			'jpgQuality'   => 75
+		);
+		$this->imageFilterSet = array_merge($this->imageFilterSet, _cfg('imageFilterSet'));
+		$this->setImageResizeMode($this->imageFilterSet['resizeMode']);
+		return $this;
+	}
+	/**
+	 * Set image resize mode
+	 * @param  const  FILE_RESIZE_BOTH, FILE_RESIZE_WIDTH or FILE_RESIZE_HEIGHT
+	 * @return object File
+	 */
+	private function setImageResizeMode($value) {
+		if(in_array($value, array(FILE_RESIZE_BOTH, FILE_RESIZE_WIDTH, FILE_RESIZE_HEIGHT))) {
+			$this->imageFilterSet['resizeMode'] = $value;
+		} else {
+			$this->imageFilterSet['resizeMode'] = FILE_RESIZE_BOTH;
+		}
+		return $this;
 	}
 	/**
 	 * Setter for the class properties
@@ -53,12 +86,34 @@ class File extends \SplFileInfo {
 	 * @return void
 	 */
 	public function set($key, $value) {
+		if ($key === 'resize' || $key === 'resizeMode') {
+			$this->setImageResizeMode($value);
+			return $this;
+		}
+
+		if ($key === 'maxDimension') {
+			$this->imageFilterSet['maxDimension'] = $value;
+			return $this;
+		}
+
+		if ($key === 'jpgQuality') {
+			$this->imageFilterSet['jpgQuality'] = $value;
+			return $this;
+		}
+
 		# if $uniqueId is explicitly given and $name was not explicity given
 		# make $name and $uniqueId same
 		if ($key === 'uniqueId' && $value & $this->name === $this->uniqueId) {
 			$this->name = $value;
 		}
+
+		if ($key === 'uploadDir' || $key === 'uploadPath') {
+			$value = rtrim(rtrim($value, '/'), _DS_) . _DS_;
+			$this->uploadPath = $value;
+		}
+
 		$this->{$key} = $value;
+		return $this;
 	}
 	/**
 	 * Getter for the class properties
@@ -66,6 +121,9 @@ class File extends \SplFileInfo {
 	 * @return mixed $value The value of the property or null if $name does not exist.
 	 */
 	public function get($key) {
+		if ($key === 'uploadDir') {
+			return $this->uploadPath;
+		}
 		if (isset($this->{$key})) {
 			return $this->{$key};
 		}
@@ -80,8 +138,8 @@ class File extends \SplFileInfo {
 	/**
 	 * Getter for the file name generated
 	 */
-	public function getFileNameBased() {
-		return $this->fileNameBased;
+	public function getFileName() {
+		return $this->fileName;
 	}
 	/**
 	 * Getter for the property `error`
@@ -140,85 +198,64 @@ class File extends \SplFileInfo {
 	 * Move the uploaded file into the given directory.
 	 * If the uploaded file is image, this will create the various images according to the given $dimension
 	 *
-	 * @param array $file The uploaded file information from $_FILES['xxx']
+	 * @param string|array $file The name 'xxx' from $_FILES['xxx'] or The array of uploaded file information from $_FILES['xxx']
 	 *
 	 * @return  array The array of the uploaded file information:
 	 *
 	 *     array(
 	 *       'name'     => 'Name of the input element',
-	 *       'fileName' => 'The original file name',
+	 *       'fileName' => 'The uploaded file name',
+	 *       'originalFileName' => 'The original file name user selected',
 	 *       'extension'=> 'The selected and uploaded file extension',
 	 *       'dir'      => 'The uploaded directory',
-	 *       'uploads'  => array(
-	 *         'dimension (WxH) or index' => 'The uploaded file name like return from basename()'
-	 *       )
 	 *     )
 	 *
 	 */
 	public function upload($file) {
+		if (is_string($file)) {
+			if (!isset($_FILES[$file])) {
+				$this->error = array(
+					'code' => UPLOAD_ERR_NO_FILE,
+					'message' => $this->getErrorMessage(UPLOAD_ERR_NO_FILE)
+				);
+				return null;
+			}
+			$this->name = $file;
+			$file = $_FILES[$file];
+		}
+
+		if (!isset($file['name']) || !isset($file['tmp_name'])) {
+			$this->error = array(
+				'code' => UPLOAD_ERR_NO_FILE,
+				'message' => $this->getErrorMessage(UPLOAD_ERR_NO_FILE)
+			);
+			return null;
+		}
+
 		$fileName     = stripslashes($file['name']);
 		$uploadedFile = $file['tmp_name'];
 		$info         = pathinfo($fileName);
 		$extension    = strtolower($info['extension']);
 		$uploaded     = null;
 		$path         = $this->uploadPath;
+		$dimensions   = $this->dimensions;
 
 		if ($fileName && $file['error'] === UPLOAD_ERR_OK) {
 			$this->originalFileName = $fileName;
+			$newFileName = $this->getNewFileName();
 
-			if ( !(is_array($this->dimensions) && count($this->dimensions)) ) {
-				$newFileName = $this->getNewFileName($fileName);
-				if (move_uploaded_file($uploadedFile, $path . $newFileName)) {
-					$uploaded = array($newFileName);
+			if (!in_array($extension, array('jpg', 'jpeg', 'png', 'gif'))) { # non-image file
+				$uploaded = $this->move($uploadedFile, $newFileName);
+			} else { # image file
+				if (isset($this->imageFilterSet['maxDimension']) && $this->imageFilterSet['maxDimension']) {
+					# Upload the primary image by the configured dimension in config
+					$uploaded = $this->resizeImageByDimension($this->imageFilterSet['maxDimension'], $uploadedFile, $newFileName, $extension);
 				} else {
-					$this->error = array(
-						'code' => FILE_UPLOAD_ERR_MOVE,
-						'message' => $this->getErrorMessage(FILE_UPLOAD_ERR_MOVE)
-					);
+					$uploaded = $this->move($uploadedFile, $newFileName);
 				}
-			} else {
-				if ($extension == "jpg" || $extension == "jpeg" ) {
-					$img = imagecreatefromjpeg($uploadedFile);
-				} elseif ($extension == "png") {
-					$img = imagecreatefrompng($uploadedFile);
-				} elseif ($extension == "gif") {
-					$img = imagecreatefromgif ($uploadedFile);
-				}
-
-				if ( isset($img) && $img ) {
-					$uploaded = array();
-					foreach ($this->dimensions as $dimension) {
-						$resize = explode('x', $dimension);
-						$resizeWidth 	= $resize[0];
-						$resizeHeight 	= $resize[1];
-
-						if ($this->resize == FILE_RESIZE_WIDTH) {
-							$tmp = File::resizeImageWidth($img, $uploadedFile, $resizeWidth);
-						} elseif ($this->resize == FILE_RESIZE_HEIGHT) {
-							$tmp = File::resizeImageHeight($img, $uploadedFile, $resizeHeight);
-						} else {
-							$tmp = File::resizeImage($img, $uploadedFile, $resizeWidth, $resizeHeight);
-						}
-
-						$newFileName = $this->getNewFileName($fileName, $resizeWidth);
-
-						if ($extension == "gif") {
-							imagegif ($tmp, $path . $newFileName);
-						} elseif ($extension == "png") {
-							imagepng($tmp, $path . $newFileName);
-						} else {
-							imagejpeg($tmp, $path . $newFileName, 100);
-						}
-
-						imagedestroy($tmp);
-						$uploaded[$dimension] = $newFileName;
-					}
-					if ($img) imagedestroy($img);
-				} else {
-					$this->error = array(
-						'code' => FILE_UPLOAD_ERR_IMAGE_CREATE,
-						'message' => $this->getErrorMessage(FILE_UPLOAD_ERR_IMAGE_CREATE)
-					);
+				# if the thumbnail dimensions are defined, create them
+				if (is_array($this->dimensions) && count($this->dimensions)) {
+					$this->resizeImageByDimension($this->dimensions, $uploadedFile, $newFileName, $extension);
 				}
 			}
 		} else {
@@ -230,11 +267,11 @@ class File extends \SplFileInfo {
 
 		if ($uploaded) {
 			$this->uploads = array(
-				'name'     => $this->name,
-				'fileName' => $this->originalFileName,
-				'extension'=> $extension,
-				'dir'      => $this->uploadPath,
-				'uploads'  => $uploaded
+				'name'              => $this->name,
+				'fileName'          => $uploaded,
+				'originalFileName'  => $this->originalFileName,
+				'extension'         => $extension,
+				'dir'               => $this->get('uploadDir')
 			);
 		}
 
@@ -249,22 +286,9 @@ class File extends \SplFileInfo {
 	 *
 	 * @return string The file name
 	 */
-	private function getNewFileName($file, $width=0) {
-		$info = pathinfo($file);
-		# replace spaces, periods and underscores with dashes
-		$justName = str_replace(array(' ', '.', '_'), '-', $info['filename']);
-		# clean special characters
-		$sChars   = array('"', "'", ',', '~', '`', '!', '@', '#', '$', '%', '&', '*', '(', ')', '[', ']', '{', '}', '|', '\\', '/');
-		$justName = str_replace($sChars, '', $justName);
-		# remove continuous dashes
-		$justName = preg_replace('/[\-]+/', '-', $justName);
-		# add uffix to the file name
-		$suffix = '';
-		if ($width) $suffix .= '-' . $width;
-		$suffix .= '-' . $this->uniqueId;
-		$fileName = $justName . $suffix . '.' . $info['extension'];
-		$this->fileNameBased = $justName . '-' . $this->uniqueId . $info['extension'];
-		return $fileName;
+	private function getNewFileName($width=0) {
+		$this->fileName = $this->getUniqueId() . '.' . $this->guessExtension();
+		return $this->fileName;
 	}
 	/**
 	 * Get a unique id string from the property $uniqueId or generate a random 5-letters string
@@ -272,7 +296,109 @@ class File extends \SplFileInfo {
 	 */
 	private function getUniqueId() {
 		if ($this->uniqueId) return $this->uniqueId;
-		else return substr(md5(time()), 0, 5);
+		else return uniqid();
+	}
+	/**
+	 * Return the extension of the original file name
+	 * @param  string $file The optional file name; if it is not given, the original file name will be used
+	 * @return string The extension or an empty string if there is no file
+	 */
+	public function guessExtension($file='') {
+		$file = ($file) ? $file : $this->originalFileName;
+		if ($this->originalFileName) {
+			$info = pathinfo($this->originalFileName);
+			return $info['extension'];
+		} else {
+			return '';
+		}
+	}
+	/**
+	 * Move the uploaded file to the new location with new file name
+	 * @param  string $file         The source file
+	 * @param  string $newFileName  The new file name
+	 * @return string The new file name or null if any error occurs
+	 */
+	protected function move($file, $newFileName) {
+		$targetDir = $this->uploadPath;
+		if (!is_dir($targetDir)) {
+			@mkdir($targetDir, 0777, true);
+		}
+		if (@move_uploaded_file($file, $targetDir . $newFileName)) {
+			return $newFileName;
+		} else {
+			$this->error = array(
+				'code' => FILE_UPLOAD_ERR_MOVE,
+				'message' => $this->getErrorMessage(FILE_UPLOAD_ERR_MOVE)
+			);
+			return null;
+		}
+	}
+	/**
+	 * Resize the image file into the given width and height
+	 * @param  string|array $dimensions   The dimension or array of dimensions, e.g., '400x250' or array('400x250', '200x150')
+	 * @param  string       $file         The source file
+	 * @param  string       $newFileName  The new file name to be created
+	 * @return string       The new file name or null if any error occurs
+	 */
+	protected function resizeImageByDimension($dimensions, $file, $newFileName, $extension=null) {
+		$dimensions = is_string($dimensions) ? array($dimensions) : $dimensions;
+		$extension = ($extension) ? $extension : strtolower(pathinfo($file, PATHINFO_EXTENSION));
+
+		if ($extension == "jpg" || $extension == "jpeg" ) {
+			$img = imagecreatefromjpeg($file);
+		} elseif ($extension == "png") {
+			$img = imagecreatefrompng($file);
+		} elseif ($extension == "gif") {
+			$img = imagecreatefromgif ($file);
+		}
+
+		if ( isset($img) && $img ) {
+			if (isset($this->imageFilterSet['jpgQuality']) && is_numeric($this->imageFilterSet['jpgQuality'])) {
+				$jpgQuality = $this->imageFilterSet['jpgQuality'];
+			} else {
+				$jpgQuality = 75;
+			}
+
+			foreach ($dimensions as $dimension) {
+				$resize = explode('x', $dimension);
+				$resizeWidth  = $resize[0];
+				$resizeHeight = $resize[1];
+
+				if ($this->imageFilterSet['resizeMode'] == FILE_RESIZE_WIDTH) {
+					$tmp = File::resizeImageWidth($img, $file, $resizeWidth);
+				} elseif ($this->imageFilterSet['resizeMode'] == FILE_RESIZE_HEIGHT) {
+					$tmp = File::resizeImageHeight($img, $file, $resizeHeight);
+				} else {
+					$tmp = File::resizeImageBoth($img, $file, $resizeWidth, $resizeHeight);
+				}
+
+				$targetDir = (is_string(func_get_arg(0))) ? $this->uploadPath : $this->uploadPath . $dimension . _DS_;
+				if (!is_dir($targetDir)) {
+					@mkdir($targetDir, 0777, true);
+				}
+				$targetFileName = $targetDir . $newFileName;
+
+				if ($extension == "gif") {
+					imagegif ($tmp, $targetFileName);
+				} elseif ($extension == "png") {
+					imagepng($tmp, $targetFileName);
+				} else {
+					imagejpeg($tmp, $targetFileName, $jpgQuality);
+				}
+
+				imagedestroy($tmp);
+			}
+			if ($img) {
+				imagedestroy($img);
+				return $newFileName;
+			}
+		} else {
+			$this->error = array(
+				'code' => FILE_UPLOAD_ERR_IMAGE_CREATE,
+				'message' => $this->getErrorMessage(FILE_UPLOAD_ERR_IMAGE_CREATE)
+			);
+		}
+		return null;
 	}
 	/**
 	 * Resize an image to a desired width and height by given width
@@ -316,7 +442,7 @@ class File extends \SplFileInfo {
 	 *
 	 * @return resource An image resource identifier on success, FALSE on errors
 	 */
-	public static function resizeImage(&$img, $file, $newWidth, $newHeight) {
+	public static function resizeImageBoth(&$img, $file, $newWidth, $newHeight) {
 		list($width, $height) = getimagesize($file);
 
 		$scale = min($newWidth/$width, $newHeight/$height);
