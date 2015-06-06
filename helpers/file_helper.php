@@ -18,7 +18,7 @@
  * This class is part of the PHPLucidFrame library.
  * Helper for file processing system
  */
-class File {
+class File extends \SplFileInfo {
 	/** @var string The uniqued name string for this instance */
 	private $name;
 	/** @var string The uniqued string ID to append to the file name */
