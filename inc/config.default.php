@@ -175,6 +175,12 @@ $lc_useDBAutoFields = true;
 # can save many bytes of data and speed up downloading, parsing, and execution time.
 # It is forced to `false` when $lc_env = 'development'
 $lc_minifyHTML = true;
+# $lc_imageFilterSet: Default image filter setting that applies to image upload
+$lc_imageFilterSet = array(
+	'maxDimension' => '800x600', // or null for client original image size to keep, but not recommended
+	'resizeMode'   => FILE_RESIZE_BOTH,
+	'jpgQuality'   => 75
+);
 /**
  * Auth Module Configuration
  */
