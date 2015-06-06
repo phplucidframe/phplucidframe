@@ -15,27 +15,6 @@
  */
 
 /**
- * @ignore Flag for image resize to the fitted dimension to the given dimension
- */
-define('FILE_RESIZE_BOTH', 'both');
-/**
- * @ignore Flag for image resize to the given height, but width is aspect ratio of the height
- */
-define('FILE_RESIZE_HEIGHT', 'height');
-/**
- * @ignore Flag for image resize to the given width, but height is aspect ratio of the width
- */
-define('FILE_RESIZE_WIDTH', 'width');
-/**
- * @ignore File upload error flag for the failure of `move_uploaded_file()`
- */
-define('FILE_UPLOAD_ERR_MOVE', 100);
-/**
- * @ignore File upload error flag for the failure of image creation of GD functions
- */
-define('FILE_UPLOAD_ERR_IMAGE_CREATE', 101);
-
-/**
  * This class is part of the PHPLucidFrame library.
  * Helper for file processing system
  */
