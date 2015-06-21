@@ -26,7 +26,9 @@
 					$file = new AsynFileUploader('photo');
 					$file->setCaption('Choose Image'); # default to "Choose File"
 					$file->setMaxSize(MAX_FILE_UPLOAD_SIZE); # default to 10MB
-					$file->setDimensions(array('400x300', '200x150')); # image dimension to resize, array('W1xH2', 'W1xH2'); this should be defined in site.config.php, for example, $lc_imageDimensions = array('400x300', '200x150');
+					# image dimension to resize, array('W1xH2', 'W1xH2');
+					# this should be defined in site.config.php, for example, $lc_imageDimensions = array('400x300', '200x150');
+					$file->setDimensions(array('400x300', '200x150'));
 					$file->setExtensions(array('jpg', 'jpeg', 'png', 'gif')); # default to any file
 					// $file->setUploadDir('path/to/upload/dir'); # default to /files/tmp
 					// $file->setButtons('btnSubmit'); # The button #btnSubmit will be disabled while file upload is in progress
@@ -34,12 +36,9 @@
 					// $file->isDeletable(false);
 					$file->setOnUpload('example_photoUpload'); # This hook is defined in /app/helpers/file_helper.php
 					$file->setOnDelete('example_photoDelete'); # This hook is defined in /app/helpers/file_helper.php
-					if (isset($images) && $images) { # $images is retrieved in query.php
-						$file->setValue($images);
-						# The following is an alternative of setValue()
-						// foreach ($images as $key => $value) {
-						//	$file->addValue($key, $value);
-						// }
+					$file->setHidden('postId', $id); # FK
+					if (isset($image) && $image) { # $image is retrieved in query.php
+						$file->setValue($image->pimgFileName, $image->pimgId);
 					}
 					$file->html();
 				?>
@@ -64,11 +63,12 @@
 					$file->setExtensions(array('pdf', 'doc', 'docx', 'odt', 'ods', 'txt'));
 					$file->setOnUpload('example_docUpload'); # This hook is defined in /app/helpers/file_helper.php
 					$file->setOnDelete('example_docDelete'); # This hook is defined in /app/helpers/file_helper.php
-					if (isset($doc) && $doc) {
-						$file->setValue($doc);
+					if (isset($doc) && $doc) { # $doc is retrieved in query.php
+						$file->setValue($doc->docFileName, $doc->docId);
 					}
 					$file->html(array(
 						'id' => 'document'
+						// TODO: when id is specified, the button is not replaced by the throbber while upload or delete is in progress
 					));
 				?>
 				</div>
