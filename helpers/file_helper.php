@@ -278,20 +278,16 @@ class File extends \SplFileInfo {
 		return $this->uploads;
 	}
 	/**
-	 * Get a new file name, e.g., original-file-name-[imageWidth]-[uniqueId].ext
-	 * Spaces and periods in the original file names are replaced with dashes.
-	 *
-	 * @param string $file The uploaded file name
-	 * @param int $width The image width if the uploaded file is image, otherwise 0
+	 * Get a new unique file name
 	 *
 	 * @return string The file name
 	 */
-	private function getNewFileName($width=0) {
+	private function getNewFileName() {
 		$this->fileName = $this->getUniqueId() . '.' . $this->guessExtension();
 		return $this->fileName;
 	}
 	/**
-	 * Get a unique id string from the property $uniqueId or generate a random 5-letters string
+	 * Get a unique id string
 	 * @return string
 	 */
 	private function getUniqueId() {
@@ -560,6 +556,8 @@ class AsynFileUploader {
 	private $caption;
 	/** @var string The uploaded file name */
 	private $value;
+	/** @var array The array of hidden values to be posted to the callbacks */
+	private $hidden;
 	/** @var string The directory path where the file to be uploaded permenantly */
 	private $uploadDir;
 	/** @var array The allowed file extensions; defaults to jpg, jpeg, png, gif */
@@ -592,6 +590,7 @@ class AsynFileUploader {
 		$this->label                = _t('File');
 		$this->caption              = _t('Choose File');
 		$this->value                = array();
+		$this->hidden               = array();
 		$this->maxSize              = 10;
 		$this->extensions           = array();
 		$this->uploadDir            = FILE . 'tmp' . _DS_;
@@ -646,41 +645,36 @@ class AsynFileUploader {
 	}
 	/**
 	 * Setter for the property `value`
-	 * @param array $value The array of file name(s)
-	 *
-	 *      array(
-	 *        'id-saved-in-db' => 'file name like return from basename()'
-	 *      )
-	 *
-	 *   or
-	 *
-	 *      array(
-	 *        'id-saved-in-db' => array(
-	 *          'file name like return from basename()',
-	 *          'file name like return from basename()'
-	 *        )
-	 *      )
-	 *
-	 *   or
-	 *
-	 *      array(
-	 *        'id1-saved-in-db' => 'file name like return from basename()'
-	 *        'id2-saved-in-db' => 'file name like return from basename()'
-	 *      )
-	 *
+	 * @param array $value The file name saved in the database
+	 * @param int   $value The ID related to the file name saved in the database
 	 */
-	public function setValue($value) {
-		if (is_array($value)) {
-			$this->value = $value;
-		}
+	public function setValue($value, $id=0) {
+		$this->value = array(
+			$id => $value
+		);
 	}
 	/**
-	 * Setter for the property `value` for each value
-	 * @param mixed  $id    ID saved in db
-	 * @param string $value The file name like return from `basename()`
+	 * Getter for the property `value`
 	 */
-	public function addValue($id, $value) {
-		$this->value[$id] = $value;
+	public function getValue() {
+		return is_array($this->value) ? current($this->value) : $this->value;
+	}
+	/**
+	 * Getter for the id saved in db related to the value
+	 */
+	public function getValueId() {
+		if (is_array($this->value)) {
+			return current(array_keys($this->value));
+		}
+		return 0;
+	}
+	/**
+	 * Setter for the property `hidden`
+	 */
+	public function setHidden($key, $value='') {
+		if (!in_array($key, array('id', 'dimensions', 'fileName', 'uniqueId'))) { # skip for reserved keys
+			$this->hidden[$key] = $value;
+		}
 	}
 	/**
 	 * Setter for the property `uploadDir`
@@ -753,45 +747,6 @@ class AsynFileUploader {
 		$this->uploadHandler = $url;
 	}
 	/**
-	 * Get a uploaded file name of the largest dimension if image
-	 * otherwise just return the file
-	 * @param  array  $values The optional array of file names
-	 * @return string The file name
-	 */
-	private function getAFile($values=NULL) {
-		if (is_null($values)) {
-			$values = array_values($this->value);
-		}
-
-		if (count($values) === 0) {
-			return '';
-		}
-
-		if (is_array($this->dimensions) && count($this->dimensions)) { # image file
-			$maxWidth = 0;
-			$fileName = '';
-			if (is_array($values[0])) {
-				$values = $values[0];
-			}
-			foreach ($values as $value) {
-				if (!file_exists($this->uploadDir . $value)) {
-					continue;
-				}
-				$parts    = pathinfo($this->uploadDir . $value);
-				$justName = explode('-', $parts['filename']);
-				$uniqueId = array_pop($justName); # pop the last element from the array
-				$width    = array_pop($justName); # pop the second last element from the array
-				if ($width > $maxWidth) {
-					$maxWidth = $width;
-					$fileName = $value;
-				}
-			}
-			return $fileName;
-		} else { # non-image file
-			return array_pop($values);
-		}
-	}
-	/**
 	 * Display file input HTML
 	 * @param array $attributes The HTML attribute option for the button
 	 *
@@ -846,68 +801,43 @@ class AsynFileUploader {
 		$handlerURL = $this->uploadHandler.'?'.implode('&', $args);
 
 		# If setValue(), the file information is pre-loaded
+		$id             = '';
+		$value          = '';
 		$currentFile    = '';
 		$currentFileURL = '';
 		$extension      = '';
 		$uniqueId       = '';
-		$ids            = array();
-		$values         = array();
 		$dimensions     = array();
 		$webUploadDir   = str_replace('\\', '/', str_replace(ROOT, WEB_ROOT, $this->uploadDir));
 
-		if (count($this->value)) {
-			$value = $this->getAFile(); # Get a file which could be largest or the first or the only one
-			if ($value) {
-				$ids    = array_keys($this->value);
-				$values = array_values($this->value);
-				$parts           = pathinfo($this->uploadDir . $value);
-				$justName        = explode('-', $parts['filename']);
-				$currentFileURL  = $webUploadDir . $value;
-				$extension       = $parts['extension'];
-				if (is_array($this->dimensions) && count($this->dimensions)) { # image file
-					$uniqueId = array_pop($justName);
-					$dWidth   = array_pop($justName);
-					$justName = implode('-', $justName);
-					# Get dimension from the file name(s)
-					$tmpDimensions = $this->dimensions;
-					foreach ($values as $v) {
-						$p = pathinfo($this->uploadDir . $v);
-						$f = explode('-', $p['filename']);
-						array_pop($f); # remove the last element, uniqueId
-						$w = array_pop($f); # get the second last element, the image width
-						for ($i=0; $i<count($tmpDimensions); $i++) {
-							if (stristr($tmpDimensions[$i], $w.'x') !== false) {
-								$dimensions[] = $tmpDimensions[$i];
-								unset($tmpDimensions[$i]);
-								$tmpDimensions = array_values($tmpDimensions);
-								break;
-							}
-						}
-					}
-				} else { # non-image file
-					$uniqueId = array_pop($justName);
-					$justName = implode('-', $justName);
-				}
-				$currentFile = $justName . '.' . $parts['extension'];
+		if ($this->value && file_exists($this->uploadDir . $value)) {
+			$value = $this->getValue();
+			$id = $this->getValueId();
+			$currentFile = basename($this->uploadDir . $value);
+			$currentFileURL  = $webUploadDir . $value;
+			$extension = pathinfo($this->uploadDir . $value, PATHINFO_EXTENSION);
+			if (is_array($this->dimensions) && count($this->dimensions)) {
+				$dimensions = $this->dimensions;
 			}
 		}
+
 		# If the generic form POST, the file information from POST is pre-loaded
 		# by overwriting `$this->value`
-		if (count($_POST) && isset($_POST[$name]) && is_array($_POST[$name]) &&
-		   isset($_POST[$name.'-fileName']) && $_POST[$name.'-fileName'] &&
-		   isset($_POST[$name.'-uniqueId']) && $_POST[$name.'-uniqueId']
-		  ) {
-			$post            = _post($_POST);
-			$values          = $post[$name];
-			$ids             = (isset($post[$name.'-id']) && count($post[$name.'-id'])) ? $post[$name.'-id'] : array();
-			$fileName        = $this->getAFile($post[$name]);
-			$parts           = pathinfo($this->uploadDir . $fileName);
-			$extension       = $parts['extension'];
-			$currentFileURL  = $webUploadDir . $fileName;
-			if (file_exists($currentFileURL)) {
-				$currentFile = $post[$name.'-fileName'];
-				$uniqueId    = $post[$name.'-uniqueId'];
+		if (count($_POST) && isset($_POST[$name]) && $_POST[$name] &&
+		   isset($_POST[$name.'-fileName']) && $_POST[$name.'-fileName']
+		  )
+		{
+			$post    = _post($_POST);
+			$value   = $post[$name];
+			$id      = isset($post[$name.'-id']) ? $post[$name.'-id'] : '';
+
+			if (file_exists($this->uploadDir . $value)) {
+				$currentFile = $value;
+				$currentFileURL  = $webUploadDir . $value;
+				$extension = pathinfo($this->uploadDir . $value, PATHINFO_EXTENSION);
+				$uniqueId  = $post[$name.'-uniqueId'];
 			}
+
 			if (isset($post[$name.'-dimensions']) && is_array($post[$name.'-dimensions']) && count($post[$name.'-dimensions'])) {
 				$dimensions = $post[$name.'-dimensions'];
 			}
@@ -917,25 +847,16 @@ class AsynFileUploader {
 		?>
 		<div class="asynfileuploader" id="asynfileuploader-<?php echo $name; ?>">
 			<div id="asynfileuploader-value-<?php echo $name; ?>">
-			<?php if (count($values)) { ?>
-				<?php foreach ($values as $val) { ?>
-					<?php if (is_array($val)) { ?>
-						<?php foreach ($val as $v) { ?>
-							<input type="hidden" name="<?php echo $name; ?>[]" value="<?php echo $v; ?>" />
-						<?php } ?>
-					<?php } else { ?>
-						<input type="hidden" name="<?php echo $name; ?>[]" value="<?php echo $val; ?>" />
-					<?php } ?>
+				<input type="hidden" name="<?php echo $name; ?>" value="<?php if($value) echo $value; ?>" />
+				<input type="hidden" name="<?php echo $name; ?>-id" value="<?php if($id) echo $id; ?>" />
+				<?php foreach ($dimensions as $d) { ?>
+					<input type="hidden" name="<?php echo $name; ?>-dimensions[]" value="<?php echo $d; ?>" />
 				<?php } ?>
-				<?php foreach ($dimensions as $ext) { ?>
-					<input type="hidden" name="<?php echo $name; ?>-extensions[]" value="<?php echo $ext; ?>" />
+			</div>
+			<div id="asynfileuploader-hiddens-<?php echo $name; ?>">
+				<?php foreach ($this->hidden as $hiddenName => $hiddenValue) { ?>
+					<input type="hidden" name="<?php echo $name; ?>-<?php echo $hiddenName; ?>" value="<?php echo $hiddenValue; ?>" />
 				<?php } ?>
-				<?php foreach ($ids as $id) { ?>
-					<input type="hidden" name="<?php echo $name; ?>-id[]" value="<?php echo $id; ?>" />
-				<?php } ?>
-			<?php } else { ?>
-				<input type="hidden" name="<?php echo $name; ?>" value="" />
-			<?php } ?>
 			</div>
 			<input type="hidden" name="<?php echo $name; ?>-dir" value="<?php echo base64_encode($this->uploadDir); ?>" />
 			<input type="hidden" name="<?php echo $name; ?>-fileName" id="asynfileuploader-fileName-<?php echo $name; ?>" value="<?php echo $currentFile; ?>" />
@@ -943,9 +864,6 @@ class AsynFileUploader {
 			<div id="asynfileuploader-progress-<?php echo $name; ?>" class="asynfileuploader-progress">
 				<div></div>
 			</div>
-			<?php
-
-			?>
 			<div <?php echo $buttonAttrHTML; ?>>
 				<span><?php echo $this->caption; ?></span>
 				<iframe id="asynfileuploader-frame-<?php echo $name; ?>" src="<?php echo $handlerURL; ?>" frameborder="0" scrolling="no" style="overflow:hidden;"></iframe>
@@ -973,11 +891,11 @@ class AsynFileUploader {
 				if ($preview) {
 					$json = array(
 						'name'      => $name,
+						'value'     => $value,
 						'fileName'  => $currentFile,
-						'extension' => $extension,
 						'url'       => $currentFileURL,
-						'caption'   => $this->label,
-						'uploads'   => $values
+						'extension' => $extension,
+						'caption'   => $this->label
 					);
 					echo 'LC.AsynFileUploader.preview(' . json_encode($json) . ');';
 				}
