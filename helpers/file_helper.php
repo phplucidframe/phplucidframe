@@ -904,4 +904,11 @@ class AsynFileUploader {
 		</div>
 		<?php
 	}
+	/**
+	 * Get the upload directory name from REQUEST
+	 * @param
+	 */
+	public static function getDirFromRequest($name) {
+		return isset($_REQUEST[$name.'-dir']) ? _sanitize(base64_decode($_REQUEST[$name.'-dir'])) : '';
+	}
 }
