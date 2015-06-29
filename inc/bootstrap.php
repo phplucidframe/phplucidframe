@@ -19,29 +19,29 @@
  */
 
 if ( !defined('APP_DIR') ) {
-	define('APP_DIR', 'app');
+    define('APP_DIR', 'app');
 }
 define('_DS_', DIRECTORY_SEPARATOR);
 
 if ( !defined('APP_ROOT') ) {
-	$APP_ROOT = rtrim(getcwd(), _DS_) . _DS_;
-	if (isset($_GET['bootstrap'])) {
-		$APP_ROOT .= APP_DIR . _DS_;
-	}
-	define('APP_ROOT', $APP_ROOT); # including trailing slash
+    $APP_ROOT = rtrim(getcwd(), _DS_) . _DS_;
+    if (isset($_GET['bootstrap'])) {
+        $APP_ROOT .= APP_DIR . _DS_;
+    }
+    define('APP_ROOT', $APP_ROOT); # including trailing slash
 }
 
 if ( !defined('ROOT') ) {
-	$regex = '/\\'._DS_.APP_DIR.'\b$/';
-	$ROOT = preg_replace($regex, '', rtrim(APP_ROOT, _DS_));
-	if ( strrpos($ROOT, _DS_) != strlen($ROOT)-1 ) {
-		$ROOT .= _DS_; # include trailing slash if not
-	}
-	define('ROOT', $ROOT);
+    $regex = '/\\'._DS_.APP_DIR.'\b$/';
+    $ROOT = preg_replace($regex, '', rtrim(APP_ROOT, _DS_));
+    if ( strrpos($ROOT, _DS_) != strlen($ROOT)-1 ) {
+        $ROOT .= _DS_; # include trailing slash if not
+    }
+    define('ROOT', $ROOT);
 }
 
 if (strcasecmp(APP_ROOT, ROOT) === 0) {
-	die('Enable mod_rewrite in your server and "AllowOverride All" from .htaccess');
+    die('Enable mod_rewrite in your server and "AllowOverride All" from .htaccess');
 }
 
 # path to inc/ folder
@@ -70,21 +70,21 @@ __envLoader();
 
 # Utility helpers (required)
 if ( $file = _i( 'helpers/utility_helper.php', false) ) {
-	include_once $file;
+    include_once $file;
 }
 require_once HELPER . 'utility_helper.php';
 
 # DB configuration & DB helper (required)
 if (isset($lc_databases[$lc_defaultDbSource]) && is_array($lc_databases[$lc_defaultDbSource]) && $lc_databases[$lc_defaultDbSource]['engine']) {
-	if ( $file = _i( 'helpers/db_helper.php', false) ) {
-		include_once $file;
-	}
-	require_once HELPER . 'db_helper.'.$lc_databases[$lc_defaultDbSource]['engine'].'.php';
+    if ( $file = _i( 'helpers/db_helper.php', false) ) {
+        include_once $file;
+    }
+    require_once HELPER . 'db_helper.'.$lc_databases[$lc_defaultDbSource]['engine'].'.php';
 
-	if (db_host($lc_defaultDbSource) && db_user($lc_defaultDbSource) && db_name($lc_defaultDbSource)) {
-		# Start DB connection
-		db_connect($lc_defaultDbSource);
-	}
+    if (db_host($lc_defaultDbSource) && db_user($lc_defaultDbSource) && db_name($lc_defaultDbSource)) {
+        # Start DB connection
+        db_connect($lc_defaultDbSource);
+    }
 }
 
 _loader('session_helper', HELPER);
@@ -96,21 +96,21 @@ _loader('form_helper', HELPER);
 _loader('file_helper', HELPER);
 
 if (file_exists(INC.'autoload.php')) {
-	require_once INC.'autoload.php';
+    require_once INC.'autoload.php';
 }
 
 # Session helper (unloadable from /inc/autoload.php)
 if ( $file = _i( 'helpers/session_helper.php', false) ) {
-	include_once $file;
+    include_once $file;
 }
 if ( $moduleSession = _readyloader('session_helper') ) {
-	require_once $moduleSession;
+    require_once $moduleSession;
 }
 _unloader('session_helper', HELPER);
 
 # Translation helper (unloadable from /inc/autoload.php)
 if ( $moduleI18n = _readyloader('i18n_helper') ) {
-	require_once $moduleI18n;
+    require_once $moduleI18n;
 }
 _unloader('i18n_helper', HELPER);
 
@@ -119,13 +119,13 @@ require HELPER . 'route_helper.php'; # WEB_ROOT and WEB_APP_ROOT is created in r
 
 # Load translations
 if ( $moduleI18n ) {
-	i18n_load();
+    i18n_load();
 }
 
 # Site-specific configuration variables
 require INC . 'site.config.php';
 if ( $file = _i( 'inc/site.config.php', false) ) {
-	include_once $file;
+    include_once $file;
 }
 
 define('CSS', WEB_ROOT.'css/');
@@ -134,28 +134,28 @@ define('WEB_VENDOR', WEB_ROOT.'vendor/');
 
 # Validation helper (unloadable from /inc/autoload.php)
 if ( $file = _i( 'helpers/validation_helper.php', false) ) {
-	include_once $file;
+    include_once $file;
 }
 if ( $moduleValidation = _readyloader('validation_helper') ) {
-	require_once $moduleValidation;
+    require_once $moduleValidation;
 }
 _unloader('validation_helper', HELPER);
 
 # Auth helper (unloadable from /inc/autoload.php)
 if ( $file = _i( 'helpers/auth_helper.php', false) ) {
-	include_once $file;
+    include_once $file;
 }
 if ( $moduleAuth = _readyloader('auth_helper') ) {
-	require_once $moduleAuth;
+    require_once $moduleAuth;
 }
 _unloader('auth_helper', HELPER);
 
 # Pager helper
 if ( $file = _i( 'helpers/pager_helper.php', false) ) {
-	include_once $file;
+    include_once $file;
 }
 if ( $modulePager = _readyloader('pager_helper') ) {
-	require_once $modulePager;
+    require_once $modulePager;
 }
 _unloader('pager_helper', HELPER);
 
@@ -164,16 +164,16 @@ require_once HELPER . 'security_helper.php';
 
 # Ajax Form helper (unloadable from /inc/autoload.php)
 if ( $moduleForm = _readyloader('form_helper') ) {
-	require_once $moduleForm;
+    require_once $moduleForm;
 }
 _unloader('form_helper', HELPER);
 
 # File helper (unloadable from /inc/autoload.php)
 if ( $file = _i( 'helpers/file_helper.php', false) ) {
-	include_once $file;
+    include_once $file;
 }
 if ( $moduleFile = _readyloader('file_helper') ) {
-	require_once $moduleFile;
+    require_once $moduleFile;
 }
 _unloader('file_helper', HELPER);
 
@@ -185,9 +185,9 @@ security_prerequisite();
 
 $module = NULL;
 foreach ($lc_autoload as $file) {
-	if ($module = _readyloader($file)) {
-		require_once $module;
-	}
+    if ($module = _readyloader($file)) {
+        require_once $module;
+    }
 }
 unset($module);
 unset($file);

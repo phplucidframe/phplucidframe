@@ -7,40 +7,40 @@
 $success = false;
 
 if (sizeof($_POST)) {
-	$post = _post($_POST);
-	extract($post);
+    $post = _post($_POST);
+    extract($post);
 
-	/**
-	Form validation prerequites here, for example
-	***
-	$validations = array(
-		'txtTitle' => array(
-			'caption' 	=> _t('Title'),
-			'value' 	=> $txtTitle,
-			'rules' 	=> array('mandatory'),
-		),
-		'txtBody' => array(
-			'caption' 	=> _t('Body'),
-			'value' 	=> $txtBody,
-			'rules' 	=> array('mandatory'),
-		),
-	);
-	*/
+    /**
+    Form validation prerequites here, for example
+    ***
+    $validations = array(
+        'txtTitle' => array(
+            'caption'   => _t('Title'),
+            'value'     => $txtTitle,
+            'rules'     => array('mandatory'),
+        ),
+        'txtBody' => array(
+            'caption'   => _t('Body'),
+            'value'     => $txtBody,
+            'rules'     => array('mandatory'),
+        ),
+    );
+    */
 
-	$validations = array(
-	);
+    $validations = array(
+    );
 
-	if (Validation::check($validations) == true) {
-		/**
-		Database operations here
-		*/
+    if (Validation::check($validations) == true) {
+        /**
+        Database operations here
+        */
 
-		if ($success) {
-			Form::set('success', true);
-			Form::set('redirect', _url('home'));
-		}
-	} else {
-		Form::set('error', Validation::$errors);
-	}
+        if ($success) {
+            Form::set('success', true);
+            Form::set('redirect', _url('home'));
+        }
+    } else {
+        Form::set('error', Validation::$errors);
+    }
 }
 Form::respond('formID'); # Ajax response

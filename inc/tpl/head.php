@@ -1,9 +1,9 @@
 <?php
 if (_meta('description')) {
-	$lc_metaDescription = _meta('description');
+    $lc_metaDescription = _meta('description');
 }
 if (_meta('keywords')) {
-	$lc_metaKeywords = _meta('keywords');
+    $lc_metaKeywords = _meta('keywords');
 }
 
 $ogTitle    = (_meta('og:title')) ? _meta('og:title') : _cfg('siteName');

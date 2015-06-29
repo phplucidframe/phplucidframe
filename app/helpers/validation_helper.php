@@ -12,8 +12,8 @@
 * @return boolean
 */
 function validate_emailRetyped($emailRetyped, $email='') {
-	if (empty($email)) return true;
-	return (strcasecmp($emailRetyped, $email) == 0) ? true : false;
+    if (empty($email)) return true;
+    return (strcasecmp($emailRetyped, $email) == 0) ? true : false;
 }
 /**
  * Custom validation function for password confirmation
@@ -24,9 +24,9 @@ function validate_emailRetyped($emailRetyped, $email='') {
  * @return boolean	TRUE for success; FALSE for failure
  */
 function validate_confirmPassword($value, $pwd) {
-	if (empty($value)) return true;
-	$confirmPwd = trim($pwd);
-	return ($value == $pwd);
+    if (empty($value)) return true;
+    $confirmPwd = trim($pwd);
+    return ($value == $pwd);
 }
 /**
  * Custom validation function to check user name duplicate
@@ -37,18 +37,18 @@ function validate_confirmPassword($value, $pwd) {
  * @return boolean	TRUE for no duplicate; FALSE for duplicate
  */
 function validate_checkDuplicateUsername($value, $id=0) {
-	$value = strtolower($value);
-	if (empty($value)) return true;
+    $value = strtolower($value);
+    if (empty($value)) return true;
 
-	$sql = 'SELECT uid FROM ' . db_prefix() . 'user WHERE LOWER(username) = ":value"';
-	if ($id) $sql .= ' AND uid <> :id';
-	$sql .= ' LIMIT 1';
-	$args = array(
-		':value' => strtolower($value),
-		':id' => $id
-	);
-	if ($result = db_query($sql, $args)) {
-		return (db_numRows($result)) ? false : true;
-	}
-	return false;
+    $sql = 'SELECT uid FROM ' . db_prefix() . 'user WHERE LOWER(username) = ":value"';
+    if ($id) $sql .= ' AND uid <> :id';
+    $sql .= ' LIMIT 1';
+    $args = array(
+        ':value' => strtolower($value),
+        ':id' => $id
+    );
+    if ($result = db_query($sql, $args)) {
+        return (db_numRows($result)) ? false : true;
+    }
+    return false;
 }

@@ -29,56 +29,56 @@ define('LC_FETCH_OBJECT', 3);
  * @param string $namespace Namespace of the configuration to read from
  */
 function db_config($namespace='default') {
-	if (!isset($GLOBALS['lc_databases'][$namespace])) {
-		die('Database configuration error!');
-	}
-	return $GLOBALS['lc_databases'][$namespace];
+    if (!isset($GLOBALS['lc_databases'][$namespace])) {
+        die('Database configuration error!');
+    }
+    return $GLOBALS['lc_databases'][$namespace];
 }
 /**
  * Return the database host name of the given namespace
  * @param string $namespace Namespace of the configuration to read from
  */
 function db_host($namespace='default') {
-	$conf = db_config($namespace);
-	return $conf['host'];
+    $conf = db_config($namespace);
+    return $conf['host'];
 }
 /**
  * Return the database name of the given namespace
  * @param string $namespace Namespace of the configuration to read from
  */
 function db_name($namespace='default') {
-	$conf = db_config($namespace);
-	if (!isset($conf['database'])) {
-		die('Database name is not set.');
-	}
-	return $conf['database'];
+    $conf = db_config($namespace);
+    if (!isset($conf['database'])) {
+        die('Database name is not set.');
+    }
+    return $conf['database'];
 }
 /**
  * Return the database user name of the given namespace
  * @param string $namespace Namespace of the configuration to read from
  */
 function db_user($namespace='default') {
-	$conf = db_config($namespace);
-	if (!isset($conf['username'])) {
-		die('Database username is not set.');
-	}
-	return $conf['username'];
+    $conf = db_config($namespace);
+    if (!isset($conf['username'])) {
+        die('Database username is not set.');
+    }
+    return $conf['username'];
 }
 /**
  * Return the database table prefix of the given namespace
  * @param string $namespace Namespace of the configuration to read from
  */
 function db_prefix($namespace='default') {
-	$conf = $GLOBALS['lc_databases'][$namespace];
-	return isset($conf['prefix']) ? $conf['prefix'] : '';
+    $conf = $GLOBALS['lc_databases'][$namespace];
+    return isset($conf['prefix']) ? $conf['prefix'] : '';
 }
 /**
  * Return the database collation of the given namespace
  * @param string $namespace Namespace of the configuration to read from
  */
 function db_collation($namespace='default') {
-	$conf = db_config($namespace);
-	return isset($conf['collation']) ? $conf['collation'] : '';
+    $conf = db_config($namespace);
+    return isset($conf['collation']) ? $conf['collation'] : '';
 }
 /**
  * @internal
@@ -86,43 +86,43 @@ function db_collation($namespace='default') {
  * @param string $namespace Namespace of the configuration to read from
  */
 function db_prerequisite($namespace='default') {
-	if (db_host($namespace) && db_user($namespace) && db_name($namespace)) {
-		return db_config($namespace);
-	} else {
-		$error = new stdClass();
-		$error->message = 'Required to configure $lc_databases in "/inc/config.php". It is not allowed to configure in the application-level file "/app/inc/site.config.php".';
-		$error->message = array(function_exists('_t') ? _t($error->message) : $error->message);
-		$error->type    = 'sitewide-message error';
-		include( _i('inc/tpl/site.error.php') );
-		exit;
-	}
+    if (db_host($namespace) && db_user($namespace) && db_name($namespace)) {
+        return db_config($namespace);
+    } else {
+        $error = new stdClass();
+        $error->message = 'Required to configure $lc_databases in "/inc/config.php". It is not allowed to configure in the application-level file "/app/inc/site.config.php".';
+        $error->message = array(function_exists('_t') ? _t($error->message) : $error->message);
+        $error->type    = 'sitewide-message error';
+        include( _i('inc/tpl/site.error.php') );
+        exit;
+    }
 }
 /**
  * Establish a new database connection to the MySQL server
  * @param string $namespace Namespace of the configuration.
  */
 function db_connect($namespace='default') {
-	global $_conn;
-	global $_DB;
-	$conf = db_config($namespace);
-	# Connection
-	$_conn = mysqli_connect($conf['host'], $conf['username'], $conf['password']);
-	if (!$_conn) {
-		die('Not connected mysqli!');
-	}
-	# Force MySQL to use the UTF-8 character set. Also set the collation, if a certain one has been set;
-	# otherwise, MySQL defaults to 'utf8_general_ci' # for UTF-8.
-	if (!db_setCharset('utf8')) {
-		printf("Error loading character set utf8: %s", mysqli_error($_conn));
-	}
-	if (db_collation()) {
-		db_query('SET NAMES utf8 COLLATE ' . db_collation());
-	}
-	# Select DB
-	if (!mysqli_select_db($_conn, $conf['database'])) {
-		die('Can\'t use  : ' . $conf['database'] .' - '. mysqli_error($_conn));
-	}
-	$_DB = $conf['database'];
+    global $_conn;
+    global $_DB;
+    $conf = db_config($namespace);
+    # Connection
+    $_conn = mysqli_connect($conf['host'], $conf['username'], $conf['password']);
+    if (!$_conn) {
+        die('Not connected mysqli!');
+    }
+    # Force MySQL to use the UTF-8 character set. Also set the collation, if a certain one has been set;
+    # otherwise, MySQL defaults to 'utf8_general_ci' # for UTF-8.
+    if (!db_setCharset('utf8')) {
+        printf("Error loading character set utf8: %s", mysqli_error($_conn));
+    }
+    if (db_collation()) {
+        db_query('SET NAMES utf8 COLLATE ' . db_collation());
+    }
+    # Select DB
+    if (!mysqli_select_db($_conn, $conf['database'])) {
+        die('Can\'t use  : ' . $conf['database'] .' - '. mysqli_error($_conn));
+    }
+    $_DB = $conf['database'];
 }
 /**
  * Switch to the given database from the currently active database
@@ -130,9 +130,9 @@ function db_connect($namespace='default') {
  * @return void
  */
 function db_switch($namespace='default') {
-	global $_conn;
-	db_close();
-	db_connect($namespace);
+    global $_conn;
+    db_close();
+    db_connect($namespace);
 }
 /**
  * Sets the default client character set
@@ -141,16 +141,16 @@ function db_switch($namespace='default') {
  * @return boolean Returns TRUE on success or FALSE on failure.
  */
 function db_setCharset($charset) {
-	global $_conn;
-	return mysqli_set_charset( $_conn , $charset );
+    global $_conn;
+    return mysqli_set_charset( $_conn , $charset );
 }
 /**
  * Closes a previously opened database connection
  * @return boolean Returns TRUE on success or FALSE on failure.
  */
 function db_close() {
-	global $_conn;
-	return $_conn ? mysqli_close($_conn) : true;
+    global $_conn;
+    return $_conn ? mysqli_close($_conn) : true;
 }
 /**
  * Make the generated query returned from the query executing functions
@@ -161,7 +161,7 @@ function db_close() {
  * @param bool $enable Enable to return the query built; defaults to `true`.
  */
 function db_prq($enable=true) {
-	_g('db_printQuery', $enable);
+    _g('db_printQuery', $enable);
 }
 /**
  * Perform a query on the database
@@ -177,34 +177,34 @@ function db_prq($enable=true) {
  * @return boolean Returns TRUE on success or FALSE on failure
  */
 function db_query($sql, $args=array()) {
-	global $_conn;
-	global $db_builtQueries;
+    global $_conn;
+    global $db_builtQueries;
 
-	if (count($args)) {
-		foreach ($args as $key => $value) {
-			if (strpos($key, ':') === false) $key = ':'.$key;
-			if (is_array($value)) {
-				$value = array_map('db_escapeStringMulti', $value);
-				$value = implode(',', $value);
-				$regex = '/'.$key.'\b/i';
-				$sql = preg_replace($regex, $value, $sql);
-			} else {
-				$regex = '/'.$key.'\b/i';
-				$sql = preg_replace($regex, db_escapeString($value), $sql);
-			}
-		}
-	}
+    if (count($args)) {
+        foreach ($args as $key => $value) {
+            if (strpos($key, ':') === false) $key = ':'.$key;
+            if (is_array($value)) {
+                $value = array_map('db_escapeStringMulti', $value);
+                $value = implode(',', $value);
+                $regex = '/'.$key.'\b/i';
+                $sql = preg_replace($regex, $value, $sql);
+            } else {
+                $regex = '/'.$key.'\b/i';
+                $sql = preg_replace($regex, db_escapeString($value), $sql);
+            }
+        }
+    }
 
-	$db_builtQueries[] = $sql;
+    $db_builtQueries[] = $sql;
 
-	if (_g('db_printQuery')) return $sql;
+    if (_g('db_printQuery')) return $sql;
 
-	if ($result = mysqli_query($_conn, $sql)) {
-		return $result;
-	} else {
-		echo 'Invalid query: ' . db_error();
-		return false;
-	}
+    if ($result = mysqli_query($_conn, $sql)) {
+        return $result;
+    } else {
+        echo 'Invalid query: ' . db_error();
+        return false;
+    }
 }
 /**
  * Get the last executed SQL string or one of the executed SQL strings by prividing the index
@@ -213,10 +213,10 @@ function db_query($sql, $args=array()) {
  * @return string Return the built and executed SQL string
  */
 function db_queryStr() {
-	global $db_builtQueries;
-	$arg = func_get_args();
-	$index = (count($arg) == 0) ? count($db_builtQueries)-1 : 0;
-	return (isset($db_builtQueries[$index])) ? $db_builtQueries[$index] : '';
+    global $db_builtQueries;
+    $arg = func_get_args();
+    $index = (count($arg) == 0) ? count($db_builtQueries)-1 : 0;
+    return (isset($db_builtQueries[$index])) ? $db_builtQueries[$index] : '';
 }
 /**
  * Escapes special characters in a string for use in a SQL statement, taking into account the current charset of the connection
@@ -225,12 +225,12 @@ function db_queryStr() {
  * @return string
  */
 function db_escapeString($str) {
-	global $_conn;
-	if (get_magic_quotes_gpc()) {
-		return mysqli_real_escape_string($_conn, stripslashes($str));
-	} else {
-		return mysqli_real_escape_string($_conn, $str);
-	}
+    global $_conn;
+    if (get_magic_quotes_gpc()) {
+        return mysqli_real_escape_string($_conn, stripslashes($str));
+    } else {
+        return mysqli_real_escape_string($_conn, $str);
+    }
 }
 /**
  * @internal
@@ -239,24 +239,24 @@ function db_escapeString($str) {
  * This is used for array_map()
  */
 function db_escapeStringMulti($val) {
-	$val = db_escapeString($val);
-	return is_numeric($val) ? $val : '"'.$val.'"';
+    $val = db_escapeString($val);
+    return is_numeric($val) ? $val : '"'.$val.'"';
 }
 /**
  * Returns a string description of the last error
  * @return string
  */
 function db_error() {
-	global $_conn;
-	return mysqli_error($_conn);
+    global $_conn;
+    return mysqli_error($_conn);
 }
 /**
  * Returns the error code for the most recent MySQLi function call
  * @return int
  */
 function db_errorNo() {
-	global $_conn;
-	return mysqli_errno($_conn);
+    global $_conn;
+    return mysqli_errno($_conn);
 }
 /**
  * Gets the number of rows in a result
@@ -264,7 +264,7 @@ function db_errorNo() {
  * @return int Returns the number of rows in the result set.
  */
 function db_numRows($result) {
-	return mysqli_num_rows($result);
+    return mysqli_num_rows($result);
 }
 /**
  * Fetch a result row as an associative, a numeric array, or both
@@ -272,7 +272,7 @@ function db_numRows($result) {
  * @return array An array that corresponds to the fetched row or NULL if there are no more rows for the resultset represented by the result parameter.
  */
 function db_fetchArray($result) {
-	return mysqli_fetch_array($result);
+    return mysqli_fetch_array($result);
 }
 /**
  * Fetch a result row as an associative array
@@ -280,7 +280,7 @@ function db_fetchArray($result) {
  * @return array An associative array that corresponds to the fetched row or NULL if there are no more rows.
  */
 function db_fetchAssoc($result) {
-	return mysqli_fetch_assoc($result);
+    return mysqli_fetch_assoc($result);
 }
 /**
  * Returns the current row of a result set as an object
@@ -288,7 +288,7 @@ function db_fetchAssoc($result) {
  * @return object An object that corresponds to the fetched row or NULL if there are no more rows in resultset.
  */
 function db_fetchObject($result) {
-	return mysqli_fetch_object($result);
+    return mysqli_fetch_object($result);
 }
 /**
  * Returns the auto generated id used in the last query
@@ -296,33 +296,34 @@ function db_fetchObject($result) {
  *  `0` if there was no previous query on the connection or if the query did not update an `AUTO_INCREMENT` value.
  */
 function db_insertId() {
-	global $_conn;
-	return mysqli_insert_id($_conn);
+    global $_conn;
+    return mysqli_insert_id($_conn);
 }
 /**
  * Returns the generated slug used in the last query
  * @return string The last inserted slug
  */
 function db_insertSlug() {
-	return session_get('lastInsertSlug');
+    return session_get('lastInsertSlug');
 }
 /**
  * Perform a count query on the database and return the count
  *
  * @param string $sql The SQL query string
  * @param array $args The array of placeholders and their values
- *	array(
- *		':placeholder1' => $value1,
- *		':placeholder2' => $value2
- *	)
+ *
+ *      array(
+ *          ':placeholder1' => $value1,
+ *          ':placeholder2' => $value2
+ *      )
  *
  * @return int The result count
  */
 function db_count($sql, $args=array()) {
-	if ($result = db_fetch($sql, $args)) {
-		return $result;
-	}
-	return 0;
+    if ($result = db_fetch($sql, $args)) {
+        return $result;
+    }
+    return 0;
 }
 /**
  * Perform a query on the database and return the first field value only.
@@ -332,23 +333,24 @@ function db_count($sql, $args=array()) {
  *
  * @param string $sql The SQL query string
  * @param array $args The array of placeholders and their values
- *	array(
- *		':placeholder1' => $value1,
- *		':placeholder2' => $value2
- *	)
+ *
+ *      array(
+ *          ':placeholder1' => $value1,
+ *          ':placeholder2' => $value2
+ *      )
  *
  * @return mixed The value of the first field
  */
 function db_fetch($sql, $args=array()) {
-	if ( ! preg_match('/LIMIT\s+[0-9]{1,}\b/i', $sql) ) {
-		$sql .= ' LIMIT 1';
-	}
-	if ($result = db_query($sql, $args)) {
-		if ($row = db_fetchArray($result)) {
-			return $row[0];
-		}
-	}
-	return false;
+    if ( ! preg_match('/LIMIT\s+[0-9]{1,}\b/i', $sql) ) {
+        $sql .= ' LIMIT 1';
+    }
+    if ($result = db_query($sql, $args)) {
+        if ($row = db_fetchArray($result)) {
+            return $row[0];
+        }
+    }
+    return false;
 }
 /**
  * Perform a query on the database and return the first result row as object
@@ -358,23 +360,24 @@ function db_fetch($sql, $args=array()) {
  *
  * @param string $sql The SQL query string
  * @param array $args The array of placeholders and their values
- *	array(
- *		':placeholder1' => $value1,
- *		':placeholder2' => $value2
- *	)
+ *
+ *      array(
+ *          ':placeholder1' => $value1,
+ *          ':placeholder2' => $value2
+ *      )
  *
  * @return object The result object
  */
 function db_fetchResult($sql, $args=array()) {
-	if ( ! preg_match('/LIMIT\s+[0-9]{1,}\b/i', $sql) ) {
-		$sql .= ' LIMIT 1';
-	}
-	if ($result = db_query($sql, $args)) {
-		if ($row = db_fetchObject($result)) {
-			return $row;
-		}
-	}
-	return false;
+    if ( ! preg_match('/LIMIT\s+[0-9]{1,}\b/i', $sql) ) {
+        $sql .= ' LIMIT 1';
+    }
+    if ($result = db_query($sql, $args)) {
+        if ($row = db_fetchObject($result)) {
+            return $row;
+        }
+    }
+    return false;
 }
 /**
  * Perform a query on the database and return the array of all results
@@ -389,29 +392,29 @@ function db_fetchResult($sql, $args=array()) {
  *   If the result not found, return false.
  */
 function db_extract($sql, $args=array(), $resultType=LC_FETCH_OBJECT) {
-	if (is_numeric($args)) {
-		if (in_array($args, array(LC_FETCH_OBJECT, LC_FETCH_ASSOC, LC_FETCH_ARRAY))) {
-			$resultType = $args;
-		}
-		$args = array();
-	}
-	$data = array();
-	if ($result = db_query($sql, $args)) {
-		while ($row = db_fetchAssoc($result)) {
-			if (count($row) == 2 && array_keys($row) === array('key', 'value')) {
-				$data[$row['key']] = $row['value'];
-			} else {
-				if ($resultType == LC_FETCH_ARRAY) {
-					$data[] = array_values($row);
-				} elseif ($resultType == LC_FETCH_OBJECT) {
-					$data[] = (object) $row;
-				} else {
-					$data[] = $row;
-				}
-			}
-		}
-	}
-	return count($data) ? $data : false;
+    if (is_numeric($args)) {
+        if (in_array($args, array(LC_FETCH_OBJECT, LC_FETCH_ASSOC, LC_FETCH_ARRAY))) {
+            $resultType = $args;
+        }
+        $args = array();
+    }
+    $data = array();
+    if ($result = db_query($sql, $args)) {
+        while ($row = db_fetchAssoc($result)) {
+            if (count($row) == 2 && array_keys($row) === array('key', 'value')) {
+                $data[$row['key']] = $row['value'];
+            } else {
+                if ($resultType == LC_FETCH_ARRAY) {
+                    $data[] = array_values($row);
+                } elseif ($resultType == LC_FETCH_OBJECT) {
+                    $data[] = (object) $row;
+                } else {
+                    $data[] = $row;
+                }
+            }
+        }
+    }
+    return count($data) ? $data : false;
 }
 
 if (!function_exists('db_insert')) {
@@ -420,72 +423,74 @@ if (!function_exists('db_insert')) {
  *
  * @param string $table The table name without prefix
  * @param array $data The array of data field names and values
- *	array(
- *		'fieldNameToSlug' => $valueToSlug, # if $lc_useDBAutoFields is enabled
- *		'fieldName1' => $fieldValue1,
- *		'fieldName2' => $fieldValue2
- *	)
+ *
+ *      array(
+ *          'fieldNameToSlug' => $valueToSlug, # if $lc_useDBAutoFields is enabled
+ *          'fieldName1' => $fieldValue1,
+ *          'fieldName2' => $fieldValue2
+ *      )
+ *
  * @param boolean $useSlug True to include the slug field or False to not exclude it
  * @return boolean Returns TRUE on success or FALSE on failure
  */
-	function db_insert($table, $data=array(), $useSlug=true) {
-		if (count($data) == 0) return;
-		global $_conn;
-		global $lc_useDBAutoFields;
+    function db_insert($table, $data=array(), $useSlug=true) {
+        if (count($data) == 0) return;
+        global $_conn;
+        global $lc_useDBAutoFields;
 
-		$table = ltrim($table, db_prefix());
-		$table = db_prefix().$table;
+        $table = ltrim($table, db_prefix());
+        $table = db_prefix().$table;
 
-		# Invoke the hook db_insert_[table_name] if any
-		$hook = 'db_insert_' . strtolower($table);
-		if (function_exists($hook)) {
-			return call_user_func_array( $hook, array($table, $data, $useSlug) );
-		}
+        # Invoke the hook db_insert_[table_name] if any
+        $hook = 'db_insert_' . strtolower($table);
+        if (function_exists($hook)) {
+            return call_user_func_array( $hook, array($table, $data, $useSlug) );
+        }
 
-		# if slug is already provided in the data array, use it
-		if (array_key_exists( 'slug', $data )) {
-			$slug = db_escapeString($data['slug']);
-			$slug = _slug($slug);
-			$data['slug'] = $slug;
-			session_set('lastInsertSlug', $slug);
-			$useSlug = false;
-		}
+        # if slug is already provided in the data array, use it
+        if (array_key_exists( 'slug', $data )) {
+            $slug = db_escapeString($data['slug']);
+            $slug = _slug($slug);
+            $data['slug'] = $slug;
+            session_set('lastInsertSlug', $slug);
+            $useSlug = false;
+        }
 
-		$fields = array_keys($data);
-		$data   = array_values($data);
-		if ($lc_useDBAutoFields) {
-			if ($useSlug) $fields[] = 'slug';
-			$fields[] = 'created';
-			$fields[] = 'updated';
-		}
-		$sqlFields = implode(', ', $fields);
-		$values = array();
-		$i = 0;
+        $fields = array_keys($data);
+        $data   = array_values($data);
+        if ($lc_useDBAutoFields) {
+            if ($useSlug) $fields[] = 'slug';
+            $fields[] = 'created';
+            $fields[] = 'updated';
+        }
+        $sqlFields = implode(', ', $fields);
+        $values = array();
+        $i = 0;
 
-		# escape the data
-		foreach ($data as $val) {
-			if ($i == 0 && $useSlug) {
-				$slug = db_escapeString($val);
-			}
-			if (is_null($val)) $values[] = 'NULL';
-			else $values[] = '"'.db_escapeString($val).'"';
-			$i++;
-		}
-		if ($lc_useDBAutoFields) {
-			if ($useSlug) {
-				$slug = _slug($slug, $table);
-				session_set('lastInsertSlug', $slug);
-				$values[] = '"'.$slug.'"';
-			}
-			$values[] = '"'.date('Y-m-d H:i:s').'"';
-			$values[] = '"'.date('Y-m-d H:i:s').'"';
-		}
-		$sqlValues = implode(', ', $values);
+        # escape the data
+        foreach ($data as $val) {
+            if ($i == 0 && $useSlug) {
+                $slug = db_escapeString($val);
+            }
+            if (is_null($val)) $values[] = 'NULL';
+            else $values[] = '"'.db_escapeString($val).'"';
+            $i++;
+        }
+        if ($lc_useDBAutoFields) {
+            if ($useSlug) {
+                $slug = _slug($slug, $table);
+                session_set('lastInsertSlug', $slug);
+                $values[] = '"'.$slug.'"';
+            }
+            $values[] = '"'.date('Y-m-d H:i:s').'"';
+            $values[] = '"'.date('Y-m-d H:i:s').'"';
+        }
+        $sqlValues = implode(', ', $values);
 
-		$sql = 'INSERT INTO '.$table.' ('.$sqlFields.')
-				VALUES ( '.$sqlValues.' )';
-		return db_query($sql);
-	}
+        $sql = 'INSERT INTO '.$table.' ('.$sqlFields.')
+                VALUES ( '.$sqlValues.' )';
+        return db_query($sql);
+    }
 }
 
 if (!function_exists('db_update')) {
@@ -524,95 +529,95 @@ if (!function_exists('db_update')) {
  *
  * @return boolean Returns TRUE on success or FALSE on failure
  */
-	function db_update($table, $data=array(), $useSlug=true, $condition=NULL) {
-		if (count($data) == 0) return;
-		global $_conn;
-		global $lc_useDBAutoFields;
+    function db_update($table, $data=array(), $useSlug=true, $condition=NULL) {
+        if (count($data) == 0) return;
+        global $_conn;
+        global $lc_useDBAutoFields;
 
-		if (func_num_args() === 3 && (gettype($useSlug) === 'string' || is_array($useSlug))) {
-			$condition = $useSlug;
-			$useSlug = true;
-		}
+        if (func_num_args() === 3 && (gettype($useSlug) === 'string' || is_array($useSlug))) {
+            $condition = $useSlug;
+            $useSlug = true;
+        }
 
-		$table  = ltrim($table, db_prefix());
-		$table  = db_prefix().$table;
+        $table  = ltrim($table, db_prefix());
+        $table  = db_prefix().$table;
 
-		# Invoke the hook db_update_[table_name] if any
-		$hook = 'db_update_' . strtolower($table);
-		if (function_exists($hook)) {
-			return call_user_func_array( $hook, array($table, $data, $useSlug, $condition) );
-		}
+        # Invoke the hook db_update_[table_name] if any
+        $hook = 'db_update_' . strtolower($table);
+        if (function_exists($hook)) {
+            return call_user_func_array( $hook, array($table, $data, $useSlug, $condition) );
+        }
 
-		# if slug is already provided in the data array, use it
-		if (array_key_exists( 'slug', $data )) {
-			$slug = db_escapeString($data['slug']);
-			$slug = _slug($slug);
-			$data['slug'] = $slug;
-			session_set('lastInsertSlug', $slug);
-			$useSlug = false;
-		}
+        # if slug is already provided in the data array, use it
+        if (array_key_exists( 'slug', $data )) {
+            $slug = db_escapeString($data['slug']);
+            $slug = _slug($slug);
+            $data['slug'] = $slug;
+            session_set('lastInsertSlug', $slug);
+            $useSlug = false;
+        }
 
-		$fields     = array();
-		$slug       = '';
-		$cond       = '';
-		$notCond    = '';
-		$i          = 0;
-		$slugIndex  = 1;
-		if ($condition) {
-			$slugIndex = 0;
-		}
-		foreach ($data as $field => $value) {
-			if ($i === 0 && !$condition) {
-				# $data[0] is for PK condition, but only if $condition is not provided
-				$cond = array($field => db_escapeString($value)); # for PK condition
-				$i++;
-				continue;
-			}
+        $fields     = array();
+        $slug       = '';
+        $cond       = '';
+        $notCond    = '';
+        $i          = 0;
+        $slugIndex  = 1;
+        if ($condition) {
+            $slugIndex = 0;
+        }
+        foreach ($data as $field => $value) {
+            if ($i === 0 && !$condition) {
+                # $data[0] is for PK condition, but only if $condition is not provided
+                $cond = array($field => db_escapeString($value)); # for PK condition
+                $i++;
+                continue;
+            }
 
-			if (is_null($value)) {
-				$fields[] = $field . ' = NULL';
-			} else {
-				$fields[] = $field . ' = "' . db_escapeString($value) . '"';
-			}
+            if (is_null($value)) {
+                $fields[] = $field . ' = NULL';
+            } else {
+                $fields[] = $field . ' = "' . db_escapeString($value) . '"';
+            }
 
-			if ($i === $slugIndex && $useSlug === true) { # $data[1] is slug
-				$slug = db_escapeString($value);
-			}
-			$i++;
-		}
+            if ($i === $slugIndex && $useSlug === true) { # $data[1] is slug
+                $slug = db_escapeString($value);
+            }
+            $i++;
+        }
 
-		# must have condition
-		# this prevents unexpected update happened to all records
-		if ($cond || $condition) {
-			if ($cond && is_array($cond)) {
-				$cond = db_condition($cond);
-			} elseif ($condition && is_array($condition)) {
-				$cond = db_condition($condition);
-			} elseif ($condition && is_string($condition)) {
-				$cond = $condition;
-			}
+        # must have condition
+        # this prevents unexpected update happened to all records
+        if ($cond || $condition) {
+            if ($cond && is_array($cond)) {
+                $cond = db_condition($cond);
+            } elseif ($condition && is_array($condition)) {
+                $cond = db_condition($condition);
+            } elseif ($condition && is_string($condition)) {
+                $cond = $condition;
+            }
 
-			if (empty($cond)) {
-				return false;
-			}
-			$notCond = 'NOT ( ' . $cond . ' )';
+            if (empty($cond)) {
+                return false;
+            }
+            $notCond = 'NOT ( ' . $cond . ' )';
 
-			if ($lc_useDBAutoFields) {
-				if ($useSlug) {
-					$slug = _slug($slug, $table, $notCond);
-					session_set('lastInsertSlug', $slug);
-					$fields[] = 'slug = "'.$slug.'"';
-				}
-				$fields[] = 'updated = "' . date('Y-m-d H:i:s') . '"';
-			}
-			$fields = implode(', ', $fields);
+            if ($lc_useDBAutoFields) {
+                if ($useSlug) {
+                    $slug = _slug($slug, $table, $notCond);
+                    session_set('lastInsertSlug', $slug);
+                    $fields[] = 'slug = "'.$slug.'"';
+                }
+                $fields[] = 'updated = "' . date('Y-m-d H:i:s') . '"';
+            }
+            $fields = implode(', ', $fields);
 
-			$sql = 'UPDATE ' . $table . ' SET ' . $fields . ' WHERE ' . $cond;
-			return db_query($sql);
-		} else {
-			return false;
-		}
-	}
+            $sql = 'UPDATE ' . $table . ' SET ' . $fields . ' WHERE ' . $cond;
+            return db_query($sql);
+        } else {
+            return false;
+        }
+    }
 }
 
 if (!function_exists('db_delete')) {
@@ -639,42 +644,42 @@ if (!function_exists('db_delete')) {
  *
  * @return boolean Returns TRUE on success or FALSE on failure
  */
-	function db_delete($table, $condition=NULL) {
-		$table = ltrim($table, db_prefix());
-		$table = db_prefix().$table;
+    function db_delete($table, $condition=NULL) {
+        $table = ltrim($table, db_prefix());
+        $table = db_prefix().$table;
 
-		# Invoke the hook db_delete_[table_name] if any
-		$hook = 'db_delete_' . strtolower($table);
-		if (function_exists($hook)) {
-			return call_user_func_array( $hook, array($table, $cond) );
-		}
+        # Invoke the hook db_delete_[table_name] if any
+        $hook = 'db_delete_' . strtolower($table);
+        if (function_exists($hook)) {
+            return call_user_func_array( $hook, array($table, $cond) );
+        }
 
-		if (is_array($condition)) {
-			$condition = db_condition($condition);
-		}
-		if ($condition) {
-			$condition = ' WHERE '.$condition;
-		}
+        if (is_array($condition)) {
+            $condition = db_condition($condition);
+        }
+        if ($condition) {
+            $condition = ' WHERE '.$condition;
+        }
 
-		$sql = 'DELETE FROM ' . $table . $condition . ' LIMIT 1';
-		if (_g('db_printQuery')) {
-			return $sql;
-		}
+        $sql = 'DELETE FROM ' . $table . $condition . ' LIMIT 1';
+        if (_g('db_printQuery')) {
+            return $sql;
+        }
 
-		ob_start(); # to capture error return
-		db_query($sql);
-		$return = ob_get_clean();
-		if ($return) {
-			if (db_errorNo() == 1451) { # If there is FK delete RESTRICT constraint
-				$sql = 'UPDATE '.$table.' SET deleted = "'.date('Y-m-d H:i:s').'" '.$condition.' LIMIT 1';
-				return (db_query($sql)) ? true : false;
-			} else {
-				echo $return;
-				return false;
-			}
-		}
-		return (db_errorNo() == 0) ? true : false;
-	}
+        ob_start(); # to capture error return
+        db_query($sql);
+        $return = ob_get_clean();
+        if ($return) {
+            if (db_errorNo() == 1451) { # If there is FK delete RESTRICT constraint
+                $sql = 'UPDATE '.$table.' SET deleted = "'.date('Y-m-d H:i:s').'" '.$condition.' LIMIT 1';
+                return (db_query($sql)) ? true : false;
+            } else {
+                echo $return;
+                return false;
+            }
+        }
+        return (db_errorNo() == 0) ? true : false;
+    }
 }
 if (!function_exists('db_delete_multi')) {
 /**
@@ -699,37 +704,37 @@ if (!function_exists('db_delete_multi')) {
  *
  * @return boolean Returns TRUE on success or FALSE on failure
  */
-	function db_delete_multi($table, $condition=NULL) {
-		$table = ltrim($table, db_prefix());
-		$table = db_prefix().$table;
+    function db_delete_multi($table, $condition=NULL) {
+        $table = ltrim($table, db_prefix());
+        $table = db_prefix().$table;
 
-		# Invoke the hook db_delete_[table_name] if any
-		$hook = 'db_delete_multi_' . strtolower($table);
-		if (function_exists($hook)) {
-			return call_user_func_array( $hook, array($table, $cond) );
-		}
+        # Invoke the hook db_delete_[table_name] if any
+        $hook = 'db_delete_multi_' . strtolower($table);
+        if (function_exists($hook)) {
+            return call_user_func_array( $hook, array($table, $cond) );
+        }
 
-		if (is_array($condition)) {
-			$condition = db_condition($condition);
-		}
-		if ($condition) {
-			$condition = ' WHERE '.$condition;
-		}
+        if (is_array($condition)) {
+            $condition = db_condition($condition);
+        }
+        if ($condition) {
+            $condition = ' WHERE '.$condition;
+        }
 
-		$sql = 'DELETE FROM ' . $table . $condition;
-		if (_g('db_printQuery')) {
-			return $sql;
-		}
+        $sql = 'DELETE FROM ' . $table . $condition;
+        if (_g('db_printQuery')) {
+            return $sql;
+        }
 
-		ob_start(); # to capture error return
-		db_query($sql);
-		$return = ob_get_clean();
+        ob_start(); # to capture error return
+        db_query($sql);
+        $return = ob_get_clean();
 
-		if ($return && db_errorNo() > 0) { # if there is any error
-			return false;
-		}
-		return (db_errorNo() == 0) ? true : false;
-	}
+        if ($return && db_errorNo() > 0) { # if there is any error
+            return false;
+        }
+        return (db_errorNo() == 0) ? true : false;
+    }
 }
 /**
  * @internal
@@ -748,90 +753,90 @@ if (!function_exists('db_delete_multi')) {
  * @return string The built condition WHERE clause
  */
 function db_condition($cond=array(), $type='AND') {
-	if (!is_array($cond)) {
-		return $cond;
-	}
-	if (empty($cond)) {
-		return '';
-	}
-	$type      = strtoupper($type);
-	$condition = array();
-	$operators = array(
-		'=', '>=', '<=', '>', '<', '!=', '<>',
-		'between', 'nbetween',
-		'like', 'like%%', 'like%~', 'like~%',
-		'nlike', 'nlike%%', 'nlike%~', 'nlike~%'
-	);
+    if (!is_array($cond)) {
+        return $cond;
+    }
+    if (empty($cond)) {
+        return '';
+    }
+    $type      = strtoupper($type);
+    $condition = array();
+    $operators = array(
+        '=', '>=', '<=', '>', '<', '!=', '<>',
+        'between', 'nbetween',
+        'like', 'like%%', 'like%~', 'like~%',
+        'nlike', 'nlike%%', 'nlike%~', 'nlike~%'
+    );
 
-	$likes = array(
-		'like'    => 'LIKE "%:likeValue%"',
-		'like%%'  => 'LIKE "%:likeValue%"',
-		'like%~'  => 'LIKE "%:likeValue"',
-		'like~%'  => 'LIKE ":likeValue%"',
-		'nlike'   => 'NOT LIKE "%:likeValue%"',
-		'nlike%%' => 'NOT LIKE "%:likeValue%"',
-		'nlike%~' => 'NOT LIKE "%:likeValue"',
-		'nlike~%' => 'NOT LIKE ":likeValue%"',
-	);
+    $likes = array(
+        'like'    => 'LIKE "%:likeValue%"',
+        'like%%'  => 'LIKE "%:likeValue%"',
+        'like%~'  => 'LIKE "%:likeValue"',
+        'like~%'  => 'LIKE ":likeValue%"',
+        'nlike'   => 'NOT LIKE "%:likeValue%"',
+        'nlike%%' => 'NOT LIKE "%:likeValue%"',
+        'nlike%~' => 'NOT LIKE "%:likeValue"',
+        'nlike~%' => 'NOT LIKE ":likeValue%"',
+    );
 
-	foreach ($cond as $field => $value) {
-		$field    = trim($field);
-		$fieldOpr = explode(' ', $field);
-		$field    = trim($fieldOpr[0]);
+    foreach ($cond as $field => $value) {
+        $field    = trim($field);
+        $fieldOpr = explode(' ', $field);
+        $field    = trim($fieldOpr[0]);
 
-		$opr = (count($fieldOpr) === 2) ? trim($fieldOpr[1]) : '=';
+        $opr = (count($fieldOpr) === 2) ? trim($fieldOpr[1]) : '=';
 
-		# check if any operator is given in the field
-		if (!in_array($opr, $operators)) {
-			$opr = '=';
-		}
+        # check if any operator is given in the field
+        if (!in_array($opr, $operators)) {
+            $opr = '=';
+        }
 
-		if (is_numeric($field)) {
-			# if the field is array index,
-			# assuming that is a condition built by db_or() or db_and();
-			$condition[] = '( ' . $value . ' )';
-		} else {
-			# if the operator is "between", the value must be array
-			# otherwise force to "="
-			if (in_array($opr, array('between', 'nbetween')) && !is_array($value)) {
-				$opr = '=';
-			}
-			$opr = strtolower($opr);
+        if (is_numeric($field)) {
+            # if the field is array index,
+            # assuming that is a condition built by db_or() or db_and();
+            $condition[] = '( ' . $value . ' )';
+        } else {
+            # if the operator is "between", the value must be array
+            # otherwise force to "="
+            if (in_array($opr, array('between', 'nbetween')) && !is_array($value)) {
+                $opr = '=';
+            }
+            $opr = strtolower($opr);
 
-			if (array_key_exists($opr, $likes)) {
-				$condition[] = $field . ' ' . str_replace(':likeValue', db_escapeString($value), $likes[$opr]);
-			} elseif (is_numeric($value)) {
-				$condition[] = $field . ' ' . $opr . ' ' . db_escapeString($value) . '';
-			} elseif (is_string($value)) {
-				$condition[] = $field . ' ' . $opr . ' "' . db_escapeString($value) . '"';
-			} elseif (is_null($value)) {
-				if (in_array($opr, array('!=', '<>'))) $condition[] = $field . ' IS NOT NULL';
-				else $condition[] = $field . ' IS NULL';
-			} elseif (is_array($value) && count($value)) {
-				$list = array();
-				foreach ($value as $v) {
-					$list[] = (is_numeric($v)) ? db_escapeString($v) : '"' . db_escapeString($v) . '"';
-				}
-				if ($opr === 'between') {
-					$condition[] = '( ' . $field . ' BETWEEN ' . current($list) . ' AND ' . end($list) . ' )';
-				} elseif ($opr === 'nbetween') {
-					$condition[] = '( ' . $field . ' NOT BETWEEN ' . current($list) . ' AND ' . end($list) . ' )';
-				} elseif ($opr === '!=') {
-					$condition[] = $field . ' NOT IN (' . implode(', ', $list) . ')';
-				} else {
-					$condition[] = $field . ' IN (' . implode(', ', $list) . ')';
-				}
-			} else {
-				$condition[] = $field . ' ' . $opr . ' ' . db_escapeString($value);
-			}
-		}
-	}
-	if (count($condition)) {
-		$condition = implode(" {$type} ", $condition);
-	} else {
-		$condition = '';
-	}
-	return $condition;
+            if (array_key_exists($opr, $likes)) {
+                $condition[] = $field . ' ' . str_replace(':likeValue', db_escapeString($value), $likes[$opr]);
+            } elseif (is_numeric($value)) {
+                $condition[] = $field . ' ' . $opr . ' ' . db_escapeString($value) . '';
+            } elseif (is_string($value)) {
+                $condition[] = $field . ' ' . $opr . ' "' . db_escapeString($value) . '"';
+            } elseif (is_null($value)) {
+                if (in_array($opr, array('!=', '<>'))) $condition[] = $field . ' IS NOT NULL';
+                else $condition[] = $field . ' IS NULL';
+            } elseif (is_array($value) && count($value)) {
+                $list = array();
+                foreach ($value as $v) {
+                    $list[] = (is_numeric($v)) ? db_escapeString($v) : '"' . db_escapeString($v) . '"';
+                }
+                if ($opr === 'between') {
+                    $condition[] = '( ' . $field . ' BETWEEN ' . current($list) . ' AND ' . end($list) . ' )';
+                } elseif ($opr === 'nbetween') {
+                    $condition[] = '( ' . $field . ' NOT BETWEEN ' . current($list) . ' AND ' . end($list) . ' )';
+                } elseif ($opr === '!=') {
+                    $condition[] = $field . ' NOT IN (' . implode(', ', $list) . ')';
+                } else {
+                    $condition[] = $field . ' IN (' . implode(', ', $list) . ')';
+                }
+            } else {
+                $condition[] = $field . ' ' . $opr . ' ' . db_escapeString($value);
+            }
+        }
+    }
+    if (count($condition)) {
+        $condition = implode(" {$type} ", $condition);
+    } else {
+        $condition = '';
+    }
+    return $condition;
 }
 /**
  * Build the SQL WHERE clause AND condition from the various condition arrays
@@ -848,7 +853,7 @@ function db_condition($cond=array(), $type='AND') {
  * @return string The built condition WHERE clause
  */
 function db_conditionAND($cond=array()) {
-	return db_condition($cond, 'AND');
+    return db_condition($cond, 'AND');
 }
 /**
  * Build the SQL WHERE clause AND condition from the various condition arrays
@@ -868,12 +873,12 @@ function db_conditionAND($cond=array()) {
  * @return string The built condition WHERE clause
  */
 function db_and($cond=array()) {
-	$conditions = func_get_args();
-	$builtCond = array();
-	foreach ($conditions as $c) {
-		$builtCond[] = db_condition($c, 'AND');
-	}
-	return implode(' AND ', $builtCond);
+    $conditions = func_get_args();
+    $builtCond = array();
+    foreach ($conditions as $c) {
+        $builtCond[] = db_condition($c, 'AND');
+    }
+    return implode(' AND ', $builtCond);
 }
 /**
  * Build the SQL WHERE clause OR condition from the various condition arrays
@@ -890,7 +895,7 @@ function db_and($cond=array()) {
  * @return string The built condition WHERE clause
  */
 function db_conditionOR($cond=array()) {
-	return db_condition($cond, 'OR');
+    return db_condition($cond, 'OR');
 }
 /**
  * Build the SQL WHERE clause OR condition from the various condition arrays
@@ -910,12 +915,12 @@ function db_conditionOR($cond=array()) {
  * @return string The built condition WHERE clause
  */
 function db_or($cond=array()) {
-	$conditions = func_get_args();
-	$builtCond = array();
-	foreach ($conditions as $c) {
-		$builtCond[] = db_condition($c, 'OR');
-	}
-	return implode(' OR ', $builtCond);
+    $conditions = func_get_args();
+    $builtCond = array();
+    foreach ($conditions as $c) {
+        $builtCond[] = db_condition($c, 'OR');
+    }
+    return implode(' OR ', $builtCond);
 }
 /**
  * @internal
@@ -935,11 +940,11 @@ function db_or($cond=array()) {
  *
  */
 function db_exp($field, $value, $exp='') {
-	if ($exp) $field = strtoupper($field) . '(' . $value . ')';
-	else $field = '';
-	return array(
-		'value' => $value,
-		'exp' => $exp,
-		'field' => $field
-	);
+    if ($exp) $field = strtoupper($field) . '(' . $value . ')';
+    else $field = '';
+    return array(
+        'value' => $value,
+        'exp' => $exp,
+        'field' => $field
+    );
 }

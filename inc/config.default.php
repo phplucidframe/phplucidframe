@@ -93,22 +93,22 @@ $lc_siteDomain = _host();
  * so that you could do something before session starts.
  */
 $lc_session = array(
-	'type' => 'default', // default or database
-	'options' => array(
-	)
+    'type' => 'default', // default or database
+    'options' => array(
+    )
 );
 
 # $lc_databases: The array specifies the database connection
 $lc_databases = array(
-	'default' => array(
-		'engine' 	=> 'mysqli',
-		'host'		=> 'localhost',
-		'database'	=> '',
-		'username'	=> '',
-		'password'	=> '',
-		'prefix'	=> '',
-		'collation'	=> 'utf8_general_ci'
-	)
+    'default' => array(
+        'engine' 	=> 'mysqli',
+        'host'		=> 'localhost',
+        'database'	=> '',
+        'username'	=> '',
+        'password'	=> '',
+        'prefix'	=> '',
+        'collation'	=> 'utf8_general_ci'
+    )
 );
 # $lc_defaultDbSource: The default database connection
 $lc_defaultDbSource = 'default';
@@ -130,7 +130,7 @@ $lc_defaultDbSource = 'default';
  * @see https://github.com/cithukyaw/LucidFrame/wiki/Configuration-for-The-Sample-Administration-Module
  */
 $lc_sites = array(
-	/* 'virtual_folder_name (namespace)'  => 'path/to/physical_folder_name_directly_under_app_directory' */
+    /* 'virtual_folder_name (namespace)'  => 'path/to/physical_folder_name_directly_under_app_directory' */
 );
 # $lc_homeRouting: Home page routing; if it is not set, default is 'home'
 $lc_homeRouting = 'home';
@@ -139,9 +139,9 @@ $lc_translationEnabled = true;
 # $lc_languages: Site languages (leave this as an empty array for single-language site)
 /**
  * ### Syntax
- * 	array(
- * 		'lang_code' => 'Language Name'
- * 	)
+ *    array(
+ *      'lang_code' => 'Language Name'
+ *    )
  * ### Example
  *    array(
  *      'en' => 'English',
@@ -151,9 +151,9 @@ $lc_translationEnabled = true;
  * Make this an empty array for single-language site
  */
 $lc_languages = array(
-	/* 'lang_code' => 'Language Name' */
-	'en' => 'English',
-	'my' => 'Myanmar'
+    /* 'lang_code' => 'Language Name' */
+    'en' => 'English',
+    'my' => 'Myanmar'
 );
 # $lc_defaultLang: Default site language (leave blank for single-language site)
 # One of the key of $lc_languages
@@ -177,9 +177,9 @@ $lc_useDBAutoFields = true;
 $lc_minifyHTML = true;
 # $lc_imageFilterSet: Default image filter setting that applies to image upload
 $lc_imageFilterSet = array(
-	'maxDimension' => '800x600', // or null for client original image size to keep, but not recommended
-	'resizeMode'   => FILE_RESIZE_BOTH,
-	'jpgQuality'   => 75
+    'maxDimension' => '800x600', // or null for client original image size to keep, but not recommended
+    'resizeMode'   => FILE_RESIZE_BOTH,
+    'jpgQuality'   => 75
 );
 /**
  * Auth Module Configuration
@@ -187,16 +187,16 @@ $lc_imageFilterSet = array(
 # $lc_auth: configuration for the user authentication
 # This can be overidden by defining $lc_auth in /inc/site.config.php
 $lc_auth = array(
-	'table' => '', // table name, for example, user
-	'fields' => array(
-		'id'	=> '', 	// PK field name, for example, user_id
-		'role'  => ''	// User role field name, for example, user_role
-	),
-	'perms'	=> array()
-	/* for example
-			array(
-				'editor' => array(), // for example, 'role-name' => array('content-add', 'content-edit', 'content-delete')
-				'admin' => array(),
-			)
-	*/
+    'table' => '', // table name, for example, user
+    'fields' => array(
+        'id'	=> '', 	// PK field name, for example, user_id
+        'role'  => ''	// User role field name, for example, user_role
+    ),
+    'perms'	=> array()
+    /* for example
+            array(
+                'editor' => array(), // for example, 'role-name' => array('content-add', 'content-edit', 'content-delete')
+                'admin' => array(),
+            )
+    */
 );
