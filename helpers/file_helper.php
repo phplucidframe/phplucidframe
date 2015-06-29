@@ -377,6 +377,7 @@ class File extends \SplFileInfo {
 				if ($extension == "gif") {
 					imagegif ($tmp, $targetFileName);
 				} elseif ($extension == "png") {
+					imagesavealpha($tmp, true);
 					imagepng($tmp, $targetFileName);
 				} else {
 					imagejpeg($tmp, $targetFileName, $jpgQuality);
@@ -409,6 +410,7 @@ class File extends \SplFileInfo {
 		list($width, $height) = getimagesize($file);
 		$newHeight = ($height/$width) * $newWidth;
 		$tmp = imagecreatetruecolor($newWidth, $newHeight);
+		imagealphablending($tmp, false);
 		imagecopyresampled($tmp, $img, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
 		return $tmp;
 	}
@@ -425,6 +427,7 @@ class File extends \SplFileInfo {
 		list($width, $height) = getimagesize($file);
 		$newWidth = ($width/$height) * $newHeight;
 		$tmp = imagecreatetruecolor($newWidth, $newHeight);
+		imagealphablending($tmp, false);
 		imagecopyresampled($tmp, $img, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
 		return $tmp;
 	}
@@ -455,6 +458,7 @@ class File extends \SplFileInfo {
 		}
 
 		$tmp = imagecreatetruecolor($newWidth, $newHeight);
+		imagealphablending($tmp, false);
 		imagecopyresampled($tmp, $img, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
 		return $tmp;
 	}
