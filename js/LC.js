@@ -742,11 +742,12 @@
 				return false;
 			}
 
-			var name      = $(trigger).parent().attr('id').replace(/asynfileuploader-delete-/i, '');
-			var url       = $('iframe#asynfileuploader-frame-' + name).attr('src').split('?')[0] || '';
-			var hook      = $(trigger).attr('rel');
-			var ids       = [];
-			var fileNames = [];
+			var name       = $(trigger).parent().attr('id').replace(/asynfileuploader-delete-/i, '');
+			var url        = $('iframe#asynfileuploader-frame-' + name).attr('src').split('?')[0] || '';
+			var hook       = $(trigger).attr('rel');
+			var id         = '';
+			var value      = '';
+			var dimensions = [];
 
 			// prerequisites
 			if ( !(url && name) ) {
@@ -754,14 +755,17 @@
 			}
 
 			LC.AsynFileUploader.deleteInProgress = true;
-			// Get ids and file names
-			// ids to delete from db
-			// fileNames to unlink
+			// Get id, value (file name) and dimensions
+			// id to delete from db
+			// value to unlink the file
+			// dimension to unline the thumbnails related to the file
 			$('#asynfileuploader-value-' + name + ' input[name^="' + name + '"]').each(function(i, elem) {
-				if ($(elem).attr('name').indexOf('-id[]') !== -1) {
-					ids.push($(elem).val());
+				if ($(elem).attr('name').indexOf('-id') !== -1) {
+					id = $(elem).val();
+				} else if ($(elem).attr('name').indexOf('-dimensions[]') !== -1) {
+					dimensions.push($(elem).val());
 				} else {
-					fileNames.push($(elem).val());
+					value = $(elem).val();
 				}
 			});
 
@@ -772,9 +776,10 @@
 			$.post(url, {
 				action: 'delete',
 				name: name,
-				ids: (ids.length) ? ids : '',
-				files: (fileNames) ? fileNames : '',
+				id: id,
+				value: value,
 				dir: $('input[name="' + name + '-dir"]').val(),
+				dimensions: dimensions,
 				onDelete: hook
 			}, function(data) {
 				if (data.success) {
