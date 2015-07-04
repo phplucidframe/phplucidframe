@@ -23,7 +23,8 @@
  *
  * @return string The translated string
  */
-function _t($str/*[, mixed $args [, mixed $... ]]*/) {
+function _t($str/*[, mixed $args [, mixed $... ]]*/)
+{
     global $lc_lang;
     global $lc_translation;
     global $lc_translationEnabled;
@@ -37,13 +38,15 @@ function _t($str/*[, mixed $args [, mixed $... ]]*/) {
     }
 
     $po = session_get('po');
-    if (!is_array($po)) $po = array();
+    if (!is_array($po)) {
+        $po = array();
+    }
     $po[$str] = '';
 
     if (isset($lc_translation[$lc_lang])) {
         # check with lowercase
         $lowerStr = strtolower($str);
-        if ( isset($lc_translation[$lc_lang][$lowerStr]) && !empty($lc_translation[$lc_lang][$lowerStr]) ) {
+        if (isset($lc_translation[$lc_lang][$lowerStr]) && !empty($lc_translation[$lc_lang][$lowerStr])) {
             $translated = $lc_translation[$lc_lang][$lowerStr];
             $str = (is_array($translated)) ? $translated[0] : $translated;
         }
@@ -62,7 +65,8 @@ function _t($str/*[, mixed $args [, mixed $... ]]*/) {
  * @param mixed $args The array of arguments to be substituted in the string
  * @return string The translation content
  */
-function _tc($fileName, $args=array()) {
+function _tc($fileName, $args = array())
+{
     global $lc_defaultLang;
     global $lc_lang;
 
@@ -89,12 +93,15 @@ function _tc($fileName, $args=array()) {
  * @param string $filename Text .po file to load
  * @return mixed Array of translations on success or FALSE on failure
  */
-function i18n_load() {
+function i18n_load()
+{
     global $lc_lang;
     global $lc_translation;
     global $lc_translationEnabled;
 
-    if ($lc_translationEnabled == false) return false;
+    if ($lc_translationEnabled == false) {
+        return false;
+    }
 
     $filename = I18N . $lc_lang.'.po';
     if (!file_exists($filename)) {
@@ -108,7 +115,7 @@ function i18n_load() {
     }
 
     # if the respective po file is already parsed
-    if ( $translations = session_get("i18n.{$lc_lang}") ) {
+    if ($translations = session_get("i18n.{$lc_lang}")) {
         return $lc_translation[$lc_lang] = $translations;
     }
 

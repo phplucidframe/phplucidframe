@@ -48,7 +48,7 @@ $totalRecords = count($articles);
 
 # Prerequisite for the Pager
 $pager = new Pager();
-$pager->set('itemsPerPage', $lc_itemsPerPage=2);
+$pager->set('itemsPerPage', $lc_itemsPerPage = 2);
 $pager->set('pageNumLimit', $lc_pageNumLimit);
 $pager->set('total', $totalRecords);
 $pager->set('imagePath', WEB_ROOT.'images/pager/');

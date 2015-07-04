@@ -24,7 +24,8 @@ if (sizeof($_POST)) {
     );
 
     if (Form::validate() && Validation::check($validations) == true) {
-        if ($hidEditId) { # edit
+        if ($hidEditId) {
+            # edit
             $data = array(
                 'postId' => $hidEditId,
                 'postTitle_'.$hidLang => $txtTitle,
@@ -32,7 +33,8 @@ if (sizeof($_POST)) {
                 'catId' => $cboCategory,
             );
 
-            if ($hidLang == $lc_defaultLang) { # default langugage
+            if ($hidLang == $lc_defaultLang) {
+                # default langugage
                 $useSlug = true;
                 $data['postTitle']  = $txtTitle;
                 $data['postBody']   = $txtBody;
@@ -40,26 +42,29 @@ if (sizeof($_POST)) {
                 $useSlug = false;
             }
 
-            if (isset($txtSlug) && $txtSlug) { # if user entered slug manually
-                $postSlug = _slug($txtSlug, $table='post', array('postId !=' => $hidEditId));
+            if (isset($txtSlug) && $txtSlug) {
+                # if user entered slug manually
+                $postSlug = _slug($txtSlug, $table = 'post', array('postId !=' => $hidEditId));
                 $data['slug'] = $postSlug;
             }
 
             if (db_update('post', $data, $useSlug)) {
                 $success = true;
             }
-        } else { # new
+        } else {
+            # new
             $data = array(
                 'postTitle' => $txtTitle,
-                'postBody' 	=> $txtBody,
+                'postBody' => $txtBody,
                 'postTitle_'.$hidLang => $txtTitle,
                 'postBody_'.$hidLang  => $txtBody,
                 'catId' => $cboCategory,
                 'uid' => $_auth->uid
             );
 
-            if (isset($txtSlug) && $txtSlug) { # if user entered slug manually
-                $postSlug = _slug($txtSlug, $table='post', $condition=NULL);
+            if (isset($txtSlug) && $txtSlug) {
+                # if user entered slug manually
+                $postSlug = _slug($txtSlug, $table = 'post', $condition = null);
                 $data['slug'] = $postSlug;
             }
             if (db_insert('post', $data)) {
@@ -74,4 +79,5 @@ if (sizeof($_POST)) {
         Form::set('error', Validation::$errors);
     }
 }
-Form::respond('frmPost'); # Ajax response
+# Ajax response
+Form::respond('frmPost');

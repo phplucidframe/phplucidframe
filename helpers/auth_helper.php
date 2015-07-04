@@ -15,16 +15,17 @@
  */
 
 if (!function_exists('auth_create')) {
-/**
- * Create Authentication object
- * This function is overwritable from the custom helpers/auth_helper.php
- *
- * @param  string $id PK value
- * @param  object $data	The user data object (optional). If it is not given, auth_create will load it from db
- *
- * @return object The authenticated user object or FALSE on failure
- */
-    function auth_create($id, $data=NULL) {
+    /**
+     * Create Authentication object
+     * This function is overwritable from the custom helpers/auth_helper.php
+     *
+     * @param  string $id PK value
+     * @param  object $data	The user data object (optional). If it is not given, auth_create will load it from db
+     *
+     * @return object The authenticated user object or FALSE on failure
+     */
+    function auth_create($id, $data = null)
+    {
         $lc_auth = auth_prerequisite();
         $auth    = auth_get();
         if (!$auth) {
@@ -56,17 +57,19 @@ if (!function_exists('auth_create')) {
 /**
  * Check and get the authentication configuration settings
  */
-function auth_prerequisite() {
+function auth_prerequisite()
+{
     global $lc_siteErrors;
     db_prerequisite();
     $auth = _cfg('auth');
-    if ( isset($auth['table']) && $auth['table'] &&
-       isset($auth['fields']['id']) && $auth['fields']['id'] &&
-       isset($auth['fields']['role']) && $auth['fields']['role'] ) {
+    if (isset($auth['table']) && $auth['table'] &&
+        isset($auth['fields']['id']) && $auth['fields']['id'] &&
+        isset($auth['fields']['role']) && $auth['fields']['role']) {
         return $auth;
     } else {
         $error = new stdClass();
-        $error->message = 'Required to configure $lc_auth in "/inc/config.php". It is not allowed to configure in the application-level file "/app/inc/site.config.php".';
+        $error->message = 'Required to configure $lc_auth in "/inc/config.php".';
+        $error->message .= ' It is not allowed to configure in the application-level file "/app/inc/site.config.php".';
         $error->message = array(function_exists('_t') ? _t($error->message) : $error->message);
         $error->type    = 'sitewide-message error';
         include( _i('inc/tpl/site.error.php') );
@@ -77,34 +80,39 @@ function auth_prerequisite() {
  * Get the namespace for the authentication object
  * Sometimes, the Auth session name should be different upon directory (namespace)
  */
-function auth_namespace() {
+function auth_namespace()
+{
     return (LC_NAMESPACE) ? 'AuthUser.' . LC_NAMESPACE : 'AuthUser.default';
 }
 /**
  * Get the authenticate user object from Session
  */
-function auth_get() {
+function auth_get()
+{
     return session_get(auth_namespace(), true);
 }
 /**
  * Set the authenticate user object to Session
  * @param object $sess The authentication object
  */
-function auth_set($sess) {
+function auth_set($sess)
+{
     session_set(auth_namespace(), $sess, true);
 }
 /**
  * Clear the authenticate user object from session
  */
-function auth_clear() {
+function auth_clear()
+{
     global $_auth;
     session_delete(auth_namespace());
-    $_auth = NULL;
+    $_auth = null;
 }
 /**
  * Check if a user is not authenticated
  */
-function auth_isAnonymous() {
+function auth_isAnonymous()
+{
     $auth    = auth_prerequisite();
     $field   = $auth['fields']['id'];
     $session = auth_get();
@@ -114,18 +122,20 @@ function auth_isAnonymous() {
  * Check if a user is authenticated
  * @return boolean
  */
-function auth_isLoggedIn() {
+function auth_isLoggedIn()
+{
     return ! auth_isAnonymous();
 }
 
 if (!function_exists('auth_role')) {
-/**
- * Check if the authenticate user has the specific user role
- * This function is overwritable from the custom helpers/auth_helper.php
- * @param  string $role The user role name or key
- * @return boolean
- */
-    function auth_role($role) {
+    /**
+     * Check if the authenticate user has the specific user role
+     * This function is overwritable from the custom helpers/auth_helper.php
+     * @param  string $role The user role name or key
+     * @return boolean
+     */
+    function auth_role($role)
+    {
         if (auth_isAnonymous()) {
             return false;
         }
@@ -137,13 +147,14 @@ if (!function_exists('auth_role')) {
 }
 
 if (!function_exists('auth_permissions')) {
-/**
- * Get the permissions of a particular role
- * This function is overwritable from the custom helpers/auth_helper.php
- * @param  string $role The user role name or key
- * @return Array of permissions of the role
- */
-    function auth_permissions($role) {
+    /**
+     * Get the permissions of a particular role
+     * This function is overwritable from the custom helpers/auth_helper.php
+     * @param  string $role The user role name or key
+     * @return Array of permissions of the role
+     */
+    function auth_permissions($role)
+    {
         global $lc_auth;
         $perms = isset($lc_auth['perms']) ? $lc_auth['perms'] : array();
         return (isset($perms[$role])) ? $perms[$role] : array();
@@ -151,13 +162,14 @@ if (!function_exists('auth_permissions')) {
 }
 
 if (!function_exists('auth_access')) {
-/**
- * Check if the authenticate uses has a particular permission
- * This function is overwritable from the custom helpers/auth_helper.php
- * @param  string $perm The permission key
- * @return boolean
- */
-    function auth_access($perm) {
+    /**
+     * Check if the authenticate uses has a particular permission
+     * This function is overwritable from the custom helpers/auth_helper.php
+     * @param  string $perm The permission key
+     * @return boolean
+     */
+    function auth_access($perm)
+    {
         if (auth_isAnonymous()) {
             return false;
         }

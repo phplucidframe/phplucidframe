@@ -18,7 +18,8 @@
  * This class is part of the PHPLucidFrame library.
  * Helper for pagination
  */
-class Pager {
+class Pager
+{
     /** @var int The current page no. */
     private $page = 1;
     /** @var int The customized query string name for "page" */
@@ -54,7 +55,8 @@ class Pager {
      * Constructor
      * @param string $pageQueryStr The customized page query string name
      */
-    public function Pager($pageQueryStr='') {
+    public function __construct($pageQueryStr = '')
+    {
         if ($pageQueryStr) {
             $this->pageQueryStr = $pageQueryStr;
         }
@@ -66,7 +68,8 @@ class Pager {
      * @param string $key The property name
      * @param mixed $value The value to be set to the property
      */
-    public function set($key, $value='') {
+    public function set($key, $value = '')
+    {
         if (isset($this->$key)) {
             $this->$key = $value;
         }
@@ -79,7 +82,8 @@ class Pager {
      * @param string $key The property name
      * @return mixed The value of the property
      */
-    public function get($key) {
+    public function get($key)
+    {
         return (isset($this->$key)) ? $this->$key : '';
     }
     /**
@@ -88,7 +92,8 @@ class Pager {
      * @param string $value The HTML tag - <table>, <ul> or <div>
      * @return void
      */
-    private function setHtmlTag($tag='<table>') {
+    private function setHtmlTag($tag = '<table>')
+    {
         if (!in_array($tag, array('<table>','<ul>', '<div>'))) {
             $this->htmlTag = '<table>';
         }
@@ -133,9 +138,10 @@ class Pager {
      *      [lastPageEnable] => xx
      *  )
      */
-    public function calculate() {
+    public function calculate()
+    {
 
-        if ( ! ($this->page && $this->itemsPerPage && $this->pageNumLimit && $this->total) ) {
+        if (!($this->page && $this->itemsPerPage && $this->pageNumLimit && $this->total)) {
             $this->enabled = false;
             return false;
         }
@@ -160,7 +166,7 @@ class Pager {
         $k = 0;
         $nav['beforePages'] = array();
         $nav['afterPages'] = array();
-        for ($pageCount=0, $i = $startPage ; $i<=$maxPage; $i++) {
+        for ($pageCount=0, $i = $startPage; $i<=$maxPage; $i++) {
             if ($i < $this->page) {
                 $nav['beforePages'][$j] = $i;
                 $j++;
@@ -172,8 +178,10 @@ class Pager {
             }
 
             $pageCount ++;
-            if ($pageCount == $this->pageNumLimit) # display page number only.
-            break;
+            if ($pageCount == $this->pageNumLimit) {
+                # display page number only.
+                break;
+            }
         }
 
         # First Page
@@ -188,13 +196,12 @@ class Pager {
         if ($this->page > 1) {
             $nav['prePageNo'] = $this->page-1;
             $nav['prePageEnable'] = 1;
-        } else{
+        } else {
             $nav['prePageEnable'] = 0;
         }
 
         # Next page no.
-        if ($this->page < $maxPage)
-        {
+        if ($this->page < $maxPage) {
             $nav['nextPageNo'] = $this->page + 1;
             $nav['nextPageEnable'] = 1;
 
@@ -239,8 +246,9 @@ class Pager {
     /**
      * Display the pagination
      */
-    public function display() {
-        $url        = ($this->url) ? $this->url : NULL;
+    public function display()
+    {
+        $url        = ($this->url) ? $this->url : null;
         $ajax       = $this->ajax;
         $imagePath  = isset($this->imagePath) ? $this->imagePath : '';
 

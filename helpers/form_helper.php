@@ -18,11 +18,12 @@
  * This class is part of the PHPLucidFrame library.
  * Helper for AJAX form handling and form validation
  */
-class Form {
+class Form
+{
     /** @var string The HTML form ID */
     private static $id;
     /** @var array The error messages and their associated HTML ID */
-    private static $error 	= array();
+    private static $error = array();
     /** @var boolean TRUE/FALSE for form valiation success */
     private static $success = false;
     /** @var string The form message */
@@ -34,7 +35,8 @@ class Form {
     /**
      * Constructor
      */
-    public static function init() {
+    public static function init()
+    {
         self::$id       = '';
         self::$error    = array();
         self::$success  = false;
@@ -48,14 +50,16 @@ class Form {
      * @param mixed $value The value to be set
      * @return void
      */
-    public static function set($key, $value='') {
+    public static function set($key, $value = '')
+    {
         self::$$key = $value;
     }
     /**
      * Form token generation
      * @return void
      */
-    public static function token() {
+    public static function token()
+    {
         $token = _encrypt(time());
         session_set(_cfg('formTokenName'), $token);
         echo '<input type="hidden" name="lc_formToken_'._cfg('formTokenName').'" value="'.$token.'" />';
@@ -64,8 +68,11 @@ class Form {
      * Form token validation
      * @return void
      */
-    public static function validate($validations=null) {
-        if (!isset($_POST['lc_formToken_'._cfg('formTokenName')])) return false;
+    public static function validate($validations = null)
+    {
+        if (!isset($_POST['lc_formToken_'._cfg('formTokenName')])) {
+            return false;
+        }
         $token        = _decrypt(session_get(_cfg('formTokenName')));
         $postedToken  = _decrypt(_post($_POST['lc_formToken_'._cfg('formTokenName')]));
         $result       = false;
@@ -77,7 +84,7 @@ class Form {
                 $siteDomain = preg_replace('/^www\./', '', $siteDomain);
                 $parsedURL  = parse_url($_SERVER['HTTP_REFERER']);
                 $parsedURL['host'] = preg_replace('/^www\./', '', $parsedURL['host']);
-                if ( strcasecmp($siteDomain, $parsedURL['host']) == 0 ) {
+                if (strcasecmp($siteDomain, $parsedURL['host']) == 0) {
                     $result = true;
                 }
             }
@@ -99,7 +106,8 @@ class Form {
      * @param array $errors The array of the errors (it is used only for generic form processing)
      * @return void
      */
-    public static function respond($formId, $errors=NULL) {
+    public static function respond($formId, $errors = null)
+    {
         self::$id = $formId;
         $errorStr = '';
         $ajaxResponse = true;
@@ -121,7 +129,7 @@ class Form {
             'callback' => self::$callback
         );
 
-        if ( $ajaxResponse ) {
+        if ($ajaxResponse) {
             echo json_encode($response);
         } else {
             echo '<script type="text/javascript">';
@@ -138,7 +146,8 @@ class Form {
      *
      * @return mixed The value of the input element
      */
-    public static function value($name, $defaultValue=NULL) {
+    public static function value($name, $defaultValue = null)
+    {
         if (count($_POST)) {
             if (!isset($_POST[$name])) {
                 return '';
@@ -158,7 +167,8 @@ class Form {
      *
      * @return mixed The value of the input element
      */
-    public static function htmlValue($name, $defaultValue=NULL) {
+    public static function htmlValue($name, $defaultValue = null)
+    {
         if (count($_POST)) {
             if (!isset($_POST[$name])) {
                 return '';
@@ -178,7 +188,8 @@ class Form {
      *
      * @return string `'selected="selected"'` if the option is found, otherwise the empty string returned
      */
-    public static function selected($name, $value, $defaultValue=NULL) {
+    public static function selected($name, $value, $defaultValue = null)
+    {
         return (self::inputSelection($name, $value, $defaultValue)) ? 'selected="selected"' : '';
     }
     /**
@@ -190,7 +201,8 @@ class Form {
      *
      * @return string `'checked="checked"'` if the option is found, otherwise the empty string returned
      */
-    public static function checked($name, $value, $defaultValue=NULL) {
+    public static function checked($name, $value, $defaultValue = null)
+    {
         return (self::inputSelection($name, $value, $defaultValue)) ? 'checked="checked"' : '';
     }
     /**
@@ -203,10 +215,13 @@ class Form {
      *
      * @return bool TRUE if the option is found, otherwise FALSE
      */
-    private static function inputSelection($name, $value, $defaultValue=NULL) {
+    private static function inputSelection($name, $value, $defaultValue = null)
+    {
         if (count($_POST)) {
             $name = preg_replace('/(\[\])$/', '', $name); // group[] will be replaced as group
-            if (!isset($_POST[$name])) return '';
+            if (!isset($_POST[$name])) {
+                return '';
+            }
             $postedValue = _post($_POST[$name]);
             if (is_array($postedValue) && in_array($value, $postedValue)) {
                 return true;

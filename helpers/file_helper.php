@@ -18,7 +18,8 @@
  * This class is part of the PHPLucidFrame library.
  * Helper for file processing system
  */
-class File extends \SplFileInfo {
+class File extends \SplFileInfo
+{
     /** @var string The uniqued name string for this instance */
     private $name;
     /** @var string The uniqued string ID to append to the file name */
@@ -44,7 +45,8 @@ class File extends \SplFileInfo {
      * Constructor
      * @param string $fileName Path to the file
      */
-    public function File($fileName='') {
+    public function __construct($fileName = '')
+    {
         $this->name = $fileName;
         $this->uploadPath = FILE . 'tmp' . _DS_;
         $this->defaultImageFilterSet();
@@ -56,7 +58,8 @@ class File extends \SplFileInfo {
      * Set default image filter set and merge with user's options
      * @return object File
      */
-    private function defaultImageFilterSet() {
+    private function defaultImageFilterSet()
+    {
         $this->imageFilterSet = array(
             'maxDimension' => '800x600',
             'resizeMode'   => FILE_RESIZE_BOTH,
@@ -71,8 +74,9 @@ class File extends \SplFileInfo {
      * @param  const  FILE_RESIZE_BOTH, FILE_RESIZE_WIDTH or FILE_RESIZE_HEIGHT
      * @return object File
      */
-    private function setImageResizeMode($value) {
-        if(in_array($value, array(FILE_RESIZE_BOTH, FILE_RESIZE_WIDTH, FILE_RESIZE_HEIGHT))) {
+    private function setImageResizeMode($value)
+    {
+        if (in_array($value, array(FILE_RESIZE_BOTH, FILE_RESIZE_WIDTH, FILE_RESIZE_HEIGHT))) {
             $this->imageFilterSet['resizeMode'] = $value;
         } else {
             $this->imageFilterSet['resizeMode'] = FILE_RESIZE_BOTH;
@@ -85,7 +89,8 @@ class File extends \SplFileInfo {
      * @param mixed $value The value to be set
      * @return void
      */
-    public function set($key, $value) {
+    public function set($key, $value)
+    {
         if ($key === 'resize' || $key === 'resizeMode') {
             $this->setImageResizeMode($value);
             return $this;
@@ -120,7 +125,8 @@ class File extends \SplFileInfo {
      * @param string $key The property name
      * @return mixed $value The value of the property or null if $name does not exist.
      */
-    public function get($key) {
+    public function get($key)
+    {
         if ($key === 'uploadDir') {
             return $this->uploadPath;
         }
@@ -132,13 +138,15 @@ class File extends \SplFileInfo {
     /**
      * Getter for the orignal uploaded file name
      */
-    public function getOriginalFileName() {
+    public function getOriginalFileName()
+    {
         return $this->originalFileName;
     }
     /**
      * Getter for the file name generated
      */
-    public function getFileName() {
+    public function getFileName()
+    {
         return $this->fileName;
     }
     /**
@@ -151,7 +159,8 @@ class File extends \SplFileInfo {
      *     )
      *
      */
-    public function getError() {
+    public function getError()
+    {
         return $this->error;
     }
     /**
@@ -159,7 +168,8 @@ class File extends \SplFileInfo {
      * @param  int $code The error code
      * @return string The error message
      */
-    public function getErrorMessage($code) {
+    public function getErrorMessage($code)
+    {
         switch ($code) {
             case UPLOAD_ERR_INI_SIZE:
                 $message = _t('The uploaded file exceeds the upload_max_filesize directive in php.ini.');
@@ -198,7 +208,8 @@ class File extends \SplFileInfo {
      * Move the uploaded file into the given directory.
      * If the uploaded file is image, this will create the various images according to the given $dimension
      *
-     * @param string|array $file The name 'xxx' from $_FILES['xxx'] or The array of uploaded file information from $_FILES['xxx']
+     * @param string|array $file The name 'xxx' from $_FILES['xxx']
+     *    or The array of uploaded file information from $_FILES['xxx']
      *
      * @return  array The array of the uploaded file information:
      *
@@ -211,7 +222,8 @@ class File extends \SplFileInfo {
      *     )
      *
      */
-    public function upload($file) {
+    public function upload($file)
+    {
         if (is_string($file)) {
             if (!isset($_FILES[$file])) {
                 $this->error = array(
@@ -244,9 +256,11 @@ class File extends \SplFileInfo {
             $this->originalFileName = $fileName;
             $newFileName = $this->getNewFileName();
 
-            if (!in_array($extension, array('jpg', 'jpeg', 'png', 'gif'))) { # non-image file
+            if (!in_array($extension, array('jpg', 'jpeg', 'png', 'gif'))) {
+                # non-image file
                 $uploaded = $this->move($uploadedFile, $newFileName);
-            } else { # image file
+            } else {
+                # image file
                 if (isset($this->imageFilterSet['maxDimension']) && $this->imageFilterSet['maxDimension']) {
                     # Upload the primary image by the configured dimension in config
                     $uploaded = $this->resizeImageByDimension($this->imageFilterSet['maxDimension'], $uploadedFile, $newFileName, $extension);
@@ -282,7 +296,8 @@ class File extends \SplFileInfo {
      *
      * @return string The file name
      */
-    private function getNewFileName() {
+    private function getNewFileName()
+    {
         $this->fileName = $this->getUniqueId() . '.' . $this->guessExtension();
         return $this->fileName;
     }
@@ -290,16 +305,17 @@ class File extends \SplFileInfo {
      * Get a unique id string
      * @return string
      */
-    private function getUniqueId() {
-        if ($this->uniqueId) return $this->uniqueId;
-        else return uniqid();
+    private function getUniqueId()
+    {
+        return ($this->uniqueId) ? $this->uniqueId : uniqid();
     }
     /**
      * Return the extension of the original file name
      * @param  string $file The optional file name; if it is not given, the original file name will be used
      * @return string The extension or an empty string if there is no file
      */
-    public function guessExtension($file='') {
+    public function guessExtension($file = '')
+    {
         $file = ($file) ? $file : $this->originalFileName;
         if ($this->originalFileName) {
             $info = pathinfo($this->originalFileName);
@@ -314,7 +330,8 @@ class File extends \SplFileInfo {
      * @param  string $newFileName  The new file name
      * @return string The new file name or null if any error occurs
      */
-    protected function move($file, $newFileName) {
+    protected function move($file, $newFileName)
+    {
         $targetDir = $this->uploadPath;
         if (!is_dir($targetDir)) {
             @mkdir($targetDir, 0777, true);
@@ -334,21 +351,23 @@ class File extends \SplFileInfo {
      * @param  string|array $dimensions   The dimension or array of dimensions, e.g., '400x250' or array('400x250', '200x150')
      * @param  string       $file         The source file
      * @param  string       $newFileName  The new file name to be created
+     * @param  string       $extension    The file extension
      * @return string       The new file name or null if any error occurs
      */
-    protected function resizeImageByDimension($dimensions, $file, $newFileName, $extension=null) {
+    protected function resizeImageByDimension($dimensions, $file, $newFileName, $extension = null)
+    {
         $dimensions = is_string($dimensions) ? array($dimensions) : $dimensions;
         $extension = ($extension) ? $extension : strtolower(pathinfo($file, PATHINFO_EXTENSION));
 
-        if ($extension == "jpg" || $extension == "jpeg" ) {
+        if ($extension == "jpg" || $extension == "jpeg") {
             $img = imagecreatefromjpeg($file);
         } elseif ($extension == "png") {
             $img = imagecreatefrompng($file);
         } elseif ($extension == "gif") {
-            $img = imagecreatefromgif ($file);
+            $img = imagecreatefromgif($file);
         }
 
-        if ( isset($img) && $img ) {
+        if (isset($img) && $img) {
             if (isset($this->imageFilterSet['jpgQuality']) && is_numeric($this->imageFilterSet['jpgQuality'])) {
                 $jpgQuality = $this->imageFilterSet['jpgQuality'];
             } else {
@@ -375,7 +394,7 @@ class File extends \SplFileInfo {
                 $targetFileName = $targetDir . $newFileName;
 
                 if ($extension == "gif") {
-                    imagegif ($tmp, $targetFileName);
+                    imagegif($tmp, $targetFileName);
                 } elseif ($extension == "png") {
                     imagesavealpha($tmp, true);
                     imagepng($tmp, $targetFileName);
@@ -406,7 +425,8 @@ class File extends \SplFileInfo {
      *
      * @return resource An image resource identifier on success, FALSE on errors
      */
-    public static function resizeImageWidth(&$img, $file, $newWidth) {
+    public static function resizeImageWidth(&$img, $file, $newWidth)
+    {
         list($width, $height) = getimagesize($file);
         $newHeight = ($height/$width) * $newWidth;
         $tmp = imagecreatetruecolor($newWidth, $newHeight);
@@ -423,7 +443,8 @@ class File extends \SplFileInfo {
      *
      * @return resource An image resource identifier on success, FALSE on errors
      */
-    public static function resizeImageHeight(&$img, $file, $newHeight) {
+    public static function resizeImageHeight(&$img, $file, $newHeight)
+    {
         list($width, $height) = getimagesize($file);
         $newWidth = ($width/$height) * $newHeight;
         $tmp = imagecreatetruecolor($newWidth, $newHeight);
@@ -441,7 +462,8 @@ class File extends \SplFileInfo {
      *
      * @return resource An image resource identifier on success, FALSE on errors
      */
-    public static function resizeImageBoth(&$img, $file, $newWidth, $newHeight) {
+    public static function resizeImageBoth(&$img, $file, $newWidth, $newHeight)
+    {
         list($width, $height) = getimagesize($file);
 
         $scale = min($newWidth/$width, $newHeight/$height);
@@ -473,11 +495,12 @@ class File extends \SplFileInfo {
      *
      * @return string The <img> tag
      */
-    public static function img($fileName, $caption, $dimension, $desiredDimension='0x0', $attributes=array()) {
+    public static function img($fileName, $caption, $dimension, $desiredDimension = '0x0', $attributes = array())
+    {
         $regex = '/^[0-9]+x[0-9]+$/i'; # check the format of "99x99" for the dimensions
         if (!preg_match($regex, $dimension)) {
             echo '';
-            return NULL;
+            return null;
         }
         if (!preg_match($regex, $desiredDimension)) {
             $desiredDimension = '0x0';
@@ -485,16 +508,20 @@ class File extends \SplFileInfo {
         list($imgWidth, $imgHeight) = explode('x', strtolower($dimension));
         list($desiredWidth, $desiredHeight) = explode('x', strtolower($desiredDimension));
 
-        if ($imgWidth > $desiredWidth || $imgHeight > $desiredHeight) { # scale down
-            if ($desiredWidth == 0 && $desiredHeight > 0) { # resized to height
+        if ($imgWidth > $desiredWidth || $imgHeight > $desiredHeight) {
+            # scale down
+            if ($desiredWidth == 0 && $desiredHeight > 0) {
+                # resized to height
                 $desiredWidth = floor(($imgWidth/$imgHeight) * $desiredHeight);
                 $imgWidth     = $desiredWidth;
                 $imgHeight    = $desiredHeight;
-            } elseif ($desiredWidth > 0 && $desiredHeight == 0) { # resized to width
+            } elseif ($desiredWidth > 0 && $desiredHeight == 0) {
+                # resized to width
                 $desiredHeight  = floor(($imgHeight/$imgWidth) * $desiredWidth);
                 $imgWidth       = $desiredWidth;
                 $imgHeight      = $desiredHeight;
-            } elseif ($desiredWidth > 0 && $desiredHeight > 0) { # resized both
+            } elseif ($desiredWidth > 0 && $desiredHeight > 0) {
+                # resized both
                 $scale = min($desiredWidth/$imgWidth, $desiredHeight/$imgHeight);
                 # new width for the image
                 $imgWidth  = floor($scale * $imgWidth);
@@ -503,15 +530,18 @@ class File extends \SplFileInfo {
                 if ($imgWidth < $desiredWidth || $imgHeight < $desiredHeight) {
                     $wDiff = $desiredWidth - $imgWidth;
                     $hDiff = $desiredHeight - $desiredWidth;
-                    if ($wDiff > $hDiff) { # resize to width
+                    if ($wDiff > $hDiff) {
+                        # resize to width
                         $imgHeight = floor(($imgHeight/$imgWidth) * $desiredWidth);
                         $imgWidth  = $desiredWidth;
-                    } else { # resize to height
+                    } else {
+                        # resize to height
                         $imgWidth = floor(($imgWidth/$imgHeight) * $desiredHeight);
                         $imgHeight = $desiredHeight;
                     }
                 }
-            } else { # if the desired dimension is not given
+            } else {
+                # if the desired dimension is not given
                 $desiredWidth = $imgWidth;
                 $desiredHeight = $imgHeight;
             }
@@ -549,7 +579,8 @@ class File extends \SplFileInfo {
  * Helper for ajax-like file upload with instant preview if the preview placeholder is provided
  * @since PHPLucidFrame v 1.3.0
  */
-class AsynFileUploader {
+class AsynFileUploader
+{
     /** @var string The input name or the POST name */
     private $name;
     /** @var string The HTML id of the file browsing button */
@@ -588,7 +619,8 @@ class AsynFileUploader {
      *
      * @param string/array anonymous The input file name or The array of property/value pairs
      */
-    public function AsynFileUploader() {
+    public function __construct()
+    {
         $this->name                 = 'file';
         $this->id                   = '';
         $this->label                = _t('File');
@@ -623,28 +655,32 @@ class AsynFileUploader {
      * Setter for the property `name`
      * @param string $name The unique name for the file input element
      */
-    public function setName($name) {
+    public function setName($name)
+    {
         $this->name = $name;
     }
     /**
      * Setter for the property `id`
      * @param string $id The unique HTML id for the file browsing button
      */
-    public function setId($id) {
+    public function setId($id)
+    {
         $this->id = $id;
     }
     /**
      * Setter for the property `label`
      * @param string $label The caption name for the file input to use in validation error
      */
-    public function setLabel($label) {
+    public function setLabel($label)
+    {
         $this->label = $label;
     }
     /**
      * Setter for the property `caption`
      * @param string $caption The caption for image uploaded
      */
-    public function setCaption($caption) {
+    public function setCaption($caption)
+    {
         $this->caption = $caption;
     }
     /**
@@ -652,7 +688,8 @@ class AsynFileUploader {
      * @param array $value The file name saved in the database
      * @param int   $value The ID related to the file name saved in the database
      */
-    public function setValue($value, $id=0) {
+    public function setValue($value, $id = 0)
+    {
         $this->value = array(
             $id => $value
         );
@@ -660,13 +697,15 @@ class AsynFileUploader {
     /**
      * Getter for the property `value`
      */
-    public function getValue() {
+    public function getValue()
+    {
         return is_array($this->value) ? current($this->value) : $this->value;
     }
     /**
      * Getter for the id saved in db related to the value
      */
-    public function getValueId() {
+    public function getValueId()
+    {
         if (is_array($this->value)) {
             return current(array_keys($this->value));
         }
@@ -675,8 +714,10 @@ class AsynFileUploader {
     /**
      * Setter for the property `hidden`
      */
-    public function setHidden($key, $value='') {
-        if (!in_array($key, array('id', 'dimensions', 'fileName', 'uniqueId'))) { # skip for reserved keys
+    public function setHidden($key, $value = '')
+    {
+        if (!in_array($key, array('id', 'dimensions', 'fileName', 'uniqueId'))) {
+            # skip for reserved keys
             $this->hidden[$key] = $value;
         }
     }
@@ -684,70 +725,80 @@ class AsynFileUploader {
      * Setter for the property `uploadDir`
      * @param string $dir The directory where the file will be uploaded. Default to /files/tmp/
      */
-    public function setUploadDir($dir) {
+    public function setUploadDir($dir)
+    {
         $this->uploadDir = $dir;
     }
     /**
      * Setter for the property `maxSize`
      * @param int $size The maximum file size allowed in MB
      */
-    public function setMaxSize($size) {
+    public function setMaxSize($size)
+    {
         $this->maxSize = $size;
     }
     /**
      * Setter for the property `extensions`
      * @param array $extensions The array of extensions such as `array('jpg', 'png', 'gif')`
      */
-    public function setExtensions($extensions) {
+    public function setExtensions($extensions)
+    {
         $this->extensions = $extensions;
     }
     /**
      * Setter for the property `dimensions`
      * @param array $dimensions The array of extensions such as `array('600x400', '300x200')`
      */
-    public function setDimensions($dimensions) {
+    public function setDimensions($dimensions)
+    {
         $this->dimensions = $dimensions;
     }
     /**
      * Setter for the property `buttons`
      * @param string $arg1[,$arg2,$arg3,...] The HTML element ID for each button
      */
-    public function setButtons() {
+    public function setButtons()
+    {
         $this->buttons = func_get_args();
     }
     /**
      * Setter for the property `isDeletable`
      * @param boolean $value If the delete button is provided or not
      */
-    public function isDeletable($value) {
+    public function isDeletable($value)
+    {
         $this->isDeletable = $value;
     }
     /**
      * Setter for the property `fileNameIsDisplayed`
      * @param boolean $value If the uploaded file name is displayed next to the button or not
      */
-    public function isFileNameDisplayed($value) {
+    public function isFileNameDisplayed($value)
+    {
         $this->fileNameIsDisplayed = $value;
     }
     /**
      * Setter for the `onUpload` hook
      * @param string $callable The callback PHP function name
      */
-    public function setOnUpload($callable) {
+    public function setOnUpload($callable)
+    {
         $this->onUpload = $callable;
     }
     /**
      * Setter for the `onDelete` hook
      * @param string $callable The callback PHP function name
      */
-    public function setOnDelete($callable) {
+    public function setOnDelete($callable)
+    {
         $this->onDelete = $callable;
     }
     /**
      * Setter for the proprty `uploadHandler`
      * @param string $url The URL where file upload will be handled
      */
-    private function setUploadHandler($url) {
+    private function setUploadHandler($url)
+    {
         $this->uploadHandler = $url;
     }
     /**
@@ -761,7 +812,8 @@ class AsynFileUploader {
      *     )
      *
      */
-    public function html($attributes=array()) {
+    public function html($attributes = array())
+    {
         $name = $this->name;
         $maxSize = $this->maxSize * 1024 * 1024; # convert to bytes
 
@@ -828,9 +880,7 @@ class AsynFileUploader {
         # If the generic form POST, the file information from POST is pre-loaded
         # by overwriting `$this->value`
         if (count($_POST) && isset($_POST[$name]) && $_POST[$name] &&
-           isset($_POST[$name.'-fileName']) && $_POST[$name.'-fileName']
-          )
-        {
+            isset($_POST[$name.'-fileName']) && $_POST[$name.'-fileName']) {
             $post    = _post($_POST);
             $value   = $post[$name];
             $id      = isset($post[$name.'-id']) ? $post[$name.'-id'] : '';
@@ -851,8 +901,8 @@ class AsynFileUploader {
         ?>
         <div class="asynfileuploader" id="asynfileuploader-<?php echo $name; ?>">
             <div id="asynfileuploader-value-<?php echo $name; ?>">
-                <input type="hidden" name="<?php echo $name; ?>" value="<?php if($value) echo $value; ?>" />
-                <input type="hidden" name="<?php echo $name; ?>-id" value="<?php if($id) echo $id; ?>" />
+                <input type="hidden" name="<?php echo $name; ?>" value="<?php if ($value) { echo $value; } ?>" />
+                <input type="hidden" name="<?php echo $name; ?>-id" value="<?php if ($id) echo $id; ?>" />
                 <?php foreach ($dimensions as $d) { ?>
                     <input type="hidden" name="<?php echo $name; ?>-dimensions[]" value="<?php echo $d; ?>" />
                 <?php } ?>
@@ -892,17 +942,17 @@ class AsynFileUploader {
             <script type="text/javascript">
                 LC.AsynFileUploader.init('<?php echo $name; ?>');
                 <?php
-                if ($preview) {
-                    $json = array(
-                        'name'      => $name,
-                        'value'     => $value,
-                        'fileName'  => $currentFile,
-                        'url'       => $currentFileURL,
-                        'extension' => $extension,
-                        'caption'   => $this->label
-                    );
-                    echo 'LC.AsynFileUploader.preview(' . json_encode($json) . ');';
-                }
+                    if ($preview) {
+                        $json = array(
+                            'name'      => $name,
+                            'value'     => $value,
+                            'fileName'  => $currentFile,
+                            'url'       => $currentFileURL,
+                            'extension' => $extension,
+                            'caption'   => $this->label
+                        );
+                        echo 'LC.AsynFileUploader.preview(' . json_encode($json) . ');';
+                    }
                 ?>
             </script>
         </div>
@@ -912,7 +962,8 @@ class AsynFileUploader {
      * Get the upload directory name from REQUEST
      * @param
      */
-    public static function getDirFromRequest($name) {
+    public static function getDirFromRequest($name)
+    {
         return isset($_REQUEST[$name.'-dir']) ? _sanitize(base64_decode($_REQUEST[$name.'-dir'])) : '';
     }
 }

@@ -30,7 +30,7 @@ if (count($_POST) && isset($_POST['action']) && $_POST['action'] === 'delete' &&
         }
         # delete the thumbnail images related to the deleted file (if any)
         if (isset($post['dimensions']) && is_array($post['dimensions']) && count($post['dimensions'])) {
-            foreach($post['dimensions'] as $d) {
+            foreach ($post['dimensions'] as $d) {
                 $thumbFile = $dir . $d . _DS_ . $post['value'];
                 if (is_file($thumbFile) && file_exists($thumbFile)) {
                     unlink($thumbFile);
@@ -139,7 +139,7 @@ if (count($_FILES)) {
                 }
                 # delete the thumbnail images if any
                 if (is_array($dimensions) && count($dimensions)) {
-                    foreach($dimensions as $d) {
+                    foreach ($dimensions as $d) {
                         $thumbFile = $uploadDir . $d . _DS_ . $post[$name];
                         if (is_file($thumbFile) && file_exists($thumbFile)) {
                             unlink($thumbFile);
@@ -163,7 +163,7 @@ if (count($_FILES)) {
         $data['value'] = $post[$name];
     }
 
-    if ( !$data['savedId'] && isset($post[$name.'-id']) && $post[$name.'-id'] ) {
+    if (!$data['savedId'] && isset($post[$name.'-id']) && $post[$name.'-id']) {
         # if there was any saved data in db
         $data['savedId'] = $post[$name.'-id'];
     }

@@ -26,7 +26,7 @@ if ($result = db_query($sql)) {
     if (db_numRows($result)) {
         $langs = _langs(_defaultLang());
         ?>
-    <table cellpadding="0" cellspacing="0" border="0" class="list">
+        <table cellpadding="0" cellspacing="0" border="0" class="list">
         <tr class="label">
             <td class="tableLeft" colspan="2"><?php echo _t('Actions'); ?></td>
             <td>
@@ -85,7 +85,7 @@ if ($result = db_query($sql)) {
         }
     ?>
     </table>
-    <div class="pager-container"><?php echo $pager->display(); ?></div>
+        <div class="pager-container"><?php echo $pager->display(); ?></div>
     <?php
     } else {
     ?>	<div class="no-record"><?php echo _t('There is no item found. Click "Add New Category" to add a new category.'); ?></div>

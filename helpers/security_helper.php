@@ -18,12 +18,14 @@
  * @internal
  * Check the default security secret to be changed
  */
-function security_prerequisite() {
+function security_prerequisite()
+{
     $defaultSecret = md5('lucidframe');
     $secret = trim(_cfg('securitySecret'));
     if (function_exists('mcrypt_encrypt') && strcmp($secret, $defaultSecret) === 0) {
         $msg = 'Change your own security hash in the file "/inc/.secret".';
-        $msg .= 'Get your own hash string at <a href="http://phplucidframe.sithukyaw.com/hash-generator" target="_blank">phplucidframe.sithukyaw.com/hash-generator</a>.';
+        $msg .= 'Get your own hash string at';
+        $msg .= '<a href="http://phplucidframe.sithukyaw.com/hash-generator" target="_blank">phplucidframe.sithukyaw.com/hash-generator</a>.';
         _cfg('sitewideWarnings', function_exists('_t') ? _t($msg) : $msg);
     }
 }
@@ -32,9 +34,10 @@ function security_prerequisite() {
  * @param  mixed $get The value or The array of values being sanitized.
  * @return mixed The cleaned value
  */
-function _get($get) {
+function _get($get)
+{
     if (is_array($get)) {
-        foreach ($get as $name=>$value) {
+        foreach ($get as $name => $value) {
             if (is_array($value)) {
                 $get[$name] = _get($value);
             } else {
@@ -54,9 +57,10 @@ function _get($get) {
  * @param  mixed $post The value or The array of values being sanitized.
  * @return mixed the cleaned value
  */
-function _post($post) {
+function _post($post)
+{
     if (is_array($post)) {
-        foreach ($post as $name=>$value) {
+        foreach ($post as $name => $value) {
             if (is_array($value)) {
                 $post[$name] = _post($value);
             } else {
@@ -77,8 +81,11 @@ function _post($post) {
  * @param mixed $value The value or The array of values being stripped.
  * @return mixed the cleaned value
  */
-function _xss($value) {
-    if (is_object($value)) return $value;
+function _xss($value)
+{
+    if (is_object($value)) {
+        return $value;
+    }
     if (is_array($value)) {
         foreach ($value as $key => $val) {
             if (is_array($val)) {
@@ -97,7 +104,8 @@ function _xss($value) {
  * @param  mixed $input Value to filter
  * @return mixed The filtered value
  */
-function _sanitize($input) {
+function _sanitize($input)
+{
     return htmlspecialchars(trim($input), ENT_NOQUOTES);
 }
 /**
@@ -107,7 +115,8 @@ function _sanitize($input) {
  * @param mixed $value The value being stripped.
  * @return mixed the cleaned value
  */
-function __xss($value) {
+function __xss($value)
+{
     $value = trim(stripslashes($value));
     $ascii = '[\x00-\x20|&\#x0A;|&\#x0D;|&\#x09;|&\#14;|<|!|\-|>]*';
 

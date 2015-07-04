@@ -101,13 +101,13 @@ $lc_session = array(
 # $lc_databases: The array specifies the database connection
 $lc_databases = array(
     'default' => array(
-        'engine' 	=> 'mysqli',
-        'host'		=> 'localhost',
-        'database'	=> '',
-        'username'	=> '',
-        'password'	=> '',
-        'prefix'	=> '',
-        'collation'	=> 'utf8_general_ci'
+        'engine'    => 'mysqli',
+        'host'      => 'localhost',
+        'database'  => '',
+        'username'  => '',
+        'password'  => '',
+        'prefix'    => '',
+        'collation' => 'utf8_general_ci'
     )
 );
 # $lc_defaultDbSource: The default database connection

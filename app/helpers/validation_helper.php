@@ -11,20 +11,26 @@
 * @param string $email The email address to check against
 * @return boolean
 */
-function validate_emailRetyped($emailRetyped, $email='') {
-    if (empty($email)) return true;
+function validate_emailRetyped($emailRetyped, $email = '')
+{
+    if (empty($email)) {
+        return true;
+    }
     return (strcasecmp($emailRetyped, $email) == 0) ? true : false;
 }
 /**
  * Custom validation function for password confirmation
  * This is just for the example admin panel
  *
- * @param $value	(string) confirmed password
- * @param $pwd		(string) password need to be checked
- * @return boolean	TRUE for success; FALSE for failure
+ * @param $value    (string) confirmed password
+ * @param $pwd      (string) password need to be checked
+ * @return boolean  TRUE for success; FALSE for failure
  */
-function validate_confirmPassword($value, $pwd) {
-    if (empty($value)) return true;
+function validate_confirmPassword($value, $pwd)
+{
+    if (empty($value)) {
+        return true;
+    }
     $confirmPwd = trim($pwd);
     return ($value == $pwd);
 }
@@ -32,16 +38,21 @@ function validate_confirmPassword($value, $pwd) {
  * Custom validation function to check user name duplicate
  * This is just for the example admin panel
  *
- * @param $value	(string) Name to check
- * @param $id		(string) uid if any
- * @return boolean	TRUE for no duplicate; FALSE for duplicate
+ * @param $value    (string) Name to check
+ * @param $id       (string) uid if any
+ * @return boolean  TRUE for no duplicate; FALSE for duplicate
  */
-function validate_checkDuplicateUsername($value, $id=0) {
+function validate_checkDuplicateUsername($value, $id = 0)
+{
     $value = strtolower($value);
-    if (empty($value)) return true;
+    if (empty($value)) {
+        return true;
+    }
 
     $sql = 'SELECT uid FROM ' . db_prefix() . 'user WHERE LOWER(username) = ":value"';
-    if ($id) $sql .= ' AND uid <> :id';
+    if ($id) {
+        $sql .= ' AND uid <> :id';
+    }
     $sql .= ' LIMIT 1';
     $args = array(
         ':value' => strtolower($value),

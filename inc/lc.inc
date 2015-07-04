@@ -70,14 +70,15 @@ if (!file_exists(INC . 'site.config.php')) {
  *
  * @return string File name with absolute path if it is found, otherwise return an empty string
  */
-function _i($file, $recursive=true) {
+function _i($file, $recursive = true)
+{
     global $lc_baseURL;
     global $lc_sites;
     global $lc_languages;
     global $lc_namespace;
 
     $ext = strtolower(substr($file, strrpos($file, '.')+1)); # get the file extension
-    if ( in_array($ext, array('js', 'css')) ) {
+    if (in_array($ext, array('js', 'css'))) {
         $appRoot = WEB_APP_ROOT;
         $root = WEB_ROOT;
         $clientFile = true;
@@ -87,7 +88,7 @@ function _i($file, $recursive=true) {
         $clientFile = false;
     }
 
-    if ( !is_array($lc_languages) ) {
+    if (!is_array($lc_languages)) {
         $lc_languages = array('en' => 'English');
     }
 
@@ -103,7 +104,7 @@ function _i($file, $recursive=true) {
         $needle = count($request) ? $request[0] : '';
     }
 
-    if ( LC_NAMESPACE == '' ) {
+    if (LC_NAMESPACE == '') {
     # Find in APP_ROOT -> ROOT
         $folders = array(
             APP_ROOT => $appRoot,
@@ -127,7 +128,7 @@ function _i($file, $recursive=true) {
     # $value is for include() or <script> or <link>
     foreach ($folders as $key => $value) {
         $fileWithPath = $key . $file;
-        if ( is_file($fileWithPath) && file_exists($fileWithPath) ) {
+        if (is_file($fileWithPath) && file_exists($fileWithPath)) {
             $fileWithPath = $value . $file;
             return $fileWithPath;
         }
@@ -150,8 +151,10 @@ function _i($file, $recursive=true) {
 /**
  * Get the host name or server name
  */
-function _host() {
-    return !isset($_SERVER['HTTP_HOST']) ? isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : php_uname('n') : $_SERVER['HTTP_HOST'];
+function _host()
+{
+    return !isset($_SERVER['HTTP_HOST']) ? isset($_SERVER['SERVER_NAME'])
+        ? $_SERVER['SERVER_NAME'] : php_uname('n') : $_SERVER['HTTP_HOST'];
 }
 /**
  * @internal
@@ -161,7 +164,8 @@ function _host() {
  *
  * @return void
  */
-function __envLoader() {
+function __envLoader()
+{
     global $lc_languages;
     global $lc_baseURL;
     global $lc_sites;
@@ -202,7 +206,7 @@ function __envLoader() {
         }
     }
 
-    if ( !isset($lc_languages) || (isset($lc_languages) && !is_array($lc_languages)) ) {
+    if (!isset($lc_languages) || (isset($lc_languages) && !is_array($lc_languages))) {
         $lc_languages = array('en' => 'English');
     }
 
@@ -221,7 +225,7 @@ function __envLoader() {
         $lc_namespace = count($request) ? $request[0] : '';
     }
 
-    if ( !(isset($lc_sites) && is_array($lc_sites) && array_key_exists($lc_namespace, $lc_sites)) ) {
+    if (!(isset($lc_sites) && is_array($lc_sites) && array_key_exists($lc_namespace, $lc_sites))) {
         $lc_namespace = '';
     }
 
@@ -238,7 +242,8 @@ function __envLoader() {
  * Read .secret and return the hash string which is the value for $lc_securitySecret
  * @return string
  */
-function __secret() {
+function __secret()
+{
     $file = INC . '.secret';
     return (is_file($file) && file_exists($file)) ? trim(file_get_contents($file)) : '';
 }

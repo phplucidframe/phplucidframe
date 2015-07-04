@@ -18,7 +18,8 @@ $pager->set('imagePath', WEB_ROOT.'images/pager/');
 $pager->set('ajax', true);
 $pager->calculate();
 
-$sql = "SELECT a.postId, a.slug, a.postTitle, a.postTitle_".$lang." postTitle_i18n, a.postBody, a.postBody_".$lang." postBody_i18n,
+$sql = "SELECT a.postId, a.slug, a.postTitle, a.postTitle_".$lang." postTitle_i18n,
+                a.postBody, a.postBody_".$lang." postBody_i18n,
                 u.uid, a.created, u.fullName, c.catName, c.catName_".$lang." catName_i18n
         FROM ".db_prefix()."post a
         JOIN ".db_prefix()."category c USING(catId)
@@ -47,8 +48,8 @@ if ($result) {
         <?php
         while ($row = db_fetchObject($result)) {
             $row->postTitle = ($row->postTitle_i18n) ? $row->postTitle_i18n : $row->postTitle;
-            $row->postBody 	= ($row->postBody_i18n) ? $row->postBody_i18n : $row->postBody;
-            $row->catName 	= ($row->catName_i18n) ? $row->catName_i18n : $row->catName;
+            $row->postBody  = ($row->postBody_i18n) ? $row->postBody_i18n : $row->postBody;
+            $row->catName   = ($row->catName_i18n) ? $row->catName_i18n : $row->catName;
             ?>
             <tr id="row-<?php echo $row->postId; ?>">
                 <td class="tableLeft colAction">
@@ -73,7 +74,8 @@ if ($result) {
     <div class="pager-container"><?php echo $pager->display(); ?></div>
     <?php
     } else {
-    ?>	<div class="no-record"><?php echo _t("You don't have any post! %sLet's go make a new post!%s", '<a href="'._url('admin/post/setup').'">', '</a>'); ?></div>
+    ?>
+        <div class="no-record"><?php echo _t("You don't have any post! %sLet's go make a new post!%s", '<a href="'._url('admin/post/setup').'">', '</a>'); ?></div>
     <?php
     }
 }

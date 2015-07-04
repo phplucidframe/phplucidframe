@@ -23,11 +23,13 @@ $lc_cleanRoute = '';
  * @internal
  * Initialize URL routing
  */
-function route_init() {
+function route_init()
+{
     if (!isset($_SERVER['HTTP_REFERER'])) {
         $_SERVER['HTTP_REFERER'] = '';
     }
-    if (!isset($_SERVER['SERVER_PROTOCOL']) || ($_SERVER['SERVER_PROTOCOL'] != 'HTTP/1.0' && $_SERVER['SERVER_PROTOCOL'] != 'HTTP/1.1')) {
+    if (!isset($_SERVER['SERVER_PROTOCOL']) ||
+        ($_SERVER['SERVER_PROTOCOL'] != 'HTTP/1.0' && $_SERVER['SERVER_PROTOCOL'] != 'HTTP/1.1')) {
         $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.0';
     }
 
@@ -41,8 +43,7 @@ function route_init() {
             header($_SERVER['SERVER_PROTOCOL'] . ' 400 Bad Request');
             exit;
         }
-    }
-    else {
+    } else {
         # Some pre-HTTP/1.1 clients will not send a Host header. Ensure the key is
         # defined for E_ALL compliance.
         $_SERVER['HTTP_HOST'] = '';
@@ -64,7 +65,8 @@ function route_init() {
  *
  * @return string The requested URL path.
  */
-function route_request() {
+function route_request()
+{
     global $lc_baseURL;
     global $lc_languages;
     global $lc_lang;
@@ -84,7 +86,7 @@ function route_request() {
         if (isset($_GET['lang']) && $_GET['lang']) {
             $lang = strip_tags(urldecode($_GET['lang']));
             $lang = rtrim($lang, '/');
-            if ( array_key_exists($lang, $lc_languages) ) {
+            if (array_key_exists($lang, $lc_languages)) {
                 $lc_lang = $lang;
             }
         }
@@ -124,7 +126,9 @@ function route_request() {
 
     $protocol = current(explode('/', $_SERVER['SERVER_PROTOCOL']));
     $base = strtolower($protocol) . '://' . $_SERVER['HTTP_HOST'];
-    if ($lc_baseURL) $base .= '/' . $lc_baseURL;
+    if ($lc_baseURL) {
+        $base .= '/' . $lc_baseURL;
+    }
 
     /**
      * @ignore Path to the web root
@@ -148,7 +152,8 @@ function route_request() {
  *
  * @return mixed The path if found; otherwise return false
  */
-function route_search() {
+function route_search()
+{
     $q     = route_path();
     $seg   = explode('/', $q);
     $count = sizeof($seg);
@@ -190,7 +195,8 @@ function route_search() {
  * Alias `_r()`
  * @return string
  */
-function route_path() {
+function route_path()
+{
     $path = '';
     if (isset($_GET[ROUTE])) {
         $path = urldecode($_GET[ROUTE]);
@@ -201,10 +207,10 @@ function route_path() {
  * @internal
  * Define the custom routing path
  */
-function route_map($path, $to='') {
+function route_map($path, $to = '')
+{
     global $lc_routes;
     $lc_routes[$path] = $to;
-
 }
 /**
  * Return the absolute URL path appended the query string if necessary
@@ -220,25 +226,28 @@ function route_map($path, $to='') {
  *       'key3' => $value3 or array($value3, $value4)
  *     )
  *
- * @param string $lang Languague code to be prepended to $path such as "en/foo/bar". It will be useful for site language switch redirect
+ * @param string $lang Languague code to be prepended to $path such as "en/foo/bar".
+ *   It will be useful for site language switch redirect
  *
  * @return string
  *
  */
-function route_url($path=NULL, $queryStr=array(), $lang='') {
+function route_url($path = null, $queryStr = array(), $lang = '')
+{
     global $lc_cleanURL;
     global $lc_translationEnabled;
     global $lc_sites;
     global $lc_langInURI;
 
-    if ($lang === false) $forceExcludeLangInURL = true;
-    else $forceExcludeLangInURL = false;
+    $forceExcludeLangInURL = ($lang === false) ? true : false;
 
-    if ( stripos($path, 'http') === 0 ) {
+    if (stripos($path, 'http') === 0) {
         return $path;
     } else {
         if (strtolower($path) == 'home') {
-            if (isset($GLOBALS['lc_homeRouting']) && $GLOBALS['lc_homeRouting']) $path = $GLOBALS['lc_homeRouting'];
+            if (isset($GLOBALS['lc_homeRouting']) && $GLOBALS['lc_homeRouting']) {
+                $path = $GLOBALS['lc_homeRouting'];
+            }
         }
 
         if ($path && is_string($path)) {
@@ -297,7 +306,9 @@ function route_url($path=NULL, $queryStr=array(), $lang='') {
         }
     }
 
-    if (strtolower($path) == 'home') $path = '';
+    if (strtolower($path) == 'home') {
+        $path = '';
+    }
 
     if ($lc_cleanURL) {
         $url .= $path . $q;
@@ -322,10 +333,12 @@ function route_url($path=NULL, $queryStr=array(), $lang='') {
  *
  * @return string The updated route path
  */
-function route_updateQueryStr($path, &$queryStr=array()) {
+function route_updateQueryStr($path, &$queryStr = array())
+{
     global $lc_cleanURL;
     if (count($queryStr)) {
-        if ($lc_cleanURL) { # For clean URLs like /path/query/str/-key/value
+        if ($lc_cleanURL) {
+            # For clean URLs like /path/query/str/-key/value
             foreach ($queryStr as $key => $value) {
                 $route = _arg($key, $path);
                 if ($route) {
@@ -339,13 +352,15 @@ function route_updateQueryStr($path, &$queryStr=array()) {
                         $regex .= '/i';
                     } elseif (is_numeric($key)) {
                         $regex = '/\b('.$route.'){1}\b/i';
-                    } else{
+                    } else {
                         continue;
                     }
-                } else { # if the key could not be retrieved from URI, skip it
+                } else {
+                    # if the key could not be retrieved from URI, skip it
                     continue;
                 }
-                if (preg_match($regex, $path)) { # find the key in URI
+                if (preg_match($regex, $path)) {
+                    # find the key in URI
                     if (is_array($value)) {
                         $v = array_map('urlencode', $value);
                         $value = implode('/', $v);
@@ -360,7 +375,8 @@ function route_updateQueryStr($path, &$queryStr=array()) {
                     unset($queryStr[$key]); # removed the replaced query string from the array
                 }
             }
-        } else { # For unclean URLs like /path/query/str?key=value
+        } else {
+            # For unclean URLs like /path/query/str?key=value
             parse_str($_SERVER['QUERY_STRING'], $serverQueryStr);
             $queryStr = array_merge($serverQueryStr, $queryStr);
         }

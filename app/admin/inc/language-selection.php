@@ -10,7 +10,7 @@ if (auth_isAdmin()) {
                 $lang = _getLang();
                 foreach ($lc_languages as $lcode => $lname) {
                     $class = ($lang == $lcode) ? 'active' : '';
-                    $url = _url(NULL, array('lang' => $lcode));
+                    $url = _url(null, array('lang' => $lcode));
                 ?>
                     <a href="<?php echo $url ?>" class="<?php echo $class; ?>">
                         <span><?php _image('flags/'.$lcode.'.png', $lname); ?></span>

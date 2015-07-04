@@ -6,7 +6,7 @@ if (sizeof($_POST)) {
 
     if (isset($action) && $action == 'delete' && isset($hidDeleteId) && $hidDeleteId) {
         # DELETE category
-        if ( db_delete('category', array('catId' => $hidDeleteId)) ) {
+        if (db_delete('category', array('catId' => $hidDeleteId))) {
             $success = true;
         }
     } else {

@@ -55,7 +55,8 @@ $lc_validationMessages = array(
  * @internal
  * Initialize the validation messages
  */
-function __validation_init() {
+function __validation_init()
+{
     global $lc_validationMessages;
     $i18nEnabled = function_exists('_t');
     foreach ($lc_validationMessages as $key => $msg) {
@@ -68,7 +69,8 @@ function __validation_init() {
  * @param mixed $value The value being checked
  * @return boolean TRUE if the value contains something other than whitespace, FALSE otherwise
  */
-function validate_mandatory($value) {
+function validate_mandatory($value)
+{
     if (is_array($value) && empty($value['name'])) {
         return false; # file upload
     }
@@ -85,12 +87,16 @@ function validate_mandatory($value) {
  * @param array $value The array of values to check
  * @return boolean TRUE if one of the fields are not empty, FALSE otherwise
  */
-function validate_mandatoryOne($value) {
+function validate_mandatoryOne($value)
+{
     if (is_array($value)) {
         $value = array_unique($value);
         $empty = true;
         foreach ($value as $v) {
-            if (preg_match('/[^\s]+/', $v)) $empty = false; # if one of the value is not empty
+            if (preg_match('/[^\s]+/', $v)) {
+                # if one of the value is not empty
+                $empty = false;
+            }
         }
         return !$empty;
     } else {
@@ -102,11 +108,15 @@ function validate_mandatoryOne($value) {
  * @param array $value The array of values being checked
  * @return boolean TRUE if all of the fields are not empty, FALSE otherwise
  */
-function validate_mandatoryAll($value) {
+function validate_mandatoryAll($value)
+{
     if (is_array($value)) {
         $value = array_unique($value);
         foreach ($value as $v) {
-            if (preg_match('/[\s]+/', $v)) return false; # if one of the value is empty
+            if (preg_match('/[\s]+/', $v)) {
+                # if one of the value is empty
+                return false;
+            }
         }
         return true;
     } else {
@@ -118,7 +128,8 @@ function validate_mandatoryAll($value) {
  * @param string $value The value being checked
  * @return boolean TRUE for non-zero, FALSE otherwise
  */
-function validate_notAllowZero($value) {
+function validate_notAllowZero($value)
+{
     $value = trim($value);
     return ($value == '0' || $value == 0) ? false : true;
 }
@@ -127,7 +138,8 @@ function validate_notAllowZero($value) {
  * @param mixed $value The value being checked
  * @return boolean 	TRUE if the value contains only integer or letters, FALSE otherwise
  */
-function validate_alphaNumeric($value) {
+function validate_alphaNumeric($value)
+{
     if (empty($value)) {
         return true;
     }
@@ -138,7 +150,8 @@ function validate_alphaNumeric($value) {
  * @param mixed $value The value being checked
  * @return boolean TRUE if the value contains only integer, letters or spaces, FALSE otherwise
  */
-function validate_alphaNumericSpace($value) {
+function validate_alphaNumericSpace($value)
+{
     if (empty($value)) {
         return true;
     }
@@ -149,7 +162,8 @@ function validate_alphaNumericSpace($value) {
  * @param mixed $value The value being checked
  * @return boolean 	TRUE if the value contains only integer, letters or dashes, FALSE otherwise
  */
-function validate_alphaNumericDash($value) {
+function validate_alphaNumericDash($value)
+{
     if (empty($value)) {
         return true;
     }
@@ -160,7 +174,8 @@ function validate_alphaNumericDash($value) {
  * @param mixed $value The value being checked
  * @return boolean TRUE if var is a number or a numeric string, FALSE otherwise.
  */
-function validate_numeric($value) {
+function validate_numeric($value)
+{
     return is_numeric($value);
 }
 /**
@@ -168,7 +183,8 @@ function validate_numeric($value) {
  * @param mixed $value The value being checked
  * @return boolean TRUE if the value contains numbers and dashes only, FALSE otherwise
  */
-function validate_numericDash($value) {
+function validate_numericDash($value)
+{
     if (is_numeric($value) && strlen($value) == 1) {
         return true;
     }
@@ -182,7 +198,8 @@ function validate_numericDash($value) {
  * @param string $value The value being checked
  * @return boolean TRUE if the value contains numbers and spaces only, FALSE otherwise
  */
-function validate_numericSpace($value) {
+function validate_numericSpace($value)
+{
     if (is_numeric($value) && strlen($value) == 1) {
         return true;
     }
@@ -196,7 +213,8 @@ function validate_numericSpace($value) {
  * @param mixed $value The value being checked
  * @return boolean TRUE if the value does not contain special characters, FALSE otherwise
  */
-function validate_username($value) {
+function validate_username($value)
+{
     if (empty($value)) {
         return true;
     }
@@ -209,7 +227,8 @@ function validate_username($value) {
  * @see http://en.wikipedia.org/wiki/Natural_number
  *   http://math.about.com/od/mathhelpandtutorials/a/Understanding-Classification-Of-Numbers.htm
  */
-function validate_naturalNumber($value) {
+function validate_naturalNumber($value)
+{
     $value = trim($value);
     if ($value == '') {
         return true;
@@ -222,7 +241,8 @@ function validate_naturalNumber($value) {
  * @return boolean TRUE if the value is whole number, FALSE otherwise
  * @see http://math.about.com/od/mathhelpandtutorials/a/Understanding-Classification-Of-Numbers.htm
  */
-function validate_wholeNumber($value) {
+function validate_wholeNumber($value)
+{
     $value = trim($value);
     if ($value == '') {
         return true;
@@ -235,7 +255,8 @@ function validate_wholeNumber($value) {
  * @return boolean TRUE if the value is integer, FALSE otherwise
  * @see http://math.about.com/od/mathhelpandtutorials/a/Understanding-Classification-Of-Numbers.htm
  */
-function validate_integer($value) {
+function validate_integer($value)
+{
     $value = trim($value);
     if ($value == '') {
         return true;
@@ -248,7 +269,8 @@ function validate_integer($value) {
  * @return boolean TRUE if the value is rational number, FALSE otherwise
  * @see http://math.about.com/od/mathhelpandtutorials/a/Understanding-Classification-Of-Numbers.htm
  */
-function validate_rationalNumber($value) {
+function validate_rationalNumber($value)
+{
     $value = trim($value);
     if ($value == '') {
         return true;
@@ -261,7 +283,8 @@ function validate_rationalNumber($value) {
  * @return boolean TRUE if the value is positive rational number, FALSE otherwise
  * @see http://math.about.com/od/mathhelpandtutorials/a/Understanding-Classification-Of-Numbers.htm
  */
-function validate_positiveRationalNumber($value) {
+function validate_positiveRationalNumber($value)
+{
     $value = trim($value);
     if ($value == '') {
         return true;
@@ -273,7 +296,8 @@ function validate_positiveRationalNumber($value) {
  * @param mixed $value The value being checked
  * @return boolean TRUE if the value is a valid email address, FALSE otherwise
  */
-function validate_email($value) {
+function validate_email($value)
+{
     $value = trim($value);
     if ($value == '') {
         return true;
@@ -285,7 +309,8 @@ function validate_email($value) {
  * @param mixed $value The value being checked
  * @return boolean TRUE if the value has letters, numbers and dashes only, FALSE otherwise
  */
-function validate_domain($value) {
+function validate_domain($value)
+{
     if (empty($value)) {
         return true;
     }
@@ -296,7 +321,8 @@ function validate_domain($value) {
  * @param mixed $value The value being checked
  * @return boolean TRUE if the value is a valid absolute web address, FALSE otherwise
  */
-function validate_url($value) {
+function validate_url($value)
+{
     if (empty($value)) {
         return true;
     }
@@ -315,17 +341,23 @@ function validate_url($value) {
             $hostParts = explode(".", $host);
 
             # Get suffix from host eg. com, net, org, sg or info, etc...
-            $suffix = (strstr($hostParts[count($hostParts)-1], '?')) ? reset(explode('?', $hostParts[count($hostParts)-1])) : $hostParts[count($hostParts)-1];
+            $suffix = (strstr($hostParts[count($hostParts)-1], '?'))
+                ? reset(explode('?', $hostParts[count($hostParts)-1]))
+                : $hostParts[count($hostParts)-1];
 
             # IF last segment is valid && URL not contains 4w
-            if (preg_match("/^[a-z]{2,4}$/", $suffix) && ! strstr($value, "wwww")) return true;
+            if (preg_match("/^[a-z]{2,4}$/", $suffix) && ! strstr($value, "wwww")) {
+                return true;
+            }
         } else {
         # IF not OK with general regular expression
             # Regular Expression for URL
             $urlExp = "/^(([a-z0-9]|_|\-)+\.)+[a-z]{2,4}$/";
 
             # IF valid URL && URL not contains 4 w
-            if (preg_match($urlExp, $value) && ! strstr($value, "wwww")) return true;
+            if (preg_match($urlExp, $value) && ! strstr($value, "wwww")) {
+                return true;
+            }
         } # End of Check if URL
     } # End of Check Host Name
 
@@ -337,7 +369,8 @@ function validate_url($value) {
  * @param int $min The minimum length to meet (inclusive)
  * @return boolean if the character length of the value meets the specified minimum length, FALSE otherwise
  */
-function validate_minLength($value, $min) {
+function validate_minLength($value, $min)
+{
     $length = mb_strlen($value);
     return ($length >= $min);
 }
@@ -347,7 +380,8 @@ function validate_minLength($value, $min) {
  * @param int $max The maximum length to meet (inclusive)
  * @return boolean if the character length of the value meets the specified maximum length, FALSE otherwise
  */
-function validate_maxLength($value, $max) {
+function validate_maxLength($value, $max)
+{
     $length = mb_strlen($value);
     return ($length <= $max);
 }
@@ -357,7 +391,8 @@ function validate_maxLength($value, $max) {
  * @param int/float $min The minimum value to meet (inclusive)
  * @return boolean if the value is equal to or greater than the specific minimum number, FALSE otherwise
  */
-function validate_min($value, $min) {
+function validate_min($value, $min)
+{
     return ($value >= $min);
 }
 /**
@@ -366,7 +401,8 @@ function validate_min($value, $min) {
  * @param int/float $max The maximum value to meet (inclusive)
  * @return boolean if the value is equal to or less than the specific maximum number, FALSE otherwise
  */
-function validate_max($value, $max) {
+function validate_max($value, $max)
+{
     return ($value <= $max);
 }
 /**
@@ -376,7 +412,8 @@ function validate_max($value, $max) {
  * @param int/float $max The maximum value in range (inclusive)
  * @return boolean TRUE if the number is within the specified range, FALSE otherwise
  */
-function validate_between($value, $min, $max) {
+function validate_between($value, $min, $max)
+{
     return ($value >= $min && $value <= $max);
 }
 /**
@@ -387,7 +424,8 @@ function validate_between($value, $min, $max) {
  * @return mixed `1` if the pattern matches given value, `0` if it does not, or `FALSE` if an error occurred.
  * @see http://php.net/manual/en/function.preg-match.php
  */
-function validate_custom($value, $pattern) {
+function validate_custom($value, $pattern)
+{
     if (empty($value) && $value != '0') {
         return true;
     }
@@ -399,7 +437,8 @@ function validate_custom($value, $pattern) {
  * @param array $extensions The Array of file extensions such as `array('jpg', 'jpeg', 'png', 'gif')`
  * @return boolean TRUE if the uploaded file extension is allowed according to the given extensions, FALSE otherwise
  */
-function validate_fileExtension($value, $extensions = array('jpg', 'jpeg', 'png', 'gif')) {
+function validate_fileExtension($value, $extensions = array('jpg', 'jpeg', 'png', 'gif'))
+{
     if (!is_array($value)) {
         return true;
     }
@@ -419,7 +458,8 @@ function validate_fileExtension($value, $extensions = array('jpg', 'jpeg', 'png'
  * @param int $maxSize The maximum file size in MB
  * @return boolean TRUE if the uploaded file does not exceed the given file size, FALSE otherwise
  */
-function validate_fileMaxSize($value, $maxSize = NULL) {
+function validate_fileMaxSize($value, $maxSize = null)
+{
     if (!is_array($value)) {
         return true;
     }
@@ -439,7 +479,8 @@ function validate_fileMaxSize($value, $maxSize = NULL) {
  *  TRUE if the image uploaded dimension does not exceed the given max width and height;
  *  FALSE otherwise
  */
-function validate_fileMaxDimension($value, $maxWidth, $maxHeight) {
+function validate_fileMaxDimension($value, $maxWidth, $maxHeight)
+{
     if (!is_array($value)) {
         return true;
     }
@@ -458,7 +499,8 @@ function validate_fileMaxDimension($value, $maxWidth, $maxHeight) {
  *  TRUE if the image uploaded dimension same as the given max width and height;
  *  FALSE otherwise
  */
-function validate_fileExactDimension($value, $width, $height) {
+function validate_fileExactDimension($value, $width, $height)
+{
     if (!is_array($value)) {
         return true;
     }
@@ -476,7 +518,8 @@ function validate_fileExactDimension($value, $width, $height) {
  *  TRUE if the uploaded image does not exceed the maximum width allowed;
  *  FALSE otherwise
  */
-function validate_fileMaxWidth($value, $maxWidth) {
+function validate_fileMaxWidth($value, $maxWidth)
+{
     if (!is_array($value)) {
         return true;
     }
@@ -494,7 +537,8 @@ function validate_fileMaxWidth($value, $maxWidth) {
  *  TRUE if the uploaded image does not exceed the maximum height allowed;
  *  FALSE otherwise
  */
-function validate_fileMaxHeight($value, $maxHeight) {
+function validate_fileMaxHeight($value, $maxHeight)
+{
     if (!is_array($value)) {
         return true;
     }
@@ -510,7 +554,8 @@ function validate_fileMaxHeight($value, $maxHeight) {
  * @param string $type The IP protocol version to validate against IPv4 or IPv6
  * @return boolean TRUE on success; FALSE on failure
  */
-function validate_ip($value, $type = 'both') {
+function validate_ip($value, $type = 'both')
+{
     $type = strtolower($value);
     $flags = 0;
     if ($type === 'v4' || $type === 'ipv4') {
@@ -534,7 +579,8 @@ function validate_ip($value, $type = 'both') {
  *
  * @return bool TRUE on success; FALSE on failure
  */
-function validate_date($value, $format = 'y-m-d') {
+function validate_date($value, $format = 'y-m-d')
+{
     if (empty($value)) {
         return true;
     }
@@ -583,7 +629,8 @@ function validate_date($value, $format = 'y-m-d') {
  *
  * @return bool TRUE on success; FALSE on failure
  */
-function validate_time($value, $timeFormat = 'both') {
+function validate_time($value, $timeFormat = 'both')
+{
     if (empty($value)) {
         return true;
     }
@@ -623,7 +670,8 @@ function validate_time($value, $timeFormat = 'both') {
  *
  * @return bool TRUE on success; FALSE on failure
  */
-function validate_datetime($value, $dateFormat = 'y-m-d', $timeFormat = 'both') {
+function validate_datetime($value, $dateFormat = 'y-m-d', $timeFormat = 'both')
+{
     if (empty($value)) {
         return true;
     }
@@ -642,9 +690,10 @@ function validate_datetime($value, $dateFormat = 'y-m-d', $timeFormat = 'both') 
  * This class is part of the PHPLucidFrame library.
  * Form validation helper
  */
-class Validation {
+class Validation
+{
     /** @var array The array of the error messages upon validation */
-    public 	static $errors = array();
+    public static $errors = array();
     /** @var array The array of default error messages */
     private	static $messages;
     /** @var array The array of the rules for group of inputs validation */
@@ -653,7 +702,8 @@ class Validation {
     /**
      * @internal
      */
-    public static function set($key, $value='') {
+    public static function set($key, $value = '')
+    {
         self::$$key = $value;
     }
     /**
@@ -666,39 +716,41 @@ class Validation {
      *
      * @return void
      */
-    public static function check($validations, $type='multi') {
+    public static function check($validations, $type = 'multi')
+    {
         Form::init();
 
         $type = strtolower($type);
-        if ( !in_array($type, array('single', 'multi')) ) {
+        if (!in_array($type, array('single', 'multi'))) {
             $type = 'multi';
         }
         self::$errors = array();
         foreach ($validations as $id => $v) {
-            if ( isset($v['rules']) && is_array($v['rules']) ) {
+            if (isset($v['rules']) && is_array($v['rules'])) {
                 foreach ($v['rules'] as $rule) {
                     $success = true;
-                    $caption = ( !isset($v['caption']) ) ? $id : $v['caption'];
+                    $caption = (!isset($v['caption'])) ? $id : $v['caption'];
 
                     if (is_array($v['value']) && in_array($rule, self::$batchRules)) {
                         # Batch validation rules may be applied for array of values
                         $values = $v['value'];
                         $func = 'validate_'.$rule;
-                        if ( function_exists($func) ) {
+                        if (function_exists($func)) {
                             $success = call_user_func_array($func, array($values));
                             if (!$success) {
                                 self::setError($id, $rule, $v);
                             }
                             continue; # go to the next rule
                         }
-                        # if array of values, the validation function (apart from the batch validation functions) will be applied to each value
+                        # if array of values, the validation function
+                        # (apart from the batch validation functions) will be applied to each value
                     } else {
-                        if (!is_array($v['value']) || (is_array($v['value']) && array_key_exists('tmp_name',$v['value']))) {
+                        if (!is_array($v['value']) ||
+                            (is_array($v['value']) && array_key_exists('tmp_name', $v['value']))) {
                             $values = array($v['value']);
                         } else {
                             $values = $v['value'];
                         }
-
                     }
 
                     foreach ($values as $value) {
@@ -775,7 +827,9 @@ class Validation {
 
                                     case 'ip':
                                         # Required property: protocol
-                                        $v['protocol'] = (!isset($v['protocol']) || ( isset($v['protocol']) && !in_array($v['protocol'], array('ipv4','ipv6')) )) ? 'ipv4' : $v['protocol'];
+                                        if (!isset($v['protocol']) || ( isset($v['protocol']) && !in_array($v['protocol'], array('ipv4','ipv6')))) {
+                                            $v['protocol'] = 'ipv4';
+                                        }
                                         $success = call_user_func_array($func, array($value, $v['protocol']));
                                         if (!$success) {
                                             self::setError($id, $rule, $v);
@@ -918,7 +972,8 @@ class Validation {
     /**
      * @internal
      */
-    private static function setError($id, $rule, $element) {
+    private static function setError($id, $rule, $element)
+    {
         $caption  = $element['caption'];
         $msg      = ( isset(self::$messages[$rule]) ) ? self::$messages[$rule] : self::$messages['default'];
         $msg      = ( isset($element['messages'][$rule]) ) ? $element['messages'][$rule] : $msg;
@@ -932,7 +987,7 @@ class Validation {
             );
         } else {
             self::$errors[] = array(
-                'msg' => sprintf( $msg, $caption ),
+                'msg' => sprintf($msg, $caption),
                 'htmlID' => $id
             );
         }
@@ -945,9 +1000,10 @@ class Validation {
      *
      * @return void
      */
-    public static function addError($id, $msg) {
+    public static function addError($id, $msg)
+    {
         self::$errors[] = array(
-            'msg' => sprintf( $msg ),
+            'msg' => sprintf($msg),
             'htmlID' => $id
         );
     }

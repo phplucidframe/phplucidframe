@@ -8,7 +8,9 @@ $id         = _arg(3);
 if ($id) {
     $pageTitle = _t('Edit Post');
 } else {
-    if ($lang != _defaultLang()) _redirect('admin/post/setup/', NULL, _defaultLang());
+    if ($lang != _defaultLang()) {
+        _redirect('admin/post/setup/', null, _defaultLang());
+    }
 }
 
 include('query.php');

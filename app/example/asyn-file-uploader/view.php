@@ -37,7 +37,8 @@
                     $file->setOnUpload('example_photoUpload'); # This hook is defined in /app/helpers/file_helper.php
                     $file->setOnDelete('example_photoDelete'); # This hook is defined in /app/helpers/file_helper.php
                     $file->setHidden('postId', $id); # FK
-                    if (isset($image) && $image) { # $image is retrieved in query.php
+                    if (isset($image) && $image) {
+                        # $image is retrieved in query.php
                         $file->setValue($image->pimgFileName, $image->pimgId);
                     }
                     $file->html();
@@ -63,7 +64,8 @@
                     $file->setExtensions(array('pdf', 'doc', 'docx', 'odt', 'ods', 'txt'));
                     $file->setOnUpload('example_docUpload'); # This hook is defined in /app/helpers/file_helper.php
                     $file->setOnDelete('example_docDelete'); # This hook is defined in /app/helpers/file_helper.php
-                    if (isset($doc) && $doc) { # $doc is retrieved in query.php
+                    if (isset($doc) && $doc) {
+                        # $doc is retrieved in query.php
                         $file->setValue($doc->docFileName, $doc->docId);
                     }
                     $file->html(array(
