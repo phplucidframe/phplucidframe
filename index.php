@@ -8,7 +8,6 @@
  * @author      Sithu K. <hello@sithukyaw.com>
  * @link        http://phplucidframe.sithukyaw.com
  * @license     http://www.opensource.org/licenses/mit-license.php MIT License
- * @deprecated  This has been replaced by .htaccess
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.txt
