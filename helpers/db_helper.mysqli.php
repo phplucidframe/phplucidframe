@@ -894,24 +894,7 @@ function db_condition($cond = array(), $type = 'AND')
     }
     return $condition;
 }
-/**
- * Build the SQL WHERE clause AND condition from the various condition arrays
- *
- * @deprecated 1.2.0 Use `db_and()` instead
- * @param array $cond The condition array, for example
- *
- *     array(
- *       'fieldName1'    => $value1,
- *       'fieldName2 >=' => $value2,
- *       'fieldName3     => NULL
- *     )
- *
- * @return string The built condition WHERE clause
- */
-function db_conditionAND($cond = array())
-{
-    return db_condition($cond, 'AND');
-}
+
 /**
  * Build the SQL WHERE clause AND condition from the various condition arrays
  * Alias of `db_conditionAND()`
@@ -938,24 +921,7 @@ function db_and($cond = array())
     }
     return implode(' AND ', $builtCond);
 }
-/**
- * Build the SQL WHERE clause OR condition from the various condition arrays
- *
- * @deprecated 1.2.0 Use `db_or()` instead
- * @param array $cond The condition array, for example
- *
- *     array(
- *       'fieldName1'    => $value1,
- *       'fieldName2 >=' => $value2,
- *       'fieldName3     => NULL
- *     )
- *
- * @return string The built condition WHERE clause
- */
-function db_conditionOR($cond = array())
-{
-    return db_condition($cond, 'OR');
-}
+
 /**
  * Build the SQL WHERE clause OR condition from the various condition arrays
  * Alias of `db_conditionOR()`
