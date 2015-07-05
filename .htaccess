@@ -10,23 +10,23 @@ Options -Indexes
 DirectoryIndex index.php index.html index.htm
 
 <IfModule mod_rewrite.c>
-	RewriteEngine on
+    RewriteEngine on
 
-	# This line is for example and it should be removed or replaced for your site
-	# ~/blog/99/foo-bar to ~/app/example/blog-page/?lang=~&id=99&slug=foo-bar
-	RewriteRule ^(([a-z]{2}|[a-z]{2}-[A-Z]{2})/)?blog/([0-9]+)/(.*)$ app/index.php?lang=$1&id=$3&slug=$4&route=example/blog-page [NC,L]
+    # This line is for example and it should be removed or replaced for your site
+    # ~/blog/99/foo-bar to ~/app/example/blog-page/?lang=~&id=99&slug=foo-bar
+    RewriteRule ^(([a-z]{2}|[a-z]{2}-[A-Z]{2})/)?blog/([0-9]+)/(.*)$ app/index.php?lang=$1&id=$3&slug=$4&route=example/blog-page [NC,L]
 
-	RewriteRule ^tests/?(.*) app/index.php [NC,L]
-	RewriteRule ^xhr/?(.*) app/index.php [NC,L]
+    RewriteRule ^tests/?(.*) app/index.php [NC,L]
+    RewriteRule ^xhr/?(.*) app/index.php [NC,L]
 
-	RewriteRule ^index.php$ app/index.php [NC,L]
+    RewriteRule ^index.php$ app/index.php [NC,L]
 
-	# If the request is not for a valid file
-	RewriteCond %{REQUEST_FILENAME} !-f
-	# If the request is not for a valid directory
-	RewriteCond %{REQUEST_FILENAME} !-d
-	# If the request is not for a valid link
-	RewriteCond %{REQUEST_FILENAME} !-l
+    # If the request is not for a valid file
+    RewriteCond %{REQUEST_FILENAME} !-f
+    # If the request is not for a valid directory
+    RewriteCond %{REQUEST_FILENAME} !-d
+    # If the request is not for a valid link
+    RewriteCond %{REQUEST_FILENAME} !-l
 
-	RewriteRule ^ app/index.php [L]
+    RewriteRule ^ app/index.php [L]
 </IfModule>

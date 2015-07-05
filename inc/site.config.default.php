@@ -18,13 +18,13 @@ define('MAX_FILE_UPLOAD_SIZE', 20); # in MB
 define('TODAY', date('Y-m-d'));
 
 # The site meta description for search engines
-$lc_metaDescription 	= 'PHPLucidFrame (a.k.a LucidFrame) is a PHP application development framework that is simple, easy, lightweight and yet powerful.';
+$lc_metaDescription = 'PHPLucidFrame (a.k.a LucidFrame) is a PHP application development framework that is simple, easy, lightweight and yet powerful.';
 # The site meta keywords for search engines
-$lc_metaKeywords 		= 'PHP LucidFrame, PHP, Framework, Web Application Development, Toolkit';
+$lc_metaKeywords = 'PHP LucidFrame, PHP, Framework, Web Application Development, Toolkit';
 # The site contact email address - This address will be used as "To" for all incoming mails
-$lc_siteReceiverEmail 	= ($_SERVER['HTTP_HOST'] == 'localhost') ? 'test@localhost.com' : 'test@example.com';
+$lc_siteReceiverEmail = ($_SERVER['HTTP_HOST'] == 'localhost') ? 'test@localhost.com' : 'test@example.com';
 # The site sender email address - This address will be used as "From" for all outgoing mails
-$lc_siteSenderEmail 	= "{$lc_siteName} <noreply@localhost.com>";
+$lc_siteSenderEmail = "{$lc_siteName} <noreply@localhost.com>";
 # $lc_titleSeparator - Page title separator
 $lc_titleSeparator = '-';
 # $lc_breadcrumbSeparator - Breadcrumb separator

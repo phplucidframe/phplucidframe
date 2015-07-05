@@ -11,11 +11,11 @@
  $sql = 'SELECT * FROM '.db_prefix().'post WHERE id = :id'
  $blog = db_fetchResult($sql, array(':id' => $id));
  if ($blog) {
-	if ($slug && strcasecmp($slug, $blog->slug) !== 0) { # 301 redirect to the correct URL
-		header( "HTTP/1.1 301 Moved Permanently" );
-		header( "Location: "._url('blog', array($id, $blog->slug)));
-		exit;
-	}
+    if ($slug && strcasecmp($slug, $blog->slug) !== 0) { # 301 redirect to the correct URL
+        header( "HTTP/1.1 301 Moved Permanently" );
+        header( "Location: "._url('blog', array($id, $blog->slug)));
+        exit;
+    }
  }
 */
 

@@ -10,19 +10,19 @@
 <?php echo _tc('about'); ?>
 <h3><?php echo _t('Prerequisites'); ?></h3>
 <ul>
-	<li>Web Server (For example, Apache with mod_rewrite enabled)</li>
-	<li>PHP version 5.2.0 or newer (mcrypt extension enabled, but by no means required.)</li>
-	<li>MySQL 5.0+ with MySQLi enabled.</li>
+    <li>Web Server (For example, Apache with mod_rewrite enabled)</li>
+    <li>PHP version 5.2.0 or newer (mcrypt extension enabled, but by no means required.)</li>
+    <li>MySQL 5.0+ with MySQLi enabled.</li>
 </ul>
 <p>
-	<a href="http://phplucidframe.sithukyaw.com" class="button large green">Download LucidFrame</a>
+    <a href="http://phplucidframe.sithukyaw.com" class="button large green">Download LucidFrame</a>
 </p>
 <p>
-	<a href="<?php echo _url('example/blog'); ?>" class="button">AJAX List Example</a>
-	<a href="<?php echo _url('example/articles'); ?>" class="button">Ordinary List Example</a>
-	<a href="<?php echo _url('blog/2/url-rewrite-to-a-lucid-page-including-a-form-example'); ?>" class="button green">AJAX Form Example</a>
-	<a href="<?php echo _url('example/comment'); ?>" class="button green">Generic Form Example</a>
-	<a href="<?php echo _url('example/asyn-file-uploader'); ?>" class="button black">AsynFileUploader Example</a>
+    <a href="<?php echo _url('example/blog'); ?>" class="button">AJAX List Example</a>
+    <a href="<?php echo _url('example/articles'); ?>" class="button">Ordinary List Example</a>
+    <a href="<?php echo _url('blog/2/url-rewrite-to-a-lucid-page-including-a-form-example'); ?>" class="button green">AJAX Form Example</a>
+    <a href="<?php echo _url('example/comment'); ?>" class="button green">Generic Form Example</a>
+    <a href="<?php echo _url('example/asyn-file-uploader'); ?>" class="button black">AsynFileUploader Example</a>
 </p>
 
 <?php include( _i('inc/tpl/footer.php') ); ?>

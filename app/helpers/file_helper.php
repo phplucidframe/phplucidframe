@@ -29,16 +29,17 @@
  *
  * @return integer
  */
-function example_photoUpload($file, $post) {
-	if (isset($post['photo-postId']) && $post['photo-postId']) {
-		# Save new file names in db
-		db_insert('post_image', array(
-			'postId' => $post['photo-postId'],
-			'pimgFileName' => $file['fileName']
-		), $useSlug=false);
-		return db_insertId();
-	}
-	return 0;
+function example_photoUpload($file, $post)
+{
+    if (isset($post['photo-postId']) && $post['photo-postId']) {
+        # Save new file names in db
+        db_insert('post_image', array(
+            'postId' => $post['photo-postId'],
+            'pimgFileName' => $file['fileName']
+        ), $useSlug = false);
+        return db_insertId();
+    }
+    return 0;
 }
 
 /**
@@ -49,10 +50,11 @@ function example_photoUpload($file, $post) {
  * @param array $id The ID to delete
  * @return boolean TRUE on success; otherwise FALSE
  */
-function example_photoDelete($id) {
-	if ($id) {
-		return db_delete('post_image', array('pimgId' => $id));
-	}
+function example_photoDelete($id)
+{
+    if ($id) {
+        return db_delete('post_image', array('pimgId' => $id));
+    }
 }
 
 /**
@@ -80,12 +82,13 @@ function example_photoDelete($id) {
  *
  * @return integer
  */
-function example_docUpload($file, $post) {
-	# Save new file names in db
-	db_insert('document', array(
-		'docFileName' => $file['fileName']
-	), $useSlug=false);
-	return db_insertId();
+function example_docUpload($file, $post)
+{
+    # Save new file names in db
+    db_insert('document', array(
+        'docFileName' => $file['fileName']
+    ), $useSlug = false);
+    return db_insertId();
 }
 
 /**
@@ -96,9 +99,9 @@ function example_docUpload($file, $post) {
  * @param array $ids The IDs to delete
  * @return boolean TRUE on success; otherwise FALSE
  */
-function example_docDelete($id) {
-	if ($id) {
-		return db_delete('document', array('docId' => $id));
-	}
+function example_docDelete($id)
+{
+    if ($id) {
+        return db_delete('document', array('docId' => $id));
+    }
 }
-

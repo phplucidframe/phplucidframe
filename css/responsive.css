@@ -1,47 +1,47 @@
 @charset "utf-8";
 
 @media screen and ( min-width : 980px ) {
-	/* Desktop */
+    /* Desktop */
 }
 
 @media screen and ( max-width : 979px ) {
-	/* Tablet */
-	.container {
-		width: auto;
-	}
+    /* Tablet */
+    .container {
+        width: auto;
+    }
 
-	#header {
-		height: auto;
-		min-height: 81px;
-	}
+    #header {
+        height: auto;
+        min-height: 81px;
+    }
 }
 
 @media screen and ( max-width : 500px ) {
-	/* Mobile */
-	body {
-		font-size: 11px;
-	}
+    /* Mobile */
+    body {
+        font-size: 11px;
+    }
 
-	textarea {
-		display: block;
-	}
+    textarea {
+        display: block;
+    }
 
-	table.form td {
-		display: block;
-	}
+    table.form td {
+        display: block;
+    }
 
-	table.form td.labelSeperator, table.form td.labelSeparator {
-		display: none;
-		border: none;
-	}
+    table.form td.labelSeperator, table.form td.labelSeparator {
+        display: none;
+        border: none;
+    }
 
-	table.form td.entry {
-		padding-left: 0;
-		padding-top: 2px;
-		min-height: 22px;
-	}
+    table.form td.entry {
+        padding-left: 0;
+        padding-top: 2px;
+        min-height: 22px;
+    }
 
-	#overlay #processing, #page-loading #processing {
-		left: 10%;
-	}
+    #overlay #processing, #page-loading #processing {
+        left: 10%;
+    }
 }
