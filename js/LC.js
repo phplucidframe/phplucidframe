@@ -563,8 +563,8 @@
              * @param string data.name    The file input element name
              * @param string data.success TRUE if file deletion succeeded; otherwise FALSE
              * @param string data.error   The error message if file deletion failed
-             * @param string data.ids     Array of IDs deleted from DB
-             * @param string data.files   Array of file names deleted from hard drive
+             * @param mixed  data.id      The ID deleted from DB
+             * @param string data.value   The file name deleted from hard drive
              */
             afterDelete: function(name, data) {
                 if (typeof(LC.AsynFileUploader.hooks[name]) === 'object' && typeof(LC.AsynFileUploader.hooks[name].afterDelete) === 'function') {
@@ -722,11 +722,12 @@
          * @param object file           The uploaded file information
          * @param string file.name      The file input name
          * @param string file.id        The HTML id for the file browsing button
+         * @param string file.value     The uploaded file name
+         * @param mixed  file.savedId   The ID in the database related to the uploaded file (if any)
          * @param string file.fileName  The original file name to be displayed
-         * @param string file.extension The uploaded file extension
          * @param string file.url       The actual file URL
+         * @param string file.extension The uploaded file extension
          * @param string file.caption   The caption if the uploaded file is image
-         * @param array  file.uploads   The uploaded file or files by dimensions
          */
         onUpload: function(file) {
             LC.AsynFileUploader.preview(file);
