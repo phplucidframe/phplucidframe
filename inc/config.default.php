@@ -116,9 +116,9 @@ $lc_defaultDbSource = 'default';
 # $lc_sites: consider sub-directories as additional site roots and namespaces
 /**
  * ### Syntax
- * 	array(
- * 		'virtual_folder_name (namespace)'  => 'path/to/physical_folder_name_directly_under_app_directory'
- * 	)
+ *    array(
+ *      'virtual_folder_name (namespace)'  => 'path/to/physical_folder_name_directly_under_app_directory'
+ *    )
  * For example, if you have the configuration `'admin' => 'admin'` here, you let LucidFrame know to include the files
  * from those directories below without specifying the directory name explicilty in every include:
  *   /app/admin/css
@@ -189,10 +189,10 @@ $lc_imageFilterSet = array(
 $lc_auth = array(
     'table' => '', // table name, for example, user
     'fields' => array(
-        'id'	=> '', 	// PK field name, for example, user_id
-        'role'  => ''	// User role field name, for example, user_role
+        'id'    => '',  // PK field name, for example, user_id
+        'role'  => ''   // User role field name, for example, user_role
     ),
-    'perms'	=> array()
+    'perms'  => array()
     /* for example
             array(
                 'editor' => array(), // for example, 'role-name' => array('content-add', 'content-edit', 'content-delete')
