@@ -30,4 +30,4 @@ Disallow: /js
 Disallow: /tests
 Disallow: /vendor
 # Files
-Disallow: /LICENSE.txt
+Disallow: /LICENSE
