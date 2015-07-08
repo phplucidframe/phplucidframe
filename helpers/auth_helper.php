@@ -20,7 +20,7 @@ if (!function_exists('auth_create')) {
      * This function is overwritable from the custom helpers/auth_helper.php
      *
      * @param  string $id PK value
-     * @param  object $data	The user data object (optional). If it is not given, auth_create will load it from db
+     * @param  object $data    The user data object (optional). If it is not given, auth_create will load it from db
      *
      * @return object The authenticated user object or FALSE on failure
      */
@@ -45,6 +45,7 @@ if (!function_exists('auth_create')) {
                 $session->sessId      = session_id();
                 $session->timestamp   = md5(time());
                 $session->permissions = auth_permissions($session->$fieldRole);
+                $session->blocks = auth_blocks($session->$fieldRole);
                 auth_set($session);
                 return $session;
             }
@@ -161,9 +162,24 @@ if (!function_exists('auth_permissions')) {
     }
 }
 
+if (!function_exists('auth_blocks')) {
+    /**
+     * Get the blocked permissions of a particular role
+     * This function is overwritable from the custom helpers/auth_helper.php
+     * @param  string $role The user role name or key
+     * @return Array of permissions of the role
+     */
+    function auth_blocks($role)
+    {
+        global $lc_auth;
+        $perms = isset($lc_auth['block']) ? $lc_auth['block'] : array();
+        return (isset($perms[$role])) ? $perms[$role] : array();
+    }
+}
+
 if (!function_exists('auth_access')) {
     /**
-     * Check if the authenticate uses has a particular permission
+     * Check if the authenticate user has a particular permission
      * This function is overwritable from the custom helpers/auth_helper.php
      * @param  string $perm The permission key
      * @return boolean
@@ -175,6 +191,26 @@ if (!function_exists('auth_access')) {
         }
         $sess = auth_get();
         if (in_array($perm, $sess->permissions)) {
+            return true;
+        }
+        return false;
+    }
+}
+
+if (!function_exists('auth_block')) {
+    /**
+     * Check if the authenticate user is blocked for a particular permission
+     * This function is overwritable from the custom helpers/auth_helper.php
+     * @param  string $perm The permission key
+     * @return boolean
+     */
+    function auth_block($perm)
+    {
+        if (auth_isAnonymous()) {
+            return true;
+        }
+        $sess = auth_get();
+        if (in_array($perm, $sess->blocks)) {
             return true;
         }
         return false;

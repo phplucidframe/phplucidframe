@@ -192,11 +192,23 @@ $lc_auth = array(
         'id'    => '',  // PK field name, for example, user_id
         'role'  => ''   // User role field name, for example, user_role
     ),
-    'perms'  => array()
-    /* for example
-            array(
-                'editor' => array(), // for example, 'role-name' => array('content-add', 'content-edit', 'content-delete')
-                'admin' => array(),
-            )
+    'perms'  => array(
+        // allowed permissions
+    ),
+    'block'  => array(
+        // blocked permissions
+    )
+    /* // for example
+        'perms' => array( // editor is not allowed for post deletion
+            'editor' => array('post-list', post-add', 'post-edit'),
+            'admin' => array('post-list', post-add', 'post-edit', 'post-delete')
+        ),
+        'block' => array( // editor is denied for post deletion
+            'editor' => array('post-delete'),
+            'admin' => array() // no action is blocked for admin
+        )
+        // you don't have to use both - "perms" and "block",
+        // according to the above configuration, both are same concept
+        // just pick up the one that suits to your need
     */
 );
