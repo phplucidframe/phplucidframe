@@ -11,57 +11,50 @@
  * @param  array $file The array of the uploaded file information:
  *
  *     array(
- *       'name'     => 'Name of the input element',
- *       'fileName' => 'The original file name',
- *       'extension'=> 'The selected and uploaded file extension',
- *       'dir'      => 'The uploaded directory',
- *       'uploads'  => array(
- *         'dimension (WxH) or index' => 'The uploaded file name like return from basename()'
- *       )
+ *       'name'             => 'Name of the input element',
+ *       'fileName'         => 'The uploaded file name',
+ *       'originalFileName' => 'The original file name user selected',
+ *       'extension'        => 'The selected and uploaded file extension',
+ *       'dir'              => 'The uploaded directory',
  *     )
  *
  * @param  array $post The POSTed information
  *
  *     array(
- *       '{name}'            => Array of the file names uploaded and saved in drive
+ *       '{name}'            => File name uploaded previously
+ *       '{name}-id'         => The database value ID (if a file have previously been uploaded)
  *       '{name}-dimensions' => Optional array of the file dimensions in WxH (it will not be available if it is not an image file),
- *       '{name}-id'         => Optional array of the database value IDs (if a file have previously been uploaded)
+ *       '{name}-{fieldName} => Optional hidden values
  *     )
  *
- * @return array The array of inserted IDs
+ * @return integer
  */
-function example_photoUpload($file, $post) {
-	$ids = array();
-	$sql = 'SELECT postId FROM '.db_prefix().'post_image WHERE pimgId = :id';
-	if ( isset($post['photo-id']) && $postId = db_fetch($sql, array(':id' => $post['photo-id'][0])) ) {
-		if ( db_delete_multi('post_image', array('pimgId' => $post['photo-id'])) ) {
-			foreach ($file['uploads'] as $dimension => $file) {
-				$width = current(explode('x', $dimension));
-				# Save new file names in db
-				db_insert('post_image', array(
-					'postId' => $postId,
-					'pimgFileName' => $file,
-					'pimgWidth' => $width
-				), $useSlug=false);
-				$ids[] = db_insertId();
-			}
-		}
-	}
-	return $ids;
+function example_photoUpload($file, $post)
+{
+    if (isset($post['photo-postId']) && $post['photo-postId']) {
+        # Save new file names in db
+        db_insert('post_image', array(
+            'postId' => $post['photo-postId'],
+            'pimgFileName' => $file['fileName']
+        ), $useSlug = false);
+        return db_insertId();
+    }
+    return 0;
 }
 
 /**
  * This is just for example
  * The `onDelete` hook for an AsynFileUploader to do database operation
- * regarding to the deleted files
+ * regarding to the deleted file
  *
- * @param array $ids The IDs to delete
+ * @param array $id The ID to delete
  * @return boolean TRUE on success; otherwise FALSE
  */
-function example_photoDelete($ids) {
-	if ($ids) {
-		return db_delete_multi('post_image', array('pimgId' => $ids));
-	}
+function example_photoDelete($id)
+{
+    if ($id) {
+        return db_delete('post_image', array('pimgId' => $id));
+    }
 }
 
 /**
@@ -72,37 +65,30 @@ function example_photoDelete($ids) {
  * @param  array $file The array of the uploaded file information:
  *
  *     array(
- *       'name'     => 'Name of the input element',
- *       'fileName' => 'The original file name',
- *       'extension'=> 'The selected and uploaded file extension',
- *       'dir'      => 'The uploaded directory',
- *       'uploads'  => array(
- *         0 => 'The uploaded file name like return from basename()'
- *       )
+ *       'name'             => 'Name of the input element',
+ *       'fileName'         => 'The uploaded file name',
+ *       'originalFileName' => 'The original file name user selected',
+ *       'extension'        => 'The selected and uploaded file extension',
+ *       'dir'              => 'The uploaded directory',
  *     )
  *
  * @param  array $post The POSTed information
  *
  *     array(
  *       '{name}'            => Array of the file names uploaded and saved in drive
- *       '{name}-id'         => Optional array of the database value IDs (if a file have previously been uploaded)
+ *       '{name}-id'         => The database value ID (if a file have previously been uploaded)
+ *       '{name}-{fieldName} => Optional hidden values
  *     )
  *
- * @return array The array of inserted IDs
+ * @return integer
  */
-function example_docUpload($file, $post) {
-	$ids = array();
-	$docId = isset($post['doc-id']) ? $post['doc-id'] : 0;
-	if ( $docId && db_delete_multi('document', array('docId' => $docId)) ) {
-		foreach ($file['uploads'] as $file) {
-			# Save new file names in db
-			db_insert('document', array(
-				'docFileName' => $file,
-			), $useSlug=false);
-			$ids[] = db_insertId();
-		}
-	}
-	return $ids;
+function example_docUpload($file, $post)
+{
+    # Save new file names in db
+    db_insert('document', array(
+        'docFileName' => $file['fileName']
+    ), $useSlug = false);
+    return db_insertId();
 }
 
 /**
@@ -113,9 +99,9 @@ function example_docUpload($file, $post) {
  * @param array $ids The IDs to delete
  * @return boolean TRUE on success; otherwise FALSE
  */
-function example_docDelete($ids) {
-	if ($ids) {
-		return db_delete_multi('document', array('docId' => $ids));
-	}
+function example_docDelete($id)
+{
+    if ($id) {
+        return db_delete('document', array('docId' => $id));
+    }
 }
-

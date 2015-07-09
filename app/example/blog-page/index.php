@@ -14,10 +14,10 @@ $pageTitle = $blog->title;
 <!DOCTYPE html>
 <html>
 <head>
-	<title><?php echo _title($pageTitle); ?></title>
-	<?php include( _i('inc/tpl/head.php') ); ?>
+    <title><?php echo _title($pageTitle); ?></title>
+    <?php include( _i('inc/tpl/head.php') ); ?>
 </head>
 <body>
-	<?php include('view.php'); ?>
+    <?php include('view.php'); ?>
 </body>
 </html>

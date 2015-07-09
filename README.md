@@ -36,16 +36,6 @@ Although it is stated as mini framework, it supports a wide range of web applica
 
 **Note:** If you have your own project folder name other than **LucidFrame**, you should change `$lc_baseURL` in `/inc/config.php` in accordance with your project name.
 
-## Using Composer
-
-You can also install LucidFrame using [Composer](http://getcomposer.org/).
-
-    composer require lucidframe/phplucidframe:~1.5.0
-
-OR
-
-    php composer.phar require lucidframe/phplucidframe:~1.5.0
-
 ## Furthermore on Installation
 
 **URL Rewrite** : Make sure you have `mod_rewrite` activated on your server / in your environment.

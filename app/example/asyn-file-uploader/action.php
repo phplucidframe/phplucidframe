@@ -7,85 +7,85 @@
 $success = false;
 
 if (sizeof($_POST)) {
-	$post = _post($_POST);
+    $post = _post($_POST);
 
-	$validations = array(
-		'photo' => array(
-			'caption'  => _t('Image'),
-			'value'    => $post['photo'],
-			'rules'    => array('mandatory'),
-		),
-		'doc' => array(
-			'caption'  => _t('Doc'),
-			'value'    => $post['doc'],
-			'rules'    => array('mandatory'),
-		),
-		'file' => array(
-			'caption'  => _t('File'),
-			'value'    => $post['file'],
-			//'rules'    => array('mandatory'),
-		),
-		'sheet' => array(
-			'caption'  => _t('Sheet'),
-			'value'    => $post['sheet'],
-			//'rules'    => array('mandatory'),
-		),
-	);
+    $validations = array(
+        'photo' => array(
+            'caption'  => _t('Image'),
+            'value'    => $post['photo'],
+            'rules'    => array('mandatory'),
+        ),
+        'doc' => array(
+            'caption'  => _t('Doc'),
+            'value'    => $post['doc'],
+            'rules'    => array('mandatory'),
+        ),
+        'file' => array(
+            'caption'  => _t('File'),
+            'value'    => $post['file'],
+            //'rules'    => array('mandatory'),
+        ),
+        'sheet' => array(
+            'caption'  => _t('Sheet'),
+            'value'    => $post['sheet'],
+            //'rules'    => array('mandatory'),
+        ),
+    );
 
-	if (Form::validate() && Validation::check($validations) == true) {
-		/**
-		For "photo",
-			$post['photo']             = Array of the file names saved in disk
-			$post['photo-dimensions']  = (Optional) Array of dimensions used to resize the images uploaded
-			$post['photo-dir']         = The directory where the file(s) are saved, encoded by base64_encode()
-			$post['photo-fileName']    = The original file name that user chose
-			$post['photo-uniqueId']    = The generated unique Id
+    if (Form::validate($validations)) {
+        /**
+        For "photo",
+            $post['photo']             = The uploaded file name saved in disk
+            $post['photo-id']          = The ID in database related to the previously uploaded file
+            $post['photo-dimensions']  = (Optional) Array of dimensions used to resize the images uploaded
+            $post['photo-dir']         = The directory where the file(s) are saved, encoded by base64_encode()
+            $post['photo-fileName']    = The same value of $post['photo']
 
-		For "doc",
-			$post['doc']               = Array of the file names saved in disk
-			$post['doc-dir']           = The directory where the file(s) are saved, encoded by base64_encode()
-			$post['doc-fileName']      = The original file name that user chose
-			$post['doc-uniqueId']      = The generated unique Id
+        For "doc",
+            $post['doc']               = The uploaded file name saved in disk
+            $post['doc-id']            = The ID in database related to the previously uploaded file
+            $post['doc-dir']           = The directory where the file(s) are saved, encoded by base64_encode()
+            $post['doc-fileName']      = The same value of $post['doc']
 
-		For "file",
-			$post['file']              = Array of the file names saved in disk
-			$post['file-dir']          = The directory where the file(s) are saved, encoded by base64_encode()
-			$post['file-fileName']     = The original file name that user chose
-			$post['file-uniqueId']     = The generated unique Id
+        For "file",
+            $post['file']              = The uploaded file name saved in disk
+            $post['file-id']           = The ID in database related to the previously uploaded file
+            $post['file-dir']          = The directory where the file(s) are saved, encoded by base64_encode()
+            $post['file-fileName']     = The same value of $post['file']
 
-		For "sheet",
-			$post['sheet']             = Array of the file names saved in disk
-			$post['sheet-dir']         = The directory where the file(s) are saved, encoded by base64_encode()
-			$post['sheet-fileName']    = The original file name that user chose
-			$post['sheet-uniqueId']    = The generated unique Id
-		*/
+        For "sheet",
+            $post['sheet']             = The uploaded file name saved in disk
+            $post['sheet-id']          = The ID in database related to the previously uploaded file
+            $post['sheet-dir']         = The directory where the file(s) are saved, encoded by base64_encode()
+            $post['sheet-fileName']    = The same value of $post['sheet']
+        */
 
-		### The following commented section works with the sample database ###
+        ### The following commented section works with the sample database ###
 
-//		db_delete_multi('post_image', array('postId' => 1)); # postId == 1 is for example
-//
-//		for ($i=0; $i<count($post['photo']); $i++) {
-//			$img = $post['photo'][$i];
-//
-//			### Here, you may want to move the uploaded image to the other directory ###
-//			// $dir = base64_decode($post['photo-dir']);
-//			// rename($dir.$img, FILE.'path/to/new/dir/'.$img);
-//
-//			# Save file names in db
-//			db_insert('post_image', array(
-//				'postId' => 1,
-//				'pimgFileName' => $img,
-//				'pimgWidth' => current(explode('x', $post['photo-dimensions'][$i])),
-//			), $useSlug=false);
-//		}
+        /*
+        if (isset($post['photo-postId']) && $post['photo-postId']) {
+            # Save file name in db
+            # This is only needed when `onUpload` callback is not provided in view.php
+            db_insert('post_image', array(
+                'pimgFileName' => $post['photo'],
+                'postId' => $post['photo-postId']
+            ), $useSlug=false);
+        }
 
-		$success = true;
-		if ($success) {
-			Form::set('success', true);
-			Form::set('callback', 'postOutput('.json_encode($post).')');
-		}
-	} else {
-		Form::set('error', Validation::$errors);
-	}
+        # Save file name in db
+        # This is only needed when `onUpload` callback is not provided in view.php
+        db_insert('document', array(
+            'docFileName' => $post['doc'],
+        ), $useSlug=false);
+        */
+
+        $success = true;
+        if ($success) {
+            Form::set('success', true);
+            Form::set('callback', 'postOutput('.json_encode($post).')');
+        }
+    } else {
+        Form::set('error', Validation::$errors);
+    }
 }
 Form::respond('frmAsynFileUpload'); # Ajax response

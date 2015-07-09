@@ -29,6 +29,5 @@ Disallow: /inc
 Disallow: /js
 Disallow: /tests
 Disallow: /vendor
-Disallow: /xhr
 # Files
-Disallow: /LICENSE.txt
+Disallow: /LICENSE
