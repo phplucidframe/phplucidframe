@@ -62,7 +62,9 @@ define('BUSINESS', ROOT.'business'._DS_);
 define('FILE', ROOT.'files'._DS_);
 # path to images/ folder
 define('IMAGE', ROOT.'images'._DS_);
-# path to files/cache filder
+# path to files/tests folder
+define('TEST', ROOT.'tests'._DS_);
+# path to files/cache folder
 define('CACHE', FILE.'cache'._DS_);
 
 # System prerequisites
