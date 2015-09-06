@@ -1,13 +1,12 @@
 <?php
 $get = _get($_GET);
 
-$condition = ' WHERE u.deleted IS NULL';
 $args = array();
 
 # Count query for the pager
-$rowCount = 0;
-$sql = 'SELECT COUNT(*) AS count FROM '.db_prefix().'user u' . $condition;
-$rowCount = db_count($sql, $args);
+$rowCount = db_count('category')
+    ->where()->condition('deleted', null)
+    ->fetch();
 
 # Prerequisite for the Pager
 $pager = new Pager();
@@ -18,15 +17,14 @@ $pager->set('imagePath', WEB_ROOT.'images/pager/');
 $pager->set('ajax', true);
 $pager->calculate();
 
-$sql = "SELECT u.* FROM ".db_prefix()."user as u
-        {$condition}
-        ORDER BY role, fullName
-        LIMIT ".$pager->get('offset').", ".$pager->get('itemsPerPage');
-$result = db_query($sql, $args);
+$qb = db_select('user', 'u')
+    ->where()->condition('deleted', null)
+    ->orderBy('role')
+    ->orderBy('fullName')
+    ->limit($pager->get('offset'), $pager->get('itemsPerPage'));
 
-if ($result) {
-    if (db_numRows($result)) {
-    ?>
+if ($qb->getNumRows()) {
+?>
     <table cellpadding="0" cellspacing="0" border="0" class="list users">
         <tr class="label">
             <td class="tableLeft" colspan="2"><?php echo _t('Actions'); ?></td>
@@ -36,7 +34,7 @@ if ($result) {
             <td><?php echo _t('User Role') ?></td>
         </tr>
         <?php
-        while ($row = db_fetchObject($result)) {
+        while ($row = $qb->fetchRow()) {
             // Edit & delete flag
             $edit = true;
             $delete = true;
@@ -83,9 +81,9 @@ if ($result) {
     ?>
     </table>
     <div class="pager-container"><?php echo $pager->display(); ?></div>
-    <?php
-    } else {
-    ?>	<div class="no-record"><?php echo _t("You don't have any user! %sLet's go create a new user!%s", '<a href="'._url('admin/user/setup').'">', '</a>'); ?></div>
-    <?php
-    }
+<?php
+} else {
+?>
+    <div class="no-record"><?php echo _t("You don't have any user! %sLet's go create a new user!%s", '<a href="'._url('admin/user/setup').'">', '</a>'); ?></div>
+<?php
 }

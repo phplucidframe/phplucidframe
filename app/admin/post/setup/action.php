@@ -1,7 +1,7 @@
 <?php
 $success = false;
 if (sizeof($_POST)) {
-    $post 	= _post($_POST);
+    $post = _post($_POST);
     $post['txtBody'] = _xss($_POST['txtBody']);	# if it is populated by Rich Text Editor
     extract($post);
 
@@ -23,7 +23,7 @@ if (sizeof($_POST)) {
         'rules'     => array('mandatory')
     );
 
-    if (Form::validate() && Validation::check($validations) == true) {
+    if (Form::validate($validations)) {
         if ($hidEditId) {
             # edit
             $data = array(

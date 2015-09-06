@@ -20,7 +20,7 @@ if (sizeof($_POST)) {
             )
         );
 
-        if (Form::validate() && Validation::check($validations) == true) {
+        if (Form::validate($validations)) {
             if ($hidEditId) {
                 $data = array(
                     'catId'	  => $hidEditId,

@@ -2,10 +2,9 @@
 $get = _get($_GET);
 
 # Count query for the pager
-$rowCount = 0;
-$sql = 'SELECT COUNT(*) AS count FROM '.db_prefix().'category
-        WHERE deleted IS NULL';
-$rowCount = db_count($sql);
+$rowCount = db_count('category')
+    ->where()->condition('deleted', null)
+    ->fetch();
 
 # Prerequisite for the Pager
 $pager = new Pager();
@@ -17,16 +16,15 @@ $pager->set('ajax', true);
 $pager->calculate();
 
 # List query
-$sql = 'SELECT c.* FROM '.db_prefix().'category AS c
-        WHERE deleted IS NULL
-        ORDER BY catName
-        LIMIT '.$pager->get('offset').', '.$pager->get('itemsPerPage');
+$qb = db_select('category', 'c')
+    ->where()->condition('deleted', null)
+    ->orderBy('catName')
+    ->limit($pager->get('offset'), $pager->get('itemsPerPage'));
 
-if ($result = db_query($sql)) {
-    if (db_numRows($result)) {
-        $langs = _langs(_defaultLang());
-        ?>
-        <table cellpadding="0" cellspacing="0" border="0" class="list">
+if ($qb->getNumRows()) {
+    $langs = _langs(_defaultLang());
+    ?>
+    <table cellpadding="0" cellspacing="0" border="0" class="list">
         <tr class="label">
             <td class="tableLeft" colspan="2"><?php echo _t('Actions'); ?></td>
             <td>
@@ -45,7 +43,7 @@ if ($result = db_query($sql)) {
             <?php } ?>
         </tr>
         <?php
-        while ($row = db_fetchObject($result)) {
+        while ($row = $qb->fetchRow()) {
             $data = array(
                 'catId'     => $row->catId,
                 'catName'   => $row->catName,
@@ -83,12 +81,12 @@ if ($result = db_query($sql)) {
             </tr>
         <?php
         }
-    ?>
+        ?>
     </table>
-        <div class="pager-container"><?php echo $pager->display(); ?></div>
-    <?php
-    } else {
-    ?>	<div class="no-record"><?php echo _t('There is no item found. Click "Add New Category" to add a new category.'); ?></div>
-    <?php
-    }
+    <div class="pager-container"><?php echo $pager->display(); ?></div>
+<?php
+} else {
+?>
+    <div class="no-record"><?php echo _t('There is no item found. Click "Add New Category" to add a new category.'); ?></div>
+<?php
 }
