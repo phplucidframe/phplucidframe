@@ -18,6 +18,10 @@
  * with this source code in the file LICENSE.txt
  */
 
+if (!isset($_SERVER['REQUEST_URI'])) {
+    $_SERVER['REQUEST_URI'] = __FILE__;
+}
+
 if (!defined('APP_DIR')) {
     define('APP_DIR', 'app');
 }
