@@ -83,7 +83,8 @@ if (isset($lc_databases[$lc_defaultDbSource]) && is_array($lc_databases[$lc_defa
     if ($file = _i('helpers/db_helper.php', false)) {
         include_once $file;
     }
-    require_once HELPER . 'db_helper.'.$lc_databases[$lc_defaultDbSource]['engine'].'.php';
+    require_once HELPER . 'db_helper.' . $lc_databases[$lc_defaultDbSource]['engine'] . '.php';
+    require_once HELPER . 'classes' . _DS_ . 'QueryBuilder.php';
 
     if (db_host($lc_defaultDbSource) && db_user($lc_defaultDbSource) && db_name($lc_defaultDbSource)) {
         # Start DB connection
