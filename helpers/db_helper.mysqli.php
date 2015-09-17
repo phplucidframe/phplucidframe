@@ -31,7 +31,7 @@ define('LC_FETCH_OBJECT', 3);
 function db_config($namespace = 'default')
 {
     if (!isset($GLOBALS['lc_databases'][$namespace])) {
-        die('Database configuration error!');
+        die('Database configuration error for '.$namespace.'!');
     }
     return $GLOBALS['lc_databases'][$namespace];
 }
@@ -338,24 +338,119 @@ function db_insertSlug()
     return session_get('lastInsertSlug');
 }
 /**
+ * Initialize a query builder to perform a SELECT query on the database
+ *
+ * @param string $table The table name
+ * @param string $alias The optional table alias
+ *
+ * @return object QueryBuilder
+ */
+function db_select($table, $alias = null)
+{
+    return new QueryBuilder($table, $alias);
+}
+/**
  * Perform a count query on the database and return the count
  *
- * @param string $sql The SQL query string
- * @param array $args The array of placeholders and their values
+ * @param string        $arg1 The SQL query string or table name
+ * @param string|array  $arg2 The field name to count on
+ *   or the array of placeholders and their values if the first argument is SQL
  *
  *      array(
  *          ':placeholder1' => $value1,
  *          ':placeholder2' => $value2
  *      )
  *
- * @return int The result count
+ * @param string|null   $arg3 The field alias if the first argument is table name
+ *   or the second argument is field name
+ *
+ * @return int|object The result count or QueryBuilder
  */
-function db_count($sql, $args = array())
+function db_count($arg1, $arg2 = null, $arg3 = null)
 {
-    if ($result = db_fetch($sql, $args)) {
-        return $result;
+    if ($arg1 && QueryBuilder::validateName($arg1)) {
+        $table = $arg1;
+        $alias = 'count';
+
+        $qb = new QueryBuilder($table);
+
+        if ($arg3 && QueryBuilder::validateName($arg3)) {
+            $alias = $arg3;
+        }
+
+        if ($arg2 && QueryBuilder::validateName($arg2)) {
+            $field = $arg2;
+            $qb->count($field, $alias);
+        } else {
+            $qb->count('*', 'count');
+        }
+
+        return $qb;
+    } else {
+        $sql = $arg1;
+        $args = $arg2;
+        if ($result = db_fetch($sql, $args)) {
+            return $result;
+        }
     }
+
     return 0;
+}
+/**
+ * Initialize a query builder to perform a MAX query on the database
+ *
+ * @param string $table The table name
+ * @param string $field The field name to find max
+ * @param string $alias The optional field alias; defaults to "max"
+ *
+ * @return object QueryBuilder
+ */
+function db_max($table, $field, $alias = null)
+{
+    $qb = new QueryBuilder($table);
+    return $qb->max($field, $alias ? $alias : 'max');
+}
+/**
+ * Initialize a query builder to perform a MIN query on the database
+ *
+ * @param string $table The table name
+ * @param string $field The field name to find min
+ * @param string $alias The optional field alias; defaults to "min"
+ *
+ * @return object QueryBuilder
+ */
+function db_min($table, $field, $alias = null)
+{
+    $qb = new QueryBuilder($table);
+    return $qb->min($field, $alias ? $alias : 'min');
+}
+/**
+ * Initialize a query builder to perform a SUM query on the database
+ *
+ * @param string $table The table name
+ * @param string $field The field name to find sum
+ * @param string $alias The optional field alias; defaults to "sum"
+ *
+ * @return object QueryBuilder
+ */
+function db_sum($table, $field, $alias = null)
+{
+    $qb = new QueryBuilder($table);
+    return $qb->sum($field, $alias ? $alias : 'sum');
+}
+/**
+ * Initialize a query builder to perform an AVG query on the database
+ *
+ * @param string $table The table name
+ * @param string $field The field name to find average
+ * @param string $alias The optional field alias; defaults to "avg"
+ *
+ * @return object QueryBuilder
+ */
+function db_avg($table, $field, $alias = null)
+{
+    $qb = new QueryBuilder($table);
+    return $qb->avg($field, $alias ? $alias : 'avg');
 }
 /**
  * Perform a query on the database and return the first field value only.
@@ -622,9 +717,9 @@ if (!function_exists('db_update')) {
             }
 
             if (is_null($value)) {
-                $fields[] = $field . ' = NULL';
+                $fields[] = QueryBuilder::quote($field) . ' = NULL';
             } else {
-                $fields[] = $field . ' = "' . db_escapeString($value) . '"';
+                $fields[] = QueryBuilder::quote($field) . ' = "' . db_escapeString($value) . '"';
             }
 
             if ($i === $slugIndex && $useSlug === true) {
@@ -654,13 +749,14 @@ if (!function_exists('db_update')) {
                 if ($useSlug) {
                     $slug = _slug($slug, $table, $notCond);
                     session_set('lastInsertSlug', $slug);
-                    $fields[] = 'slug = "'.$slug.'"';
+                    $fields[] = '`slug` = "'.$slug.'"';
                 }
-                $fields[] = 'updated = "' . date('Y-m-d H:i:s') . '"';
+                $fields[] = '`updated` = "' . date('Y-m-d H:i:s') . '"';
             }
             $fields = implode(', ', $fields);
 
-            $sql = 'UPDATE ' . $table . ' SET ' . $fields . ' WHERE ' . $cond;
+            $sql = 'UPDATE ' . QueryBuilder::quote($table) . '
+                    SET ' . $fields . ' WHERE ' . $cond;
             return db_query($sql);
         } else {
             return false;
@@ -710,7 +806,7 @@ if (!function_exists('db_delete')) {
             $condition = ' WHERE '.$condition;
         }
 
-        $sql = 'DELETE FROM ' . $table . $condition . ' LIMIT 1';
+        $sql = 'DELETE FROM ' . QueryBuilder::quote($table) . $condition . ' LIMIT 1';
         if (_g('db_printQuery')) {
             return $sql;
         }
@@ -721,7 +817,9 @@ if (!function_exists('db_delete')) {
         if ($return) {
             if (db_errorNo() == 1451) {
                 # If there is FK delete RESTRICT constraint
-                $sql = 'UPDATE '.$table.' SET deleted = "'.date('Y-m-d H:i:s').'" '.$condition.' LIMIT 1';
+                $sql = 'UPDATE '. QueryBuilder::quote($table) . '
+                        SET `deleted` = "'.date('Y-m-d H:i:s').'" '.$condition.'
+                        LIMIT 1';
                 return (db_query($sql)) ? true : false;
             } else {
                 echo $return;
@@ -772,7 +870,7 @@ if (!function_exists('db_delete_multi')) {
             $condition = ' WHERE '.$condition;
         }
 
-        $sql = 'DELETE FROM ' . $table . $condition;
+        $sql = 'DELETE FROM ' . QueryBuilder::quote($table) . $condition;
         if (_g('db_printQuery')) {
             return $sql;
         }
@@ -806,93 +904,7 @@ if (!function_exists('db_delete_multi')) {
  */
 function db_condition($cond = array(), $type = 'AND')
 {
-    if (!is_array($cond)) {
-        return $cond;
-    }
-    if (empty($cond)) {
-        return '';
-    }
-    $type      = strtoupper($type);
-    $condition = array();
-    $operators = array(
-        '=', '>=', '<=', '>', '<', '!=', '<>',
-        'between', 'nbetween',
-        'like', 'like%%', 'like%~', 'like~%',
-        'nlike', 'nlike%%', 'nlike%~', 'nlike~%'
-    );
-
-    $likes = array(
-        'like'    => 'LIKE "%:likeValue%"',
-        'like%%'  => 'LIKE "%:likeValue%"',
-        'like%~'  => 'LIKE "%:likeValue"',
-        'like~%'  => 'LIKE ":likeValue%"',
-        'nlike'   => 'NOT LIKE "%:likeValue%"',
-        'nlike%%' => 'NOT LIKE "%:likeValue%"',
-        'nlike%~' => 'NOT LIKE "%:likeValue"',
-        'nlike~%' => 'NOT LIKE ":likeValue%"',
-    );
-
-    foreach ($cond as $field => $value) {
-        $field    = trim($field);
-        $fieldOpr = explode(' ', $field);
-        $field    = trim($fieldOpr[0]);
-
-        $opr = (count($fieldOpr) === 2) ? trim($fieldOpr[1]) : '=';
-
-        # check if any operator is given in the field
-        if (!in_array($opr, $operators)) {
-            $opr = '=';
-        }
-
-        if (is_numeric($field)) {
-            # if the field is array index,
-            # assuming that is a condition built by db_or() or db_and();
-            $condition[] = '( ' . $value . ' )';
-        } else {
-            # if the operator is "between", the value must be array
-            # otherwise force to "="
-            if (in_array($opr, array('between', 'nbetween')) && !is_array($value)) {
-                $opr = '=';
-            }
-            $opr = strtolower($opr);
-
-            if (array_key_exists($opr, $likes)) {
-                $condition[] = $field . ' ' . str_replace(':likeValue', db_escapeString($value), $likes[$opr]);
-            } elseif (is_numeric($value)) {
-                $condition[] = $field . ' ' . $opr . ' ' . db_escapeString($value) . '';
-            } elseif (is_string($value)) {
-                $condition[] = $field . ' ' . $opr . ' "' . db_escapeString($value) . '"';
-            } elseif (is_null($value)) {
-                if (in_array($opr, array('!=', '<>'))) {
-                    $condition[] = $field . ' IS NOT NULL';
-                } else {
-                    $condition[] = $field . ' IS NULL';
-                }
-            } elseif (is_array($value) && count($value)) {
-                $list = array();
-                foreach ($value as $v) {
-                    $list[] = (is_numeric($v)) ? db_escapeString($v) : '"' . db_escapeString($v) . '"';
-                }
-                if ($opr === 'between') {
-                    $condition[] = '( ' . $field . ' BETWEEN ' . current($list) . ' AND ' . end($list) . ' )';
-                } elseif ($opr === 'nbetween') {
-                    $condition[] = '( ' . $field . ' NOT BETWEEN ' . current($list) . ' AND ' . end($list) . ' )';
-                } elseif ($opr === '!=') {
-                    $condition[] = $field . ' NOT IN (' . implode(', ', $list) . ')';
-                } else {
-                    $condition[] = $field . ' IN (' . implode(', ', $list) . ')';
-                }
-            } else {
-                $condition[] = $field . ' ' . $opr . ' ' . db_escapeString($value);
-            }
-        }
-    }
-    if (count($condition)) {
-        $condition = implode(" {$type} ", $condition);
-    } else {
-        $condition = '';
-    }
-    return $condition;
+    return QueryBuilder::buildCondition($cond, $type);
 }
 
 /**

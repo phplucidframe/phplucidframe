@@ -6,8 +6,7 @@ $user->email    = '';
 $user->role     = '';
 
 if ($id) {
-    $sql = 'SELECT * FROM '.db_prefix().'user WHERE uid = :uid LIMIT 1';
-    if ($result = db_query($sql, array(':uid' => $id))) {
-        $user = db_fetchObject($result);
-    }
+    $user = db_select('user')
+        ->where()->condition('uid', $id)
+        ->getSingleResult();
 }
