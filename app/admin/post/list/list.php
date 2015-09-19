@@ -29,7 +29,7 @@ $qb = db_select('post', 'p')
         array('catName_'.$lang, 'catName_i18n')
     ))
     ->fields('u', array('fullName'))
-    ->where()->condition('deleted', null)
+    ->where()->condition('p.deleted', null)
     ->orderBy('p.created', 'DESC')
     ->orderBy('u.fullName')
     ->limit($pager->get('offset'), $pager->get('itemsPerPage'));
