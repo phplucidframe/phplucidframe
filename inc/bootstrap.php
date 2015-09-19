@@ -18,6 +18,10 @@
  * with this source code in the file LICENSE.txt
  */
 
+if (!isset($_SERVER['REQUEST_URI'])) {
+    $_SERVER['REQUEST_URI'] = __FILE__;
+}
+
 if (!defined('APP_DIR')) {
     define('APP_DIR', 'app');
 }
@@ -58,7 +62,9 @@ define('BUSINESS', ROOT.'business'._DS_);
 define('FILE', ROOT.'files'._DS_);
 # path to images/ folder
 define('IMAGE', ROOT.'images'._DS_);
-# path to files/cache filder
+# path to files/tests folder
+define('TEST', ROOT.'tests'._DS_);
+# path to files/cache folder
 define('CACHE', FILE.'cache'._DS_);
 
 # System prerequisites
@@ -79,7 +85,8 @@ if (isset($lc_databases[$lc_defaultDbSource]) && is_array($lc_databases[$lc_defa
     if ($file = _i('helpers/db_helper.php', false)) {
         include_once $file;
     }
-    require_once HELPER . 'db_helper.'.$lc_databases[$lc_defaultDbSource]['engine'].'.php';
+    require_once HELPER . 'db_helper.' . $lc_databases[$lc_defaultDbSource]['engine'] . '.php';
+    require_once HELPER . 'classes' . _DS_ . 'QueryBuilder.php';
 
     if (db_host($lc_defaultDbSource) && db_user($lc_defaultDbSource) && db_name($lc_defaultDbSource)) {
         # Start DB connection

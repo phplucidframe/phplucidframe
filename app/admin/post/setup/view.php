@@ -22,14 +22,12 @@
                 <select name="cboCategory" class="<?php echo $lang; ?>">
                     <option value=""><?php echo _t('Select Category'); ?></option>
                     <?php
-                    if ($resultCat) {
-                        while ($row = db_fetchObject($resultCat)) {
-                            $row = _getTranslationStrings($row, 'catName', $lang);
-                            $selected = ($row->catId == $post->catId) ? 'selected="selected"' : '';
-                        ?>
-                            <option value="<?php echo $row->catId; ?>" <?php echo $selected; ?>><?php echo $row->catName_i18n; ?></option>
-                        <?php
-                        }
+                    foreach ($categories as $category) {
+                        $category = _getTranslationStrings($category, 'catName', $lang);
+                        $selected = ($category->catId == $post->catId) ? 'selected="selected"' : '';
+                    ?>
+                        <option value="<?php echo $category->catId; ?>" <?php echo $selected; ?>><?php echo $category->catName_i18n; ?></option>
+                    <?php
                     }
                     ?>
                 </select>

@@ -34,15 +34,16 @@ We follow [the successful Git branching model](http://nvie.com/posts/a-successfu
 
 # Coding Standards
 
-- Indent with `4-width` tabs, align with spaces.
-- Functions and control structures must use [BSD KNF style braces](http://en.wikipedia.org/wiki/Indent_style#BSD_KNF_style).
-- A class' opening `{` must be on the same line as the class name.
-- Class names MUST be declared in [StudlyCaps](http://en.wikipedia.org/wiki/CamelCase), e.g., `Class FooBar{ }`.
+- [PSR-2](http://www.php-fig.org/psr/psr-2/) is in favour.
+- Code MUST use 4 spaces for indenting, not tabs.
+- A class opening `{` must be on the next line.
+- A method or function opening `{` must be on the next line.
+- Class names MUST be declared in [StudlyCaps](http://en.wikipedia.org/wiki/CamelCase), e.g., `Class FooBar { }`.
 - Variable names
   - MUST be declared in [camelCase](http://en.wikipedia.org/wiki/CamelCase), e.g., `$fooBar`.
   - Some variable names could be prefixed like `$lc_fooBar` as for namespace.
 - Function names
-  - MUST be declared in [camelCase](http://en.wikipedia.org/wiki/CamelCase), e.g., `function fooBar(){ }`
-  - Utility helper function name MUST be declared preceding by an underscore, e.g., `function _fooBar(){ }`.
-  - Private/Internal function name MUST be declared preceding by a double underscore, e.g., `function __fooBar(){ }`.
-  - Some function names could be prefixed like `function foo_barHello(){ }` as for namespace.
+  - MUST be declared in [camelCase](http://en.wikipedia.org/wiki/CamelCase), e.g., `function fooBar() { }`
+  - Utility helper function name MUST be declared preceding by an underscore, e.g., `function _fooBar() { }`.
+  - Private/Internal function name MUST be declared preceding by a double underscore, e.g., `function __fooBar() { }`.
+  - Some function names could be prefixed like `function foo_barHello() { }` as for namespace.
