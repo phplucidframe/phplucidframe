@@ -123,6 +123,8 @@ _unloader('i18n_helper', HELPER);
 
 # Route helper (required)
 require HELPER . 'route_helper.php'; # WEB_ROOT and WEB_APP_ROOT is created in route_helper
+# Routing configuration
+include_once INC . 'route.config.php';
 
 # Load translations
 if ($moduleI18n) {
