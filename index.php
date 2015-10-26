@@ -13,5 +13,5 @@
  * with this source code in the file LICENSE.txt
  */
 
-require 'inc/bootstrap.php';
-_redirect( 'home', NULL, $lc_lang );
+require_once 'inc/bootstrap.php';
+_redirect('home', null, $lc_lang);

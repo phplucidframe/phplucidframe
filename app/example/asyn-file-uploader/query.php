@@ -3,8 +3,6 @@
  * The query.php (optional) should retrieve and process data from database and make it available to view.php.
  */
 
-$id = _arg(2);
-
 /**
  * The following commented section works with the sample database
  * You may uncomment it to test
@@ -12,13 +10,16 @@ $id = _arg(2);
  * ~/example/asyn-file-uploader/2
  */
 
+
 /*
 if ($id && is_numeric($id)) {
-    $sql = 'SELECT pimgId, pimgFileName FROM '.db_prefix().'post_image
-            WHERE postId = :id';
-    $image = db_fetchResult($sql, array('id' => $id));
+    $image = db_select('post_image', 'pi')
+        ->fields('pi', array('pimgId', 'pimgFileName'))
+        ->where('pi.postId', $id)
+        ->getSingleResult();
 }
 
-$sql = 'SELECT docId, docFileName FROM '.db_prefix().'document';
-$doc = db_fetchResult($sql);
+$doc = db_select('document', 'd')
+    ->fields('d', array('docId', 'docFileName'))
+    ->getSingleResult();
 */
