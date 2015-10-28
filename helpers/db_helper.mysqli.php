@@ -13,6 +13,9 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.txt
  */
+
+use LC\Core\QueryBuilder;
+
 define('LC_FETCH_ASSOC', 1);
 define('LC_FETCH_ARRAY', 2);
 define('LC_FETCH_OBJECT', 3);

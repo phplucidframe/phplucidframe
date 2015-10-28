@@ -15,6 +15,8 @@
  * with this source code in the file LICENSE.txt
  */
 
+namespace LC\Core;
+
 class Router
 {
     /** @var array The custom routes defined */

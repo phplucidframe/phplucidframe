@@ -82,11 +82,13 @@ require_once HELPER . 'utility_helper.php';
 
 # DB configuration & DB helper (required)
 if (isset($lc_databases[$lc_defaultDbSource]) && is_array($lc_databases[$lc_defaultDbSource]) && $lc_databases[$lc_defaultDbSource]['engine']) {
+    require_once HELPER . 'classes' . _DS_ . 'QueryBuilder.php';
+
     if ($file = _i('helpers/db_helper.php', false)) {
         include_once $file;
     }
+
     require_once HELPER . 'db_helper.' . $lc_databases[$lc_defaultDbSource]['engine'] . '.php';
-    require_once HELPER . 'classes' . _DS_ . 'QueryBuilder.php';
 
     if (db_host($lc_defaultDbSource) && db_user($lc_defaultDbSource) && db_name($lc_defaultDbSource)) {
         # Start DB connection
@@ -123,7 +125,8 @@ if ($moduleI18n = _readyloader('i18n_helper')) {
 _unloader('i18n_helper', HELPER);
 
 # Route helper (required)
-require HELPER . 'route_helper.php'; # WEB_ROOT and WEB_APP_ROOT is created in route_helper
+require_once HELPER . 'classes' . _DS_ . 'Router.php';
+require_once HELPER . 'route_helper.php'; # WEB_ROOT and WEB_APP_ROOT is created in route_helper
 # Routing configuration
 include_once INC . 'route.config.php';
 __route_init();
