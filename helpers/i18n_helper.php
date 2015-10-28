@@ -93,7 +93,7 @@ function _tc($fileName, $args = array())
  * @param string $filename Text .po file to load
  * @return mixed Array of translations on success or FALSE on failure
  */
-function i18n_load()
+function __i18n_load()
 {
     global $lc_lang;
     global $lc_translation;

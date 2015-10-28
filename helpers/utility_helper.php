@@ -239,7 +239,6 @@ function _script()
     echo $script;
 }
 
-$lc_jsVars = array();
 /**
  * Passing values from PHP to Javascript with "LC.vars"
  * @param string $name The JS variable name
@@ -785,7 +784,6 @@ function _isRewriteRule()
     return (strcasecmp(REQUEST_URI, _r()) !== 0) ? true : false;
 }
 
-$lc_canonical = '';
 /**
  * Setter for canonical URL if the argument is given and print the canonical link tag if the argument is not given
  * @param string $url The specific URL
@@ -1419,7 +1417,6 @@ function _decrypt($text)
     ));
 }
 
-$_meta = array();
 /**
  * Simple quick helper function for <meta> tag attribute values
  *

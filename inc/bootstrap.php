@@ -112,6 +112,7 @@ if ($file = _i('helpers/session_helper.php', false)) {
 }
 if ($moduleSession = _readyloader('session_helper')) {
     require_once $moduleSession;
+    __session_init();
 }
 _unloader('session_helper', HELPER);
 
@@ -125,10 +126,11 @@ _unloader('i18n_helper', HELPER);
 require HELPER . 'route_helper.php'; # WEB_ROOT and WEB_APP_ROOT is created in route_helper
 # Routing configuration
 include_once INC . 'route.config.php';
+__route_init();
 
 # Load translations
 if ($moduleI18n) {
-    i18n_load();
+    __i18n_load();
 }
 
 # Site-specific configuration variables
@@ -147,6 +149,7 @@ if ($file = _i('helpers/validation_helper.php', false)) {
 }
 if ($moduleValidation = _readyloader('validation_helper')) {
     require_once $moduleValidation;
+    __validation_init();
 }
 _unloader('validation_helper', HELPER);
 

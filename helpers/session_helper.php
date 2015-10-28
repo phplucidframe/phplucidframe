@@ -395,5 +395,3 @@ function cookie_delete($name, $path = '/')
     }
     return (!isset($_COOKIE[$name])) ? true : false;
 }
-
-__session_init();
