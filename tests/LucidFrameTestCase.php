@@ -24,9 +24,19 @@ class LucidFrameTestCase extends UnitTestCase
 {
     protected $dbConnection = false;
 
-    public function setUp()
+    public function __construct()
     {
         db_switch('test');
+    }
+
+    public function setUp()
+    {
+        db_delete_multi('document');
+        db_delete_multi('post_image');
+        db_delete_multi('post');
+        db_delete_multi('category');
+        db_delete_multi('lc_sessions');
+        db_delete_multi('user');
 
         db_insert('user', array(
             'fullName'  => 'Administrator',
@@ -41,14 +51,6 @@ class LucidFrameTestCase extends UnitTestCase
 
     public function tearDown()
     {
-        db_delete('document');
-        db_delete('post_image');
-        db_delete('post');
-        db_delete('category');
-        db_delete('user');
-        db_delete('lc_sessions');
-
-        db_switch();
     }
 
     public static function oneline($string)
