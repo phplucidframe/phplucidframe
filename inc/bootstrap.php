@@ -64,6 +64,7 @@ define('FILE', ROOT.'files'._DS_);
 define('IMAGE', ROOT.'images'._DS_);
 # path to files/tests folder
 define('TEST', ROOT.'tests'._DS_);
+define('TEST_DIR', ROOT.'tests'._DS_);
 # path to files/cache folder
 define('CACHE', FILE.'cache'._DS_);
 
