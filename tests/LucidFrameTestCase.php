@@ -3,7 +3,7 @@
  * This file is part of the PHPLucidFrame library.
  * This class is a base class for all unit test cases.
  *
- * @package     LC\tests
+ * @package     LC\Test
  * @since       PHPLucidFrame v 1.9.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>
@@ -13,12 +13,6 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.txt
  */
-
-if (!defined('VENDOR')) {
-    require_once 'bootstrap.php';
-}
-
-require_once VENDOR . 'simpletest/autorun.php';
 
 class LucidFrameTestCase extends UnitTestCase
 {
