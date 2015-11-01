@@ -1,4 +1,5 @@
 <?php
+use LC\Core\Router;
 
 if (!defined('VENDOR')) {
     require_once('bootstrap.php');

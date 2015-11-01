@@ -14,10 +14,7 @@
  * with this source code in the file LICENSE.txt
  */
 
-/** @type array It contains the built and executed queries through out the script execuation */
-global $db_builtQueries;
-$db_builtQueries = array();
-$db_printQuery = false;
+use LC\Core\QueryBuilder;
 
 define('LC_FETCH_ASSOC', 1);
 define('LC_FETCH_ARRAY', 2);

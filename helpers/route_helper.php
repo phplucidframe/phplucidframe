@@ -14,16 +14,13 @@
  * with this source code in the file LICENSE.txt
  */
 
-require_once HELPER . 'classes' . _DS_ . 'Router.php';
-
-/** @type string The clean route without query string or without file name */
-$lc_cleanRoute = '';
+use LC\Core\Router;
 
 /**
  * @internal
  * Initialize URL routing
  */
-function route_init()
+function __route_init()
 {
     if (!isset($_SERVER['HTTP_REFERER'])) {
         $_SERVER['HTTP_REFERER'] = '';
@@ -493,5 +490,3 @@ function router()
 
     return _i('inc/tpl/404.php');
 }
-
-route_init();

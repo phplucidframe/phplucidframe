@@ -1008,5 +1008,3 @@ class Validation
         );
     }
 }
-
-__validation_init();

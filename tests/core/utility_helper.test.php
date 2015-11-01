@@ -149,7 +149,7 @@ class UtilityHelperTestCase extends LucidFrameTestCase
     public function testForFunctionUnderscoreUrl()
     {
         $this->assertEqual(_url(), _self());
-        $this->assertEqual(_url('home'), WEB_ROOT);
+        $this->assertEqual(_url('home'), rtrim(WEB_ROOT, '/'));
         $this->assertEqual(_url('blog'), WEB_ROOT.'blog');
         $this->assertEqual(_url('blog', array('this-is-blog-title')), WEB_ROOT.'blog/this-is-blog-title');
         $this->assertEqual(_url('http://example.com'), 'http://example.com');

@@ -14,6 +14,8 @@
  * with this source code in the file LICENSE.txt
  */
 
+namespace LC\Core;
+
 class QueryBuilder
 {
     /** @var string The table name */
@@ -373,7 +375,7 @@ class QueryBuilder
     public function condition($field, $value)
     {
         if (isset($this->where[$this->whereType][$field])) {
-            $field .= uniqid('__'.__METHOD__.'__');
+            $field .= uniqid('__'.trim(__METHOD__, 'LC\Core').'__');
         }
         $this->where[$this->whereType][$field] = $value;
 

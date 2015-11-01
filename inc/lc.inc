@@ -47,8 +47,35 @@ $lc_autoload = array();
 /**
  * @internal
  * Namespace which will later be available as a constant LC_NAMESPACE
-*/
+ */
 $lc_namespace = '';
+/**
+ * @internal
+ * The clean route without query string or without file name
+ */
+$lc_cleanRoute = '';
+/**
+ * @internal
+ * The global javascript variables that will be rentered in the <head> section
+ */
+$lc_jsVars = array();
+/**
+ * @internal
+ * The canonical URL for the current page
+ */
+$lc_canonical = '';
+/**
+ * @internal
+ * Meta information for the current page
+ */
+$_meta = array();
+/**
+ * @internal
+ * @type array It contains the built and executed queries through out the script execuation
+ */
+global $db_builtQueries;
+$db_builtQueries = array();
+$db_printQuery = false;
 /**
  * Check config.php
  */

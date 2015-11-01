@@ -2,26 +2,52 @@
 /*
 
 # Count query for the pager
-$totalRecords = 0;
-$sql = 'SELECT COUNT(*) AS count FROM '.db_prefix().'post';
-$totalRecords = db_count($sql);
+$totalRecords = db_count('post')
+    ->where()->condition('deleted', null)
+    ->fetch();
 
 # Prerequisite for the Pager
 $page = _arg('page');
-$page = ( $page ) ? $page : 1;
+$page = ($page) ? $page : 1;
+
 $pager = new Pager();
 $pager->set('page', $page);
-$pager->set('itemsPerPage', $lc_itemsPerPage);
-$pager->set('pageNumLimit', $lc_pageNumLimit);
+$pager->set('itemsPerPage', _cfg('itemsPerPage'));
+$pager->set('pageNumLimit', _cfg('pageNumLimit'));
 $pager->set('total', $totalRecords);
 $pager->set('imagePath', WEB_ROOT.'images/pager/');
 $pager->set('ajax', false);
 $pager->calculate();
 
-$sql = 'SELECT * FROM '.db_prefix().' post
-        ORDER BY post.title DESC
-        LIMIT '.$pager->get('offset').', '.$pager->get('itemsPerPage');
-$result = db_query($sql);
+$qb = db_select('post', 'p')
+    ->where()->condition('deleted', null)
+    ->orderBy('p.title', 'DESC')
+    ->limit($pager->get('offset'), $pager->get('itemsPerPage'));
+
+$articles = $qb->getResult();
+
+    // in view.php
+    if (count($articles)) {
+        foreach ($articles as $article) {
+            // ...
+        }
+    } else {
+        // ...
+    }
+
+//// OR you can even use $qb directly in view.php
+
+$articles = $qb; // to use more user-friendly name in view.php
+
+    // in view.php
+    if ($articles->getNumRows()) {
+        // ...
+        while($article = $articles->fetchRow()) {
+            // ...
+        }
+    } else {
+        // ...
+    }
 
 //// you could use the above similar code for the actual querying from db
 //// the below is a sample code to render the simulated data
