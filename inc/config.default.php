@@ -56,9 +56,9 @@ $lc_debugLevel = 3;
 $lc_siteName = 'LucidFrame';
 # $lc_baseURL: No trailing slash (only if it is located in a sub-directory)
 # Leave blank if it is located in the document root
-$lc_baseURL = 'LucidFrame';
+$lc_baseURL = _p('baseURL');
 # $lc_siteDomain: Site Domain Name
-$lc_siteDomain = _host();
+$lc_siteDomain = _p('siteDomain');
 
 /**
  * Session configuration.
@@ -101,13 +101,14 @@ $lc_session = array(
 # $lc_databases: The array specifies the database connection
 $lc_databases = array(
     'default' => array(
-        'engine'    => 'mysqli',
-        'host'      => 'localhost',
-        'database'  => '',
-        'username'  => '',
-        'password'  => '',
-        'prefix'    => '',
-        'collation' => 'utf8_general_ci'
+        'engine'    => _p('db.default.engine'),
+        'host'      => _p('db.default.host'),
+        'port'      => _p('db.default.port'),
+        'database'  => _p('db.default.database'),
+        'username'  => _p('db.default.username'),
+        'password'  => _p('db.default.password'),
+        'prefix'    => _p('db.default.prefix'),
+        'collation' => _p('db.default.collation')
     )
 );
 # $lc_defaultDbSource: The default database connection
