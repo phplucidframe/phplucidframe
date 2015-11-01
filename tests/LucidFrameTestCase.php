@@ -22,13 +22,6 @@ require_once VENDOR . 'simpletest/autorun.php';
 
 class LucidFrameTestCase extends UnitTestCase
 {
-    protected $dbConnection = false;
-
-    public function __construct()
-    {
-        db_switch('test');
-    }
-
     public function setUp()
     {
         db_delete_multi('document');

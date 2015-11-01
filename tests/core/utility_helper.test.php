@@ -172,4 +172,14 @@ class UtilityHelperTestCase extends LucidFrameTestCase
         unset($_SERVER['SERVER_NAME']);
         $this->assertEqual(_host(), php_uname('n'));
     }
+    /**
+     * Test cases for _p()
+     */
+    public function testForFunctionUnderscore()
+    {
+        $this->assertEqual(_p('baseURL'), 'LucidFrame');
+        $this->assertEqual(_p('siteDomain'), _host());
+        $this->assertEqual(_p('db.default.host'), 'localhost');
+        $this->assertEqual(_p('db.default.collation'), 'utf8_general_ci');
+    }
 }
