@@ -13,7 +13,6 @@ DirectoryIndex index.php index.html index.htm
     RewriteEngine on
 
     RewriteRule ^tests/?(.*) app/index.php [NC,L]
-
     RewriteRule ^index.php$ app/index.php [NC,L]
 
     # If the request is not for a valid file
