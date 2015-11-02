@@ -33,6 +33,20 @@ function db_config($namespace = 'default')
     return $GLOBALS['lc_databases'][$namespace];
 }
 /**
+ * Return the database engine of the given namespace
+ * @param string $namespace Namespace of the configuration to read from
+ */
+function db_engine($namespace = 'default')
+{
+    $conf = db_config($namespace);
+
+    if ($conf['engine'] === 'mysql') {
+        $conf['engine'] = 'mysqli';
+    }
+
+    return $conf['engine'];
+}
+/**
  * Return the database host name of the given namespace
  * @param string $namespace Namespace of the configuration to read from
  */

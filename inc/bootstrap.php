@@ -64,6 +64,7 @@ define('FILE', ROOT.'files'._DS_);
 define('IMAGE', ROOT.'images'._DS_);
 # path to files/tests folder
 define('TEST', ROOT.'tests'._DS_);
+define('TEST_DIR', ROOT.'tests'._DS_);
 # path to files/cache folder
 define('CACHE', FILE.'cache'._DS_);
 
@@ -88,7 +89,12 @@ if (isset($lc_databases[$lc_defaultDbSource]) && is_array($lc_databases[$lc_defa
         include_once $file;
     }
 
-    require_once HELPER . 'db_helper.' . $lc_databases[$lc_defaultDbSource]['engine'] . '.php';
+    $dbEngine = $lc_databases[$lc_defaultDbSource]['engine'];
+    if ($dbEngine === 'mysql') {
+        $dbEngine = 'mysqli';
+    }
+
+    require_once HELPER . 'db_helper.' . $dbEngine . '.php';
 
     if (db_host($lc_defaultDbSource) && db_user($lc_defaultDbSource) && db_name($lc_defaultDbSource)) {
         # Start DB connection

@@ -1,11 +1,4 @@
 <?php
-
-if (!defined('VENDOR')) {
-    require_once('bootstrap.php');
-}
-
-require_once TEST . 'LucidFrameTestCase.php';
-
 /**
  * Unit Test for db_helper.mysqli.php
  */

@@ -1,12 +1,6 @@
 <?php
 use LC\Core\QueryBuilder;
 
-if (!defined('VENDOR')) {
-    require_once 'bootstrap.php';
-}
-
-require_once TEST . 'LucidFrameTestCase.php';
-
 /**
  * Unit Test for QueryBuilder.php
  */
