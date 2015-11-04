@@ -167,7 +167,9 @@ $lc_cleanURL = true;
 # $lc_securitySecret: the key with which the data will be encrypted
 # default hash string is located at ./inc/.secret
 # It is strongly recommended to change this and use the hash functions to create a key from a string.
-# If you leave this blank, md5() only will be used for encryption
+# For enhanced security, you may move the file or create a new file outside your document root;
+# and set full path to `__secret()`, for example,
+# $lc_securitySecret = __secret('/home/example/.secret');
 $lc_securitySecret = __secret();
 # $lc_formTokenName - Customize your form token name at your own
 $lc_formTokenName = 'LCFormToken';

@@ -408,10 +408,15 @@ function __envLoader()
 /**
  * @internal
  * Read .secret and return the hash string which is the value for $lc_securitySecret
+ * @param  string $file The optional file path
  * @return string
  */
-function __secret()
+function __secret($file = null)
 {
+    if ($file !== null && is_file($file) && file_exists($file)) {
+        return trim(file_get_contents($file));
+    }
+
     $file = INC . '.secret';
     return (is_file($file) && file_exists($file)) ? trim(file_get_contents($file)) : '';
 }
