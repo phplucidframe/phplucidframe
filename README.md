@@ -22,7 +22,7 @@ Although it is stated as mini framework, it supports a wide range of web applica
 ## Prerequisites
 
 - Web Server (Apache with `mod_rewrite` enabled)
-- PHP version 5.2.0 or newer (optional `mcrypt` extension enabled, but recommended)
+- PHP version 5.3.0 or newer (optional `mcrypt` extension enabled, but recommended)
 - MySQL 5.0 or newer with MySQLi enabled.
 
 ## Installation
@@ -34,7 +34,7 @@ Although it is stated as mini framework, it supports a wide range of web applica
 - (Optional, but recommended) Copy `/inc/tpl/head.php` to `/app/inc/tpl/head.php` if you want to update it.
 - Check `http://localhost/LucidFrame` or `http://localhost/YourProjectName` in your browser.
 
-**Note:** If you have your own project folder name other than **LucidFrame**, you should change `$lc_baseURL` in `/inc/config.php` in accordance with your project name.
+**Note:** If you have your own project folder name other than **LucidFrame** in your development environment, you have to change the value of `baseURL` in `/inc/parameter/development.php` in accordance with your project name.
 
 ## Furthermore on Installation
 
@@ -48,22 +48,25 @@ Some guidelines:
 - [AMPPS on Windows/Mac OS](http://www.softaculous.com/board/index.php?tid=3634&title=AMPPS_rewrite_enable/disable_option%3F_please%3F)
 - [MAMP on Mac OS](http://stackoverflow.com/questions/7670561/how-to-get-htaccess-to-work-on-mamp)
 
-**Based URL** : You could have a folder whatever name you like or even virtual host in your development environment.
-Just change the configuration variable `$lc_baseURL` in `/inc/config.php` in accordance with your folder name or virtual host name.
+**Based URL** : There are two situations you will have to leave the configuration `baseURL` empty in `/inc/parameter/xxx.php` files:
 
-**Home Routing** : In your production environment, you may not have a folder and you could upload the framework files directly to your web server document root.
-In this case, you have to set and leave `$lc_baseURL` empty.
+1. when you have a virtual host for your application in your development environment.
+2. when your application in production evironment where you upload the framework files directly to your web server document root.
 
-By default, LucidFrame has home page routing which is defined as `$lc_homeRouting` in `/inc/config.php`. It maps to `/app/home/index.php`. You could have `home.php` or `welcome.php` or whatever you like. However, LucidFrame encourages a structured page organization. You can check the recommended structure in the sample page folders and codes `/app/home` and `/app/example/` of the release.
+**Routing** : You can define custom routes in `/inc/route.config.php`. The following routing for home page maps to `/app/home/index.php`.
+
+    route('lc_home')->map('/', '/home');
+
+LucidFrame encourages a structured page organization. You can check the recommended structure in the sample page folders and codes `/app/home/` and `/app/example/` of the release.
 
 **Additional Site Settings** : You can also configure the other settings in `/inc/config.php` and `/inc/site.config.php` or `/app/inc/site.config.php` according to your requirement.
-
-**Secret** : You can generate the application secret `/inc/.secret` at [phplucidframe.sithukyaw.com/hash-generator](http://phplucidframe.sithukyaw.com/hash-generator).
 
 **CSS Template** : LucidFrame provides you a default site CSS template. The file is `/css/base.css`. No matter you want to use it or not, you may do one of the following two ways to make your site easily upgradable in the future:
 
  1. create your own file in `/css` or `/app/css` with whatever name you like and update your `/inc/tpl/head.php` or `/app/inc/tpl/head.php` by including your file. Then you can override the rules of `/css/base.css` or write your own rules in your file.
  2. copy `/css/base.css` to `/app/css/base.css` and update it to your need. Then you don't have to update `head.php`.
+
+See more in [PDF documentation](http://phplucidframe.sithukyaw.com/cookbook)
 
 ## Demo with Sample Administration Module
 
@@ -82,5 +85,4 @@ By default, LucidFrame has home page routing which is defined as `$lc_homeRoutin
 - [Stackoverflow](http://stackoverflow.com/questions/tagged/phplucidframe)
 - [GitHub issues](https://github.com/cithukyaw/LucidFrame/issues)
 - [Gitter IM](http://gitter.im/cithukyaw/LucidFrame)
-- [IRC channel](http://webchat.freenode.net/?channels=#phplucidframe) `#phplucidframe`
 - [Roadmap](https://trello.com/b/zj5l6GP1/phplucidframe-development)
