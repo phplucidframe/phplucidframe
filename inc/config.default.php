@@ -56,8 +56,10 @@ $lc_debugLevel = 3;
 $lc_siteName = 'LucidFrame';
 # $lc_baseURL: No trailing slash (only if it is located in a sub-directory)
 # Leave blank if it is located in the document root
+# Update this in `/inc/parameter/*.php`
 $lc_baseURL = _p('baseURL');
 # $lc_siteDomain: Site Domain Name
+# Update this in `/inc/parameter/*.php`
 $lc_siteDomain = _p('siteDomain');
 
 /**
@@ -99,6 +101,7 @@ $lc_session = array(
 );
 
 # $lc_databases: The array specifies the database connection
+# Update this in `/inc/parameter/*.php`
 $lc_databases = array(
     'default' => array(
         'engine'    => _p('db.default.engine'),

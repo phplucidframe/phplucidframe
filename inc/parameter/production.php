@@ -21,5 +21,9 @@ return array(
             'prefix'    => '',
             'collation' => 'utf8_general_ci'
         )
-    )
+    ),
+    # The site contact email address - This address used as "To" for all incoming mails
+    'siteReceiverEmail' => 'admin@example.com',
+    # The site sender email address - This address used as "From" for all outgoing mails
+    'siteSenderEmail'   => 'noreply@example.com',
 );

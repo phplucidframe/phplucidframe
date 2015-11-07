@@ -22,9 +22,11 @@ $lc_metaDescription = 'PHPLucidFrame (a.k.a LucidFrame) is a PHP application dev
 # The site meta keywords for search engines
 $lc_metaKeywords = 'PHP LucidFrame, PHP, Framework, Web Application Development, Toolkit';
 # The site contact email address - This address will be used as "To" for all incoming mails
-$lc_siteReceiverEmail = ($_SERVER['HTTP_HOST'] == 'localhost') ? 'test@localhost.com' : 'test@example.com';
+# Update this in `/inc/parameter/*.php`
+$lc_siteReceiverEmail = _p('siteReceiverEmail');
 # The site sender email address - This address will be used as "From" for all outgoing mails
-$lc_siteSenderEmail = "{$lc_siteName} <noreply@localhost.com>";
+# Update this in `/inc/parameter/*.php`
+$lc_siteSenderEmail = _p('siteSenderEmail');
 # $lc_titleSeparator - Page title separator
 $lc_titleSeparator = '-';
 # $lc_breadcrumbSeparator - Breadcrumb separator
