@@ -49,6 +49,16 @@ class QueryBuilderTestCase extends LucidFrameTestCase
         '));
 
         $qb = db_select('post', 'p')
+            ->where()
+            ->condition('p.postId', 1);
+        $this->assertEqual($qb->getSQL(), 'SELECT `p`.* FROM `post` `p` WHERE `p`.`postId` = 1');
+
+        $qb = db_select('post', 'p')
+            ->where()
+            ->condition('p.created >', '2015-11-08');
+        $this->assertEqual($qb->getSQL(), 'SELECT `p`.* FROM `post` `p` WHERE `p`.`created` > "2015-11-08"');
+
+        $qb = db_select('post', 'p')
             ->fields('p', array('postId', 'postTitle'))
             ->fields('u', array('fullName', 'username'))
             ->join('user', 'u', 'p.uid = u.uid')
