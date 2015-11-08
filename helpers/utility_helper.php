@@ -6,7 +6,7 @@
  * @package     LC\Helpers\Utility
  * @since       PHPLucidFrame v 1.0.0
  * @copyright   Copyright (c), PHPLucidFrame.
- * @author      Sithu K. <hello@sithukyaw.com>
+ * @author      Sithu K. <cithukyaw@gmail.com>
  * @link        http://phplucidframe.sithukyaw.com
  * @license     http://www.opensource.org/licenses/mit-license.php MIT License
  *
@@ -239,7 +239,6 @@ function _script()
     echo $script;
 }
 
-$lc_jsVars = array();
 /**
  * Passing values from PHP to Javascript with "LC.vars"
  * @param string $name The JS variable name
@@ -440,24 +439,6 @@ if (!function_exists('_dump')) {
             echo '</pre>';
         }
     }
-}
-/**
- * Convenience method to get/set a config variable without global declaration within the calling function
- *
- * @param string $key The config variable name without prefix
- * @param mixed $value The value to set to the config variable; if it is omitted, it is Getter method.
- * @return mixed The value of the config variable
- */
-function _cfg($key = '', $value = '')
-{
-    if (empty($key)) {
-        return null;
-    }
-    if (strrpos($key, 'lc_') === 0) {
-        $key = substr($key, 3);
-    }
-    $key = 'lc_' . $key;
-    return (count(func_get_args()) == 2) ? __dotNotationToArray($key, 'global', $value) : __dotNotationToArray($key, 'global');
 }
 /**
  * Convenience method to get/set a global variable
@@ -785,7 +766,6 @@ function _isRewriteRule()
     return (strcasecmp(REQUEST_URI, _r()) !== 0) ? true : false;
 }
 
-$lc_canonical = '';
 /**
  * Setter for canonical URL if the argument is given and print the canonical link tag if the argument is not given
  * @param string $url The specific URL
@@ -1419,7 +1399,6 @@ function _decrypt($text)
     ));
 }
 
-$_meta = array();
 /**
  * Simple quick helper function for <meta> tag attribute values
  *
@@ -1556,107 +1535,6 @@ function _getTranslationStrings($data, $fields, $lang = null)
         $data = (object) $data;
     }
     return $data;
-}
-/**
- * @internal
- * Dot notation access to multi-dimensional array
- * Get the values by providing dot notation string key
- * Set the values by providing dot notation string key
- *
- * @param string  $key       The string separated by dot (peroid)
- * @param string  $scope     What scope in which the values will be stored - global or session
- * @param mixed   $value     The optional value to set or updated
- * @param boolean $serialize The value is to be serialized or not
- *
- * @return mixed The value assigned
- */
-function __dotNotationToArray($key, $scope = 'global', $value = '', $serialize = false)
-{
-    if (empty($key)) {
-        return null;
-    }
-    if (!in_array($scope, array('global', 'session'))) {
-        return null;
-    }
-    if (!in_array($scope, array('global', 'session')) && !is_array($scope)) {
-        return null;
-    }
-    if (is_array($scope)) {
-        $input = &$scope;
-    }
-
-    $type = (count(func_get_args()) > 2) ? 'setter' : 'getter';
-    $keys = explode(".", $key);
-    # extract the first key
-    $firstKey = array_shift($keys);
-    # extract the last key
-    $lastKey = end($keys);
-    # No. of keys exclusive of the first key
-    $count = count($keys); # more than 0 if there is at least one dot
-    $justOneLevelKey = ($count === 0) ? true : false;
-
-    if ($type == 'getter' && $justOneLevelKey) {
-        # just one-level key
-        if ($scope == 'session') {
-            $firstKey = S_PREFIX . $firstKey;
-            return (array_key_exists($firstKey, $_SESSION)) ? $_SESSION[$firstKey] : null;
-        } elseif ($scope == 'global') {
-            return (array_key_exists($firstKey, $GLOBALS)) ? $GLOBALS[$firstKey] : null;
-        } elseif (is_array($scope) && isset($input)) {
-            return (array_key_exists($firstKey, $input)) ? $input[$firstKey] : null;
-        }
-    }
-
-    if ($scope == 'session') {
-        $firstKey = S_PREFIX . $firstKey;
-        if (!array_key_exists($firstKey, $_SESSION)) {
-            $_SESSION[$firstKey] = null;
-        }
-        $current = &$_SESSION[$firstKey];
-    } elseif ($scope == 'global') {
-        if (!array_key_exists($firstKey, $GLOBALS)) {
-            $GLOBALS[$firstKey] = null;
-        }
-        $current = &$GLOBALS[$firstKey];
-    } elseif (is_array($scope) && isset($input)) {
-        if (!array_key_exists($firstKey, $input)) {
-            $input[$firstKey] = null;
-        }
-        $current = &$input[$firstKey];
-    }
-
-    $theLastHasValue = false;
-    if (($type == 'setter' && $count) || ($type == 'getter' && $count > 1)) {
-        # this will be skipped if no dot notation
-        foreach ($keys as $k) {
-            if ($k == $lastKey && isset($current[$lastKey])) {
-                $theLastHasValue = true;
-                if ($scope != 'session') {
-                    # if the last-key has the value of not-array, create array and push the later values.
-                    $current[$lastKey] = is_array($current[$k]) ? $current[$k] : array($current[$k]);
-                }
-                break;
-            }
-            if ($count && !isset($current[$k]) && !is_array($current)) {
-                $current = array($k => null);
-            }
-            $current = &$current[$k];
-        }
-    }
-    # Set the values if it is setter
-    if ($type == 'setter') {
-        if (is_array($current) && $theLastHasValue) {
-            # when $theLastHasValue, dot notation is given and it is array
-            $current[$lastKey] = ($serialize) ? serialize($value) : $value;
-        } else {
-            $current = ($serialize) ? serialize($value) : $value;
-        }
-        return $current;
-    } elseif ($type == 'getter') {
-        # Get the values if it is getter
-        return ($count) ? (isset($current[$lastKey]) ? $current[$lastKey] : null)  : $current;
-    }
-    return null;
 }
 /**
  * Detect the current page visited by a search bot or crawler

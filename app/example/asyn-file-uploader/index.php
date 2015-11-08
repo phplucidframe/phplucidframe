@@ -4,6 +4,7 @@
  * initializing the base resources needed to run the page
  */
 $pageTitle = _t('AsynFileUploader Example');
+$id = _arg(2);
 
 include('query.php');
 ?>

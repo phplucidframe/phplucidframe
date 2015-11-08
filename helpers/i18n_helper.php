@@ -6,7 +6,7 @@
  * @package     LC\Helpers\Internationalization
  * @since       PHPLucidFrame v 1.0.0
  * @copyright   Copyright (c), PHPLucidFrame.
- * @author      Sithu K. <hello@sithukyaw.com>
+ * @author      Sithu K. <cithukyaw@gmail.com>
  * @link        http://phplucidframe.sithukyaw.com
  * @license     http://www.opensource.org/licenses/mit-license.php MIT License
  *
@@ -93,7 +93,7 @@ function _tc($fileName, $args = array())
  * @param string $filename Text .po file to load
  * @return mixed Array of translations on success or FALSE on failure
  */
-function i18n_load()
+function __i18n_load()
 {
     global $lc_lang;
     global $lc_translation;

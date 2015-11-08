@@ -3,6 +3,7 @@
 /files/sessions/
 /files/cache/
 /files/tmp/
+/vendor/
 
 # OS generated files #
 ######################

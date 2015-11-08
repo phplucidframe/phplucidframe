@@ -6,7 +6,7 @@
  * @package     LC
  * @since       PHPLucidFrame v 1.0.0
  * @copyright   Copyright (c), PHPLucidFrame.
- * @author      Sithu K. <hello@sithukyaw.com>
+ * @author      Sithu K. <cithukyaw@gmail.com>
  * @link        http://phplucidframe.sithukyaw.com
  * @license     http://www.opensource.org/licenses/mit-license.php MIT License
  *
@@ -56,9 +56,11 @@ $lc_debugLevel = 3;
 $lc_siteName = 'LucidFrame';
 # $lc_baseURL: No trailing slash (only if it is located in a sub-directory)
 # Leave blank if it is located in the document root
-$lc_baseURL = 'LucidFrame';
+# Update this in `/inc/parameter/*.php`
+$lc_baseURL = _p('baseURL');
 # $lc_siteDomain: Site Domain Name
-$lc_siteDomain = _host();
+# Update this in `/inc/parameter/*.php`
+$lc_siteDomain = _p('siteDomain');
 
 /**
  * Session configuration.
@@ -99,15 +101,17 @@ $lc_session = array(
 );
 
 # $lc_databases: The array specifies the database connection
+# Update this in `/inc/parameter/*.php`
 $lc_databases = array(
     'default' => array(
-        'engine'    => 'mysqli',
-        'host'      => 'localhost',
-        'database'  => '',
-        'username'  => '',
-        'password'  => '',
-        'prefix'    => '',
-        'collation' => 'utf8_general_ci'
+        'engine'    => _p('db.default.engine'),
+        'host'      => _p('db.default.host'),
+        'port'      => _p('db.default.port'),
+        'database'  => _p('db.default.database'),
+        'username'  => _p('db.default.username'),
+        'password'  => _p('db.default.password'),
+        'prefix'    => _p('db.default.prefix'),
+        'collation' => _p('db.default.collation')
     )
 );
 # $lc_defaultDbSource: The default database connection
@@ -133,6 +137,7 @@ $lc_sites = array(
     /* 'virtual_folder_name (namespace)'  => 'path/to/physical_folder_name_directly_under_app_directory' */
 );
 # $lc_homeRouting: Home page routing; if it is not set, default is 'home'
+# @deprecated
 $lc_homeRouting = 'home';
 # $lc_translationEnabled - Enable/Disable language translation
 $lc_translationEnabled = true;
@@ -165,7 +170,9 @@ $lc_cleanURL = true;
 # $lc_securitySecret: the key with which the data will be encrypted
 # default hash string is located at ./inc/.secret
 # It is strongly recommended to change this and use the hash functions to create a key from a string.
-# If you leave this blank, md5() only will be used for encryption
+# For enhanced security, you may move the file or create a new file outside your document root;
+# and set full path to `__secret()`, for example,
+# $lc_securitySecret = __secret('/home/example/.secret');
 $lc_securitySecret = __secret();
 # $lc_formTokenName - Customize your form token name at your own
 $lc_formTokenName = 'LCFormToken';

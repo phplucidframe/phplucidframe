@@ -6,7 +6,7 @@
  * @package     LC\Helpers\Routing
  * @since       PHPLucidFrame v 1.0.0
  * @copyright   Copyright (c), PHPLucidFrame.
- * @author      Sithu K. <hello@sithukyaw.com>
+ * @author      Sithu K. <cithukyaw@gmail.com>
  * @link        http://phplucidframe.sithukyaw.com
  * @license     http://www.opensource.org/licenses/mit-license.php MIT License
  *
@@ -14,16 +14,13 @@
  * with this source code in the file LICENSE.txt
  */
 
-/** @type array Array of the custom route configuration */
-$lc_routes = array();
-/** @type string The clean route without query string or without file name */
-$lc_cleanRoute = '';
+use LC\Core\Router;
 
 /**
  * @internal
  * Initialize URL routing
  */
-function route_init()
+function __route_init()
 {
     if (!isset($_SERVER['HTTP_REFERER'])) {
         $_SERVER['HTTP_REFERER'] = '';
@@ -56,6 +53,7 @@ function route_init()
     $_GET[ROUTE] = route_request();
     _cfg('cleanRoute', $_GET[ROUTE]);
 }
+
 /**
  * @internal
  *
@@ -147,6 +145,7 @@ function route_request()
 
     return $path;
 }
+
 /**
  * Search the physical directory according to the routing path
  *
@@ -189,6 +188,7 @@ function route_search()
     }
     return false;
 }
+
 /**
  * Get the routing path
  *
@@ -203,21 +203,13 @@ function route_path()
     }
     return $path;
 }
-/**
- * @internal
- * Define the custom routing path
- */
-function route_map($path, $to = '')
-{
-    global $lc_routes;
-    $lc_routes[$path] = $to;
-}
+
 /**
  * Return the absolute URL path appended the query string if necessary
  *
  * Alias `_url()`
  *
- * @param string $path Routing path such as "foo/bar"; NULL for the current path
+ * @param string $path Routing path such as "foo/bar"; Named route such as "fool_bar"; NULL for the current path
  * @param array $queryStr Query string as
  *
  *     array(
@@ -243,19 +235,31 @@ function route_url($path = null, $queryStr = array(), $lang = '')
 
     if (stripos($path, 'http') === 0) {
         return $path;
-    } else {
-        if (strtolower($path) == 'home') {
-            if (isset($GLOBALS['lc_homeRouting']) && $GLOBALS['lc_homeRouting']) {
-                $path = $GLOBALS['lc_homeRouting'];
+    }
+
+    $customRoute = Router::getPathByName($path);
+    if ($customRoute !== null) {
+        $path = $customRoute ? $customRoute : 'home';
+        if ($queryStr && is_array($queryStr) && count($queryStr)) {
+            foreach ($queryStr as $key => $value) {
+                $path = str_replace('{'.$key.'}', urlencode($value), $path);
             }
         }
 
-        if ($path && is_string($path)) {
-            $path = rtrim($path, '/');
-        } else {
-            $r = (_isRewriteRule()) ? REQUEST_URI : route_path();
-            $path = route_updateQueryStr($r, $queryStr);
+        $queryStr = array(); // clean query strings to not be processed later
+    }
+
+    if (strtolower($path) == 'home') {
+        if (isset($GLOBALS['lc_homeRouting']) && $GLOBALS['lc_homeRouting']) {
+            $path = $GLOBALS['lc_homeRouting'];
         }
+    }
+
+    if ($path && is_string($path)) {
+        $path = rtrim($path, '/');
+    } else {
+        $r = (_isRewriteRule()) ? REQUEST_URI : route_path();
+        $path = route_updateQueryStr($r, $queryStr);
     }
 
     $q = '';
@@ -316,9 +320,13 @@ function route_url($path = null, $queryStr = array(), $lang = '')
         $url .= $path . '?' . ltrim($q, '&');
         $url = trim($url, '?');
     }
+
     $url = preg_replace('/(\s) {1,}/', '+', $url); # replace the space with "+"
+    $url = rtrim($url, '/');
+
     return $url;
 }
+
 /**
  * Update the route path with the given query string
  *
@@ -384,4 +392,101 @@ function route_updateQueryStr($path, &$queryStr = array())
     return $path;
 }
 
-route_init();
+/**
+ * @internal
+ * Get the absolute path from root of the given route
+ * @return string
+ */
+function route_getAbsolutePathToRoot($q)
+{
+    # Get the complete path to root
+    $_page = ROOT . $q;
+    if (!file_exists($_page)) {
+        # Get the complete path with app/
+        $_page = APP_ROOT . $q;
+        # Find the clean route
+        $_seg = explode('/', $q);
+        if (is_dir($_page)) {
+            _cfg('cleanRoute', $q);
+        } else {
+            array_pop($_seg); # remove the last element
+            _cfg('cleanRoute', implode('/', $_seg));
+        }
+    }
+
+    # if it is a directory, it should have index.php
+    if (is_dir($_page)) {
+        $_page .= '/index.php';
+    }
+
+    return $_page;
+}
+
+/**
+ * Initialize a route to define
+ *
+ * @param string $name The route name that is unique to the mapped path
+ * @return object Router
+ */
+function route($name)
+{
+    return new Router($name);
+}
+
+/**
+ * @internal
+ * Matching the current route to the defined custom routes
+ * @return string|boolean The matched route or false if no matched route is found
+ */
+function route_match()
+{
+    return Router::match();
+}
+
+/**
+ * @internal
+ *
+ * Route to a page according to request
+ * interally called by /app/index.php
+ *
+ * @return string
+ */
+function router()
+{
+    global $lc_homeRouting;
+
+    # Get a route from the defined custom routes (if any)
+    $_page = route_match();
+    if ($_page) {
+        return route_getAbsolutePathToRoot($_page);
+    }
+
+    $q = route_path();
+    # if the route is empty, get it from the config
+    if (empty($q) && $lc_homeRouting) {
+        $q = $lc_homeRouting;
+    }
+
+    # if it is still empty, set it to the system default
+    if (empty($q)) {
+        $q = 'home';
+    }
+
+    # Get the complete path to root
+    $_page = route_getAbsolutePathToRoot($q);
+    if (!empty($_page) && file_exists($_page)) {
+        return $_page;
+    }
+
+    if (preg_match('/(.*)(401|403|404) {1}$/', $_page, $matches)) {
+        return _i('inc/tpl/'.$matches[2].'.php');
+    }
+
+    # Search the physical directory according to the routing path
+    $_page = route_search();
+    if ($_page && is_file($_page) && file_exists($_page)) {
+        return $_page;
+    }
+
+    return _i('inc/tpl/404.php');
+}

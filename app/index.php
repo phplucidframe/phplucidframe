@@ -6,7 +6,7 @@
  * @package     LC
  * @since       PHPLucidFrame v 1.0.0
  * @copyright   Copyright (c), PHPLucidFrame.
- * @author      Sithu K. <hello@sithukyaw.com>
+ * @author      Sithu K. <cithukyaw@gmail.com>
  * @link        http://phplucidframe.sithukyaw.com
  * @license     http://www.opensource.org/licenses/mit-license.php MIT License
  *
@@ -18,50 +18,6 @@ require_once '../inc/bootstrap.php';
 
 ob_start('_flush');
 
-$q = route_path();
-
-# if the route is empty, get it from the config
-if (empty($q) && $lc_homeRouting) {
-    $q = $lc_homeRouting;
-}
-# if it is still empty, set it to the system default
-if (empty($q)) {
-    $q = 'home';
-}
-# Get the complete path to root
-$_page = ROOT . $q;
-if (!file_exists($_page)) {
-    # Get the complete path with app/
-    $_page = APP_ROOT . $q;
-    # Find the clean route
-    $_seg = explode('/', $q);
-    if (is_dir($_page)) {
-        _cfg('cleanRoute', $q);
-    } else {
-        array_pop($_seg); # remove the last element
-        _cfg('cleanRoute', implode('/', $_seg));
-    }
-    unset($_seg);
-}
-
-# if it is a directory, it should have index.php
-if (is_dir($_page)) {
-    $_page .= '/index.php';
-}
-
-if (!empty($_page) && file_exists($_page)) {
-    include $_page;
-} else {
-    if (preg_match('/(.*)(401|403|404) {1}$/', $_page, $matches)) {
-        include( _i('inc/tpl/'.$matches[2].'.php') );
-    } else {
-        $_page = route_search();
-        if ($_page && is_file($_page) && file_exists($_page)) {
-            include $_page;
-        } else {
-            include( _i('inc/tpl/404.php') );
-        }
-    }
-}
+require_once router();
 
 ob_end_flush();

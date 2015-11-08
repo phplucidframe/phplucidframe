@@ -1,10 +1,5 @@
 <?php
-
-if (!defined('VENDOR')) {
-    require_once 'bootstrap.php';
-}
-
-require_once TEST . 'LucidFrameTestCase.php';
+use LC\Core\QueryBuilder;
 
 /**
  * Unit Test for QueryBuilder.php
@@ -52,6 +47,16 @@ class QueryBuilderTestCase extends LucidFrameTestCase
             INNER JOIN `user` `u` ON `p`.`uid` = `u`.`uid`
             ORDER BY `p`.`created` DESC
         '));
+
+        $qb = db_select('post', 'p')
+            ->where()
+            ->condition('p.postId', 1);
+        $this->assertEqual($qb->getSQL(), 'SELECT `p`.* FROM `post` `p` WHERE `p`.`postId` = 1');
+
+        $qb = db_select('post', 'p')
+            ->where()
+            ->condition('p.created >', '2015-11-08');
+        $this->assertEqual($qb->getSQL(), 'SELECT `p`.* FROM `post` `p` WHERE `p`.`created` > "2015-11-08"');
 
         $qb = db_select('post', 'p')
             ->fields('p', array('postId', 'postTitle'))

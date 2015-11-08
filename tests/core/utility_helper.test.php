@@ -1,11 +1,4 @@
 <?php
-
-if (!defined('VENDOR')) {
-    require_once('bootstrap.php');
-}
-
-require_once TEST . 'LucidFrameTestCase.php';
-
 /**
  * Unit Test for utility_helper.php
  */
@@ -37,13 +30,10 @@ class UtilityHelperTestCase extends LucidFrameTestCase
         // 2.
         _g('name.first', 'This is first name.');
         _g('name.last', 'This is last name.');
-        $this->assertEqual(
-            _g('name'),
-            array(
-                'first' => 'This is first name.',
-                'last' => 'This is last name.'
-            )
-        );
+        $this->assertEqual(_g('name'), array(
+            'first' => 'This is first name.',
+            'last' => 'This is last name.'
+        ));
         // 3.
         $this->assertEqual(_g('name.first'), 'This is first name.');
         // 4.
@@ -52,6 +42,8 @@ class UtilityHelperTestCase extends LucidFrameTestCase
         _g('foo.bar.test', 'This is first value.');
         _g('foo.bar.test', 'This is second value.');
         _g('foo.bar.test', 'This is third value.');
+        $this->assertEqual(_g('foo.bar'), array('test' => 'This is third value.'));
+        $this->assertEqual(_g('foo.bar.test'), 'This is third value.');
         $this->assertNotEqual(_g('foo.bar'), array(
             'test' => array(
                 0 => 'This is first value.',
@@ -59,8 +51,6 @@ class UtilityHelperTestCase extends LucidFrameTestCase
                 2 => 'This is third value.'
             )
         ));
-
-        $this->assertEqual(_g('foo.bar.test'), array('This is third value.'));
     }
     /**
      * Test cases for _cfg()
@@ -149,7 +139,7 @@ class UtilityHelperTestCase extends LucidFrameTestCase
     public function testForFunctionUnderscoreUrl()
     {
         $this->assertEqual(_url(), _self());
-        $this->assertEqual(_url('home'), WEB_ROOT);
+        $this->assertEqual(_url('home'), rtrim(WEB_ROOT, '/'));
         $this->assertEqual(_url('blog'), WEB_ROOT.'blog');
         $this->assertEqual(_url('blog', array('this-is-blog-title')), WEB_ROOT.'blog/this-is-blog-title');
         $this->assertEqual(_url('http://example.com'), 'http://example.com');
@@ -171,5 +161,15 @@ class UtilityHelperTestCase extends LucidFrameTestCase
         unset($_SERVER['HTTP_HOST']);
         unset($_SERVER['SERVER_NAME']);
         $this->assertEqual(_host(), php_uname('n'));
+    }
+    /**
+     * Test cases for _p()
+     */
+    public function testForFunctionUnderscore()
+    {
+        $this->assertEqual(_p('baseURL'), 'LucidFrame');
+        $this->assertEqual(_p('siteDomain'), _host());
+        $this->assertEqual(_p('db.default.host'), 'localhost');
+        $this->assertEqual(_p('db.default.collation'), 'utf8_general_ci');
     }
 }

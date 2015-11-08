@@ -6,7 +6,7 @@
  * @package     LC\Helpers\Database
  * @since       PHPLucidFrame v 1.0.0
  * @copyright   Copyright (c), PHPLucidFrame.
- * @author      Sithu K. <hello@sithukyaw.com>
+ * @author      Sithu K. <cithukyaw@gmail.com>
  * @link        http://phplucidframe.sithukyaw.com
  * @license     http://www.opensource.org/licenses/mit-license.php MIT License
  *
@@ -14,10 +14,7 @@
  * with this source code in the file LICENSE.txt
  */
 
-/** @type array It contains the built and executed queries through out the script execuation */
-global $db_builtQueries;
-$db_builtQueries = array();
-$db_printQuery = false;
+use LC\Core\QueryBuilder;
 
 define('LC_FETCH_ASSOC', 1);
 define('LC_FETCH_ARRAY', 2);
@@ -34,6 +31,20 @@ function db_config($namespace = 'default')
         die('Database configuration error for '.$namespace.'!');
     }
     return $GLOBALS['lc_databases'][$namespace];
+}
+/**
+ * Return the database engine of the given namespace
+ * @param string $namespace Namespace of the configuration to read from
+ */
+function db_engine($namespace = 'default')
+{
+    $conf = db_config($namespace);
+
+    if ($conf['engine'] === 'mysql') {
+        $conf['engine'] = 'mysqli';
+    }
+
+    return $conf['engine'];
 }
 /**
  * Return the database host name of the given namespace

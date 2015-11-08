@@ -26,7 +26,7 @@ if (sizeof($_POST)) {
         )
     );
 
-    if ( ! $hidEditId ) {
+    if (!$hidEditId) {
         $validations['txtPwd'] = array(
             'caption'   => _t('Password'),
             'value'     => $txtPwd,
@@ -54,7 +54,7 @@ if (sizeof($_POST)) {
                 'email'     => $txtEmail,
                 'role'      => $cboRole,
             );
-            if ( !empty($txtPwd) ) {
+            if (!empty($txtPwd)) {
                 $data['password'] = $txtPwd;
             }
             if (db_update('user', $data)) {

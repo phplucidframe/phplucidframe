@@ -9,28 +9,34 @@ $get = _get($_GET);
 /*
 
 # Count query for the pager
-$totalRecords = 0;
-$sql = 'SELECT COUNT(*) AS count FROM '.db_prefix().'post';
-$totalRecords = db_count($sql);
+$totalRecords = db_count('post')
+    ->where()->condition('deleted', null)
+    ->fetch();
 
 # Prerequisite for the Pager
-$page = ( isset($get['page']) ) ? $get['page'] : 1;
+$page = isset($get['page']) ? $get['page'] : 1;
+
 $pager = new Pager();
 $pager->set('page', $page);
-$pager->set('itemsPerPage', $lc_itemsPerPage);
-$pager->set('pageNumLimit', $lc_pageNumLimit);
+$pager->set('itemsPerPage', _cfg('itemsPerPage'));
+$pager->set('pageNumLimit', _cfg('pageNumLimit'));
 $pager->set('total', $totalRecords);
 $pager->set('imagePath', WEB_ROOT.'images/pager/');
 $pager->set('ajax', true);
 $pager->calculate();
 
-$sql = 'SELECT * FROM '.db_prefix().' post
-        ORDER BY post.title DESC
-        LIMIT '.$pager->get('offset').', '.$pager->get('itemsPerPage');
-if ($result = db_query($sql))
-    if (db_numRows($result)) {
-        # render HTML here
+$qb = db_select('post', 'p')
+    ->where()->condition('deleted', null)
+    ->orderBy('p.title', 'DESC')
+    ->limit($pager->get('offset'), $pager->get('itemsPerPage'));
+
+if ($qb->getNumRows()) {
+    // ...
+    while($row = $qb->fetchRow()) {
+        // render HTML here
     }
+} else {
+    // ...
 }
 
 //// you could use the above similar code for the actual querying from db

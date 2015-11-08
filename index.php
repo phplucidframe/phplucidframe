@@ -5,7 +5,7 @@
  * @package     LC
  * @since       PHPLucidFrame v 1.0.0
  * @copyright   Copyright (c), PHPLucidFrame.
- * @author      Sithu K. <hello@sithukyaw.com>
+ * @author      Sithu K. <cithukyaw@gmail.com>
  * @link        http://phplucidframe.sithukyaw.com
  * @license     http://www.opensource.org/licenses/mit-license.php MIT License
  *
@@ -13,5 +13,5 @@
  * with this source code in the file LICENSE.txt
  */
 
-require 'inc/bootstrap.php';
-_redirect( 'home', NULL, $lc_lang );
+require_once 'inc/bootstrap.php';
+_redirect('home', null, $lc_lang);
