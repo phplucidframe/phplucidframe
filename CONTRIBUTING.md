@@ -20,7 +20,6 @@ We follow [the successful Git branching model](http://nvie.com/posts/a-successfu
 
 - Create a **topic/feature** branch from where you want to base your work. This is usually the **dev** branch: `$ git checkout -b myfeature dev`
 - For bug fixes, create a branch from master `$ git checkout -b mybugfix master`.
-- Only target release branches if you are certain your fix must be on that branch.
 - Better avoid working directly on the master branch, to avoid conflicts if you pull in updates from origin.
 - Make commits using descriptive commit messages and reference the #issue number (if any).
 - Push your changes to a topic branch in your fork of the repository.
@@ -29,8 +28,7 @@ We follow [the successful Git branching model](http://nvie.com/posts/a-successfu
 ## Which branch?
 
 - Bugfix branches will be based on master.
-- New features that are backwards compatible will be based on next minor release branch.
-- New features or other non backwards compatible changes will go in the next major release branch.
+- New features will be based on the branch **dev**.
 
 # Coding Standards
 
