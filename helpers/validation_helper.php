@@ -136,7 +136,7 @@ function validate_notAllowZero($value)
 /**
  * Checks that a string contains only integer or letters
  * @param mixed $value The value being checked
- * @return boolean 	TRUE if the value contains only integer or letters, FALSE otherwise
+ * @return boolean     TRUE if the value contains only integer or letters, FALSE otherwise
  */
 function validate_alphaNumeric($value)
 {
@@ -160,7 +160,7 @@ function validate_alphaNumericSpace($value)
 /**
  * Checks that a string contains only integer, letters or dashes
  * @param mixed $value The value being checked
- * @return boolean 	TRUE if the value contains only integer, letters or dashes, FALSE otherwise
+ * @return boolean     TRUE if the value contains only integer, letters or dashes, FALSE otherwise
  */
 function validate_alphaNumericDash($value)
 {
@@ -473,7 +473,7 @@ function validate_fileMaxSize($value, $maxSize = null)
 /**
  * Validation of image file upload for max width and max height
  * @param array $value The $_FILES array
- * @param int $maxWidth	The maximum image width in pixels
+ * @param int $maxWidth    The maximum image width in pixels
  * @param int $maxHeight The maximum image height in pixels
  * @return boolean
  *  TRUE if the image uploaded dimension does not exceed the given max width and height;
@@ -513,7 +513,7 @@ function validate_fileExactDimension($value, $width, $height)
 /**
  * Validation of image file upload for max width only
  * @param array $value The $_FILES array
- * @param int $maxWidth	The maximum image width in pixels
+ * @param int $maxWidth    The maximum image width in pixels
  * @return boolean
  *  TRUE if the uploaded image does not exceed the maximum width allowed;
  *  FALSE otherwise
@@ -550,7 +550,7 @@ function validate_fileMaxHeight($value, $maxHeight)
 }
 /**
  * Validation of an IP address.
- * @param string $value	The value being checked
+ * @param string $value    The value being checked
  * @param string $type The IP protocol version to validate against IPv4 or IPv6
  * @return boolean TRUE on success; FALSE on failure
  */
@@ -695,9 +695,9 @@ class Validation
     /** @var array The array of the error messages upon validation */
     public static $errors = array();
     /** @var array The array of default error messages */
-    private	static $messages;
+    private static $messages;
     /** @var array The array of the rules for group of inputs validation */
-    private	static $batchRules = array('mandatoryOne', 'mandatoryAll');
+    private static $batchRules = array('mandatoryOne', 'mandatoryAll');
 
     /**
      * @internal
@@ -718,7 +718,7 @@ class Validation
      */
     public static function check($validations, $type = 'multi')
     {
-        Form::init();
+        form_init();
 
         $type = strtolower($type);
         if (!in_array($type, array('single', 'multi'))) {
@@ -965,7 +965,7 @@ class Validation
                         } # if (strstr($rule, 'validate_'))
                     } # foreach ($values as $value)
                 } # foreach ($v['rules'] as $rule)
-            } # if (	is_array($v['rules']) )
+            } # if (is_array($v['rules']) )
         } # foreach ($validations as $id => $v)
         return (count(self::$errors)) ? false : true;
     }

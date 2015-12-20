@@ -41,7 +41,7 @@ if (sizeof($_POST)) {
     );
 
     /* form token check && input validation check */
-    if (Form::validate() && Validation::check($validations) == true) {
+    if (form_validate() && Validation::check($validations) == true) {
         /**
         * //// Database operation example
         *
@@ -59,11 +59,11 @@ if (sizeof($_POST)) {
         */
         $success = true; # this should be set to true only when db operation is successful.
         if ($success) {
-            Form::set('success', true);
-            Form::set('message', _t('Your comment has been posted.'));
+            form_set('success', true);
+            form_set('message', _t('Your comment has been posted.'));
         }
     } else {
-        Form::set('error', Validation::$errors);
+        form_set('error', Validation::$errors);
     }
 }
-Form::respond('frmComment'); # Ajax response
+form_respond('frmComment'); # Ajax response

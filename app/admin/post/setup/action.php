@@ -2,7 +2,7 @@
 $success = false;
 if (sizeof($_POST)) {
     $post = _post($_POST);
-    $post['txtBody'] = _xss($_POST['txtBody']);	# if it is populated by Rich Text Editor
+    $post['txtBody'] = _xss($_POST['txtBody']);    # if it is populated by Rich Text Editor
     extract($post);
 
     $validations['txtTitle'] = array(
@@ -23,7 +23,7 @@ if (sizeof($_POST)) {
         'rules'     => array('mandatory')
     );
 
-    if (Form::validate($validations)) {
+    if (form_validate($validations)) {
         if ($hidEditId) {
             # edit
             $data = array(
@@ -72,12 +72,12 @@ if (sizeof($_POST)) {
             }
         }
         if ($success) {
-            Form::set('success', true);
-            Form::set('redirect', _url('admin/post/list'));
+            form_set('success', true);
+            form_set('redirect', _url('admin/post/list'));
         }
     } else {
-        Form::set('error', Validation::$errors);
+        form_set('error', Validation::$errors);
     }
 }
 # Ajax response
-Form::respond('frmPost');
+form_respond('frmPost');

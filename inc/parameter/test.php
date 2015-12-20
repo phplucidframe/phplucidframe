@@ -17,7 +17,7 @@ return array(
             'port'      => '',
             'database'  => 'lucid_blog_test',
             'username'  => 'root',
-            'password'  => '',
+            'password'  => 'root',
             'prefix'    => '',
             'collation' => 'utf8_general_ci'
         )

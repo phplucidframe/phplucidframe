@@ -112,7 +112,7 @@
             <input type="submit" id="btnSubmit" name="btnSubmit" value="<?php echo _t('Submit'); ?>" class="button green" />
         </div>
     </div>
-    <?php Form::token(); ?>
+    <?php form_token(); ?>
 </form>
 
 <?php include( _i('inc/tpl/footer.php') ); ?>

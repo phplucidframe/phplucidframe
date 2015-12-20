@@ -46,7 +46,7 @@
                 </td>
             </tr>
         </table>
-        <?php Form::token(); ?>
+        <?php form_token(); ?>
     </form>
 </div>
 <?php include( _i('inc/tpl/footer.php') ); ?>

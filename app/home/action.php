@@ -36,11 +36,11 @@ if (sizeof($_POST)) {
         */
 
         if ($success) {
-            Form::set('success', true);
-            Form::set('redirect', _url('home'));
+            form_set('success', true);
+            form_set('redirect', _url('home'));
         }
     } else {
-        Form::set('error', Validation::$errors);
+        form_set('error', Validation::$errors);
     }
 }
-Form::respond('formID'); # Ajax response
+form_respond('formID'); # Ajax response

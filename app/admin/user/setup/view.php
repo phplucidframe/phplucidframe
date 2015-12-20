@@ -55,7 +55,7 @@
                     </td>
                 </tr>
             </table>
-            <?php Form::token(); ?>
+            <?php form_token(); ?>
         </form>
     </div>
     <div id="block-foot"></div>

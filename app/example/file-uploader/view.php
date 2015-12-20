@@ -20,9 +20,9 @@
                 <input type="submit" name="btnUpload" value="<?php echo _t('Upload'); ?>" class="button green" />
             </div>
         </div>
-        <?php Form::token(); ?>
+        <?php form_token(); ?>
     </form>
-    <?php Form::respond('frmUpload', Validation::$errors); ?>
+    <?php form_respond('frmUpload', Validation::$errors); ?>
 </p>
 
 <?php include( _i('inc/tpl/footer.php') ); ?>

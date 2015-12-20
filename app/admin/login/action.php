@@ -19,7 +19,7 @@ if (sizeof($_POST)) {
         )
     );
 
-    if (Form::validate($validations)) {
+    if (form_validate($validations)) {
         $args = array();
 
         $user = db_select('user', 'u')
@@ -44,16 +44,16 @@ if (sizeof($_POST)) {
         }
 
         if ($error) {
-            Form::set('error', Validation::$errors);
+            form_set('error', Validation::$errors);
         }
 
         if ($success) {
-            Form::set('success', true);
-            Form::set('redirect', _url('admin/post'));
+            form_set('success', true);
+            form_set('redirect', _url('admin/post'));
         }
 
     } else {
-        Form::set('error', Validation::$errors);
+        form_set('error', Validation::$errors);
     }
 }
-Form::respond('frmLogin'); # Ajax response
+form_respond('frmLogin'); # Ajax response
