@@ -106,7 +106,7 @@ if (count($_FILES)) {
     }
 
     if (Validation::check($validations, 'single') === true) {
-        $file = new File();
+        $file = file_fileHelper();
         $uniqueId = $file->get('uniqueId');
         $file->set('uploadDir', $uploadDir);
         if (is_array($dimensions) && $dimensions) {

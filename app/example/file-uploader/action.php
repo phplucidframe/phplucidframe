@@ -25,7 +25,7 @@ if (sizeof($_POST)) {
 
     /* form token check && input validation check */
     if (form_validate($validations) === true) {
-        $file = new File();
+        $file = file_fileHelper();
         // set file upload directory; default to `/files/tmp/`
         // this should be defined in site.config.php such as `define('POST_IMAGE_DIR', FILE . 'posts/');`
         // and use here `$file->set('uploadDir', POST_IMAGE_DIR . 'tmp/');`

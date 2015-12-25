@@ -194,6 +194,8 @@ if ($file = _i('helpers/file_helper.php', false)) {
     include_once $file;
 }
 if ($moduleFile = _readyloader('file_helper')) {
+    require_once HELPER . 'classes' . _DS_ . 'File.php';
+    require_once HELPER . 'classes' . _DS_ . 'AsynFileUploader.php';
     require_once $moduleFile;
 }
 _unloader('file_helper', HELPER);

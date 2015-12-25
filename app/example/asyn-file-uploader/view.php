@@ -23,7 +23,7 @@
                 </div>
                 <div class="row">
                 <?php
-                    $file = new AsynFileUploader('photo');
+                    $file = file_asynFileUploader('photo');
                     $file->setCaption('Choose Image'); # default to "Choose File"
                     $file->setMaxSize(MAX_FILE_UPLOAD_SIZE); # default to 10MB
                     # image dimension to resize, array('W1xH2', 'W1xH2');
@@ -59,7 +59,7 @@
                 </div>
                 <div class="row">
                 <?php
-                    $file = new AsynFileUploader('doc');
+                    $file = file_asynFileUploader('doc');
                     $file->setMaxSize(MAX_FILE_UPLOAD_SIZE);
                     $file->setExtensions(array('pdf', 'doc', 'docx', 'odt', 'ods', 'txt'));
                     $file->setOnUpload('example_docUpload'); # This hook is defined in /app/helpers/file_helper.php
@@ -86,7 +86,7 @@
                 </div>
                 <div class="row">
                 <?php
-                    $file = new AsynFileUploader();
+                    $file = file_asynFileUploader();
                     $file->html(array(
                         'class' => 'button black'
                     ));
@@ -100,7 +100,7 @@
                 </div>
                 <div class="row">
                 <?php
-                    $file = new AsynFileUploader('sheet');
+                    $file = file_asynFileUploader('sheet');
                     $file->setMaxSize(MAX_FILE_UPLOAD_SIZE); # default to 10MB
                     $file->setExtensions(array('xls', 'xlsx', 'csv'));
                     $file->html();
