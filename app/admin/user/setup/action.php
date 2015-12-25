@@ -79,7 +79,7 @@ if (sizeof($_POST)) {
             form_set('redirect', _url('admin/user/list'));
         }
     } else {
-        form_set('error', Validation::$errors);
+        form_set('error', validation_get('errors'));
     }
 }
 form_respond('frmUser');

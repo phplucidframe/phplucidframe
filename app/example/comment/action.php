@@ -41,7 +41,7 @@ if (sizeof($_POST)) {
     );
 
     /* form token check && input validation check */
-    if (form_validate() === true && Validation::check($validations) === true) {
+    if (form_validate($validations)) {
         /**
         * //// Database operation example
         *
@@ -64,6 +64,6 @@ if (sizeof($_POST)) {
             _redirect();
         }
     } else {
-        form_set('error', Validation::$errors);
+        form_set('error', validation_get('errors'));
     }
 }

@@ -85,7 +85,7 @@ if (sizeof($_POST)) {
             form_set('callback', 'postOutput('.json_encode($post).')');
         }
     } else {
-        form_set('error', Validation::$errors);
+        form_set('error', validation_get('errors'));
     }
 }
 form_respond('frmAsynFileUpload'); # Ajax response

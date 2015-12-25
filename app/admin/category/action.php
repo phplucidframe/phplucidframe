@@ -44,7 +44,7 @@ if (sizeof($_POST)) {
                 }
             }
         } else {
-            form_set('error', Validation::$errors);
+            form_set('error', validation_get('errors'));
         }
     }
     if ($success) {

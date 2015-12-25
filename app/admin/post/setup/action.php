@@ -76,7 +76,7 @@ if (sizeof($_POST)) {
             form_set('redirect', _url('admin/post/list'));
         }
     } else {
-        form_set('error', Validation::$errors);
+        form_set('error', validation_get('errors'));
     }
 }
 # Ajax response

@@ -41,7 +41,7 @@ if (sizeof($_POST)) {
     );
 
     /* form token check && input validation check */
-    if (form_validate() && Validation::check($validations) == true) {
+    if (form_validate($validations)) {
         /**
         * //// Database operation example
         *
@@ -63,7 +63,7 @@ if (sizeof($_POST)) {
             form_set('message', _t('Your comment has been posted.'));
         }
     } else {
-        form_set('error', Validation::$errors);
+        form_set('error', validation_get('errors'));
     }
 }
 form_respond('frmComment'); # Ajax response

@@ -22,7 +22,7 @@ class ValidationHelperTestCase extends LucidFrameTestCase
                 'dateFormat'=> $val[1],
             );
         }
-        $this->assertTrue(Validation::check($validations));
+        $this->assertTrue(validation_check($validations));
     }
 
     public function testTimeValidation()
@@ -44,7 +44,7 @@ class ValidationHelperTestCase extends LucidFrameTestCase
                 'rules'     => array('time'),
             );
         }
-        $this->assertTrue(Validation::check($validations));
+        $this->assertTrue(validation_check($validations));
 
         $validations = array();
         $values = array(
@@ -61,7 +61,7 @@ class ValidationHelperTestCase extends LucidFrameTestCase
                 'timeFormat'=> '12'
             );
         }
-        $this->assertTrue(Validation::check($validations));
+        $this->assertTrue(validation_check($validations));
 
         $validations = array();
         $values = array(
@@ -78,7 +78,7 @@ class ValidationHelperTestCase extends LucidFrameTestCase
                 'timeFormat'=> '24'
             );
         }
-        $this->assertTrue(Validation::check($validations));
+        $this->assertTrue(validation_check($validations));
     }
 
     public function testDateTimeValidation()
@@ -99,7 +99,7 @@ class ValidationHelperTestCase extends LucidFrameTestCase
                 'dateFormat'=> $val[1]
             );
         }
-        $this->assertTrue(Validation::check($validations));
+        $this->assertTrue(validation_check($validations));
 
         $validations = array();
         $values = array(
@@ -116,7 +116,7 @@ class ValidationHelperTestCase extends LucidFrameTestCase
                 'timeFormat'=> '24'
             );
         }
-        $this->assertTrue(Validation::check($validations));
+        $this->assertTrue(validation_check($validations));
 
         $validations = array();
         $values = array(
@@ -133,6 +133,6 @@ class ValidationHelperTestCase extends LucidFrameTestCase
                 'timeFormat'=> '12'
             );
         }
-        $this->assertTrue(Validation::check($validations));
+        $this->assertTrue(validation_check($validations));
     }
 }

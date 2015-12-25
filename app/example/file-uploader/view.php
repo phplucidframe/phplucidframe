@@ -22,7 +22,7 @@
         </div>
         <?php form_token(); ?>
     </form>
-    <?php form_respond('frmUpload', Validation::$errors); ?>
+    <?php form_respond('frmUpload', validation_get('errors')); ?>
 </p>
 
 <?php include( _i('inc/tpl/footer.php') ); ?>

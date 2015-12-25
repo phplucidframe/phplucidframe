@@ -34,17 +34,17 @@ if (sizeof($_POST)) {
                 auth_create($user->uid, $user);
             } else {
                 # Other follow-up errors checkup (if any)
-                Validation::addError('Password', _t('Password does not match.'));
+                validation_addError('Password', _t('Password does not match.'));
                 $error = true;
             }
         } else {
             # Other follow-up errors checkup (if any)
-            Validation::addError('Username', 'Username does not exists.');
+            validation_addError('Username', 'Username does not exists.');
             $error = true;
         }
 
         if ($error) {
-            form_set('error', Validation::$errors);
+            form_set('error', validation_get('errors'));
         }
 
         if ($success) {
@@ -53,7 +53,7 @@ if (sizeof($_POST)) {
         }
 
     } else {
-        form_set('error', Validation::$errors);
+        form_set('error', validation_get('errors'));
     }
 }
 form_respond('frmLogin'); # Ajax response

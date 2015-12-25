@@ -64,10 +64,10 @@ if (sizeof($_POST)) {
             }
         } else {
             $error = $file->getError();
-            Validation::addError('filImage', $error['message']);
-            form_set('error', Validation::$errors);
+            validation_addError('filImage', $error['message']);
+            form_set('error', validation_get('errors'));
         }
     } else {
-        form_set('error', Validation::$errors);
+        form_set('error', validation_get('errors'));
     }
 }

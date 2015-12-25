@@ -31,7 +31,7 @@
         </div>
         <?php form_token(); ?>
     </form>
-    <?php form_respond('frmComment', Validation::$errors); ?>
+    <?php form_respond('frmComment', validation_get('errors')); ?>
 </p>
 
 <?php include( _i('inc/tpl/footer.php') ); ?>

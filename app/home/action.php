@@ -30,7 +30,7 @@ if (sizeof($_POST)) {
     $validations = array(
     );
 
-    if (Validation::check($validations) == true) {
+    if (form_validate($validations)) {
         /**
         Database operations here
         */
@@ -40,7 +40,7 @@ if (sizeof($_POST)) {
             form_set('redirect', _url('home'));
         }
     } else {
-        form_set('error', Validation::$errors);
+        form_set('error', validation_get('errors'));
     }
 }
 form_respond('formID'); # Ajax response
