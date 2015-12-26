@@ -73,7 +73,7 @@ define('TEST_DIR', ROOT.'tests'._DS_);
 define('CACHE', FILE.'cache'._DS_);
 
 # System prerequisites
-require_once INC . 'lc.inc';
+require_once LIB . 'lc.inc';
 # System configuration variables
 require_once INC . 'config.php';
 # Load environment settings

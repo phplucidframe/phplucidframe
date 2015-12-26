@@ -14,7 +14,7 @@
  * with this source code in the file LICENSE.txt
  */
 
-require_once '../inc/bootstrap.php';
+require_once '../lib/bootstrap.php';
 
 ob_start('_flush');
 
