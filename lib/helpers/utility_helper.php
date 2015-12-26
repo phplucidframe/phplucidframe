@@ -15,6 +15,20 @@
  */
 
 /**
+ * Returns the current PHPLucidFrame version
+ * @return string
+ */
+function _version()
+{
+    $versionFile = ROOT . 'VERSION';
+    if (is_file($versionFile) && file_exists($versionFile)) {
+        return trim(file_get_contents($versionFile));
+    } else {
+        return 'Unknown';
+    }
+}
+
+/**
  * @internal
  *
  * ob_start callback function to output buffer

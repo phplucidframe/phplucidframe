@@ -19,4 +19,4 @@
 define('APP_DIR', 'app'); # LC app root
 $ROOT = rtrim(getcwd(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR; # LC root
 chdir(APP_DIR); # change to the app root
-require_once($ROOT . 'inc/bootstrap.php');
+require_once($ROOT . 'lib/bootstrap.php');

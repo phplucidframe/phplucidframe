@@ -69,7 +69,7 @@ class AsynFileUploader
         $this->uploadDir            = FILE . 'tmp' . _DS_;
         $this->buttons              = array();
         $this->dimensions           = '';
-        $this->uploadHandler        = WEB_ROOT . 'inc/asyn-file-uploader.php';
+        $this->uploadHandler        = WEB_ROOT . 'lib/asyn-file-uploader.php';
         $this->isDeletable          = true;
         $this->fileNameIsDisplayed  = true;
         $this->onUpload             = '';
