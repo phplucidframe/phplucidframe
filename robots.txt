@@ -22,7 +22,7 @@ User-agent: *
 Disallow: /business
 Disallow: /css
 Disallow: /files
-Disallow: /helpers
+Disallow: /lib
 Disallow: /i18n
 Disallow: /images
 Disallow: /inc

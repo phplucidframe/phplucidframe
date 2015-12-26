@@ -92,7 +92,7 @@ if (!file_exists(INC . 'site.config.php')) {
  * File include helper
  * Find files under the default directories inc/, js/, css/ according to the defined site directories $lc_sites
  *
- * @param $file	string File name with directory path
+ * @param $file    string File name with directory path
  * @param $recursive boolean True to find the file name until the site root
  *
  * @return string File name with absolute path if it is found, otherwise return an empty string
@@ -154,11 +154,17 @@ function _i($file, $recursive = true)
     # $key is for file_exists()
     # $value is for include() or <script> or <link>
     foreach ($folders as $key => $value) {
-        $fileWithPath = $key . $file;
+        if ($key === ROOT && substr($file, 0, 7) === 'helpers') {
+            $fileWithPath = LIB . $file;
+        } else {
+            $fileWithPath = $key . $file;
+        }
+
         if (is_file($fileWithPath) && file_exists($fileWithPath)) {
             $fileWithPath = $value . $file;
             return $fileWithPath;
         }
+
         if ($recursive == false) {
             break;
         }
@@ -168,8 +174,13 @@ function _i($file, $recursive = true)
         if (is_file($file) && file_exists($file)) {
             return $file;
         }
+
         if ($recursive == true) {
-            return $root . $file;
+            if ($root === ROOT && substr($file, 0, 7) === 'helpers') {
+                return LIB . $file;
+            } else {
+                return $root . $file;
+            }
         }
     } else {
         return '';

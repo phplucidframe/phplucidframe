@@ -14,7 +14,7 @@
  * with this source code in the file LICENSE.txt
  */
 
-require_once HELPER . 'classes' . _DS_ . 'Validation.php';
+require_once CLASSES . 'Validation.php';
 
 $lc_validationMessages = array(
     'default'                => "'%s' needs to be revised.",

@@ -50,8 +50,12 @@ if (strcasecmp(APP_ROOT, ROOT) === 0) {
 
 # path to inc/ folder
 define('INC', ROOT.'inc'._DS_);
-# path to helpers/ folder
-define('HELPER', ROOT.'helpers'._DS_);
+# path to lib/ folder
+define('LIB', ROOT.'lib'._DS_);
+# path to lib/helpers/ folder
+define('HELPER', LIB.'helpers'._DS_);
+# path to lib/classes/ folder
+define('CLASSES', LIB.'classes'._DS_);
 # path to i18n/ folder
 define('I18N', ROOT.'i18n'._DS_);
 # path to vendor/ folder
@@ -83,7 +87,7 @@ require_once HELPER . 'utility_helper.php';
 
 # DB configuration & DB helper (required)
 if (isset($lc_databases[$lc_defaultDbSource]) && is_array($lc_databases[$lc_defaultDbSource]) && $lc_databases[$lc_defaultDbSource]['engine']) {
-    require_once HELPER . 'classes' . _DS_ . 'QueryBuilder.php';
+    require_once CLASSES . 'QueryBuilder.php';
 
     if ($file = _i('helpers/db_helper.php', false)) {
         include_once $file;
@@ -131,7 +135,7 @@ if ($moduleI18n = _readyloader('i18n_helper')) {
 _unloader('i18n_helper', HELPER);
 
 # Route helper (required)
-require_once HELPER . 'classes' . _DS_ . 'Router.php';
+require_once CLASSES . 'Router.php';
 require_once HELPER . 'route_helper.php'; # WEB_ROOT and WEB_APP_ROOT is created in route_helper
 # Routing configuration
 include_once INC . 'route.config.php';
@@ -194,8 +198,8 @@ if ($file = _i('helpers/file_helper.php', false)) {
     include_once $file;
 }
 if ($moduleFile = _readyloader('file_helper')) {
-    require_once HELPER . 'classes' . _DS_ . 'File.php';
-    require_once HELPER . 'classes' . _DS_ . 'AsynFileUploader.php';
+    require_once CLASSES . 'File.php';
+    require_once CLASSES . 'AsynFileUploader.php';
     require_once $moduleFile;
 }
 _unloader('file_helper', HELPER);

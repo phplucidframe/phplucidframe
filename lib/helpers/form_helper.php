@@ -14,7 +14,7 @@
  * with this source code in the file LICENSE.txt
  */
 
-require_once HELPER . 'classes' . _DS_ . 'Form.php';
+require_once CLASSES . 'Form.php';
 
 /**
  * Initialize form
