@@ -14,6 +14,8 @@
  * with this source code in the file LICENSE.txt
  */
 
+use LC\Core\Console\Command;
+
 /**
  * Returns the current PHPLucidFrame version
  * @return string
@@ -168,6 +170,7 @@ function _minifyHTML($html)
 function _loader($name, $path = HELPER)
 {
     global $lc_autoload;
+    $name = rtrim($name, '.php');
     $lc_autoload[] = $path . $name . '.php';
     $lc_autoload = array_unique($lc_autoload);
 }
@@ -1591,4 +1594,31 @@ function _isBot()
         }
     }
     return false;
+}
+
+/**
+ * Write output with line feed (\n)
+ * @since  PHPLucidFrame v 1.11.0
+ * @param  string $text The text to output
+ * @param  [mixed $args [, mixed ...]] Arguments to the text
+ * @return void
+ */
+function _writeln($text = '')
+{
+    $args = func_get_args();
+    $text = array_shift($args);
+    if ($text) {
+        echo vsprintf($text, $args);
+    }
+    echo "\n";
+}
+
+/**
+ * Simple helper to create an instance of LC\Core\Console\Command
+ * @since  PHPLucidFrame v 1.11.0
+ * @return object LC\Core\Console\Command
+ */
+function _consoleCommand($command)
+{
+    return new Command($command);
 }

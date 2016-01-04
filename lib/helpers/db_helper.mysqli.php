@@ -16,10 +16,6 @@
 
 use LC\Core\QueryBuilder;
 
-define('LC_FETCH_ASSOC', 1);
-define('LC_FETCH_ARRAY', 2);
-define('LC_FETCH_OBJECT', 3);
-
 /**
  * @internal
  * Return the database configuration of the given namespace

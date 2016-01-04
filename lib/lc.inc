@@ -33,6 +33,18 @@ define('FILE_UPLOAD_ERR_MOVE', 100);
  * @ignore File upload error flag for the failure of image creation of GD functions
  */
 define('FILE_UPLOAD_ERR_IMAGE_CREATE', 101);
+/**
+ * Query fetch types
+ */
+define('LC_FETCH_ASSOC', 1);
+define('LC_FETCH_ARRAY', 2);
+define('LC_FETCH_OBJECT', 3);
+/**
+ * Console command option types
+ */
+define('LC_CONSOLE_OPTION_REQUIRED', 4);
+define('LC_CONSOLE_OPTION_OPTIONAL', 5);
+define('LC_CONSOLE_OPTION_NOVALUE', 6);
 
 /**
  * @internal
@@ -219,11 +231,20 @@ function _cfg($key = '', $value = '')
  */
 function _p($name)
 {
-    if (PHP_SAPI == 'cli' || stripos($_SERVER['REQUEST_URI'], 'tests/') !== false) {
-        _cfg('env', 'test');
-    }
+    global $argv;
 
-    $env = _cfg('env');
+    if (PHP_SAPI == 'cli' && $argv[0] === 'lucidframe') {
+        # keep the current environment when `php lucidframe` is run
+        $env = _cfg('env');
+    } elseif (PHP_SAPI == 'cli' || stripos($_SERVER['REQUEST_URI'], 'tests/') !== false) {
+        # force change to "test" environment when run `php tests/test.php` from CLI
+        # or when run `/tests/tests.php` from browser
+        $env = 'test';
+        _cfg('env', $env);
+    } else {
+        # neither CLI nor test
+        $env = _cfg('env');
+    }
 
     if (!in_array($env, array('development', 'production', 'test'))) {
         die('Wrong environment configuration. Use "development" or "production" or "test".');
