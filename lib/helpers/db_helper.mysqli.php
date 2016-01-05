@@ -14,7 +14,7 @@
  * with this source code in the file LICENSE.txt
  */
 
-use LC\Core\QueryBuilder;
+use LucidFrame\Core\QueryBuilder;
 
 /**
  * @internal

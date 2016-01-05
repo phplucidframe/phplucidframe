@@ -14,7 +14,7 @@
  * with this source code in the file LICENSE.txt
  */
 
-namespace LC\Core;
+namespace LucidFrame\File;
 
 /**
  * This class is part of the PHPLucidFrame library.

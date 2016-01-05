@@ -14,7 +14,7 @@
  * with this source code in the file LICENSE.txt
  */
 
-use LC\Core\Console\Command;
+use LucidFrame\Console\Command;
 
 /**
  * Returns the current PHPLucidFrame version
@@ -1614,9 +1614,9 @@ function _writeln($text = '')
 }
 
 /**
- * Simple helper to create an instance of LC\Core\Console\Command
+ * Simple helper to create an instance of LucidFrame\Console\Command
  * @since  PHPLucidFrame v 1.11.0
- * @return object LC\Core\Console\Command
+ * @return object LucidFrame\Console\Command
  */
 function _consoleCommand($command)
 {

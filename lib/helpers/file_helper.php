@@ -14,8 +14,8 @@
  * with this source code in the file LICENSE.txt
  */
 
-use LC\Core\File;
-use LC\Core\AsynFileUploader;
+use LucidFrame\File\File;
+use LucidFrame\File\AsynFileUploader;
 
 /**
  * Simple helper to create File object

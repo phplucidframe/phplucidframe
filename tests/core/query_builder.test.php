@@ -1,5 +1,5 @@
 <?php
-use LC\Core\QueryBuilder;
+use LucidFrame\Core\QueryBuilder;
 
 /**
  * Unit Test for QueryBuilder.php

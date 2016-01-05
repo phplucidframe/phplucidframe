@@ -14,11 +14,11 @@
  * with this source code in the file LICENSE.txt
  */
 
-namespace LC\Core\Console;
+namespace LucidFrame\Console;
 
 class Console
 {
-    /** @var LC\Core\Console\Command The command being run **/
+    /** @var LucidFrame\Console\Command The command being run **/
     protected $command;
     /** @var string The command name **/
     private $commandName;
@@ -46,7 +46,7 @@ class Console
 
     /**
      * Register a command
-     * @param LC\Core\Console\Command $command
+     * @param LucidFrame\Console\Command $command
      * @return void
      */
     public static function registerCommand($command)
@@ -56,7 +56,7 @@ class Console
 
     /**
      * Get all registered commands
-     * @return array Array of LC\Core\Console\Command
+     * @return array Array of LucidFrame\Console\Command
      */
     public static function getCommands()
     {
@@ -76,7 +76,7 @@ class Console
     /**
      * Get the command by name
      * @param string $name The command name
-     * @return object|null LC\Core\Console\Command
+     * @return object|null LucidFrame\Console\Command
      */
     public function getCommand($name)
     {
@@ -91,7 +91,7 @@ class Console
         _writeln('PHPLucidFrame %s by Sithu K.', _version());
         _writeln();
 
-        if ($this->command instanceof \LC\Core\Console\Command) {
+        if ($this->command instanceof \LucidFrame\Console\Command) {
             $this->command->run($this->argv);
         } else {
             if (empty($this->command) || in_array($this->command, array('-V', '--version'))) {

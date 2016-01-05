@@ -14,9 +14,7 @@
  * with this source code in the file LICENSE.txt
  */
 
-namespace LC\Core\Console;
-
-use LC\Core\Console\Console;
+namespace LucidFrame\Console;
 
 class Command
 {
@@ -50,7 +48,7 @@ class Command
     /**
      * Setter for $name
      * @param string $name The command name
-     * @return object LC\Core\Console\Command
+     * @return object LucidFrame\Console\Command
      */
     public function setName($name)
     {
@@ -71,7 +69,7 @@ class Command
     /**
      * Setter for $description
      * @param string $description The description for the command
-     * @return object LC\Core\Console\Command
+     * @return object LucidFrame\Console\Command
      */
     public function setDescription($description = null)
     {
@@ -92,7 +90,7 @@ class Command
     /**
      * Setter for $help
      * @param string $help The help tip for the command
-     * @return object LC\Core\Console\Command`
+     * @return object LucidFrame\Console\Command`
      */
     public function setHelp($help = null)
     {
@@ -119,7 +117,7 @@ class Command
      * @param mixed  $default       The default value for the option
      * @param int    $type          A constant: LC_CONSOLE_OPTION_REQUIRED, LC_CONSOLE_OPTION_OPTIONAL, LC_CONSOLE_OPTION_NOVALUE
      *
-     * @return object LC\Core\Console\Command
+     * @return object LucidFrame\Console\Command
      */
     public function addOption($name, $shortcut = null, $description = '', $default = null, $type = LC_CONSOLE_OPTION_NOVALUE)
     {
@@ -149,7 +147,7 @@ class Command
     /**
      * Setter for $definition
      * @param closure $function Anonymous function that performs the job of the command
-     * @return object LC\Core\Console\Command`
+     * @return object LucidFrame\Console\Command`
      */
     public function setDefinition($function)
     {
@@ -160,7 +158,7 @@ class Command
 
     /**
      * Register a command
-     * @return object LC\Core\Console\Command`
+     * @return object LucidFrame\Console\Command`
      */
     public function register()
     {
@@ -173,7 +171,7 @@ class Command
      * Get the option from the command
      *
      * @param string $name The option name without the prefix `--`, i.e,. `help` for `--help`
-     * @return object LC\Core\Console\Command
+     * @return object LucidFrame\Console\Command
      */
     public function getOption($name)
     {

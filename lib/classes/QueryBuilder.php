@@ -14,7 +14,7 @@
  * with this source code in the file LICENSE.txt
  */
 
-namespace LC\Core;
+namespace LucidFrame\Core;
 
 class QueryBuilder
 {
@@ -375,7 +375,7 @@ class QueryBuilder
     public function condition($field, $value)
     {
         if (isset($this->where[$this->whereType][$field])) {
-            $field .= uniqid('__'.trim(__METHOD__, 'LC\Core').'__');
+            $field .= uniqid('__'.trim(__METHOD__, 'LucidFrame\Core').'__');
         }
         $this->where[$this->whereType][$field] = $value;
 
