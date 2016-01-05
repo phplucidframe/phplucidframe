@@ -62,13 +62,13 @@ class Pager
         }
         $page = _arg($this->pageQueryStr);
         $this->page = ( $page ) ? $page : 1;
-
-        return $this;
     }
+
     /**
      * Setter functions for the properties
      * @param string $key The property name
      * @param mixed $value The value to be set to the property
+     * @return object Pager
      */
     public function set($key, $value = '')
     {
@@ -81,6 +81,7 @@ class Pager
 
         return $this;
     }
+
     /**
      * Getter functions for the properties
      * @param string $key The property name
@@ -90,11 +91,12 @@ class Pager
     {
         return (isset($this->$key)) ? $this->$key : '';
     }
+
     /**
      * @internal
      * Setter functions for the property "htmlTag"
      * @param string $value The HTML tag - <table>, <ul> or <div>
-     * @return void
+     * @return object Pager
      */
     private function setHtmlTag($tag = '<table>')
     {
@@ -121,6 +123,7 @@ class Pager
 
         return $this;
     }
+
     /**
      * Pager calculation function
      * Before calling this function, the following property must be set:
@@ -130,7 +133,7 @@ class Pager
      * - $pageNumLimit
      * - $total
      *
-     * @return array The array of the offsets
+     * The array of the offsets
      *  Array(
      *      [offset] => xx
      *      [thisPage] => xx
@@ -143,6 +146,8 @@ class Pager
      *      [lastPageNo] => xx
      *      [lastPageEnable] => xx
      *  )
+     *
+     * @return object Pager
      */
     public function calculate()
     {
@@ -247,10 +252,12 @@ class Pager
         }
 
         $this->result = $nav;
-        return $this->result;
+        return $this;
     }
+
     /**
      * Display the pagination
+     * @return void
      */
     public function display()
     {

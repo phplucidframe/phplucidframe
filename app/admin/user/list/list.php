@@ -9,13 +9,13 @@ $rowCount = db_count('category')
     ->fetch();
 
 # Prerequisite for the Pager
-$pager = _pager();
-$pager->set('itemsPerPage', $lc_itemsPerPage);
-$pager->set('pageNumLimit', $lc_pageNumLimit);
-$pager->set('total', $rowCount);
-$pager->set('imagePath', WEB_ROOT.'images/pager/');
-$pager->set('ajax', true);
-$pager->calculate();
+$pager = _pager()
+    ->set('itemsPerPage', $lc_itemsPerPage)
+    ->set('pageNumLimit', $lc_pageNumLimit)
+    ->set('total', $rowCount)
+    ->set('imagePath', WEB_ROOT.'images/pager/')
+    ->set('ajax', true)
+    ->calculate();
 
 $qb = db_select('user', 'u')
     ->where()->condition('deleted', null)

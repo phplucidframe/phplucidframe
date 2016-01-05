@@ -16,14 +16,15 @@ $totalRecords = db_count('post')
 # Prerequisite for the Pager
 $page = isset($get['page']) ? $get['page'] : 1;
 
-$pager = _pager();
-$pager->set('page', $page);
-$pager->set('itemsPerPage', _cfg('itemsPerPage'));
-$pager->set('pageNumLimit', _cfg('pageNumLimit'));
-$pager->set('total', $totalRecords);
-$pager->set('imagePath', WEB_ROOT.'images/pager/');
-$pager->set('ajax', true);
-$pager->calculate();
+
+$pager = _pager()
+    ->set('page', $page)
+    ->set('itemsPerPage', _cfg('itemsPerPage'))
+    ->set('pageNumLimit', _cfg('pageNumLimit'))
+    ->set('total', $totalRecords)
+    ->set('imagePath', WEB_ROOT.'images/pager/')
+    ->set('ajax', true)
+    ->calculate();
 
 $qb = db_select('post', 'p')
     ->where()->condition('deleted', null)
@@ -63,13 +64,13 @@ $blog[] = array(
 $totalRecords = count($blog);
 
 # Prerequisite for the Pager
-$pager = _pager();
-$pager->set('itemsPerPage', $lc_itemsPerPage = 2);
-$pager->set('pageNumLimit', $lc_pageNumLimit);
-$pager->set('total', $totalRecords);
-$pager->set('imagePath', WEB_ROOT.'images/pager/');
-$pager->set('ajax', true);
-$pager->calculate();
+$pager = _pager()
+    ->set('itemsPerPage', $lc_itemsPerPage = 2)
+    ->set('pageNumLimit', $lc_pageNumLimit)
+    ->set('total', $totalRecords)
+    ->set('imagePath', WEB_ROOT.'images/pager/')
+    ->set('ajax', true)
+    ->calculate();
 
 $blog = array_slice($blog, $pager->get('offset'), $pager->get('itemsPerPage'));
 
