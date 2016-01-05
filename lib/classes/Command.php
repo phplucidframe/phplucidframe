@@ -139,30 +139,6 @@ class Command
     }
 
     /**
-     * Gets options from the command line argument list
-     */
-    private function parseOptions()
-    {
-        $shortOpts = '';
-        $longOpts = array();
-        foreach ($this->options as $name => $opt) {
-            if ($opt['type'] === LC_CONSOLE_OPTION_REQUIRED) {
-                $longOpts[] = $name . ':';
-                $shortOpts .= $opt['shortcut'] . ':';
-            } elseif ($opt['type'] === LC_CONSOLE_OPTION_OPTIONAL) {
-                $longOpts[] = $name . '::';
-                $shortOpts .= $opt['shortcut'] . '::';
-            } else {
-                $longOpts[] = $name;
-                $shortOpts .= $opt['shortcut'];
-            }
-        }
-
-        $this->parsedOptions = getopt($shortOpts, $longOpts);
-        return $this->parsedOptions;
-    }
-
-    /**
      * Getter for $options
      */
     public function getOptions()
