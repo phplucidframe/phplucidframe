@@ -28,7 +28,7 @@ We follow [the successful Git branching model](http://nvie.com/posts/a-successfu
 ## Which branch?
 
 - Bugfix branches will be based on master.
-- New features will be based on the branch **dev**.
+- New features will be based on the branch **dev** or the target release branch (**2.0**, **3.0**, etc.) if any.
 
 # Coding Standards
 
