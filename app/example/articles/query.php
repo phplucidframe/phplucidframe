@@ -10,7 +10,7 @@ $totalRecords = db_count('post')
 $page = _arg('page');
 $page = ($page) ? $page : 1;
 
-$pager = pager();
+$pager = _pager();
 $pager->set('page', $page);
 $pager->set('itemsPerPage', _cfg('itemsPerPage'));
 $pager->set('pageNumLimit', _cfg('pageNumLimit'));
@@ -73,7 +73,7 @@ $articles[] = array(
 $totalRecords = count($articles);
 
 # Prerequisite for the Pager
-$pager = pager();
+$pager = _pager();
 $pager->set('itemsPerPage', $lc_itemsPerPage = 2);
 $pager->set('pageNumLimit', $lc_pageNumLimit);
 $pager->set('total', $totalRecords);

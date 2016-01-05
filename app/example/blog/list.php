@@ -16,7 +16,7 @@ $totalRecords = db_count('post')
 # Prerequisite for the Pager
 $page = isset($get['page']) ? $get['page'] : 1;
 
-$pager = pager();
+$pager = _pager();
 $pager->set('page', $page);
 $pager->set('itemsPerPage', _cfg('itemsPerPage'));
 $pager->set('pageNumLimit', _cfg('pageNumLimit'));
@@ -63,7 +63,7 @@ $blog[] = array(
 $totalRecords = count($blog);
 
 # Prerequisite for the Pager
-$pager = pager();
+$pager = _pager();
 $pager->set('itemsPerPage', $lc_itemsPerPage = 2);
 $pager->set('pageNumLimit', $lc_pageNumLimit);
 $pager->set('total', $totalRecords);

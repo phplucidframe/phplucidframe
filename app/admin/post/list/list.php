@@ -8,7 +8,7 @@ $rowCount = db_count('post')
     ->fetch();
 
 # Prerequisite for the Pager
-$pager = pager();
+$pager = _pager();
 $pager->set('itemsPerPage', $lc_itemsPerPage);
 $pager->set('pageNumLimit', $lc_pageNumLimit);
 $pager->set('total', $rowCount);

@@ -176,6 +176,7 @@ if ($moduleAuth = _readyloader('auth_helper')) {
 _unloader('auth_helper', HELPER);
 
 # Pager helper
+require_once CLASSES . 'Pager.php';
 if ($file = _i('helpers/pager_helper.php', false)) {
     include_once $file;
 }

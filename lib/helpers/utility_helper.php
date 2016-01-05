@@ -1622,3 +1622,14 @@ function _consoleCommand($command)
 {
     return new Command($command);
 }
+
+/**
+ * Simple helper to create Pager object
+ * @since   PHPLucidFrame v 1.11.0
+ * @param   string $pageQueryStr The customized page query string name
+ * @return  Pager
+ */
+function _pager($pageQueryStr = '')
+{
+    return new Pager($pageQueryStr);
+}
