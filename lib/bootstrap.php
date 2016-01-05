@@ -194,13 +194,13 @@ if ($moduleForm = _readyloader('form_helper')) {
 }
 _unloader('form_helper', HELPER);
 
-# File helper (unloadable from /inc/autoload.php)
+# File helper
+require_once CLASSES . 'File.php';
+require_once CLASSES . 'AsynFileUploader.php';
 if ($file = _i('helpers/file_helper.php', false)) {
     include_once $file;
 }
 if ($moduleFile = _readyloader('file_helper')) {
-    require_once CLASSES . 'File.php';
-    require_once CLASSES . 'AsynFileUploader.php';
     require_once $moduleFile;
 }
 _unloader('file_helper', HELPER);

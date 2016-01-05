@@ -15,6 +15,8 @@
  */
 
 use LucidFrame\Console\Command;
+use LucidFrame\File\File;
+use LucidFrame\File\AsynFileUploader;
 
 /**
  * Returns the current PHPLucidFrame version
@@ -1632,4 +1634,30 @@ function _consoleCommand($command)
 function _pager($pageQueryStr = '')
 {
     return new Pager($pageQueryStr);
+}
+
+/**
+ * Simple helper to create File object
+ * @since   PHPLucidFrame v 1.11.0
+ * @param   string $fileName (optinal) Path to the file
+ * @return  LucidFrame\File\File
+ */
+function _fileHelper($fileName = '')
+{
+    return new File($fileName);
+}
+
+/**
+ * Simple helper to create AsynFileUploader object
+ * @since   PHPLucidFrame v 1.11.0
+ * @param   string/array anonymous The input file name or The array of property/value pairs
+ * @return  LucidFrame\File\AsynFileUploader
+ */
+function _asynFileUploader()
+{
+    if (func_num_args()) {
+        return new AsynFileUploader(func_get_arg(0));
+    } else {
+        return new AsynFileUploader();
+    }
 }
