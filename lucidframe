@@ -17,6 +17,4 @@
 
 require_once 'bootstrap.php';
 
-use LucidFrame\Console\Console;
-
-new Console();
+new LucidFrame\Console\Console();
