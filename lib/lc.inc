@@ -88,17 +88,25 @@ $_meta = array();
 global $db_builtQueries;
 $db_builtQueries = array();
 $db_printQuery = false;
+
 /**
- * Check config.php
+ * @internal
+ * Prerequisite check
  */
-if (!file_exists(INC . 'config.php')) {
-    die('Copy "/inc/config.default.php" and rename to "/inc/config.php".');
-}
-/**
- * Check site.config.php
- */
-if (!file_exists(INC . 'site.config.php')) {
-    die('Copy "/inc/site.config.default.php" and rename to "/inc/site.config.php".');
+function __prerequisite()
+{
+    /**
+     * Check config.php
+     */
+    if (!file_exists(INC . 'config.php')) {
+        copy(INC . 'config.default.php', INC . 'config.php');
+    }
+    /**
+     * Check site.config.php
+     */
+    if (!file_exists(INC . 'site.config.php')) {
+        copy(INC . 'site.config.default.php', INC . 'site.config.php');
+    }
 }
 /**
  * File include helper
@@ -452,3 +460,5 @@ function __secret($file = null)
     $file = INC . '.secret';
     return (is_file($file) && file_exists($file)) ? trim(file_get_contents($file)) : '';
 }
+
+__prerequisite();
