@@ -23,9 +23,9 @@ function security_prerequisite()
     $defaultSecret = md5('lucidframe');
     $secret = trim(_cfg('securitySecret'));
     if (function_exists('mcrypt_encrypt') && strcmp($secret, $defaultSecret) === 0) {
-        $msg = 'Change your own security hash in the file "/inc/.secret".';
-        $msg .= 'Get your own hash string at';
-        $msg .= '<a href="http://phplucidframe.sithukyaw.com/hash-generator" target="_blank">phplucidframe.sithukyaw.com/hash-generator</a>.';
+        $msg = 'To change your own security secret, ';
+        $msg .= 'open your terminal or command line, <code class="inline">cd</code> to your project directory, ';
+        $msg .= 'then run <code class="inline">php lucidframe secret:generate</span>';
         _cfg('sitewideWarnings', function_exists('_t') ? _t($msg) : $msg);
     }
 }
