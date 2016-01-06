@@ -180,9 +180,10 @@ class Command
 
     /**
      * Run the command
+     * @param  array $argv Array of arguments passed to script
      * @return mixed
      */
-    public function run($argv)
+    public function run($argv = array())
     {
         $this->parseArguments($argv);
         return call_user_func_array($this->definition, array($this));
@@ -248,7 +249,7 @@ class Command
      * @param  array $argv Array of arguments passed to script
      * @return array
      */
-    private function parseArguments($argv)
+    private function parseArguments($argv = array())
     {
         $this->argv = $argv;
 
