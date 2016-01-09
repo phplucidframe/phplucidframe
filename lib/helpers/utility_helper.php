@@ -1616,6 +1616,17 @@ function _writeln($text = '')
 }
 
 /**
+ * Write spacer for indentation purpose
+ * @since  PHPLucidFrame v 1.11.0
+ * @param  int  $width No. of spaces
+ * @return void|string
+ */
+function _indent($width = 2)
+{
+    return str_repeat(' ', $width);
+}
+
+/**
  * Simple helper to create an instance of LucidFrame\Console\Command
  * @since  PHPLucidFrame v 1.11.0
  * @return object LucidFrame\Console\Command
