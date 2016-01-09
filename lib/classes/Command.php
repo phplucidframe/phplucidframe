@@ -36,6 +36,10 @@ class Command
     private $parsedOptions = array();
     /** @var array The parsed arguments from the command running **/
     private $parsedArguments = array();
+    /** @var string The longest option name */
+    private $longestArgument = '';
+    /** @var string The longest argument name */
+    private $longestOption = '';
 
     /**
      * Constructor
@@ -43,6 +47,7 @@ class Command
     public function __construct($name)
     {
         $this->setName($name);
+        $this->addOption('help', 'h', 'Display the help message', null, LC_CONSOLE_OPTION_NOVALUE);
     }
 
     /**
@@ -119,19 +124,27 @@ class Command
      *
      * @return object LucidFrame\Console\Command
      */
-    public function addOption($name, $shortcut = null, $description = '', $default = null, $type = LC_CONSOLE_OPTION_NOVALUE)
+    public function addOption($name, $shortcut = null, $description = '', $default = null, $type = LC_CONSOLE_OPTION_OPTIONAL)
     {
         $name = ltrim($name, '--');
+        $shortcut = ltrim($shortcut, '-');
 
         $this->options[$name] = array(
-            'name'      => $name,
-            'shortcut'  => $shortcut,
-            'default'   => $default,
-            'type'      => $type
+            'name'          => $name,
+            'shortcut'      => $shortcut,
+            'description'   => $description,
+            'default'       => $default,
+            'type'          => $type
         );
 
         $this->shortcuts[$shortcut] = $name;
         $this->parsedOptions[$name] = $default;
+
+        $key = ($shortcut ? "-{$shortcut}, " : _indent(4)) . "--{$name}";
+        $this->options[$name]['key'] = $key;
+        if (strlen($key) > strlen($this->longestOption)) {
+            $this->longestOption = $key;
+        }
 
         return $this;
     }
@@ -168,14 +181,34 @@ class Command
     }
 
     /**
-     * Get the option from the command
+     * Get an option from the command
      *
      * @param string $name The option name without the prefix `--`, i.e,. `help` for `--help`
-     * @return object LucidFrame\Console\Command
+     * @return mixed
      */
     public function getOption($name)
     {
         return isset($this->parsedOptions[$name]) ? $this->parsedOptions[$name] : null;
+    }
+
+    /**
+
+    /**
+     * Getter for $parsedOptions
+     */
+    public function getParsedOptions()
+    {
+        return $this->parsedOptions;
+    }
+
+    /**
+     * Reset default values to arguments and options
+     */
+    public function resetToDefaults()
+    {
+        foreach ($this->options as $name => $opt) {
+            $this->parsedOptions[$name] = $opt['default'];
+        }
     }
 
     /**
@@ -186,7 +219,59 @@ class Command
     public function run($argv = array())
     {
         $this->parseArguments($argv);
+
+        if ($this->getOption('help')) {
+            $this->showHelp();
+            return;
+        }
+
         return call_user_func_array($this->definition, array($this));
+    }
+
+    /**
+     * Display the help message
+     * @return void
+     */
+    private function showHelp()
+    {
+        if ($this->getOption('help')) {
+            $options = $this->getOptions();
+            unset($options['help']);
+
+            _writeln('Usage:');
+            $usage = _indent() . $this->name ;
+
+            if (count($options)) {
+                $usage .= ' [options]';
+            }
+
+            _writeln($usage);
+
+            # Options
+            if (count($options)) {
+                _writeln();
+                _writeln('Options:');
+
+                foreach ($this->options as $name => $opt) {
+                    $tabWidth = strlen($this->longestOption) - strlen($opt['key']) + 3;
+                    $ln = _indent(2, true);
+                    $ln .= $opt['shortcut'] ? "-$opt[shortcut]," : _indent(3); // shortopt
+                    $ln .= " --$name"; // longopt
+                    $ln .= _indent($tabWidth, true);
+                    $ln .= $opt['description'];
+                    if ($opt['default']) {
+                        $ln .= ' [default: "'.$opt['default'].'"]';
+                    }
+                    _writeln($ln);
+                }
+            }
+
+            if ($this->description) {
+                _writeln();
+                _writeln('Help:');
+                _writeln(_indent() . $this->description);
+            }
+        }
     }
 
     /**
@@ -249,9 +334,11 @@ class Command
      * @param  array $argv Array of arguments passed to script
      * @return array
      */
-    private function parseArguments($argv = array())
+    public function parseArguments($argv = array())
     {
         $this->argv = $argv;
+        $this->resetToDefaults();
+        $parsedArguments = array();
 
         foreach ($argv as $pos => $arg) {
             list($type, $name) = $this->getArgTypeAndName($pos);
@@ -265,19 +352,25 @@ class Command
             $a = explode('=', $arg);
             if (count($a) === 2) {
                 // when there is '=' in the option
+                $value = $a[1];
                 if ($type === 'value') {
-                    $this->parsedArguments[] = $a[1];
+                    $parsedArguments[] = $value;
                 } else {
-                    $this->parsedOptions[$name] = $a[1];
+                    $this->parsedOptions[$name] = $value;
                 }
             } else {
+                $value = $a[0];
                 if ($type === 'value') {
                     if (in_array($lastType, array('shortopt', 'longopt')) && $lastName = $this->validateOption($lastName, $lastType)) {
-                        $this->parsedOptions[$lastName] = $a[0];
-                    } elseif ($lastType === 'value') {
-                        $this->parsedArguments[] = $a[0];
+                        if ($this->options[$lastName]['type'] === LC_CONSOLE_OPTION_NOVALUE) {
+                            $parsedArguments[] = $value;
+                        } elseif ($this->parsedOptions[$lastName] === true) {
+                            $this->parsedOptions[$lastName] = $value;
+                        } else {
+                            $parsedArguments[] = $value;
+                        }
                     } else {
-                        continue;
+                        $parsedArguments[] = $value;
                     }
                 } else {
                     $this->parsedOptions[$name] = true;
