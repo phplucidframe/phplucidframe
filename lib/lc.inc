@@ -95,6 +95,10 @@ $db_printQuery = false;
  */
 function __prerequisite()
 {
+    if (version_compare(phpversion(), '5.3.0', '<')) {
+        die('PHPLucidFrame requires at least PHP 5.3.0. Your PHP installation is ' . phpversion() . '.');
+    }
+
     /**
      * Check config.php
      */
