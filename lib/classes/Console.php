@@ -94,14 +94,18 @@ class Console
         if ($this->command instanceof \LucidFrame\Console\Command) {
             $this->command->run($this->argv);
         } else {
-            if (empty($this->command) || in_array($this->command, array('-V', '--version'))) {
-                _writeln(_version());
-                _writeln('PHP Version: %s', phpversion());
-                _writeln('The MIT License');
-                _writeln('Simple, lightweight & yet powerful PHP Application Framework');
-                _writeln('Copyright (c) 2014-%d, PHPLucidFrame.', date('Y'));
-            } else {
+            if (!$this->command && $this->commandName && !in_array($this->commandName, array('-V', '--version'))) {
                 _writeln('Command "%s" not found.', $this->commandName);
+            } else {
+                if (empty($this->command) || in_array($this->command, array('-V', '--version'))) {
+                    _writeln(_version());
+                    _writeln('PHP Version: %s', phpversion());
+                    _writeln('The MIT License');
+                    _writeln('Simple, lightweight & yet powerful PHP Application Framework');
+                    _writeln('Copyright (c) 2014-%d, PHPLucidFrame.', date('Y'));
+                } else {
+                    _writeln('Command "%s" not found.', $this->commandName);
+                }
             }
         }
     }
