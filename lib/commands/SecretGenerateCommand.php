@@ -15,7 +15,7 @@
  */
 
 _consoleCommand('secret:generate')
-    ->setDescription('Generate secret')
+    ->setDescription('Generate a secret hash key')
     ->addOption('method', 'm', 'The hashing algorithm method (e.g. "md5", "sha256", etc..)', 'md5')
     ->addOption('data', 'd', 'Secret text to be hashed.')
     ->setDefinition(function(\LucidFrame\Console\Command $cmd) {
