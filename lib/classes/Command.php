@@ -28,6 +28,10 @@ class Command
     protected $options = array();
     /** @var array The short options of the long options defined for the command such as -h for --help, etc. **/
     protected $shortcuts = array();
+    /** @var array The arguments for the command **/
+    protected $arguments = array();
+    /** @var array Array of the argument names */
+    protected $argumentNames = array();
     /** @var closure Anonymous function that performs the job of the command **/
     protected $definition;
     /** @var array Array of arguments passed to script **/
@@ -150,7 +154,40 @@ class Command
     }
 
     /**
-     * Getter for $options
+     * Add an argument for the command
+     *
+     * @param string $name          The argument name
+     * @param string $description   A short description for the argument
+     * @param mixed  $default       The default value for the option
+     *
+     * @return object LucidFrame\Console\Command
+     */
+    public function addArgument($name, $description = '', $default = null)
+    {
+        $this->arguments[] = array(
+            'name'          => $name,
+            'description'   => $description,
+            'default'       => $default,
+        );
+        $this->argumentNames[] = $name;
+
+        if (strlen($name) > strlen($this->longestArgument)) {
+            $this->longestArgument = $name;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Getter for $parsedArguments
+     */
+    public function getArguments()
+    {
+        return $this->parsedArguments;
+    }
+
+    /**
+     * Getter for $parsedOptions
      */
     public function getOptions()
     {
@@ -192,6 +229,15 @@ class Command
     }
 
     /**
+     * Get an argument from the command
+     *
+     * @param string $name The argument name
+     * @return mixed
+     */
+    public function getArgument($name)
+    {
+        return isset($this->parsedArguments[$name]) ? $this->parsedArguments[$name] : null;
+    }
 
     /**
      * Getter for $parsedOptions
@@ -202,12 +248,24 @@ class Command
     }
 
     /**
+     * Getter for $parsedArguments
+     */
+    public function getParsedArguments()
+    {
+        return $this->parsedArguments;
+    }
+
+    /**
      * Reset default values to arguments and options
      */
     public function resetToDefaults()
     {
         foreach ($this->options as $name => $opt) {
             $this->parsedOptions[$name] = $opt['default'];
+        }
+
+        foreach ($this->arguments as $arg) {
+            $this->parsedArguments[$arg['name']] = $arg['default'];
         }
     }
 
@@ -245,7 +303,29 @@ class Command
                 $usage .= ' [options]';
             }
 
+            if (count($this->arguments)) {
+                $usage .= ' [<' . implode('>] [<', $this->argumentNames) . '>]';
+            }
+
             _writeln($usage);
+
+            # Arguments
+            if (count($this->arguments)) {
+                _writeln();
+                _writeln('Arguments:');
+
+                foreach ($this->arguments as $arg) {
+                    $tabWidth = strlen($this->longestArgument)- strlen($arg['name']) + 5;
+                    $ln = _indent(2, true);
+                    $ln .= $arg['name'];
+                    $ln .= _indent($tabWidth, true);
+                    $ln .= $arg['description'];
+                    if ($arg['default']) {
+                        $ln .= ' [default: "'.$arg['default'].'"]';
+                    }
+                    _writeln($ln);
+                }
+            }
 
             # Options
             if (count($options)) {
@@ -378,9 +458,13 @@ class Command
             }
         }
 
-        return array(
-            'options'   => $this->parsedOptions,
-            'arguments' => $this->parsedArguments
-        );
+        foreach ($parsedArguments as $key => $value) {
+            if (isset($this->arguments[$key])) {
+                $name = $this->arguments[$key]['name'];
+                $this->parsedArguments[$name] = $value;
+            }
+        }
+
+        return array($this->parsedArguments, $this->parsedOptions);
     }
 }
