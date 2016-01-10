@@ -3,7 +3,7 @@
  * This file is part of the PHPLucidFrame library.
  * Core utility for the database layer. Basic functioning of the database system.
  *
- * @package     LC\Helpers\Database
+ * @package     LucidFrame\Core
  * @since       PHPLucidFrame v 1.0.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>
@@ -14,11 +14,7 @@
  * with this source code in the file LICENSE.txt
  */
 
-use LC\Core\QueryBuilder;
-
-define('LC_FETCH_ASSOC', 1);
-define('LC_FETCH_ARRAY', 2);
-define('LC_FETCH_OBJECT', 3);
+use LucidFrame\Core\QueryBuilder;
 
 /**
  * @internal

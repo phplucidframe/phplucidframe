@@ -4,7 +4,7 @@
  * Simple router for named routes that can be used with RegExp
  * Pretty familiar to anyone who's used Symfony
  *
- * @package     LC\Helpers\Routing
+ * @package     LucidFrame\Core
  * @since       PHPLucidFrame v 1.10.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>
@@ -15,7 +15,7 @@
  * with this source code in the file LICENSE.txt
  */
 
-namespace LC\Core;
+namespace LucidFrame\Core;
 
 class Router
 {

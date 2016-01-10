@@ -2,7 +2,7 @@
 /**
  * PHPLucidFrame : Simple, Lightweight & yet Powerfull PHP Application Framework
  *
- * @package     LC
+ * @package     LucidFrame\App
  * @since       PHPLucidFrame v 1.0.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>

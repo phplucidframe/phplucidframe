@@ -13,7 +13,7 @@
  *      php tests/tests.php -f utility_helper
  *      php tests/tests.php --file=utility_helper
  *
- * @package     LC\Test
+ * @package     LucidFrame\Test
  * @since       PHPLucidFrame v 1.10.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>

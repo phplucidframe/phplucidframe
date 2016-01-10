@@ -1,10 +1,11 @@
+#!/usr/bin/env php
 <?php
 /**
  * This file is part of the PHPLucidFrame library.
- * Core utility for pagination
+ * Shell script for invoking PHPLucidFrame shell commands using `php lucidframe`
  *
- * @package     LC\Helpers\Pagination
- * @since       PHPLucidFrame v 1.0.0
+ * @package     LucidFrame\Console
+ * @since       PHPLucidFrame v 1.11.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>
  * @link        http://phplucidframe.sithukyaw.com
@@ -14,13 +15,6 @@
  * with this source code in the file LICENSE.txt
  */
 
-require_once CLASSES . 'Pager.php';
+require_once 'bootstrap.php';
 
-/**
- * Create and return pagination object
- * @param string $pageQueryStr The customized page query string name
- */
-function pager($pageQueryStr = '')
-{
-    return new Pager($pageQueryStr);
-}
+new LucidFrame\Console\Console();

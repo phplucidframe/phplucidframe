@@ -7,7 +7,7 @@
  * Database, Session, loading additional configuration files.
  * This file includes the resources that provide global functions/constants that your application uses.
  *
- * @package     LC
+ * @package     LucidFrame\Core
  * @since       PHPLucidFrame v 1.0.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>
@@ -141,6 +141,10 @@ require_once HELPER . 'route_helper.php'; # WEB_ROOT and WEB_APP_ROOT is created
 include_once INC . 'route.config.php';
 __route_init();
 
+define('CSS', WEB_ROOT.'css/');
+define('JS', WEB_ROOT.'js/');
+define('WEB_VENDOR', WEB_ROOT.'vendor/');
+
 # Load translations
 if ($moduleI18n) {
     __i18n_load();
@@ -151,10 +155,6 @@ require INC . 'site.config.php';
 if ($file = _i('inc/site.config.php', false)) {
     include_once $file;
 }
-
-define('CSS', WEB_ROOT.'css/');
-define('JS', WEB_ROOT.'js/');
-define('WEB_VENDOR', WEB_ROOT.'vendor/');
 
 # Validation helper (unloadable from /inc/autoload.php)
 if ($file = _i('helpers/validation_helper.php', false)) {
@@ -176,6 +176,7 @@ if ($moduleAuth = _readyloader('auth_helper')) {
 _unloader('auth_helper', HELPER);
 
 # Pager helper
+require_once CLASSES . 'Pager.php';
 if ($file = _i('helpers/pager_helper.php', false)) {
     include_once $file;
 }
@@ -193,13 +194,13 @@ if ($moduleForm = _readyloader('form_helper')) {
 }
 _unloader('form_helper', HELPER);
 
-# File helper (unloadable from /inc/autoload.php)
+# File helper
+require_once CLASSES . 'File.php';
+require_once CLASSES . 'AsynFileUploader.php';
 if ($file = _i('helpers/file_helper.php', false)) {
     include_once $file;
 }
 if ($moduleFile = _readyloader('file_helper')) {
-    require_once CLASSES . 'File.php';
-    require_once CLASSES . 'AsynFileUploader.php';
     require_once $moduleFile;
 }
 _unloader('file_helper', HELPER);
@@ -210,6 +211,33 @@ $_auth = ($moduleAuth) ? auth_get() : null;
 # Check security prerequisite
 security_prerequisite();
 
+# Console helper
+require_once CLASSES . 'console/Console.php';
+require_once CLASSES . 'console/Command.php';
+
+# Auto-load every command script
+$commandDirs = array(LIB . 'commands' . _DS_, APP_ROOT . 'commands' . _DS_);
+if (isset($lc_sites) && is_array($lc_sites) && count($lc_sites)) {
+    foreach ($lc_sites as $subDir) {
+        $commandDirs[] = APP_ROOT . $subDir . _DS_ . 'commands' . _DS_;
+    }
+}
+
+foreach ($commandDirs as $cmdDir) {
+    if (!is_dir($cmdDir)) {
+        continue;
+    }
+    if ($handle = opendir($cmdDir)) {
+        while (false !== ($file = readdir($handle))) {
+            if ($file === '.' || $file === '..') {
+                continue;
+            }
+            _loader($file, $cmdDir);
+        }
+        closedir($handle);
+    }
+}
+
 $module = null;
 foreach ($lc_autoload as $file) {
     if ($module = _readyloader($file)) {
@@ -218,3 +246,5 @@ foreach ($lc_autoload as $file) {
 }
 unset($module);
 unset($file);
+unset($commandDirs);
+unset($cmdDir);
