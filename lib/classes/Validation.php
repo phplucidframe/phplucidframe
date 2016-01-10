@@ -3,7 +3,7 @@
  * This file is part of the PHPLucidFrame library.
  * Form validation helper
  *
- * @package     LC\Helpers\Validation
+ * @package     LucidFrame\Core
  * @since       PHPLucidFrame v 1.0.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>

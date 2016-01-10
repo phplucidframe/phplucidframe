@@ -3,7 +3,7 @@
  * This file is part of the PHPLucidFrame library.
  * The script executes the command `php lucidframe secret:generate`
  *
- * @package     LC
+ * @package     LucidFrame\Console
  * @since       PHPLucidFrame v 1.11.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>

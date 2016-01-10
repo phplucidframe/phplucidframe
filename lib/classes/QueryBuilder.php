@@ -3,7 +3,7 @@
  * This file is part of the PHPLucidFrame library.
  * QueryBuilder class is responsible to dynamically create SQL queries.
  *
- * @package     LC\Helpers\Database
+ * @package     LucidFrame\Core
  * @since       PHPLucidFrame v 1.9.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>

@@ -3,7 +3,7 @@
  * This file is part of the PHPLucidFrame library.
  * Core utility and class required for file processing system
  *
- * @package     LC\Helpers\File
+ * @package     LucidFrame\Core
  * @since       PHPLucidFrame v 1.0.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>

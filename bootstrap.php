@@ -5,7 +5,7 @@
  * if you want a script to run standalone outside LucidFrame application root.
  * It expects the caller changed the directory to the LucidFrame root before including this script.
  *
- * @package     LC
+ * @package     LucidFrame\Core
  * @since       PHPLucidFrame v 1.3.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>

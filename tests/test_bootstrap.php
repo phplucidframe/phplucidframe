@@ -3,7 +3,7 @@
  * This file is part of the PHPLucidFrame library.
  * It initializes and bootstraps LucidFrame test environment
  *
- * @package     LC\Test
+ * @package     LucidFrame\Test
  * @since       PHPLucidFrame v 1.10.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>

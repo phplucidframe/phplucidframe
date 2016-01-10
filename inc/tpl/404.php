@@ -5,7 +5,7 @@
  * The template file for 404 Not Found
  * You can copy this to /app/inc/tpl/404.php and update it according to your need.
  *
- * @package     LC
+ * @package     LucidFrame\App
  * @since       PHPLucidFrame v 1.0.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>

@@ -3,7 +3,7 @@
  * This file is part of the PHPLucidFrame library.
  * Core utility for session handling and flash messaging
  *
- * @package     LC\Helpers\Session
+ * @package     LucidFrame\Core
  * @since       PHPLucidFrame v 1.0.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>
@@ -214,7 +214,7 @@ function session_set($name, $value = '', $serialize = false)
 /**
  * Get a message or value of the given name from Session
  *
- * @param string $name 	The session variable name to retrieve its value
+ * @param string $name     The session variable name to retrieve its value
  *   It can be a value separated by period, eg., user.name will be ['user']['name']
  * @param boolean $unserialize The value is to be unserialized or not
  *

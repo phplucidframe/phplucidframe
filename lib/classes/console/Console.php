@@ -3,7 +3,7 @@
  * This file is part of the PHPLucidFrame library.
  * Command-line code generation utility to automate programmer tasks.
  *
- * @package     LC\Helpers\Console
+ * @package     LucidFrame\Console
  * @since       PHPLucidFrame v 1.11.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>

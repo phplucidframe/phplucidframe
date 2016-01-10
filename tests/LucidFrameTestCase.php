@@ -3,7 +3,7 @@
  * This file is part of the PHPLucidFrame library.
  * This class is a base class for all unit test cases.
  *
- * @package     LC\Test
+ * @package     LucidFrame\Test
  * @since       PHPLucidFrame v 1.9.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>

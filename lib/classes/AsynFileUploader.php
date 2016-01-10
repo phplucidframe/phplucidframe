@@ -3,7 +3,7 @@
  * This file is part of the PHPLucidFrame library.
  * Helper for ajax-like file upload with instant preview if the preview placeholder is provided
  *
- * @package     LC\Helpers\File
+ * @package     LucidFrame\Core
  * @since       PHPLucidFrame v 1.3.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>

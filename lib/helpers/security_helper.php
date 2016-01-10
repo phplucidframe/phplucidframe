@@ -3,7 +3,7 @@
  * This file is part of the PHPLucidFrame library.
  * Core utility for input sanitizing, data escaping, CSRF protection and XSS prevention
  *
- * @package     LC\Helpers\Security
+ * @package     LucidFrame\Core
  * @since       PHPLucidFrame v 1.0.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>

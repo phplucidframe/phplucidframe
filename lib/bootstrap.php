@@ -7,7 +7,7 @@
  * Database, Session, loading additional configuration files.
  * This file includes the resources that provide global functions/constants that your application uses.
  *
- * @package     LC
+ * @package     LucidFrame\Core
  * @since       PHPLucidFrame v 1.0.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>
