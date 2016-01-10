@@ -15,9 +15,9 @@ return array(
             'engine'    => 'mysql',
             'host'      => 'localhost',
             'port'      => '',
-            'database'  => 'lucid_blog',
-            'username'  => 'root',
-            'password'  => 'root',
+            'database'  => '',
+            'username'  => '',
+            'password'  => '',
             'prefix'    => '',
             'collation' => 'utf8_general_ci'
         )
