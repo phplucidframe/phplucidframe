@@ -212,8 +212,8 @@ $_auth = ($moduleAuth) ? auth_get() : null;
 security_prerequisite();
 
 # Console helper
-require_once CLASSES . 'Console.php';
-require_once CLASSES . 'Command.php';
+require_once CLASSES . 'console/Console.php';
+require_once CLASSES . 'console/Command.php';
 
 # Auto-load every command script
 $commandDirs = array(LIB . 'commands' . _DS_, APP_ROOT . 'commands' . _DS_);
