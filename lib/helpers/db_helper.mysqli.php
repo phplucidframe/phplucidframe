@@ -104,8 +104,7 @@ function db_prerequisite($namespace = 'default')
         return db_config($namespace);
     } else {
         $error = new stdClass();
-        $error->message = 'Required to configure $lc_databases in "/inc/config.php".';
-        $error->message .= ' It is not allowed to configure in the application-level file "/app/inc/site.config.php".';
+        $error->message = 'Required to configure <code class="inline">db</code> in "/inc/parameters/'._cfg('env').'.php".';
         $error->message = array(function_exists('_t') ? _t($error->message) : $error->message);
         $error->type    = 'sitewide-message error';
         include( _i('inc/tpl/site.error.php') );
