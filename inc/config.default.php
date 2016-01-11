@@ -3,7 +3,7 @@
  * This file is part of the PHPLucidFrame library.
  * This is a system-specific configuration file. All site general configuration are done here.
  *
- * @package     LC
+ * @package     LucidFrame\App
  * @since       PHPLucidFrame v 1.0.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>

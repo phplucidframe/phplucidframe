@@ -3,7 +3,7 @@
  * PHPLucidFrame : Simple, Lightweight & yet Powerfull PHP Application Framework
  * The request collector
  *
- * @package     LC
+ * @package     LucidFrame\App
  * @since       PHPLucidFrame v 1.0.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>
@@ -14,7 +14,7 @@
  * with this source code in the file LICENSE.txt
  */
 
-require_once '../inc/bootstrap.php';
+require_once '../lib/bootstrap.php';
 
 ob_start('_flush');
 

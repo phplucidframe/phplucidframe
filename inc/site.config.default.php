@@ -2,7 +2,7 @@
 /**
  * This is a global site-specific configuration file
  *
- * @package     LC
+ * @package     LucidFrame\App
  * @since       PHPLucidFrame v 1.0.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>

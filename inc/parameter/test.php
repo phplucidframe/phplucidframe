@@ -15,13 +15,13 @@ return array(
             'engine'    => 'mysql',
             'host'      => 'localhost',
             'port'      => '',
-            'database'  => 'lucid_blog_test',
-            'username'  => 'root',
+            'database'  => '',
+            'username'  => '',
             'password'  => '',
             'prefix'    => '',
             'collation' => 'utf8_general_ci'
         )
-    )
+    ),
     # The site contact email address - This address used as "To" for all incoming mails
     'siteReceiverEmail' => 'admin@localhost.com',
     # The site sender email address - This address used as "From" for all outgoing mails

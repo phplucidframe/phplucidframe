@@ -3,7 +3,7 @@
  * This file is part of the PHPLucidFrame library.
  * Core utility for general purpose functions.
  *
- * @package     LC\Helpers\Utility
+ * @package     LucidFrame\Core
  * @since       PHPLucidFrame v 1.0.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>
@@ -13,6 +13,24 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.txt
  */
+
+use LucidFrame\Console\Command;
+use LucidFrame\File\File;
+use LucidFrame\File\AsynFileUploader;
+
+/**
+ * Returns the current PHPLucidFrame version
+ * @return string
+ */
+function _version()
+{
+    $versionFile = ROOT . 'VERSION';
+    if (is_file($versionFile) && file_exists($versionFile)) {
+        return trim(file_get_contents($versionFile));
+    } else {
+        return 'Unknown';
+    }
+}
 
 /**
  * @internal
@@ -154,6 +172,7 @@ function _minifyHTML($html)
 function _loader($name, $path = HELPER)
 {
     global $lc_autoload;
+    $name = rtrim($name, '.php');
     $lc_autoload[] = $path . $name . '.php';
     $lc_autoload = array_unique($lc_autoload);
 }
@@ -1577,4 +1596,79 @@ function _isBot()
         }
     }
     return false;
+}
+
+/**
+ * Write output with line feed (\n)
+ * @since  PHPLucidFrame v 1.11.0
+ * @param  string $text The text to output
+ * @param  [mixed $args [, mixed ...]] Arguments to the text
+ * @return void
+ */
+function _writeln($text = '')
+{
+    $args = func_get_args();
+    $text = array_shift($args);
+    if ($text) {
+        echo vsprintf($text, $args);
+    }
+    echo "\n";
+}
+
+/**
+ * Write spacer for indentation purpose
+ * @since  PHPLucidFrame v 1.11.0
+ * @param  int  $width No. of spaces
+ * @return void|string
+ */
+function _indent($width = 2)
+{
+    return str_repeat(' ', $width);
+}
+
+/**
+ * Simple helper to create an instance of LucidFrame\Console\Command
+ * @since  PHPLucidFrame v 1.11.0
+ * @return object LucidFrame\Console\Command
+ */
+function _consoleCommand($command)
+{
+    return new Command($command);
+}
+
+/**
+ * Simple helper to create Pager object
+ * @since   PHPLucidFrame v 1.11.0
+ * @param   string $pageQueryStr The customized page query string name
+ * @return  Pager
+ */
+function _pager($pageQueryStr = '')
+{
+    return new Pager($pageQueryStr);
+}
+
+/**
+ * Simple helper to create File object
+ * @since   PHPLucidFrame v 1.11.0
+ * @param   string $fileName (optinal) Path to the file
+ * @return  LucidFrame\File\File
+ */
+function _fileHelper($fileName = '')
+{
+    return new File($fileName);
+}
+
+/**
+ * Simple helper to create AsynFileUploader object
+ * @since   PHPLucidFrame v 1.11.0
+ * @param   string/array anonymous The input file name or The array of property/value pairs
+ * @return  LucidFrame\File\AsynFileUploader
+ */
+function _asynFileUploader()
+{
+    if (func_num_args()) {
+        return new AsynFileUploader(func_get_arg(0));
+    } else {
+        return new AsynFileUploader();
+    }
 }

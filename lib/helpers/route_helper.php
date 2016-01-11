@@ -3,7 +3,7 @@
  * This file is part of the PHPLucidFrame library.
  * Core utility for system routing
  *
- * @package     LC\Helpers\Routing
+ * @package     LucidFrame\Core
  * @since       PHPLucidFrame v 1.0.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>
@@ -14,7 +14,7 @@
  * with this source code in the file LICENSE.txt
  */
 
-use LC\Core\Router;
+use LucidFrame\Core\Router;
 
 /**
  * @internal
@@ -172,7 +172,7 @@ function route_search()
         return $path;
     }
 
-    $append	= array('/index.php', '.php');
+    $append    = array('/index.php', '.php');
     for ($i=$count; $i>0; $i--) {
         # try to look for
         # ~/path/to/the-given-name/index.php

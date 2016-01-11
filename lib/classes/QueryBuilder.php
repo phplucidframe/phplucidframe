@@ -3,7 +3,7 @@
  * This file is part of the PHPLucidFrame library.
  * QueryBuilder class is responsible to dynamically create SQL queries.
  *
- * @package     LC\Helpers\Database
+ * @package     LucidFrame\Core
  * @since       PHPLucidFrame v 1.9.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>
@@ -14,7 +14,7 @@
  * with this source code in the file LICENSE.txt
  */
 
-namespace LC\Core;
+namespace LucidFrame\Core;
 
 class QueryBuilder
 {
@@ -375,7 +375,7 @@ class QueryBuilder
     public function condition($field, $value)
     {
         if (isset($this->where[$this->whereType][$field])) {
-            $field .= uniqid('__'.trim(__METHOD__, 'LC\Core').'__');
+            $field .= uniqid('__'.trim(__METHOD__, 'LucidFrame\Core').'__');
         }
         $this->where[$this->whereType][$field] = $value;
 

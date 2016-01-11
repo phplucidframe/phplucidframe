@@ -32,7 +32,7 @@ if (sizeof($_POST)) {
         ),
     );
 
-    if (Form::validate($validations)) {
+    if (form_validate($validations)) {
         /**
         For "photo",
             $post['photo']             = The uploaded file name saved in disk
@@ -81,11 +81,11 @@ if (sizeof($_POST)) {
 
         $success = true;
         if ($success) {
-            Form::set('success', true);
-            Form::set('callback', 'postOutput('.json_encode($post).')');
+            form_set('success', true);
+            form_set('callback', 'postOutput('.json_encode($post).')');
         }
     } else {
-        Form::set('error', Validation::$errors);
+        form_set('error', validation_get('errors'));
     }
 }
-Form::respond('frmAsynFileUpload'); # Ajax response
+form_respond('frmAsynFileUpload'); # Ajax response

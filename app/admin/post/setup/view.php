@@ -43,7 +43,7 @@
                 <button type="button" class="button" id="btnCancel" name="btnCancel"><?php echo _t('Cancel'); ?></button>
             </a>
         </div>
-        <?php Form::token(); ?>
+        <?php form_token(); ?>
     </form>
 </div>
 <?php include( _i('inc/tpl/footer.php') ); ?>

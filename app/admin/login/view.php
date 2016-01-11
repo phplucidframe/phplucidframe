@@ -29,6 +29,6 @@
             </div>
         </div>
     </div>
-    <?php Form::token(); ?>
+    <?php form_token(); ?>
     </form>
 </div>

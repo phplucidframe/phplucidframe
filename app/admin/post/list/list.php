@@ -8,13 +8,13 @@ $rowCount = db_count('post')
     ->fetch();
 
 # Prerequisite for the Pager
-$pager = new Pager();
-$pager->set('itemsPerPage', $lc_itemsPerPage);
-$pager->set('pageNumLimit', $lc_pageNumLimit);
-$pager->set('total', $rowCount);
-$pager->set('imagePath', WEB_ROOT.'images/pager/');
-$pager->set('ajax', true);
-$pager->calculate();
+$pager = _pager()
+    ->set('itemsPerPage', $lc_itemsPerPage)
+    ->set('pageNumLimit', $lc_pageNumLimit)
+    ->set('total', $rowCount)
+    ->set('imagePath', WEB_ROOT.'images/pager/')
+    ->set('ajax', true)
+    ->calculate();
 
 $qb = db_select('post', 'p')
     ->join('category', 'c', 'p.catId = c.catId')

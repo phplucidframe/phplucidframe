@@ -45,7 +45,7 @@ if (sizeof($_POST)) {
         );
     }
 
-    if (Form::validate($validations)) {
+    if (form_validate($validations)) {
         if ($hidEditId) {
             $data = array(
                 'uid'       => $hidEditId,
@@ -75,11 +75,11 @@ if (sizeof($_POST)) {
         }
 
         if ($success) {
-            Form::set('success', true);
-            Form::set('redirect', _url('admin/user/list'));
+            form_set('success', true);
+            form_set('redirect', _url('admin/user/list'));
         }
     } else {
-        Form::set('error', Validation::$errors);
+        form_set('error', validation_get('errors'));
     }
 }
-Form::respond('frmUser');
+form_respond('frmUser');

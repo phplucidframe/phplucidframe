@@ -56,7 +56,7 @@
                 </td>
             </tr>
         </table>
-        <?php Form::token(); ?>
+        <?php form_token(); ?>
     </form>
 </p>
 

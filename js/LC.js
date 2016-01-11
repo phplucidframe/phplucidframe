@@ -2,7 +2,7 @@
  * This file is part of the PHPLucidFrame library.
  * Core Javascript utility
  *
- * @package     LC\js
+ * @package     LucidFrame\Core
  * @since       PHPLucidFrame v 1.0.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>
@@ -153,7 +153,7 @@
             }
 
             var url = $form.attr('action'); // which URL to be posted; captured from form action attribute
-            var values 	= $form.serialize(); // encode a set of form elements as a string for submission
+            var values     = $form.serialize(); // encode a set of form elements as a string for submission
 
             $.ajax({
                 type: 'POST',
@@ -283,7 +283,7 @@
         throbber : {
             /**
              * Register a custom throbber
-             * @param string id	HTML container ID for the request
+             * @param string id    HTML container ID for the request
              * @param object callback The callback must be a functional object like { start: function() {}, stop: function() {} }
             */
             register : function(id, callback) {
@@ -297,7 +297,7 @@
          * Initialize the page
          */
         initialize : function() {
-            // 	overlay and progress message create
+            // overlay and progress message create
             var $overlay = $('body').prepend('<div id="page-loading" />').children(':first').hide();
             var $loading = $overlay.append('<div />').children(':last').attr('id', 'processing');
             var $div = $loading.append('<div />').children(':last');
@@ -421,7 +421,7 @@
         },
         /**
          * Ajax request helper
-         * @param string id	HTML container ID or GET/POST for no HTML response
+         * @param string id    HTML container ID or GET/POST for no HTML response
          * @param string url URL to request
          * @param object param Query string to URL (optional)
          * @param function callback Callback function to execute (optional)

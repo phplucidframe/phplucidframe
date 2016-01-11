@@ -24,8 +24,8 @@ if (sizeof($_POST)) {
     );
 
     /* form token check && input validation check */
-    if (Form::validate($validations) === true) {
-        $file = new File();
+    if (form_validate($validations) === true) {
+        $file = _fileHelper();
         // set file upload directory; default to `/files/tmp/`
         // this should be defined in site.config.php such as `define('POST_IMAGE_DIR', FILE . 'posts/');`
         // and use here `$file->set('uploadDir', POST_IMAGE_DIR . 'tmp/');`
@@ -50,7 +50,7 @@ if (sizeof($_POST)) {
         if ($uploads) {
             $success = true; # this should be set to true only when db operation is successful.
             if ($success) {
-                Form::set('success', true);
+                form_set('success', true);
 
                 $flashMsg = array();
                 $flashMsg[] = _t('File has been uploaded.');
@@ -64,10 +64,10 @@ if (sizeof($_POST)) {
             }
         } else {
             $error = $file->getError();
-            Validation::addError('filImage', $error['message']);
-            Form::set('error', Validation::$errors);
+            validation_addError('filImage', $error['message']);
+            form_set('error', validation_get('errors'));
         }
     } else {
-        Form::set('error', Validation::$errors);
+        form_set('error', validation_get('errors'));
     }
 }

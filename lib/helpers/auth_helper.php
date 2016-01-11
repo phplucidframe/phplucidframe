@@ -3,7 +3,7 @@
  * This file is part of the PHPLucidFrame library.
  * Core utility for user authentication system
  *
- * @package     LC\Helpers\Authentication
+ * @package     LucidFrame\Core
  * @since       PHPLucidFrame v 1.0.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>
@@ -69,8 +69,7 @@ function auth_prerequisite()
         return $auth;
     } else {
         $error = new stdClass();
-        $error->message = 'Required to configure $lc_auth in "/inc/config.php".';
-        $error->message .= ' It is not allowed to configure in the application-level file "/app/inc/site.config.php".';
+        $error->message = 'Required to configure <code class="inline">$lc_auth</code> in "/inc/config.php" or "/inc/site.config.php".';
         $error->message = array(function_exists('_t') ? _t($error->message) : $error->message);
         $error->type    = 'sitewide-message error';
         include( _i('inc/tpl/site.error.php') );

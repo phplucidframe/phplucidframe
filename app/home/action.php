@@ -30,17 +30,17 @@ if (sizeof($_POST)) {
     $validations = array(
     );
 
-    if (Validation::check($validations) == true) {
+    if (form_validate($validations)) {
         /**
         Database operations here
         */
 
         if ($success) {
-            Form::set('success', true);
-            Form::set('redirect', _url('home'));
+            form_set('success', true);
+            form_set('redirect', _url('home'));
         }
     } else {
-        Form::set('error', Validation::$errors);
+        form_set('error', validation_get('errors'));
     }
 }
-Form::respond('formID'); # Ajax response
+form_respond('formID'); # Ajax response

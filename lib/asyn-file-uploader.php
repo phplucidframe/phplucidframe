@@ -4,7 +4,7 @@
  *
  * This file performs the file upload process and file delete process of AsynFileUploader
  *
- * @package     LC
+ * @package     LucidFrame\Core
  * @since       PHPLucidFrame v 1.3.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>
@@ -106,7 +106,7 @@ if (count($_FILES)) {
     }
 
     if (Validation::check($validations, 'single') === true) {
-        $file = new File();
+        $file = _fileHelper();
         $uniqueId = $file->get('uniqueId');
         $file->set('uploadDir', $uploadDir);
         if (is_array($dimensions) && $dimensions) {

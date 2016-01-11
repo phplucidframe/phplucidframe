@@ -1,9 +1,11 @@
+#!/usr/bin/env php
 <?php
 /**
- * PHPLucidFrame : Simple, Lightweight & yet Powerfull PHP Application Framework
+ * This file is part of the PHPLucidFrame library.
+ * Shell script for invoking PHPLucidFrame shell commands using `php lucidframe`
  *
- * @package     LucidFrame\App
- * @since       PHPLucidFrame v 1.0.0
+ * @package     LucidFrame\Console
+ * @since       PHPLucidFrame v 1.11.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>
  * @link        http://phplucidframe.sithukyaw.com
@@ -13,5 +15,6 @@
  * with this source code in the file LICENSE.txt
  */
 
-require_once 'lib/bootstrap.php';
-_redirect('home', null, $lc_lang);
+require_once 'bootstrap.php';
+
+new LucidFrame\Console\Console();

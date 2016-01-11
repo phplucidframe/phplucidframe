@@ -20,10 +20,10 @@ if (sizeof($_POST)) {
             )
         );
 
-        if (Form::validate($validations)) {
+        if (form_validate($validations)) {
             if ($hidEditId) {
                 $data = array(
-                    'catId'	  => $hidEditId,
+                    'catId'      => $hidEditId,
                     'catName' => $txtName
                 );
                 # Get translation strings for "catName"
@@ -44,12 +44,12 @@ if (sizeof($_POST)) {
                 }
             }
         } else {
-            Form::set('error', Validation::$errors);
+            form_set('error', validation_get('errors'));
         }
     }
     if ($success) {
-        Form::set('success', true);
-        Form::set('callback', 'LC.Page.Category.list()'); # Ajax callback
+        form_set('success', true);
+        form_set('callback', 'LC.Page.Category.list()'); # Ajax callback
     }
 }
-Form::respond('frmCategory'); # Ajax response
+form_respond('frmCategory'); # Ajax response

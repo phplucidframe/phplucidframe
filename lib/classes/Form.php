@@ -3,7 +3,7 @@
  * This file is part of the PHPLucidFrame library.
  * Core utility for AJAX form handling and form validation
  *
- * @package     LC\Helpers\Form
+ * @package     LucidFrame\Core
  * @since       PHPLucidFrame v 1.0.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>
@@ -53,6 +53,18 @@ class Form
     public static function set($key, $value = '')
     {
         self::$$key = $value;
+    }
+    /**
+     * Getter for the class properties
+     * @param string $key The property name
+     * @return mixed
+     */
+    public static function get($key, $value = '')
+    {
+        if (isset(self::$$key)) {
+            return self::$$key;
+        }
+        return null;
     }
     /**
      * Form token generation

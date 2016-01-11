@@ -7,7 +7,7 @@
  * Database, Session, loading additional configuration files.
  * This file includes the resources that provide global functions/constants that your application uses.
  *
- * @package     LC
+ * @package     LucidFrame\Core
  * @since       PHPLucidFrame v 1.0.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>
@@ -50,8 +50,12 @@ if (strcasecmp(APP_ROOT, ROOT) === 0) {
 
 # path to inc/ folder
 define('INC', ROOT.'inc'._DS_);
-# path to helpers/ folder
-define('HELPER', ROOT.'helpers'._DS_);
+# path to lib/ folder
+define('LIB', ROOT.'lib'._DS_);
+# path to lib/helpers/ folder
+define('HELPER', LIB.'helpers'._DS_);
+# path to lib/classes/ folder
+define('CLASSES', LIB.'classes'._DS_);
 # path to i18n/ folder
 define('I18N', ROOT.'i18n'._DS_);
 # path to vendor/ folder
@@ -69,7 +73,7 @@ define('TEST_DIR', ROOT.'tests'._DS_);
 define('CACHE', FILE.'cache'._DS_);
 
 # System prerequisites
-require_once INC . 'lc.inc';
+require_once LIB . 'lc.inc';
 # System configuration variables
 require_once INC . 'config.php';
 # Load environment settings
@@ -83,7 +87,7 @@ require_once HELPER . 'utility_helper.php';
 
 # DB configuration & DB helper (required)
 if (isset($lc_databases[$lc_defaultDbSource]) && is_array($lc_databases[$lc_defaultDbSource]) && $lc_databases[$lc_defaultDbSource]['engine']) {
-    require_once HELPER . 'classes' . _DS_ . 'QueryBuilder.php';
+    require_once CLASSES . 'QueryBuilder.php';
 
     if ($file = _i('helpers/db_helper.php', false)) {
         include_once $file;
@@ -131,11 +135,15 @@ if ($moduleI18n = _readyloader('i18n_helper')) {
 _unloader('i18n_helper', HELPER);
 
 # Route helper (required)
-require_once HELPER . 'classes' . _DS_ . 'Router.php';
+require_once CLASSES . 'Router.php';
 require_once HELPER . 'route_helper.php'; # WEB_ROOT and WEB_APP_ROOT is created in route_helper
 # Routing configuration
 include_once INC . 'route.config.php';
 __route_init();
+
+define('CSS', WEB_ROOT.'css/');
+define('JS', WEB_ROOT.'js/');
+define('WEB_VENDOR', WEB_ROOT.'vendor/');
 
 # Load translations
 if ($moduleI18n) {
@@ -147,10 +155,6 @@ require INC . 'site.config.php';
 if ($file = _i('inc/site.config.php', false)) {
     include_once $file;
 }
-
-define('CSS', WEB_ROOT.'css/');
-define('JS', WEB_ROOT.'js/');
-define('WEB_VENDOR', WEB_ROOT.'vendor/');
 
 # Validation helper (unloadable from /inc/autoload.php)
 if ($file = _i('helpers/validation_helper.php', false)) {
@@ -172,6 +176,7 @@ if ($moduleAuth = _readyloader('auth_helper')) {
 _unloader('auth_helper', HELPER);
 
 # Pager helper
+require_once CLASSES . 'Pager.php';
 if ($file = _i('helpers/pager_helper.php', false)) {
     include_once $file;
 }
@@ -189,7 +194,9 @@ if ($moduleForm = _readyloader('form_helper')) {
 }
 _unloader('form_helper', HELPER);
 
-# File helper (unloadable from /inc/autoload.php)
+# File helper
+require_once CLASSES . 'File.php';
+require_once CLASSES . 'AsynFileUploader.php';
 if ($file = _i('helpers/file_helper.php', false)) {
     include_once $file;
 }
@@ -204,6 +211,33 @@ $_auth = ($moduleAuth) ? auth_get() : null;
 # Check security prerequisite
 security_prerequisite();
 
+# Console helper
+require_once CLASSES . 'console/Console.php';
+require_once CLASSES . 'console/Command.php';
+
+# Auto-load every command script
+$commandDirs = array(LIB . 'commands' . _DS_, APP_ROOT . 'commands' . _DS_);
+if (isset($lc_sites) && is_array($lc_sites) && count($lc_sites)) {
+    foreach ($lc_sites as $subDir) {
+        $commandDirs[] = APP_ROOT . $subDir . _DS_ . 'commands' . _DS_;
+    }
+}
+
+foreach ($commandDirs as $cmdDir) {
+    if (!is_dir($cmdDir)) {
+        continue;
+    }
+    if ($handle = opendir($cmdDir)) {
+        while (false !== ($file = readdir($handle))) {
+            if ($file === '.' || $file === '..') {
+                continue;
+            }
+            _loader($file, $cmdDir);
+        }
+        closedir($handle);
+    }
+}
+
 $module = null;
 foreach ($lc_autoload as $file) {
     if ($module = _readyloader($file)) {
@@ -212,3 +246,5 @@ foreach ($lc_autoload as $file) {
 }
 unset($module);
 unset($file);
+unset($commandDirs);
+unset($cmdDir);
