@@ -8,7 +8,7 @@
 
 ## Getting Started
 
-- Submit an [issue](https://github.com/cithukyaw/LucidFrame/issues), assuming one does not already exist.
+- Submit an [issue](https://github.com/phplucidframe/phplucidframe/issues), assuming one does not already exist.
   - Clearly describe the issue including steps to reproduce when it is a bug.
   - Make sure you fill in the earliest version that you know has the issue.
 - Fork the repository on GitHub.
@@ -23,7 +23,7 @@ We follow [the successful Git branching model](http://nvie.com/posts/a-successfu
 - Better avoid working directly on the master branch, to avoid conflicts if you pull in updates from origin.
 - Make commits using descriptive commit messages and reference the #issue number (if any).
 - Push your changes to a topic branch in your fork of the repository.
-- Submit a pull request to [the LucidFrame original repository](github.com/cithukyaw/LucidFrame), with the correct target branch.
+- Submit a pull request to [the PHPLucidFrame original repository](https://github.com/phplucidframe/phplucidframe), with the correct target branch.
 
 ## Which branch?
 
