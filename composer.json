@@ -1,9 +1,9 @@
 {
-    "name": "lucidframe/phplucidframe",
+    "name": "phplucidframe/phplucidframe",
     "description": "The simple, lightweight & yet powerful PHP framework",
     "type": "library",
     "keywords": ["framework"],
-    "homepage": "http://phplucidframe.sithukyaw.com",
+    "homepage": "http://phplucidframe.github.io",
     "license": "MIT",
     "authors": [
         {
@@ -14,13 +14,12 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/cithukyaw/LucidFrame/issues",
+        "issues": "https://github.com/phplucidframe/phplucidframe/issues",
         "forum": "http://groups.google.com/group/phplucidframe",
-        "irc": "irc://irc.freenode.org/phplucidframe",
-        "source": "https://github.com/cithukyaw/LucidFrame"
+        "source": "https://github.com/phplucidframe/phplucidframe"
     },
     "require": {
-        "php": ">=5.2.0",
+        "php": ">=5.3.0",
         "ext-mcrypt": "*"
     }
 }
