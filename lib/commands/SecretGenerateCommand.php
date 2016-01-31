@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of the PHPLucidFrame library.
- * The script executes the command `php lucidframe secret:generate`
+ * The script executes the command `php lucidframe secret:generate [options]`
  *
  * @package     LucidFrame\Console
  * @since       PHPLucidFrame v 1.11.0
