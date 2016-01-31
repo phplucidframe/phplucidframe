@@ -213,6 +213,7 @@ security_prerequisite();
 
 # Console helper
 require_once CLASSES . 'console/Console.php';
+require_once CLASSES . 'console/ConsoleTable.php';
 require_once CLASSES . 'console/Command.php';
 
 # Auto-load every command script

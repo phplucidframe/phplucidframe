@@ -49,7 +49,7 @@ class Console
      * @param LucidFrame\Console\Command $command
      * @return void
      */
-    public static function registerCommand($command)
+    public static function registerCommand(\LucidFrame\Console\Command $command)
     {
         self::$commands[$command->getName()] = $command;
     }

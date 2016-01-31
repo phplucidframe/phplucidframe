@@ -16,6 +16,8 @@
 
 namespace LucidFrame\Console;
 
+use LucidFrame\Console\ConsoleTable;
+
 class Command
 {
     /** @var string The command name **/
@@ -290,18 +292,13 @@ class Command
      * Display the help message
      * @return void
      */
-    private function showHelp()
+    public function showHelp()
     {
-        if ($this->getOption('help')) {
-            $options = $this->getOptions();
-            unset($options['help']);
+        $options = $this->getOptions();
 
+        if (count($options)) {
             _writeln('Usage:');
-            $usage = _indent() . $this->name ;
-
-            if (count($options)) {
-                $usage .= ' [options]';
-            }
+            $usage = _indent() . $this->name . ' [options]';
 
             if (count($this->arguments)) {
                 $usage .= ' [<' . implode('>] [<', $this->argumentNames) . '>]';
@@ -314,17 +311,18 @@ class Command
                 _writeln();
                 _writeln('Arguments:');
 
+                $table = new ConsoleTable();
+                $table->hideBorder()->setPadding(2);
                 foreach ($this->arguments as $arg) {
-                    $tabWidth = strlen($this->longestArgument)- strlen($arg['name']) + 5;
-                    $ln = _indent(2, true);
-                    $ln .= $arg['name'];
-                    $ln .= _indent($tabWidth, true);
-                    $ln .= $arg['description'];
+                    $table->addRow();
+                    $table->addColumn($arg['name']);
+                    $desc = $arg['description'];
                     if ($arg['default']) {
-                        $ln .= ' [default: "'.$arg['default'].'"]';
+                        $desc .= ' [default: "'.$arg['default'].'"]';
                     }
-                    _writeln($ln);
+                    $table->addColumn($desc);
                 }
+                $table->display();
             }
 
             # Options
@@ -332,18 +330,18 @@ class Command
                 _writeln();
                 _writeln('Options:');
 
+                $table = new ConsoleTable();
+                $table->hideBorder()->setPadding(2);
                 foreach ($this->options as $name => $opt) {
-                    $tabWidth = strlen($this->longestOption) - strlen($opt['key']) + 3;
-                    $ln = _indent(2, true);
-                    $ln .= $opt['shortcut'] ? "-$opt[shortcut]," : _indent(3); // shortopt
-                    $ln .= " --$name"; // longopt
-                    $ln .= _indent($tabWidth, true);
-                    $ln .= $opt['description'];
+                    $table->addRow();
+                    $table->addColumn($opt['key']);
+                    $desc = $opt['description'];
                     if ($opt['default']) {
-                        $ln .= ' [default: "'.$opt['default'].'"]';
+                        $desc .= ' [default: "'.$opt['default'].'"]';
                     }
-                    _writeln($ln);
+                    $table->addColumn($desc);
                 }
+                $table->display();
             }
 
             if ($this->description) {

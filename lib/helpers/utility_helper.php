@@ -15,8 +15,10 @@
  */
 
 use LucidFrame\Console\Command;
-use LucidFrame\File\File;
+use LucidFrame\Console\Console;
+use LucidFrame\Console\ConsoleTable;
 use LucidFrame\File\AsynFileUploader;
+use LucidFrame\File\File;
 
 /**
  * Returns the current PHPLucidFrame version
@@ -1635,6 +1637,27 @@ function _consoleCommand($command)
 {
     return new Command($command);
 }
+
+/**
+ * Simple helper to create an instance of LucidFrame\Console\ConsoleTable
+ * @since  PHPLucidFrame v 1.12.0
+ * @return object LucidFrame\Console\ConsoleTable
+ */
+function _consoleTable()
+{
+    return new ConsoleTable();
+}
+
+/**
+ * Simple helper to get all registered commands
+ * @since  PHPLucidFrame v 1.12.0
+ * @return array
+ */
+function _consoleCommands()
+{
+    return Console::getCommands();
+}
+
 
 /**
  * Simple helper to create Pager object
