@@ -6,7 +6,7 @@
 return array(
     # No trailing slash (only if it is located in a sub-directory of the document root)
     # Leave blank if it is located in the document root
-    'baseURL' => 'LucidFrame',
+    'baseURL' => 'phplucidframe',
     # Site Domain Name
     'siteDomain' => _host(),
     # Database connection information

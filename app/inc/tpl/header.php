@@ -7,7 +7,7 @@
     <div id="page-container">
         <div id="header">
             <div class="container clearfix">
-                <a href="<?php echo _url('home'); ?>" id="logo">LucidFrame</a>
+                <a href="<?php echo _url('home'); ?>" id="logo">PHPLucidFrame</a>
                 <div id="language-switcher">
                 <?php
                 $languages = _cfg('languages');
@@ -48,7 +48,7 @@
                         <a href="http://phplucidframe.sithukyaw.com/downloads" target="_blank">Downloads</a>
                     </li>
                     <li>
-                        <a href="https://github.com/cithukyaw/LucidFrame" target="_blank">GitHub</a>
+                        <a href="https://github.com/phplucidframe/phplucidframe" target="_blank">GitHub</a>
                     </li>
                 </ul>
             </div>

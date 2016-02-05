@@ -2,7 +2,7 @@
  * This file is part of the PHPLucidFrame library.
  * Core Javascript utility
  *
- * @package     LucidFrame\Core
+ * @package     PHPLucidFrame\Core
  * @since       PHPLucidFrame v 1.0.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>

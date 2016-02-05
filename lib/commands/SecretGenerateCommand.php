@@ -3,7 +3,7 @@
  * This file is part of the PHPLucidFrame library.
  * The script executes the command `php lucidframe secret:generate [options]`
  *
- * @package     LucidFrame\Console
+ * @package     PHPLucidFrame\Console
  * @since       PHPLucidFrame v 1.11.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>
@@ -11,7 +11,7 @@
  * @license     http://www.opensource.org/licenses/mit-license.php MIT License
  *
  * This source file is subject to the MIT license that is bundled
- * with this source code in the file LICENSE.txt
+ * with this source code in the file LICENSE
  */
 
 _consoleCommand('secret:generate')

@@ -4,7 +4,7 @@
  * This file is part of the PHPLucidFrame library.
  * Shell script for invoking PHPLucidFrame shell commands using `php lucidframe`
  *
- * @package     LucidFrame\Console
+ * @package     PHPLucidFrame\Console
  * @since       PHPLucidFrame v 1.11.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>

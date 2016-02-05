@@ -3,7 +3,7 @@
  * This file is part of the PHPLucidFrame library.
  * Helper for ajax-like file upload with instant preview if the preview placeholder is provided
  *
- * @package     LucidFrame\Core
+ * @package     PHPLucidFrame\Core
  * @since       PHPLucidFrame v 1.3.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>
@@ -11,7 +11,7 @@
  * @license     http://www.opensource.org/licenses/mit-license.php MIT License
  *
  * This source file is subject to the MIT license that is bundled
- * with this source code in the file LICENSE.txt
+ * with this source code in the file LICENSE
  */
 
 namespace LucidFrame\File;

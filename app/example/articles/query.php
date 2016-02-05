@@ -56,9 +56,9 @@ $articles = $qb; // to use more user-friendly name in view.php
 
 $articles = array();
 $articles[0] = array(
-    'title' => 'Welcome to the LucidFrame Articles',
+    'title' => 'Welcome to the PHPLucidFrame Articles',
     'slug'  => 'welcome-to-the-lucidframe-blog',
-    'body'     => 'LucidFrame is a micro application development framework - a toolkit for PHP users. It provides several general purpose helper functions and logical structure for web application development. The goal is to provide a structured framework with small footprint that enables rapidly robust web application development.'
+    'body'     => 'PHPLucidFrame is a mini application development framework - a toolkit for PHP users. It provides several general purpose helper functions and logical structure for web application development. The goal is to provide a structured framework with small footprint that enables rapidly robust web application development.'
 );
 $articles[] = array(
     'title' => 'URL Rewrite to A Lucid Page Including a Form Example',

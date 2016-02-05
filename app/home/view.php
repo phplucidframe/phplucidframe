@@ -6,7 +6,7 @@
 ?>
 <?php include( _i('inc/tpl/header.php') ); ?>
 
-<h1><?php echo _t('Welcome to LucidFrame'); ?></h1>
+<h1><?php echo _t('Welcome to PHPLucidFrame'); ?></h1>
 <?php echo _tc('about'); ?>
 <h3><?php echo _t('Prerequisites'); ?></h3>
 <ul>
@@ -15,7 +15,7 @@
     <li>MySQL 5.0+ with MySQLi enabled.</li>
 </ul>
 <p>
-    <a href="http://phplucidframe.sithukyaw.com" class="button large green">Download LucidFrame</a>
+    <a href="http://phplucidframe.sithukyaw.com" class="button large green">Download PHPLucidFrame</a>
 </p>
 <p>
     <a href="<?php echo _url('example/blog'); ?>" class="button">AJAX List Example</a>
