@@ -33,7 +33,7 @@
                         <a href="<?php echo _url('example/articles'); ?>" <?php if (_arg(1) == 'articles') echo 'class="active"'; ?> title="Ordinary List Example"><?php echo _t('Example 2'); ?></a>
                     </li>
                     <li>
-                        <a href="<?php echo _url('blog/2/url-rewrite-to-a-lucid-page-including-a-form-example'); ?>" <?php if (_arg(1) == 'blog-page') echo 'class="active"'; ?> title="AJAX Form Example"><?php echo _t('Example 3'); ?></a>
+                        <a href="<?php echo _url('blog/2/custom-routing-to-a-page-including-a-form-example'); ?>" <?php if (_arg(1) == 'blog-page') echo 'class="active"'; ?> title="AJAX Form Example"><?php echo _t('Example 3'); ?></a>
                     </li>
                     <li>
                         <a href="<?php echo _url('example/comment'); ?>" <?php if (_arg(1) == 'comment') echo 'class="active"'; ?> title="Generic Form Example"><?php echo _t('Example 4'); ?></a>

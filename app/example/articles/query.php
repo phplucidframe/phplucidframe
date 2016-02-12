@@ -55,15 +55,15 @@ $articles = $qb; // to use more user-friendly name in view.php
 */
 
 $articles = array();
-$articles[0] = array(
+$articles[] = array(
     'title' => 'Welcome to the PHPLucidFrame Articles',
     'slug'  => 'welcome-to-the-lucidframe-blog',
     'body'     => 'PHPLucidFrame is a mini application development framework - a toolkit for PHP users. It provides several general purpose helper functions and logical structure for web application development. The goal is to provide a structured framework with small footprint that enables rapidly robust web application development.'
 );
 $articles[] = array(
-    'title' => 'URL Rewrite to A Lucid Page Including a Form Example',
-    'slug'  => 'url-rewrite-to-a-lucid-page-including-a-form-example',
-    'body'     => 'This is an example page which shows URL Rewrite rule in <code class="inline">.htacccess</code> how to rewrite URL to this page. The rule is mapping to /app/blog-page/index.php.'
+    'title' => 'Custom Routing to a Page Including a Form Example',
+    'slug'  => 'custom-routing-to-a-page-including-a-form-example',
+    'body'     => 'This is an example page which shows custom routing rules defined in <code class="inline">/inc/route.config.php</code>. The rule is mapping to <code class="inline">/app/blog-page/index.php</code>. That could be possible to write URL rewrite rules in <code class="inline">.htacccess</code>.'
 );
 $articles[] = array(
     'title' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
