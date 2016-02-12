@@ -14,7 +14,9 @@
  * with this source code in the file LICENSE
  */
 
-class LucidFrameTestCase extends UnitTestCase
+namespace LucidFrame\Test;
+
+class LucidFrameTestCase extends \UnitTestCase
 {
     public function setUp()
     {

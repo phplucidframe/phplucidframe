@@ -1,4 +1,7 @@
 <?php
+
+use LucidFrame\Test\LucidFrameTestCase;
+
 /**
  * Unit Test for session_helper.php
  */

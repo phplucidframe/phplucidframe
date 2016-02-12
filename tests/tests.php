@@ -24,9 +24,11 @@
  * with this source code in the file LICENSE
  */
 
+namespace LucidFrame\Test;
+
 require_once 'test_bootstrap.php';
 
-class AllFileTests extends TestSuite
+class AllFileTests extends \TestSuite
 {
     protected $coreDir;
     protected $appDir;
@@ -75,8 +77,8 @@ class AllFileTests extends TestSuite
                 }
             }
         } else {
-            $this->collect($this->coreDir, new SimplePatternCollector('/.test.php/'));
-            $this->collect($this->appDir, new SimplePatternCollector('/.test.php/'));
+            $this->collect($this->coreDir, new \SimplePatternCollector('/.test.php/'));
+            $this->collect($this->appDir, new \SimplePatternCollector('/.test.php/'));
         }
     }
 }

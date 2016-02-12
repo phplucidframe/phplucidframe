@@ -1,5 +1,7 @@
 <?php
+
 use LucidFrame\Core\QueryBuilder;
+use LucidFrame\Test\LucidFrameTestCase;
 
 /**
  * Unit Test for QueryBuilder.php

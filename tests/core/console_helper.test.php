@@ -1,5 +1,7 @@
 <?php
+
 use LucidFrame\Console\Console;
+use LucidFrame\Test\LucidFrameTestCase;
 
 /**
  * Unit Test for Console & Command

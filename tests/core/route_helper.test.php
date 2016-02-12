@@ -1,5 +1,7 @@
 <?php
+
 use LucidFrame\Core\Router;
+use LucidFrame\Test\LucidFrameTestCase;
 
 /**
  * Unit Test for session_helper.php
