@@ -21,5 +21,5 @@ if (!defined('TEST')) {
     require_once 'bootstrap.php';
 }
 
-require_once VENDOR . 'simpletest/autorun.php';
+require_once VENDOR . 'simpletest/simpletest/autorun.php';
 require_once TEST_DIR . 'LucidFrameTestCase.php';
