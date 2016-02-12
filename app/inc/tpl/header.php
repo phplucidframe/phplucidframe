@@ -45,7 +45,7 @@
                         <a href="<?php echo _url('example/asyn-file-uploader'); ?>" <?php if (_arg(1) == 'asyn-file-uploader') echo 'class="active"'; ?> title="AsynFileUploader Example"><?php echo _t('Example 6'); ?></a>
                     </li>
                     <li>
-                        <a href="http://phplucidframe.github.io/downloads" target="_blank">Downloads</a>
+                        <a href="http://phplucidframe.github.io/downloads" target="_blank"><?php echo _t('Downloads'); ?></a>
                     </li>
                     <li>
                         <a href="https://github.com/phplucidframe/phplucidframe" target="_blank">GitHub</a>

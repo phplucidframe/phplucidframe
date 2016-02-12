@@ -16,17 +16,20 @@ msgstr ""
 msgid "Welcome"
 msgstr "ကြိုဆိုပါသည်"
 
+msgid "Welcome to PHPLucidFrame"
+msgstr "PHPLucidFrame မှကြိုဆိုပါသည်"
+
+msgid "Prerequisites"
+msgstr "PHPLucidFrame အသုံးပြုရန် ကနဦးလိုအပ်ချက်များ"
+
+msgid "Download PHPLucidFRame"
+msgstr "PHPLucidFrame ကို ဒေါင်းလုဒ်လုပ်မည်"
+
 msgid "Blog"
 msgstr "ဘလော့ဂ်"
 
 msgid "Articles"
 msgstr "ဆောင်းပါးများ"
-
-msgid "Welcome to PHPLucidFrame"
-msgstr "PHPLucidFrame မှကြိုဆိုပါသည်"
-
-msgid "Prerequisites"
-msgstr "ကနဦးလိုအပ်ချက်များ"
 
 msgid "Read More"
 msgstr "အပြည့်အစုံဖတ်မည်"
@@ -47,7 +50,43 @@ msgid "Comment"
 msgstr "သုံးသပ်ချက်"
 
 msgid "Post Comment"
-msgstr "သုံးသပ်ချက်"
+msgstr "သုံးသပ်ချက်ရေးမည်"
 
 msgid "Cancel"
 msgstr "ပြန်ထွက်မည်"
+
+msgid "Example"
+msgstr "ဥပမာ"
+
+msgid "Example 1"
+msgstr "ဥပမာ ၁"
+
+msgid "Example 2"
+msgstr "ဥပမာ ၂"
+
+msgid "Example 3"
+msgstr "ဥပမာ ၃"
+
+msgid "Example 4"
+msgstr "ဥပမာ ၄"
+
+msgid "Example 5"
+msgstr "ဥပမာ ၅"
+
+msgid "Example 6"
+msgstr "ဥပမာ ၆"
+
+msgid "Download"
+msgstr "ဒေါင်းလုဒ်လုပ်မည်"
+
+msgid "Downloads"
+msgstr "ဒေါင်းလုဒ်လုပ်မည်"
+
+msgid "AJAX List & Pagination"
+msgstr "AJAX အသုံးပြုသော list နှင့် pagination"
+
+msgid "Normal Pagination Example"
+msgstr "AJAX အသုံးမပြုသော list နှင့် pagination"
+
+msgid "Upload"
+msgstr "ပုံ/ဖိုင် တင်မည်"

@@ -3,7 +3,7 @@
  * The index.php (required) serves as the front controller for the requested page,
  * initializing the base resources needed to run the page
  */
-$pageTitle = _t('Articles (Normal Pagination Example)');
+$pageTitle = _t('Articles') . ' ('. _t('Normal Pagination Example') . ')';
 
 include('query.php');
 ?>
