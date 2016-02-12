@@ -14,10 +14,8 @@
  * with this source code in the file LICENSE
  */
 
-/**
- * This class is part of the PHPLucidFrame library.
- * Helper for pagination
- */
+namespace LucidFrame\Core;
+
 class Pager
 {
     /** @var int The current page no. */

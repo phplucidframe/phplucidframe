@@ -14,7 +14,8 @@
  * with this source code in the file LICENSE
  */
 
-require_once CLASSES . 'Form.php';
+use LucidFrame\Core\Form;
+use LucidFrame\Core\Validation;
 
 /**
  * Initialize form

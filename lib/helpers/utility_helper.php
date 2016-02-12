@@ -17,6 +17,7 @@
 use LucidFrame\Console\Command;
 use LucidFrame\Console\Console;
 use LucidFrame\Console\ConsoleTable;
+use LucidFrame\Core\Pager;
 use LucidFrame\File\AsynFileUploader;
 use LucidFrame\File\File;
 

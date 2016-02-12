@@ -157,6 +157,7 @@ if ($file = _i('inc/site.config.php', false)) {
 }
 
 # Validation helper (unloadable from /inc/autoload.php)
+require_once CLASSES . 'Validation.php';
 if ($file = _i('helpers/validation_helper.php', false)) {
     include_once $file;
 }
@@ -189,6 +190,7 @@ _unloader('pager_helper', HELPER);
 require_once HELPER . 'security_helper.php';
 
 # Ajax Form helper (unloadable from /inc/autoload.php)
+require_once CLASSES . 'Form.php';
 if ($moduleForm = _readyloader('form_helper')) {
     require_once $moduleForm;
 }

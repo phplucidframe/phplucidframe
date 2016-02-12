@@ -14,10 +14,8 @@
  * with this source code in the file LICENSE
  */
 
-/**
- * This class is part of the PHPLucidFrame library.
- * Helper for AJAX form handling and form validation
- */
+namespace LucidFrame\Core;
+
 class Form
 {
     /** @var string The HTML form ID */

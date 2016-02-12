@@ -14,6 +14,8 @@
  * with this source code in the file LICENSE
  */
 
+namespace LucidFrame\Core;
+
 class Validation
 {
     /** @var array The array of the error messages upon validation */

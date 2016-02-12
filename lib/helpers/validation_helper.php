@@ -14,7 +14,7 @@
  * with this source code in the file LICENSE
  */
 
-require_once CLASSES . 'Validation.php';
+use LucidFrame\Core\Validation;
 
 $lc_validationMessages = array(
     'default'                => "'%s' needs to be revised.",
