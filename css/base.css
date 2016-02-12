@@ -530,12 +530,12 @@ ul#menu li a {
     min-width: 55px;
     height: 25px;
     display: block;
-    background-color: #006600;
+    background-color: #004E00;
     padding: 8px 10px 0;
     text-align: center;
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
-    border-radius: 5px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
 }
 
 ul#menu li a:hover, ul#menu li a.active {
