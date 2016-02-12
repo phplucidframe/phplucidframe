@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
-"Project-Id-Version: LucidFrame\n"
+"Project-Id-Version: PHPLucidFrame\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Sithu K. <cithukyaw@gmail.com>\n"

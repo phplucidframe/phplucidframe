@@ -47,14 +47,14 @@ if ($qb->getNumRows()) {
 
 $blog = array();
 $blog[0] = array(
-    'title' => 'Welcome to the LucidFrame Blog',
-    'slug'  => 'welcome-to-the-lucidframe-blog',
-    'body'     => 'LucidFrame is a micro application development framework - a toolkit for PHP users. It provides several general purpose helper functions and logical structure for web application development. The goal is to provide a structured framework with small footprint that enables rapidly robust web application development.'
+    'title' => 'Welcome to the PHPLucidFrame Blog',
+    'slug'  => 'welcome-to-the-phplucidframe-blog',
+    'body'  => 'PHPLucidFrame is a micro application development framework - a toolkit for PHP users. It provides several general purpose helper functions and logical structure for web application development. The goal is to provide a structured framework with small footprint that enables rapidly robust web application development.'
 );
 $blog[] = array(
-    'title' => 'URL Rewrite to A Lucid Page Including a Form Example',
-    'slug'  => 'url-rewrite-to-a-lucid-page-including-a-form-example',
-    'body'     => 'This is an example page which shows URL Rewrite rule in <code class="inline">.htacccess</code> how to rewrite URL to this page. The rule is mapping to /app/blog-page/index.php.'
+    'title' => 'Custom Routing to a Page Including a Form Example',
+    'slug'  => 'custom-routing-to-a-page-including-a-form-example',
+    'body'     => 'This is an example page which shows custom routing rules defined in <code class="inline">/inc/route.config.php</code>. The rule is mapping to <code class="inline">/app/blog-page/index.php</code>. That could be possible to write URL rewrite rules in <code class="inline">.htacccess</code>.'
 );
 $blog[] = array(
     'title' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',

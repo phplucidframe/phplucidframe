@@ -5,15 +5,15 @@
  * The template file for 401 Unauthorized.
  * You can copy this to /app/inc/tpl/401.php and update it according to your need.
  *
- * @package     LucidFrame\App
+ * @package     PHPLucidFrame\App
  * @since       PHPLucidFrame v 1.0.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>
- * @link        http://phplucidframe.sithukyaw.com
+ * @link        http://phplucidframe.github.io
  * @license     http://www.opensource.org/licenses/mit-license.php MIT License
  *
  * This source file is subject to the MIT license that is bundled
- * with this source code in the file LICENSE.txt
+ * with this source code in the file LICENSE
  */
 ?>
 <!DOCTYPE html>

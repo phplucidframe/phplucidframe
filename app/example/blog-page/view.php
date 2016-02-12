@@ -8,13 +8,23 @@
 
 <h3><?php echo $blog->title; ?></h3>
 <p>
-    This is an example page which shows URL Rewrite rule in <code class="inline">.htacccess</code> how to rewrite URL to this page. The rule is mapping to <code class="inline">/app/example/blog-page/index.php</code>.
+    If you need your own custom routes, you can easily define them in <code class="inline">/inc/route.config.php</code>. The following example shows the route key <code class="inline">lc_blog_show</code> of the route path <code class="inline">/blog/{id}/{slug}</code> mapping to <code class="inline">/app/example/blog-page/index.php</code> by passing two arguments <code class="inline">id</code> and <code class="inline">slug</code> with the requirements of 'id' to be digits and 'slug' to be alphabets/dashes/underscores.
+    <code>
+    // inc/route.config.php<br>
+    route('lc_blog_show')->map('/blog/{id}/{slug}', '/example/blog-page', 'GET', array(</br>
+    &nbsp;&nbsp;&nbsp;&nbsp;'id'    => '\d+',<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;'slug'  => '[a-zA-Z\-_]+'<br>
+    ));
+    </code>
+</p>
+<p>
+    It is equivalent to the following <code class="inline">.htaccess</code> Rewrite rule.
     <code>
     # ~/blog/99/foo-bar to ~/app/example/blog-page/?lang=~&id=99&slug=foo-bar<br>
     RewriteRule ^(([a-z]{2}|[a-z]{2}-[A-Z]{2})/)?blog/([0-9]+)/(.*)$ app/index.php?lang=$1&id=$3&slug=$4&route=example/blog-page [NC,L]
     </code>
 </p>
-<p>This page also shows AJAX form example below. You can check the form validation and handling in <code class="inline">/app/blog-page/action.php</code>.</p>
+<p>This page also shows AJAX form example below. You can check the form validation and handling in <code class="inline">/app/example/blog-page/action.php</code>.</p>
 <p>
     <h6><?php echo _t('Leave a Comment.'); ?></h6>
     <form id="frmComment" method="post">

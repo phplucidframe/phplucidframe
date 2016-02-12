@@ -3,15 +3,15 @@
  * This file is part of the PHPLucidFrame library.
  * It initializes and bootstraps LucidFrame test environment
  *
- * @package     LucidFrame\Test
+ * @package     PHPLucidFrame\Test
  * @since       PHPLucidFrame v 1.10.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>
- * @link        http://phplucidframe.sithukyaw.com
+ * @link        http://phplucidframe.github.io
  * @license     http://www.opensource.org/licenses/mit-license.php MIT License
  *
  * This source file is subject to the MIT license that is bundled
- * with this source code in the file LICENSE.txt
+ * with this source code in the file LICENSE
  */
 
 if (!defined('TEST')) {

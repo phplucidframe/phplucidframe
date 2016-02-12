@@ -5,9 +5,9 @@
 
 $blog = new stdClass();
 
-$blog->title = 'URL Rewrite to A Page Including a Form Example';
+$blog->title = 'Custom Routing to a Page Including a Form Example';
 $blog->body  = 'This would be from the database.';
-$blog->slug  = 'url-rewrite-to-a-page-including-a-form-example';
+$blog->slug  = 'custom-routing-to-a-page-including-a-form-example';
 
 /*
  //// You can retrieve a single blog post here using `db_select()` and `getSingleResult()`

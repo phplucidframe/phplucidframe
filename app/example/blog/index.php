@@ -3,7 +3,7 @@
  * The index.php (required) serves as the front controller for the requested page,
  * initializing the base resources needed to run the page
  */
-$pageTitle = _t('Blog (AJAX List & Pagination)');
+$pageTitle = _t('Blog') . ' ('. _t('AJAX List & Pagination') . ')';
 
 _meta('description', $pageTitle.': '._cfg('metaDescription'));
 ?>
