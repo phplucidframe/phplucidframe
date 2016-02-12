@@ -249,3 +249,9 @@ unset($module);
 unset($file);
 unset($commandDirs);
 unset($cmdDir);
+
+# Composer Autoloader
+$composerAutoloader = VENDOR . 'autoload.php';
+if (is_file($composerAutoloader) && file_exists($composerAutoloader)) {
+    require_once $composerAutoloader;
+}
