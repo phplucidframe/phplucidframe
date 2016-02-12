@@ -209,7 +209,6 @@
                         if (response.redirect) {
                             window.location = response.redirect;
                         } else {
-                            $form.find('.reset').click();
                             window.location = '#' + response.formId;
                         }
                     }
