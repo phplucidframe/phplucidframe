@@ -35,17 +35,17 @@ h3 {
 }
 
 h4 {
-    font-size: 20px;
+    font-size: 18px;
     padding: 4px 0;
 }
 
 h5 {
-    font-size: 18px;
+    font-size: 16px;
     padding: 2px 0;
 }
 
 h6 {
-    font-size: 16px;
+    font-size: 14px;
     padding: 2px 0;
 }
 
@@ -200,10 +200,6 @@ input.radio {
 
 input.datepicker {
     background: url(../images/calendar.png) top right no-repeat;
-}
-
-.row input.datepicker {
-    background: none;
 }
 
 #ui-datepicker-div {
@@ -479,6 +475,7 @@ ol li div, ul li div {
 #footer #copyright span {
     display: inline-block;
     color: #ffffff;
+    margin-top: 1px;
     text-align: center;
     padding-top: 3px;
 }
@@ -488,7 +485,7 @@ ol li div, ul li div {
 }
 
 #footer #copyright #right {
-    width: 70px;
+    width: 80px;
 }
 
 #footer #slogan {
