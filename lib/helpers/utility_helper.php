@@ -26,12 +26,15 @@ use LucidFrame\File\File;
  */
 function _version()
 {
-    $versionFile = ROOT . 'VERSION';
-    if (is_file($versionFile) && file_exists($versionFile)) {
-        return trim(file_get_contents($versionFile));
-    } else {
-        return 'Unknown';
+    $findIn = array(LIB, ROOT);
+    foreach ($findIn as $dir) {
+        $versionFile = $dir . 'VERSION';
+        if (is_file($versionFile) && file_exists($versionFile)) {
+            return trim(file_get_contents($versionFile));
+        }
     }
+
+    return 'Unknown';
 }
 
 /**
