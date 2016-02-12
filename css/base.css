@@ -450,17 +450,17 @@ ol li div, ul li div {
 
 #header {
     width: 100%;
-    height: 81px;
     background: #f1f1f1;
     border-bottom: 2px #eeeeee solid;
     padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 #logo {
     display: block;
     text-indent: -10000px;
-    width: 231px;
-    height: 30px;
+    width: 320px;
+    height: 34px;
     background: url(../images/logo.png) no-repeat;
     margin: 0;
 }
