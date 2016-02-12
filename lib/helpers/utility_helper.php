@@ -300,7 +300,11 @@ function _js($file)
     $includeFile = 'js/' . $file;
     $includeFile = _i($includeFile);
     if (stripos($includeFile, 'http') === 0) {
-        $fileWithSystemPath = str_replace(WEB_ROOT, ROOT, $includeFile);
+        if (stripos($includeFile, WEB_APP_ROOT) === 0) {
+            $fileWithSystemPath = APP_ROOT . str_replace(WEB_APP_ROOT, '', $includeFile);
+        } else {
+            $fileWithSystemPath = ROOT . str_replace(WEB_ROOT, '', $includeFile);
+        }
         if (file_exists($fileWithSystemPath)) {
             echo '<script src="' . $includeFile . '" type="text/javascript"></script>';
             return true;
@@ -335,9 +339,14 @@ function _css($file)
     $includeFile = 'css/' . $file;
     $includeFile = _i($includeFile);
     if (stripos($includeFile, 'http') === 0) {
-        $fileWithSystemPath = str_replace(WEB_ROOT, ROOT, $file);
+        if (stripos($includeFile, WEB_APP_ROOT) === 0) {
+            $fileWithSystemPath = APP_ROOT . str_replace(WEB_APP_ROOT, '', $includeFile);
+        } else {
+            $fileWithSystemPath = ROOT . str_replace(WEB_ROOT, '', $includeFile);
+        }
+
         if (file_exists($fileWithSystemPath)) {
-            echo '<link href="' . $file . '" rel="stylesheet" type="text/css" />';
+            echo '<link href="' . $includeFile . '" rel="stylesheet" type="text/css" />';
             return true;
         }
     }
