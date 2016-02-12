@@ -87,11 +87,14 @@
             }
             // datepicker initialize
             $('.datepicker').each(function() {
-                var dateFormat = $(this).data('date-format') || 'dd-mm-yy';
+                var format = $(this).data('format');
+                if (!format) {
+                    format = $(this).data('date-format') || 'dd-mm-yy';
+                }
                 $(this).datepicker({
                     changeMonth: true,
                     changeYear: true,
-                    dateFormat: dateFormat
+                    dateFormat: format
                 });
             });
         },
@@ -153,7 +156,7 @@
             }
 
             var url = $form.attr('action'); // which URL to be posted; captured from form action attribute
-            var values     = $form.serialize(); // encode a set of form elements as a string for submission
+            var values = $form.serialize(); // encode a set of form elements as a string for submission
 
             $.ajax({
                 type: 'POST',
