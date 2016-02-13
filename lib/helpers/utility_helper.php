@@ -222,7 +222,7 @@ function _readyloader($name, $path = HELPER)
  */
 function _autoloadDir($dir)
 {
-    if ($handle = opendir($dir)) {
+    if (is_dir($dir) && $handle = opendir($dir)) {
         while (false !== ($fileName = readdir($handle))) {
             $dir = rtrim(rtrim($dir, '/'), '\\');
             $file = $dir . _DS_ . $fileName;
