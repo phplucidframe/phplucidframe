@@ -430,7 +430,9 @@ if (!function_exists('_image')) {
             if (class_exists('File')) {
                 echo File::img($image, $caption, $width.'x'.$height, $dimension, $attributes);
             } else {
-                echo '<img src="'.$image.'" alt="'.$caption.'" title="'.$caption.'" width="'.$width.'" height"'.$height.'" />';
+                echo '<img src="'.$image.'"';
+                echo ' alt="'.$caption.'" title="'.$caption.'"';
+                echo ' width="'.$width.'" height"'.$height.'" />';
             }
         } else {
             # if the image is not found
@@ -509,7 +511,11 @@ function _g($key, $value = '')
     if (empty($key)) {
         return null;
     }
-    return (count(func_get_args()) == 2) ? __dotNotationToArray($key, 'global', $value) : __dotNotationToArray($key, 'global');
+    if (count(func_get_args()) == 2) {
+        return __dotNotationToArray($key, 'global', $value);
+    } else {
+        return __dotNotationToArray($key, 'global');
+    }
 }
 /**
  * Convenience method for htmlspecialchars.
@@ -853,9 +859,9 @@ function _hreflang()
                 $alternate = preg_replace('/\/'._lang().'\b/', '/'.$hrefLang, _canonical());
                 $xdefault  = preg_replace('/\/'._lang().'\b/', '', _canonical());
             }
-            echo '<link rel="alternate" hreflang="'.$hrefLang.'" href="'.$alternate.'" />';
+            echo '<link rel="alternate" hreflang="'.$hrefLang.'" href="'.$alternate.'" />'."\n";
         }
-        echo '<link rel="alternate" href="'.$xdefault.'" hreflang="x-default" />';
+        echo '<link rel="alternate" hreflang="x-default" href="'.$xdefault.'" />'."\n";
     }
 }
 /**
@@ -1476,6 +1482,77 @@ function _meta($key, $value = '')
         $_meta[$key] = $value;
     }
 }
+
+/**
+ * Print SEO meta tags
+ * @return void
+ */
+function _metaSeoTags()
+{
+    if (_meta('description')) {
+        _cfg('metaDescription', _meta('description'));
+    }
+
+    if (_meta('keywords')) {
+        _cfg('metaKeywords', _meta('keywords'));
+    }
+
+    $gpSiteName = _cfg('siteName');
+    if (_meta('gp:name')) {
+        $gpSiteName = _meta('gp:name');
+    }
+    if (_meta('gp:site_name')) {
+        $gpSiteName = _meta('gp:site_name');
+    }
+
+    $tags = array();
+    $tags['description'] = _cfg('metaDescription');
+    $tags['keywords']    = _cfg('metaKeywords');
+
+    $tags['og']                 = array();
+    $tags['og']['title']        = _meta('og:title') ? _meta('og:title') : _cfg('siteName');
+    $tags['og']['url']          = _meta('og:url') ? _meta('og:url') : _url();
+    $tags['og']['type']         = _meta('og:type') ? _meta('og:type') : 'website';
+    $tags['og']['image']        = _meta('og:image') ? _meta('og:image') : _img('logo-200x200.jpg');
+    $tags['og']['description']  = _meta('og:description') ? _meta('og:description') : _cfg('metaDescription');
+    $tags['og']['site_name']    = _meta('og:site_name') ? _meta('og:site_name') : _cfg('siteName');
+
+    $tags['twitter']            = array();
+    $tags['twitter']['card']    = _meta('twitter:card') ? _meta('twitter:card') : 'summary';
+    $tags['twitter']['site']    = _meta('twitter:site') ? _meta('twitter:site') : current(explode('.', _cfg('siteDomain')));
+    $tags['twitter']['title']   = _meta('twitter:title') ? _meta('twitter:title') : _cfg('siteName');
+    $tags['twitter']['description'] = _meta('twitter:description') ? _meta('twitter:description') : _cfg('metaDescription');
+    $tags['twitter']['image']   = _meta('twitter:image') ? _meta('twitter:image') : _img('logo-120x120.jpg');
+
+    $tags['gp']                 = array();
+    $tags['gp']['name']         = $gpSiteName;
+    $tags['gp']['description']  = _meta('gp:description') ? _meta('gp:description') : _cfg('metaDescription');
+    $tags['gp']['image']        = _meta('gp:image') ? _meta('gp:image') : _img('logo-200x200.jpg');
+
+    if (function_exists('__metaSeoTags')) {
+        echo __metaSeoTags($tags);
+    } else {
+        echo "\n";
+        foreach ($tags as $name => $tag) {
+            if ($name == 'og') {
+                foreach ($tag as $key => $content) {
+                    echo '<meta property="og:' . $key . '" content="' . $content . '" />'."\n";
+                }
+            } elseif ($name == 'twitter') {
+                foreach ($tag as $key => $content) {
+                    echo '<meta name="twitter:' . $key . '" content="' . $content . '" />'."\n";
+                }
+            } elseif ($name == 'gp') {
+                foreach ($tag as $key => $content) {
+                    echo '<meta itemprop="' . $key . '" content="' . $content . '" />'."\n";
+                }
+            } else {
+                echo '<meta name="' . $name . '" content="' . $tag . '" />'."\n";
+            }
+        }
+    }
+}
+
 /**
  * Simple mail helper function
  *  The formatting of the email addresses must comply with RFC 2822. Some examples are:
