@@ -129,9 +129,9 @@ $lc_defaultDbSource = 'default';
  *   /app/admin/inc
  *   /app/admin/helpers
  *   /app/admin/js
- * you could also set 'lc-admin' => 'admin', then you can access http://localhost/LucidFrame/lc-admin
+ * you could also set 'lc-admin' => 'admin', then you can access http://localhost/phplucidframe/lc-admin
  * Leave this an empty array if you don't want this feature
- * @see https://github.com/cithukyaw/LucidFrame/wiki/Configuration-for-The-Sample-Administration-Module
+ * @see https://github.com/phplucidframe/phplucidframe/wiki/Configuration-for-The-Sample-Administration-Module
  */
 $lc_sites = array(
     /* 'virtual_folder_name (namespace)'  => 'path/to/physical_folder_name_directly_under_app_directory' */
