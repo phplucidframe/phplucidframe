@@ -1,8 +1,11 @@
 # User specific & automatically generated files #
 #################################################
-/files/sessions/
-/files/cache/
-/files/tmp/
+/files/sessions/*
+!files/sessions/.gitkeep
+/files/cache/*
+!files/cache/.gitkeep
+/files/tmp/*
+!files/tmp/.gitkeep
 /vendor/
 
 # OS generated files #
