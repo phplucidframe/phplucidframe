@@ -85,10 +85,14 @@ if ($file = _i('helpers/utility_helper.php', false)) {
 }
 require_once HELPER . 'utility_helper.php';
 
+# Autoload all files by directory
+_autoloadDir(CLASSES);
+_autoloadDir(CLASSES . 'console');
+_autoloadDir(LIB . 'commands');
+_autoloadDir(APP_ROOT . 'commands');
+
 # DB configuration & DB helper (required)
 if (isset($lc_databases[$lc_defaultDbSource]) && is_array($lc_databases[$lc_defaultDbSource]) && $lc_databases[$lc_defaultDbSource]['engine']) {
-    require_once CLASSES . 'QueryBuilder.php';
-
     if ($file = _i('helpers/db_helper.php', false)) {
         include_once $file;
     }
@@ -135,7 +139,6 @@ if ($moduleI18n = _readyloader('i18n_helper')) {
 _unloader('i18n_helper', HELPER);
 
 # Route helper (required)
-require_once CLASSES . 'Router.php';
 require_once HELPER . 'route_helper.php'; # WEB_ROOT and WEB_APP_ROOT is created in route_helper
 # Routing configuration
 include_once INC . 'route.config.php';
@@ -157,7 +160,6 @@ if ($file = _i('inc/site.config.php', false)) {
 }
 
 # Validation helper (unloadable from /inc/autoload.php)
-require_once CLASSES . 'Validation.php';
 if ($file = _i('helpers/validation_helper.php', false)) {
     include_once $file;
 }
@@ -177,7 +179,6 @@ if ($moduleAuth = _readyloader('auth_helper')) {
 _unloader('auth_helper', HELPER);
 
 # Pager helper
-require_once CLASSES . 'Pager.php';
 if ($file = _i('helpers/pager_helper.php', false)) {
     include_once $file;
 }
@@ -190,15 +191,12 @@ _unloader('pager_helper', HELPER);
 require_once HELPER . 'security_helper.php';
 
 # Ajax Form helper (unloadable from /inc/autoload.php)
-require_once CLASSES . 'Form.php';
 if ($moduleForm = _readyloader('form_helper')) {
     require_once $moduleForm;
 }
 _unloader('form_helper', HELPER);
 
 # File helper
-require_once CLASSES . 'File.php';
-require_once CLASSES . 'AsynFileUploader.php';
 if ($file = _i('helpers/file_helper.php', false)) {
     include_once $file;
 }
@@ -212,34 +210,6 @@ $_auth = ($moduleAuth) ? auth_get() : null;
 
 # Check security prerequisite
 security_prerequisite();
-
-# Console helper
-require_once CLASSES . 'console/Console.php';
-require_once CLASSES . 'console/ConsoleTable.php';
-require_once CLASSES . 'console/Command.php';
-
-# Auto-load every command script
-$commandDirs = array(LIB . 'commands' . _DS_, APP_ROOT . 'commands' . _DS_);
-if (isset($lc_sites) && is_array($lc_sites) && count($lc_sites)) {
-    foreach ($lc_sites as $subDir) {
-        $commandDirs[] = APP_ROOT . $subDir . _DS_ . 'commands' . _DS_;
-    }
-}
-
-foreach ($commandDirs as $cmdDir) {
-    if (!is_dir($cmdDir)) {
-        continue;
-    }
-    if ($handle = opendir($cmdDir)) {
-        while (false !== ($file = readdir($handle))) {
-            if ($file === '.' || $file === '..') {
-                continue;
-            }
-            _loader($file, $cmdDir);
-        }
-        closedir($handle);
-    }
-}
 
 $module = null;
 foreach ($lc_autoload as $file) {

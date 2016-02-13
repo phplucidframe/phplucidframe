@@ -216,6 +216,29 @@ function _readyloader($name, $path = HELPER)
     return (array_search($file, $lc_autoload) !== false && is_file($file) && file_exists($file)) ? $file : false;
 }
 /**
+ * Autoload classes from directory
+ * @param  string $dir Directory path from which all files to be included
+ * @return void
+ */
+function _autoloadDir($dir)
+{
+    if ($handle = opendir($dir)) {
+        while (false !== ($fileName = readdir($handle))) {
+            $dir = rtrim(rtrim($dir, '/'), '\\');
+            $file = $dir . _DS_ . $fileName;
+
+            if ($fileName === '.' || $fileName === '..' || !is_file($file)) {
+                continue;
+            }
+
+            if (file_exists($file)) {
+                require_once $file;
+            }
+        }
+        closedir($handle);
+    }
+}
+/**
  * Declare global JS variables
  * Hook to implement `__script()` at app/helpers/utility_helper.php
  *
