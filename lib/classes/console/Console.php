@@ -102,7 +102,7 @@ class Console
                     _writeln('PHP Version: %s', phpversion());
                     _writeln('The MIT License');
                     _writeln('Simple, lightweight & yet powerful PHP Application Framework');
-                    _writeln('Copyright (c) 2014-%d, PHPLucidFrame.', date('Y'));
+                    _writeln('Copyright (c) 2014-%d, phplucidframe.github.io', date('Y'));
                 } else {
                     _writeln('Command "%s" not found.', $this->commandName);
                 }
