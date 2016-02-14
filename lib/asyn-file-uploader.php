@@ -105,7 +105,7 @@ if (count($_FILES)) {
         $validations[$name]['messages']['fileExtension'] = _t('File must be one of the file types: %s.', _fstr($fileTypes));
     }
 
-    if (Validation::check($validations, 'single') === true) {
+    if (validation_check($validations, 'single') === true) {
         $file = _fileHelper();
         $uniqueId = $file->get('uniqueId');
         $file->set('uploadDir', $uploadDir);
@@ -149,16 +149,17 @@ if (count($_FILES)) {
             }
         } else {
             $error = $file->getError();
-            Validation::addError($name, $error['message']);
+            validation_addError($name, $error['message']);
         }
     }
 
-    if (count(Validation::$errors)) {
+    if (count(validation_get('errors'))) {
+        $errors = validation_get('errors');
         # if there is any validation error and if there was any uploaded file
         $data['error'] = array(
-            'id' => Validation::$errors[0]['htmlID'],
-            'plain' => Validation::$errors[0]['msg'],
-            'html' => _msg(Validation::$errors, 'error', 'html')
+            'id'    => $errors[0]['htmlID'],
+            'plain' => $errors[0]['msg'],
+            'html'  => _msg($errors, 'error', 'html')
         );
         $data['value'] = $post[$name];
     }
