@@ -16,6 +16,9 @@
 
 namespace LucidFrame\Core;
 
+/**
+ * QueryBuilder class is responsible to dynamically create SQL queries.
+ */
 class QueryBuilder
 {
     /** @var string The table name */
@@ -272,6 +275,10 @@ class QueryBuilder
 
     /**
      * Alias of `andWhere()`
+     * Create WHERE ... AND condition
+     *
+     * @param array|null $condition The array of conditions
+     * @return object QueryBuilder
      */
     public function where($condition = null)
     {
@@ -451,6 +458,9 @@ class QueryBuilder
     /**
      * Create AND HAVING ... condition
      * @see having()
+     *
+     * @param array $condition The array of conditions
+     * @return object QueryBuilder
      */
     public function andHaving(array $condition = array())
     {
@@ -462,6 +472,9 @@ class QueryBuilder
     /**
      * Create OR HAVING ... condition
      * @see having()
+     *
+     * @param array $condition The array of conditions
+     * @return object QueryBuilder
      */
     public function orHaving(array $condition = array())
     {

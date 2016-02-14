@@ -3,7 +3,7 @@
  * This file is part of the PHPLucidFrame library.
  * Helper for ajax-like file upload with instant preview if the preview placeholder is provided
  *
- * @package     PHPLucidFrame\Core
+ * @package     PHPLucidFrame\File
  * @since       PHPLucidFrame v 1.3.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>
@@ -16,6 +16,9 @@
 
 namespace LucidFrame\File;
 
+/**
+ * Helper for ajax-like file upload with instant preview if the preview placeholder is provided
+ */
 class AsynFileUploader
 {
     /** @var string The input name or the POST name */
@@ -122,8 +125,9 @@ class AsynFileUploader
     }
     /**
      * Setter for the property `value`
-     * @param array $value The file name saved in the database
-     * @param int   $value The ID related to the file name saved in the database
+     * @param array $value  The file name saved in the database
+     * @param int   $id     The ID related to the file name saved in the database
+     * @return void
      */
     public function setValue($value, $id = 0)
     {
@@ -150,6 +154,9 @@ class AsynFileUploader
     }
     /**
      * Setter for the property `hidden`
+     * @param string $key The key - id, dimensions, fileName or uniqueId
+     * @param mixed  $value The value for the key
+     * @return void
      */
     public function setHidden($key, $value = '')
     {
@@ -397,7 +404,8 @@ class AsynFileUploader
     }
     /**
      * Get the upload directory name from REQUEST
-     * @param
+     * @param string $name The file element name
+     * @return mixed
      */
     public static function getDirFromRequest($name)
     {

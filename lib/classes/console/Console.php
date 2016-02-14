@@ -16,6 +16,9 @@
 
 namespace LucidFrame\Console;
 
+/**
+ * Command-line code generation utility to automate programmer tasks.
+ */
 class Console
 {
     /** @var LucidFrame\Console\Command The command being run **/

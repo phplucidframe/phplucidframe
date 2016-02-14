@@ -70,6 +70,9 @@ function __validation_init()
 
 /**
  * Setter for Validation class properties
+ * @param string $key   The property name
+ * @param mixed  $value The value for the property
+ * @return void
  */
 function validation_set($key, $value = null)
 {
@@ -78,6 +81,8 @@ function validation_set($key, $value = null)
 
 /**
  * Getter for Validation class properties
+ * @param string $key   The property name
+ * @return mixed
  */
 function validation_get($key)
 {

@@ -18,6 +18,9 @@ namespace LucidFrame\Console;
 
 use LucidFrame\Console\ConsoleTable;
 
+/**
+ * This class manages the process of a Command
+ */
 class Command
 {
     /** @var string The command name **/
@@ -49,6 +52,7 @@ class Command
 
     /**
      * Constructor
+     * @param string $name The command name
      */
     public function __construct($name)
     {

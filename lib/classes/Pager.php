@@ -16,6 +16,9 @@
 
 namespace LucidFrame\Core;
 
+/**
+ * Core utility for pagination
+ */
 class Pager
 {
     /** @var int The current page no. */

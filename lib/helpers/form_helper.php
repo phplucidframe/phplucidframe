@@ -50,6 +50,7 @@ function form_token()
 
 /**
  * Form token validation
+ * @param  array $validations The array of validation rules
  * @return void
  */
 function form_validate($validations = null)

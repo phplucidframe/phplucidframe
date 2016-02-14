@@ -16,6 +16,9 @@
 
 namespace LucidFrame\Core;
 
+/**
+ * Core utility for AJAX form handling and form validation
+ */
 class Form
 {
     /** @var string The HTML form ID */
@@ -54,7 +57,8 @@ class Form
     }
     /**
      * Getter for the class properties
-     * @param string $key The property name
+     * @param  string $key The property name
+     * @param  mixed  $value The value for the property
      * @return mixed
      */
     public static function get($key, $value = '')
@@ -76,6 +80,7 @@ class Form
     }
     /**
      * Form token validation
+     * @param  array $validations The array of validation rules
      * @return void
      */
     public static function validate($validations = null)

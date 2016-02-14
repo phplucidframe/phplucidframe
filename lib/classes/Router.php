@@ -17,6 +17,9 @@
 
 namespace LucidFrame\Core;
 
+/**
+ * Simple router for named routes that can be used with RegExp
+ */
 class Router
 {
     /** @var array The custom routes defined */

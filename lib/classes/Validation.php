@@ -16,6 +16,9 @@
 
 namespace LucidFrame\Core;
 
+/**
+ * Form validation helper
+ */
 class Validation
 {
     /** @var array The array of the error messages upon validation */
@@ -27,6 +30,9 @@ class Validation
 
     /**
      * Setter
+     * @param string $key   The property name
+     * @param mixed  $value The value for the property
+     * @return void
      */
     public static function set($key, $value = null)
     {
@@ -35,6 +41,8 @@ class Validation
 
     /**
      * Getter
+     * @param string $key   The property name
+     * @return mixed
      */
     public static function get($key)
     {

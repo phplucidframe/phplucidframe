@@ -3,7 +3,7 @@
  * This file is part of the PHPLucidFrame library.
  * Core utility and class required for file processing system
  *
- * @package     PHPLucidFrame\Core
+ * @package     PHPLucidFrame\File
  * @since       PHPLucidFrame v 1.0.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>
@@ -73,7 +73,7 @@ class File extends \SplFileInfo
     }
     /**
      * Set image resize mode
-     * @param  const  FILE_RESIZE_BOTH, FILE_RESIZE_WIDTH or FILE_RESIZE_HEIGHT
+     * @param  const  $value FILE_RESIZE_BOTH, FILE_RESIZE_WIDTH or FILE_RESIZE_HEIGHT
      * @return object File
      */
     private function setImageResizeMode($value)
