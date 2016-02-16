@@ -60,7 +60,7 @@ if (sizeof($_POST)) {
         $success = true; # this should be set to true only when db operation is successful.
         if ($success) {
             form_set('success', true);
-            flash_set(_t('Your comment has been posted.'));
+            flash_set(_t('Your comment has been posted.'), 'comment_posted');
             _redirect();
         }
     } else {
