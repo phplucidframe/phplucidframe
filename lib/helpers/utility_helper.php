@@ -352,34 +352,61 @@ function _js($file)
 
     if (stripos($file, 'jquery-ui') === 0) {
         $file = (stripos($file, '.js') !== false) ? $file : 'jquery-ui.min.js';
-        echo '<script src="'. WEB_ROOT . 'js/vendor/jquery-ui/' . $file . '" type="text/javascript"></script>';
-        return true;
+        $files = array(
+            'assets/js/vendor/jquery-ui/' => ROOT . 'assets/js/vendor/jquery-ui/' . $file,
+            'js/vendor/jquery-ui/'        => ROOT . 'js/vendor/jquery-ui/' . $file
+        );
+
+        foreach ($files as $path => $f) {
+            if (is_file($f) && file_exists($f)) {
+                echo '<script src="'. WEB_ROOT . $path . $file . '" type="text/javascript"></script>';
+                return true;
+            }
+        }
     }
 
     if (stripos($file, 'jquery') === 0) {
         $file = (stripos($file, '.js') !== false) ? $file : 'jquery.min.js';
-        echo '<script src="'. WEB_ROOT . 'js/vendor/jquery/' . $file . '" type="text/javascript"></script>';
-        return true;
+        $files = array(
+            'assets/js/vendor/jquery/' => ROOT . 'assets/js/vendor/jquery/' . $file,
+            'js/vendor/jquery/'        => ROOT . 'js/vendor/jquery/' . $file
+        );
+
+        foreach ($files as $path => $f) {
+            if (is_file($f) && file_exists($f)) {
+                echo '<script src="'. WEB_ROOT . $path . $file . '" type="text/javascript"></script>';
+                return true;
+            }
+        }
     }
 
-    $includeFile = 'js/' . $file;
-    $includeFile = _i($includeFile);
-    if (stripos($includeFile, 'http') === 0) {
-        if (stripos($includeFile, WEB_APP_ROOT) === 0) {
-            $fileWithSystemPath = APP_ROOT . str_replace(WEB_APP_ROOT, '', $includeFile);
-        } else {
-            $fileWithSystemPath = ROOT . str_replace(WEB_ROOT, '', $includeFile);
+    $includeFiles = array('assets/js/'.$file, 'js/'.$file);
+    foreach ($includeFiles as $includeFile) {
+        $includeFile = _i($includeFile);
+        if (stripos($includeFile, 'http') === 0) {
+            if (stripos($includeFile, WEB_APP_ROOT) === 0) {
+                $fileWithSystemPath = APP_ROOT . str_replace(WEB_APP_ROOT, '', $includeFile);
+            } else {
+                $fileWithSystemPath = ROOT . str_replace(WEB_ROOT, '', $includeFile);
+            }
+            if (file_exists($fileWithSystemPath)) {
+                echo '<script src="' . $includeFile . '" type="text/javascript"></script>';
+                return true;
+            }
         }
-        if (file_exists($fileWithSystemPath)) {
-            echo '<script src="' . $includeFile . '" type="text/javascript"></script>';
-            return true;
-        }
+    }
+
+    if (file_exists(ROOT . 'assets/js/' . $file)) {
+        echo '<script src="'. WEB_ROOT . 'assets/js/' . $file . '" type="text/javascript"></script>';
+        return true;
     }
 
     if (file_exists(ROOT . 'js/' . $file)) {
         echo '<script src="'. WEB_ROOT . 'js/' . $file . '" type="text/javascript"></script>';
+        return true;
     }
-    return true;
+
+    return false;
 }
 /**
  * CSS file include helper
@@ -397,29 +424,47 @@ function _css($file)
     }
 
     if (stripos($file, 'jquery-ui') === 0) {
-        echo '<link href="' . WEB_ROOT . 'js/vendor/jquery-ui/jquery-ui.min.css" rel="stylesheet" type="text/css" />';
-        return true;
+        $files = array(
+            'assets/js/vendor/jquery-ui/' => ROOT . 'assets/js/vendor/jquery-ui/jquery-ui.min.css',
+            'js/vendor/jquery-ui/'        => ROOT . 'js/vendor/jquery-ui/jquery-ui.min.css'
+        );
+
+        foreach ($files as $path => $f) {
+            if (is_file($f) && file_exists($f)) {
+                echo '<link href="' . WEB_ROOT . $path . 'jquery-ui.min.css" rel="stylesheet" type="text/css" />';
+                return true;
+            }
+        }
     }
 
-    $includeFile = 'css/' . $file;
-    $includeFile = _i($includeFile);
-    if (stripos($includeFile, 'http') === 0) {
-        if (stripos($includeFile, WEB_APP_ROOT) === 0) {
-            $fileWithSystemPath = APP_ROOT . str_replace(WEB_APP_ROOT, '', $includeFile);
-        } else {
-            $fileWithSystemPath = ROOT . str_replace(WEB_ROOT, '', $includeFile);
-        }
+    $includeFiles = array('assets/css'.$file, 'css/'.$file);
+    foreach ($includeFiles as $includeFile) {
+        $includeFile = _i($includeFile);
+        if (stripos($includeFile, 'http') === 0) {
+            if (stripos($includeFile, WEB_APP_ROOT) === 0) {
+                $fileWithSystemPath = APP_ROOT . str_replace(WEB_APP_ROOT, '', $includeFile);
+            } else {
+                $fileWithSystemPath = ROOT . str_replace(WEB_ROOT, '', $includeFile);
+            }
 
-        if (file_exists($fileWithSystemPath)) {
-            echo '<link href="' . $includeFile . '" rel="stylesheet" type="text/css" />';
-            return true;
+            if (file_exists($fileWithSystemPath)) {
+                echo '<link href="' . $includeFile . '" rel="stylesheet" type="text/css" />';
+                return true;
+            }
         }
+    }
+
+    if (file_exists(ROOT . 'assets/css/' . $file)) {
+        echo '<link href="' . WEB_ROOT . 'assets/css/' . $file . '" rel="stylesheet" type="text/css" />';
+        return true;
     }
 
     if (file_exists(ROOT . 'css/' . $file)) {
         echo '<link href="' . WEB_ROOT . 'css/' . $file . '" rel="stylesheet" type="text/css" />';
+        return true;
     }
-    return true;
+
+    return false;
 }
 /**
  * Get the absolute image file name
@@ -429,6 +474,17 @@ function _css($file)
  */
 function _img($file)
 {
+    $files = array(
+        'assets/images/' => ROOT . 'assets' . _DS_ . 'images' . _DS_ . $file,
+        'images/'        => ROOT . 'images' . _DS_ . $file
+    );
+
+    foreach ($files as $path => $f) {
+        if (is_file($f) && file_exists($f)) {
+            return WEB_ROOT . $path . $file;
+        }
+    }
+
     return WEB_ROOT . 'images/' . $file;
 }
 
@@ -451,14 +507,17 @@ if (!function_exists('_image')) {
     function _image($file, $caption = '', $dimension = '0x0', $attributes = '')
     {
         $directory = array(
+            'images' => IMAGE,
             'files' => FILE,
-            'images' => IMAGE
         );
         # find the image in the two directories - ./files and ./images
         foreach ($directory as $dir => $path) {
             $image = $path . $file;
             if (is_file($image) && file_exists($image)) {
                 list($width, $height) = getimagesize($image);
+                if (strpos($path, 'assets') !== false) {
+                    $dir = 'assets/images';
+                }
                 break;
             }
         }

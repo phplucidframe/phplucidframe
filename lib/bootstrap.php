@@ -65,7 +65,13 @@ define('BUSINESS', ROOT.'business'._DS_);
 # path to files/ folder
 define('FILE', ROOT.'files'._DS_);
 # path to images/ folder
-define('IMAGE', ROOT.'images'._DS_);
+if (is_dir(ROOT.'assets'._DS_.'images'._DS_)) {
+    define('IMAGE', ROOT.'assets'._DS_.'images'._DS_);
+} else {
+    define('IMAGE', ROOT.'images'._DS_);
+}
+# path to assets/ folder
+define('ASSETS', ROOT.'assets'._DS_);
 # path to files/tests folder
 define('TEST', ROOT.'tests'._DS_);
 define('TEST_DIR', ROOT.'tests'._DS_);

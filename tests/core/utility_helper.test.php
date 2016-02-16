@@ -168,11 +168,18 @@ class UtilityHelperTestCase extends LucidFrameTestCase
     /**
      * Test cases for _p()
      */
-    public function testForFunctionUnderscore()
+    public function testForFunctionUnderscoreP()
     {
         $this->assertEqual(_p('baseURL'), 'phplucidframe');
         $this->assertEqual(_p('siteDomain'), _host());
         $this->assertEqual(_p('db.default.host'), 'localhost');
         $this->assertEqual(_p('db.default.collation'), 'utf8_general_ci');
+    }
+    /**
+     * Test cases for _img()
+     */
+    public function testForFunctionUnderscoreImg()
+    {
+        $this->assertEqual(_img('logo.png'), WEB_ROOT . 'assets/images/logo.png');
     }
 }
