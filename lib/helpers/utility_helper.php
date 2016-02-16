@@ -169,6 +169,44 @@ function _minifyHTML($html)
     }
     return $html;
 }
+
+/**
+ * Get a full path directory
+ * @param  string $name The short code for directory
+ * @return string Full path directory
+ */
+function _dir($name)
+{
+    switch($name) {
+        case 'inc':
+            return ROOT . 'inc' . _DS_;
+        case 'lib':
+            return ROOT . 'lib' . _DS_;
+        case 'helper':
+            return ROOT . 'lib' . _DS_ . 'helpers' . _DS_;
+        case 'class':
+            return ROOT . 'lib' . _DS_ . 'classes' . _DS_;
+        case 'i18n':
+            return ROOT . 'i18n' . _DS_;
+        case 'vendor':
+            return ROOT . 'vendor' . _DS_;
+        case 'business':
+            return ROOT . 'business' . _DS_;
+        case 'asset':
+            return ROOT . 'assets' . _DS_;
+        case 'image':
+            return ROOT . 'assets' . _DS_ . 'images' . _DS_;
+        case 'file':
+            return ROOT . 'files' . _DS_;
+        case 'cache':
+            return ROOT . 'files' . _DS_ . 'cache' . _DS_;
+        case 'test':
+            return ROOT . 'tests' . _DS_;
+    }
+
+    return ROOT;
+}
+
 /**
  * Auto-load a library, script or file
  * @param string $name The file name without extension
