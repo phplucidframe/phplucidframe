@@ -335,6 +335,7 @@ function _addvar($name, $value = '')
     global $lc_jsVars;
     $lc_jsVars[$name] = $value;
 }
+
 /**
  * JS file include helper
  *
@@ -350,37 +351,32 @@ function _js($file)
         return true;
     }
 
+    $includeFiles = array();
     if (stripos($file, 'jquery-ui') === 0) {
         $file = (stripos($file, '.js') !== false) ? $file : 'jquery-ui.min.js';
-        $files = array(
-            'assets/js/vendor/jquery-ui/' => ROOT . 'assets/js/vendor/jquery-ui/' . $file,
-            'js/vendor/jquery-ui/'        => ROOT . 'js/vendor/jquery-ui/' . $file
-        );
-
-        foreach ($files as $path => $f) {
-            if (is_file($f) && file_exists($f)) {
-                echo '<script src="'. WEB_ROOT . $path . $file . '" type="text/javascript"></script>';
-                return true;
-            }
+        if (LC_NAMESPACE) {
+            # for backward compatibility; will be removed in the furture version
+            $includeFiles[] = LC_NAMESPACE . '/js/vendor/jquery-ui/' . $file;
         }
-    }
-
-    if (stripos($file, 'jquery') === 0) {
+        $includeFiles[] = 'assets/js/vendor/jquery-ui/' . $file;
+        $includeFiles[] = 'js/vendor/jquery-ui/' . $file;
+    } elseif (stripos($file, 'jquery') === 0) {
         $file = (stripos($file, '.js') !== false) ? $file : 'jquery.min.js';
-        $files = array(
-            'assets/js/vendor/jquery/' => ROOT . 'assets/js/vendor/jquery/' . $file,
-            'js/vendor/jquery/'        => ROOT . 'js/vendor/jquery/' . $file
-        );
-
-        foreach ($files as $path => $f) {
-            if (is_file($f) && file_exists($f)) {
-                echo '<script src="'. WEB_ROOT . $path . $file . '" type="text/javascript"></script>';
-                return true;
-            }
+        if (LC_NAMESPACE) {
+            # for backward compatibility; will be removed in the furture version
+            $includeFiles[] = LC_NAMESPACE . '/js/vendor/jquery/' . $file;
         }
+        $includeFiles[] = 'assets/js/vendor/jquery/' . $file;
+        $includeFiles[] = 'js/vendor/jquery/' . $file;
+    } else {
+        if (LC_NAMESPACE) {
+            # for backward compatibility; will be removed in the furture version
+            $includeFiles[] = LC_NAMESPACE . '/js/' . $file;
+        }
+        $includeFiles[] = 'assets/js/' . $file;
+        $includeFiles[] = 'js/' . $file;
     }
 
-    $includeFiles = array('assets/js/'.$file, 'js/'.$file);
     foreach ($includeFiles as $includeFile) {
         $includeFile = _i($includeFile);
         if (stripos($includeFile, 'http') === 0) {
@@ -408,6 +404,7 @@ function _js($file)
 
     return false;
 }
+
 /**
  * CSS file include helper
  *
@@ -423,21 +420,23 @@ function _css($file)
         return true;
     }
 
+    $includeFiles = array();
     if (stripos($file, 'jquery-ui') === 0) {
-        $files = array(
-            'assets/js/vendor/jquery-ui/' => ROOT . 'assets/js/vendor/jquery-ui/jquery-ui.min.css',
-            'js/vendor/jquery-ui/'        => ROOT . 'js/vendor/jquery-ui/jquery-ui.min.css'
-        );
-
-        foreach ($files as $path => $f) {
-            if (is_file($f) && file_exists($f)) {
-                echo '<link href="' . WEB_ROOT . $path . 'jquery-ui.min.css" rel="stylesheet" type="text/css" />';
-                return true;
-            }
+        if (LC_NAMESPACE) {
+            # for backward compatibility; will be removed in the furture version
+            $includeFiles[] = LC_NAMESPACE . '/js/vendor/jquery-ui/jquery-ui.min.css';
         }
+        $includeFiles[] = 'assets/js/vendor/jquery-ui/jquery-ui.min.css';
+        $includeFiles[] = 'js/vendor/jquery-ui/jquery-ui.min.css';
+    } else {
+        if (LC_NAMESPACE) {
+            # for backward compatibility; will be removed in the furture version
+            $includeFiles[] = LC_NAMESPACE . '/css/' . $file;
+        }
+        $includeFiles[] = 'assets/css/' . $file;
+        $includeFiles[] = 'css/' . $file;
     }
 
-    $includeFiles = array('assets/css'.$file, 'css/'.$file);
     foreach ($includeFiles as $includeFile) {
         $includeFile = _i($includeFile);
         if (stripos($includeFile, 'http') === 0) {
