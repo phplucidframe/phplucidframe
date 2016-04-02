@@ -1,20 +1,20 @@
 <?php
 /**
  * This file is part of the PHPLucidFrame library.
- * Run all tests or a particular test. Renamed "tests.php" from "all_tests.php" as of 1.10.0
+ * Run all tests or a particular test for core libraries
  * Command line syntax:
  *
- *  php tests/tests.php [options]
+ *  php tests/app.php [options]
  *
  *  [options]
  *      -f, --file  Individual file name or group of file names separated by comma, for example
  *
- *      php tests/tests.php
- *      php tests/tests.php -f utility_helper
- *      php tests/tests.php --file=utility_helper
+ *      php tests/app.php
+ *      php tests/app.php -f blog_add
+ *      php tests/app.php --file=blog_add
  *
  * @package     PHPLucidFrame\Test
- * @since       PHPLucidFrame v 1.10.0
+ * @since       PHPLucidFrame v 1.14.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>
  * @link        http://phplucidframe.github.io
@@ -33,7 +33,7 @@ class AllFileTests extends \LucidFrame\Test\LucidFrameTestSuite
 
     public function __construct()
     {
-        parent::__construct();
+        parent::__construct('app');
 
         $this->execute();
     }

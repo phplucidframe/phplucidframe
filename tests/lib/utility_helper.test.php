@@ -124,17 +124,20 @@ class UtilityHelperTestCase extends LucidFrameTestCase
      */
     public function testForFunctionUnderscoreIsBot()
     {
+        $userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
         // default user agent
-        $this->assertEqual(_isBot(), false);
+        $this->assertFalse(_isBot());
         // Googlebot
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)';
-        $this->assertEqual(_isBot(), true);
+        $this->assertTrue(_isBot());
         // Yahoo! Slurp
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)';
-        $this->assertEqual(_isBot(), true);
+        $this->assertTrue(_isBot());
         // Msnbot 1.1
         $_SERVER['HTTP_USER_AGENT'] = 'msnbot/1.1 (+http://search.msn.com/msnbot.htm)';
-        $this->assertEqual(_isBot(), true);
+        $this->assertTrue(_isBot());
+
+        $_SERVER['HTTP_USER_AGENT'] = $userAgent;
     }
     /**
      * Test cases for _url()
