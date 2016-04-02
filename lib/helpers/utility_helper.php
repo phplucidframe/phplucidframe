@@ -310,14 +310,15 @@ function _script()
     }
     # user defined variables
     $jsVars = _cfg('jsVars');
+    $script .= 'LC.vars = {};';
     if (count($jsVars)) {
         foreach ($jsVars as $name => $val) {
             if (is_array($val)) {
-                $script .= 'LC.'.$name.' = '.json_encode($val).';';
+                $script .= 'LC.vars.'.$name.' = '.json_encode($val).';';
             } elseif (is_numeric($val)) {
-                $script .= 'LC.'.$name.' = '.$val.';';
+                $script .= 'LC.vars.'.$name.' = '.$val.';';
             } else {
-                $script .= 'LC.'.$name.' = "'.$val.'";';
+                $script .= 'LC.vars.'.$name.' = "'.$val.'";';
             }
         }
     }
