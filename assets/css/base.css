@@ -86,6 +86,10 @@ img {
 label {
 }
 
+a label {
+    cursor: pointer;
+}
+
 code {
     display: block;
     border: 1px #ededed solid;
@@ -1165,6 +1169,7 @@ table.list tr td.indent.second,
 /*********/
 
 .pager-container {
+    margin-top: 5px;
     margin-bottom: 5px;
 }
 
@@ -1228,17 +1233,45 @@ ul.pager li {
     border-radius: 4px;
 }
 
-.pager .first-enabled {
+.pager label {
+    display: inline-block;
+    width: 10px;
+    height: 17px;
+    text-indent: -1000px;
 }
 
-.pager .prev-enabled {
+.pager .first-enabled label {
+    background: url(../images/pager/start.png) 0 3px no-repeat;
 }
 
-.pager .first-disabled {
+.pager .first-disabled label {
+    background: url(../images/pager/start_disabled.png) 0 3px no-repeat;
 }
 
-.pager .next-disabled {
+.pager .prev-enabled label {
+    background: url(../images/pager/previous.png) 0 3px no-repeat;
 }
+
+.pager .prev-disabled label {
+    background: url(../images/pager/previous_disabled.png) 0 3px no-repeat;
+}
+
+.pager .next-enabled label {
+    background: url(../images/pager/next.png) 0 3px no-repeat;
+}
+
+.pager .next-disabled label {
+    background: url(../images/pager/next_disabled.png) 0 3px no-repeat;
+}
+
+.pager .last-enabled label {
+    background: url(../images/pager/end.png) 0 3px no-repeat;
+}
+
+.pager .last-disabled label {
+    background: url(../images/pager/end_disabled.png) 0 3px no-repeat;
+}
+
 
 /**************/
 /* TABLE VIEW */

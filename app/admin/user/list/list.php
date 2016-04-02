@@ -13,7 +13,6 @@ $pager = _pager()
     ->set('itemsPerPage', $lc_itemsPerPage)
     ->set('pageNumLimit', $lc_pageNumLimit)
     ->set('total', $rowCount)
-    ->set('imagePath', WEB_ROOT.'images/pager/')
     ->set('ajax', true)
     ->calculate();
 
