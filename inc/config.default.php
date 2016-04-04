@@ -188,6 +188,10 @@ $lc_imageFilterSet = array(
     'resizeMode'   => FILE_RESIZE_BOTH,
     'jpgQuality'   => 75
 );
+# $lc_layoutMode: Enable layout mode or not
+$lc_layoutMode = false;
+# $lc_layoutMode: Default layout file name
+$lc_layoutName = 'layout';
 /**
  * Auth Module Configuration
  */

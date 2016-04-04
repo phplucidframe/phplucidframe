@@ -20,4 +20,19 @@ ob_start('_flush');
 
 require_once router();
 
+if (_cfg('layoutMode') && _isAjax() === false) {
+    $query = _ds(APP_ROOT, _r(), 'query.php');
+
+    if (is_file($query) && file_exists($query)) {
+        require_once $query;
+    }
+
+    $layout = _i(_ds('inc', 'tpl', _cfg('layoutName').'.php'));
+    if (is_file($layout) && file_exists($layout)) {
+        require_once $layout;
+    } else {
+        die('Layout file is missing: ' . $layout);
+    }
+}
+
 ob_end_flush();
