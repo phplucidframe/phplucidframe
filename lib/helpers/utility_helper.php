@@ -1906,3 +1906,35 @@ function _asynFileUploader()
         return new AsynFileUploader();
     }
 }
+
+/**
+ * Get view file
+ * @return string The view file with absolute path
+ */
+function _view()
+{
+    return _i(_r() . _DS_ . 'view.php');
+}
+
+/**
+ * Return directories and file names glued by directory separator
+ * @return string
+ */
+function _ds()
+{
+    $args = func_get_args();
+    return implode(_DS_, $args);
+}
+
+/**
+ * Check if the request is an AJAX request
+ * @return boolean
+ */
+function _isAjax()
+{
+    if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && !empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+       strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+        return true;
+    }
+    return false;
+}

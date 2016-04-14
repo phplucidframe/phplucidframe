@@ -45,6 +45,9 @@
                         <a href="<?php echo _url('example/asyn-file-uploader'); ?>" <?php if (_arg(1) == 'asyn-file-uploader') echo 'class="active"'; ?> title="AsynFileUploader Example"><?php echo _t('Example 6'); ?></a>
                     </li>
                     <li>
+                        <a href="<?php echo _url('example/layout'); ?>" <?php if (_arg(1) == 'layout') echo 'class="active"'; ?> title="Layout Mode Example"><?php echo _t('Example 7'); ?></a>
+                    </li>
+                    <li>
                         <a href="http://phplucidframe.github.io/downloads" target="_blank"><?php echo _t('Downloads'); ?></a>
                     </li>
                     <li>
