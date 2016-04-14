@@ -451,7 +451,7 @@
                 cache: false,
                 success: function(response) {
                     if (typeof callback !== 'undefined') {
-                        callback();
+                        callback(response);
                     } else {
                         if ($html === true) { // the response may contain both HTML and script
                             var $rsp = response.split('[script]');
