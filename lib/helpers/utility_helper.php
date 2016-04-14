@@ -1938,3 +1938,14 @@ function _isAjax()
     }
     return false;
 }
+
+/**
+ * Header sent as JSON
+ * @param array $data Array of data to be encoded as JSON
+ * @return void
+ */
+function _json(array $data)
+{
+    header('Content-Type: text/json');
+    echo json_encode($data);
+}
