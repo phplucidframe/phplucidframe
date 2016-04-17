@@ -46,12 +46,16 @@ _consoleCommand('schema:load')
             _writeln('Failed to load schema.');
             _writeln('Unable to find the schema file "%s".', $f);
         } else {
-            $schema = include_once($file);
-            $sm = new SchemaManager($schema);
-            if ($sm->import($db)) {
-                _writeln('Schema is successfully loaded. The database for "%s" has been imported.', $db);
+            if ($cmd->confirm('The database will be purged. Type "y" or "yes" to continue:')) {
+                $schema = include_once($file);
+                $sm = new SchemaManager($schema);
+                if ($sm->import($db)) {
+                    _writeln('Schema is successfully loaded. The database for "%s" has been imported.', $db);
+                } else {
+                    _writeln('No schema is loaded.');
+                }
             } else {
-                _writeln('No schema is loaded.');
+                _writeln('Aborted.');
             }
         }
     })
