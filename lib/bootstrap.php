@@ -50,6 +50,8 @@ if (strcasecmp(APP_ROOT, ROOT) === 0) {
 
 # path to inc/ folder
 define('INC', ROOT.'inc'._DS_);
+# path to db/ folder
+define('DB', ROOT.'db'._DS_);
 # path to lib/ folder
 define('LIB', ROOT.'lib'._DS_);
 # path to lib/helpers/ folder

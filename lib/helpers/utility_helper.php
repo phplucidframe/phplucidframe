@@ -180,6 +180,8 @@ function _dir($name)
     switch($name) {
         case 'inc':
             return ROOT . 'inc' . _DS_;
+        case 'db':
+            return ROOT . 'db' . _DS_;
         case 'lib':
             return ROOT . 'lib' . _DS_;
         case 'helper':
