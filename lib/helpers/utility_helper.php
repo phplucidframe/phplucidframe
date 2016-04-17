@@ -1813,6 +1813,22 @@ function _isBot()
 }
 
 /**
+ * Write output
+ * @since  PHPLucidFrame v 1.14.0
+ * @param  string $text The text to output
+ * @param  [mixed $args [, mixed ...]] Arguments to the text
+ * @return void
+ */
+function _write($text = '')
+{
+    $args = func_get_args();
+    $text = array_shift($args);
+    if ($text) {
+        echo vsprintf($text, $args);
+    }
+}
+
+/**
  * Write output with line feed (\n)
  * @since  PHPLucidFrame v 1.11.0
  * @param  string $text The text to output

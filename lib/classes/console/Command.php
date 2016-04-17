@@ -469,4 +469,32 @@ class Command
 
         return array($this->parsedArguments, $this->parsedOptions);
     }
+
+    /**
+     * Console confirmation prompt
+     * @param string        $message    The confirmation message
+     * @param string|array  $input      The input to be allowed or to be checked against
+     * @return boolean TRUE if it is passed; otherwise FALSE
+     */
+    public function confirm($message = 'Are you sure? Type "yes" or "y" to continue:', $input = array('yes', 'y'))
+    {
+        _write(trim($message).' ');
+
+        $handle = fopen("php://stdin", "r");
+        $line   = fgets($handle);
+        $line   = strtolower(trim($line));
+
+        if (is_string($input) && $line == $input) {
+            fclose($handle);
+            return true;
+        }
+
+        if (is_array($input) && in_array($line, $input)) {
+            fclose($handle);
+            return true;
+        }
+
+        fclose($handle);
+        return false;
+    }
 }
