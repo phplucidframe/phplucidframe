@@ -574,6 +574,7 @@ class SchemaManager
 
     /**
      * Import schema to the database
+     * @param  string $dbNamespace The namespace for the database
      * @return boolean TRUE for success; FALSE for failure
      */
     public function import($dbNamespace)
@@ -604,6 +605,7 @@ class SchemaManager
 
     /**
      * Export sql dump file
+     * @param  string $dbNamespace The namespace for the database
      * @return boolean TRUE for success; FALSE for failure
      */
     public function export($dbNamespace = null)

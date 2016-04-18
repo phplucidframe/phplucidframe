@@ -465,4 +465,36 @@ function __secret($file = null)
     return (is_file($file) && file_exists($file)) ? trim(file_get_contents($file)) : '';
 }
 
+/**
+ * Get schema definition file
+ * @param  string $dbNamespace The namespace for the database
+ * @return mixed
+ *  array   The schema defination
+ *  null    Incorrect schema defination
+ *  boolean False when the file doesn't exist
+ */
+function _schema($dbNamespace = 'default')
+{
+    if ($dbNamespace === 'default') {
+        $files = array(DB."schema.{$dbNamespace}.php", DB.'schema.php');
+    } else {
+        $files = array(DB."schema.{$dbNamespace}.php");
+    }
+
+    $file = false;
+    foreach ($files as $f) {
+        if (is_file($f) && file_exists($f)) {
+            $file = $f;
+            break;
+        }
+    }
+
+    if ($file) {
+        $schema = include_once($file);
+        return is_array($schema) ? $schema : null;
+    } else {
+        return false;
+    }
+}
+
 __prerequisite();

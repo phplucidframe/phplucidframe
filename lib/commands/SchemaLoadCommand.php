@@ -28,26 +28,13 @@ _consoleCommand('schema:load')
     ->setDefinition(function(\LucidFrame\Console\Command $cmd) {
         $db = $cmd->getArgument('db');
 
-        if ($db === 'default') {
-            $files = array(DB."schema.{$db}.php", DB."schema.php");
-        } else {
-            $files = array(DB."schema.{$db}.php");
-        }
-
-        $file = null;
-        foreach ($files as $f) {
-            if (is_file($f) && file_exists($f)) {
-                $file = $f;
-                break;
-            }
-        }
-
-        if (!$file) {
+        $schema = _schema($db);
+        if ($schema === null) {
             _writeln('Failed to load schema.');
-            _writeln('Unable to find the schema file "%s".', $f);
+        } elseif ($schema === false) {
+            _writeln('Unable to find the schema file "%s".', DB.'schema.'.$db.'.php');
         } else {
             if ($cmd->confirm('The database will be purged. Type "y" or "yes" to continue:')) {
-                $schema = include_once($file);
                 $sm = new SchemaManager($schema);
                 if ($sm->import($db)) {
                     _writeln('Schema is successfully loaded. The database for "%s" has been imported.', $db);
