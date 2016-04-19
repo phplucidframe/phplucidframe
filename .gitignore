@@ -1,5 +1,7 @@
 # User specific & automatically generated files #
 #################################################
+/db/build/*
+!/db/build/.gitkeep
 /db/generated/*
 !/db/generated/.gitkeep
 /files/sessions/*

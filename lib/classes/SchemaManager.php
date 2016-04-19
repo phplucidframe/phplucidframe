@@ -471,6 +471,7 @@ class SchemaManager
             }
 
             $def = array_merge($pkFields[$table], $fkFields, $def);
+            $schema[$table] = $def;
 
             # ManyToMany table FK indexes
             if (isset($def['options']['m:m'])) {
@@ -569,6 +570,9 @@ class SchemaManager
         $sql[] = 'SET FOREIGN_KEY_CHECKS=1;';
         $this->sqlStatements = $sql;
 
+        $schema['_options'] = $this->schema['_options'];
+        $this->schema = $schema;
+
         return true;
     }
 
@@ -577,7 +581,7 @@ class SchemaManager
      * @param  string $dbNamespace The namespace for the database
      * @return boolean TRUE for success; FALSE for failure
      */
-    public function import($dbNamespace)
+    public function import($dbNamespace = null)
     {
         if (!$this->sqlStatements) {
             $this->load();
@@ -585,6 +589,10 @@ class SchemaManager
 
         if (!count($this->sqlStatements)) {
             return false;
+        }
+
+        if ($dbNamespace === null) {
+            $dbNamespace = $this->dbNamespace;
         }
 
         if ($this->dbNamespace !== $dbNamespace) {
@@ -599,6 +607,8 @@ class SchemaManager
             // back to default db
             db_switch($this->dbNamespace);
         }
+
+        $this->build($dbNamespace);
 
         return true;
     }
@@ -625,5 +635,28 @@ class SchemaManager
         $dump = implode("\n", $this->sqlStatements);
 
         return file_put_contents(DB.'generated'._DS_.'schema.'.$dbNamespace.'.sql', $dump) ? true : false;
+    }
+
+    /**
+     * Export the built schema definition into a file
+     * @param  string $dbNamespace The namespace for the database
+     * @return boolean TRUE for success; FALSE for failure
+     */
+    public function build($dbNamespace = null)
+    {
+        if ($dbNamespace === null) {
+            $dbNamespace = $this->dbNamespace;
+        }
+
+        $builtSchema = str_replace('  ', '    ', var_export($this->schema, true));
+        $builtSchema = preg_replace('/\s+\\n/', "\n", $builtSchema);
+        $builtSchema = preg_replace('/=>\\n/', "=>", $builtSchema);
+        $builtSchema = preg_replace('/=>\s+/', "=> ", $builtSchema);
+
+        $content = "<?php\n\n";
+        $content .= "return ";
+        $content .= $builtSchema;
+        $content .= ";\n";
+        return file_put_contents(DB.'build'._DS_.'schema.'.$dbNamespace.'.inc', $content);
     }
 }

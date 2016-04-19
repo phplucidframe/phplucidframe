@@ -468,18 +468,43 @@ function __secret($file = null)
 /**
  * Get schema definition file
  * @param  string $dbNamespace The namespace for the database
+ * @param  boolean TRUE to look for the file in /db/build/; FALSE in /db/
+ *  `TRUE` to look for the file in such priority
+ *      1. /db/build/schema.{namespace}.inc
+ *      2. /db/build/schema.inc (only for default)
+ *      3. /db/schema.{namespace}.php
+ *      4. /db/schema.php (only for default)
+ *
+ *  `FALSE` to look in this priority
+ *      1. /db/schema.{namespace}.php
+ *      2. /db/schema.php (only for default)
+ *
  * @return mixed
  *  array   The schema defination
  *  null    Incorrect schema defination
  *  boolean False when the file doesn't exist
  */
-function _schema($dbNamespace = 'default')
+function _schema($dbNamespace = 'default', $cache = false)
 {
-    if ($dbNamespace === 'default') {
-        $files = array(DB."schema.{$dbNamespace}.php", DB.'schema.php');
+    if ($cache) {
+        $path = DB.'build'._DS_;
+        $ext = 'inc';
     } else {
-        $files = array(DB."schema.{$dbNamespace}.php");
+        $path = DB;
+        $ext = 'php';
     }
+
+    if ($dbNamespace === 'default') {
+        $files = array("{$path}schema.{$dbNamespace}.{$ext}", "{$path}schema.{$ext}");
+    } else {
+        $files = array("{$path}schema.{$dbNamespace}.{$ext}");
+    }
+
+    if ($cache) {
+        $files[] = DB."schema.{$dbNamespace}.php";
+        $files[] = DB."schema.php";
+    }
+    $files = array_unique($files);
 
     $file = false;
     foreach ($files as $f) {
