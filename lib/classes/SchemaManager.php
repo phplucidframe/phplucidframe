@@ -624,6 +624,6 @@ class SchemaManager
 
         $dump = implode("\n", $this->sqlStatements);
 
-        return file_put_contents(DB.'schema.'.$dbNamespace.'.sql', $dump) ? true : false;
+        return file_put_contents(DB.'generated'._DS_.'schema.'.$dbNamespace.'.sql', $dump) ? true : false;
     }
 }

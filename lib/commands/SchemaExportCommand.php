@@ -36,7 +36,7 @@ _consoleCommand('schema:export')
         } else {
             $sm = new SchemaManager($schema);
             if ($sm->export($db)) {
-                _writeln('"%s" has been exported.', DB.'schema.'.$db.'.sql');
+                _writeln('"%s" has been exported.', DB.'generated'._DS_.'schema.'.$db.'.sql');
             } else {
                 _writeln('No sql file is exported.');
             }
