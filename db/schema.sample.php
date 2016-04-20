@@ -13,9 +13,9 @@ return array(
         // defaults for all tables; this can be overidden by each table
         'timestamps'    => true, // all tables will have 3 datetime fields - `created`, `updated`, `deleted`
         'constraints'   => true, // all FK constraints to all tables
-        'charset'       => 'utf8',
-        'collate'       => 'utf8_unicode_ci',
         'engine'        => 'InnoDB',
+        'charset'       => 'utf8',
+        'collate'       => _p('db.default.collation'),
     ),
     // array keys are table names without prefix
     'category' => array(

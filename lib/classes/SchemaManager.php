@@ -85,8 +85,14 @@ class SchemaManager
      * @param  array $schema The array of schema definition
      * @return object SchemaManager
      */
-    public function setSchema(array $schema)
+    public function setSchema($schema)
     {
+        if (!is_array($schema)) {
+            $schema = array(
+                '_options' => $this->defaultOptions
+            );
+        }
+
         $this->schema = $schema;
 
         return $this;
@@ -332,7 +338,7 @@ class SchemaManager
      * Process schema
      * @return boolean TRUE for success; FALSE for failure
      */
-    public function load()
+    private function load()
     {
         $schema = $this->schema;
         if (isset($schema['_options'])) {
@@ -577,22 +583,56 @@ class SchemaManager
     }
 
     /**
+     * Check if the schema is parsed and fully loaded
+     * @return boolean TRUE/FALSE
+     */
+    public function isLoaded()
+    {
+        return isset($this->schema['_options']['pk']);
+    }
+
+    /**
+     * Export the built schema definition into a file
+     * @param  string $dbNamespace The namespace for the database
+     * @return boolean TRUE for success; FALSE for failure
+     */
+    public function build($dbNamespace = null)
+    {
+        if (!$this->isLoaded()) {
+            $this->load();
+        }
+
+        if ($dbNamespace === null) {
+            $dbNamespace = $this->dbNamespace;
+        }
+
+        $builtSchema = str_replace('  ', '    ', var_export($this->schema, true));
+        $builtSchema = preg_replace('/\s+\\n/', "\n", $builtSchema);
+        $builtSchema = preg_replace('/=>\\n/', "=>", $builtSchema);
+        $builtSchema = preg_replace('/=>\s+/', "=> ", $builtSchema);
+
+        $content = "<?php\n\n";
+        $content .= "return ";
+        $content .= $builtSchema;
+        $content .= ";\n";
+        return file_put_contents(DB.'build'._DS_.'schema.'.$dbNamespace.'.inc', $content);
+    }
+
+    /**
      * Import schema to the database
      * @param  string $dbNamespace The namespace for the database
      * @return boolean TRUE for success; FALSE for failure
      */
     public function import($dbNamespace = null)
     {
-        if (!$this->sqlStatements) {
-            $this->load();
+        if ($dbNamespace === null) {
+            $dbNamespace = $this->dbNamespace;
         }
+
+        $this->build($dbNamespace);
 
         if (!count($this->sqlStatements)) {
             return false;
-        }
-
-        if ($dbNamespace === null) {
-            $dbNamespace = $this->dbNamespace;
         }
 
         if ($this->dbNamespace !== $dbNamespace) {
@@ -620,43 +660,18 @@ class SchemaManager
      */
     public function export($dbNamespace = null)
     {
-        if (!$this->sqlStatements) {
-            $this->load();
+        if ($dbNamespace === null) {
+            $dbNamespace = $this->dbNamespace;
         }
+
+        $this->build($dbNamespace);
 
         if (!count($this->sqlStatements)) {
             return false;
         }
 
-        if ($dbNamespace === null) {
-            $dbNamespace = $this->dbNamespace;
-        }
-
         $dump = implode("\n", $this->sqlStatements);
 
         return file_put_contents(DB.'generated'._DS_.'schema.'.$dbNamespace.'.sql', $dump) ? true : false;
-    }
-
-    /**
-     * Export the built schema definition into a file
-     * @param  string $dbNamespace The namespace for the database
-     * @return boolean TRUE for success; FALSE for failure
-     */
-    public function build($dbNamespace = null)
-    {
-        if ($dbNamespace === null) {
-            $dbNamespace = $this->dbNamespace;
-        }
-
-        $builtSchema = str_replace('  ', '    ', var_export($this->schema, true));
-        $builtSchema = preg_replace('/\s+\\n/', "\n", $builtSchema);
-        $builtSchema = preg_replace('/=>\\n/', "=>", $builtSchema);
-        $builtSchema = preg_replace('/=>\s+/', "=> ", $builtSchema);
-
-        $content = "<?php\n\n";
-        $content .= "return ";
-        $content .= $builtSchema;
-        $content .= ";\n";
-        return file_put_contents(DB.'build'._DS_.'schema.'.$dbNamespace.'.inc', $content);
     }
 }

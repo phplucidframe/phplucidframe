@@ -15,6 +15,7 @@
  */
 
 use LucidFrame\Core\QueryBuilder;
+use LucidFrame\Core\SchemaManager;
 
 /**
  * @internal
@@ -137,7 +138,17 @@ function db_connect($namespace = 'default')
     if (!mysqli_select_db($_conn, $conf['database'])) {
         die('Can\'t use  : ' . $conf['database'] .' - '. mysqli_error($_conn));
     }
-    $_DB = $conf['database'];
+
+    $_DB = new stdClass();
+    $_DB->name = $conf['database'];
+    $_DB->namespace = $namespace;
+
+    # Load the schema of the currently connected database
+    $schema = _schema($namespace, true);
+    $_DB->schemaManager = new SchemaManager($schema);
+    if (!$_DB->schemaManager->isLoaded()) {
+        $_DB->schemaManager->build($namespace);
+    }
 }
 /**
  * Switch to the given database from the currently active database

@@ -9,5 +9,17 @@
  */
 
 return array(
-    /* Check schema.sample.php for array format */
+    '_options' => array(
+        // defaults for all tables; this can be overidden by each table
+        'timestamps'    => true, // all tables will have 3 datetime fields - `created`, `updated`, `deleted`
+        'constraints'   => true, // all FK constraints to all tables
+        'engine'        => 'InnoDB',
+        'charset'       => 'utf8',
+        'collate'       => _p('db.default.collation'),
+    ),
+    /*
+    ...
+    Check schema.sample.php for array format hereafter
+    ...
+    */
 );
