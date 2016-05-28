@@ -674,4 +674,28 @@ class SchemaManager
 
         return file_put_contents(DB.'generated'._DS_.'schema.'.$dbNamespace.'.sql', $dump) ? true : false;
     }
+
+    /**
+     * Check if the table has the timestamp fields or not
+     * @param  string $table The table name without prefix
+     * @return boolean TRUE if the table has the timestamp fields, otherwise FALSE
+     */
+    public function hasTimestamps($table)
+    {
+        $table = ltrim($table, db_prefix());
+
+        return (isset($this->schema[$table]['options']['timestamps']) && $this->schema[$table]['options']['timestamps']) ? true : false;
+    }
+
+    /**
+     * Check if the table has the slug field or not
+     * @param  string $table The table name without prefix
+     * @return boolean TRUE if the table has the slug field, otherwise FALSE
+     */
+    public function hasSlug($table)
+    {
+        $table = ltrim($table, db_prefix());
+
+        return isset($this->schema[$table]['slug']) ? true : false;
+    }
 }

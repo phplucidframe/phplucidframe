@@ -586,6 +586,8 @@ if (!function_exists('db_insert')) {
         if (count($data) == 0) {
             return;
         }
+
+        global $_DB;
         global $_conn;
         global $lc_useDBAutoFields;
 
@@ -609,13 +611,18 @@ if (!function_exists('db_insert')) {
 
         $fields = array_keys($data);
         $data   = array_values($data);
-        if ($lc_useDBAutoFields) {
-            if ($useSlug) {
-                $fields[] = 'slug';
-            }
+
+        # $lc_useDBAutoFields and $useSlug are still used for backward compatibility
+        # TODO: $lc_useDBAutoFields and $useSlug to be removed in future versions
+        if (($_DB->schemaManager->hasSlug($table) && $useSlug) || ($lc_useDBAutoFields && $useSlug)) {
+            $fields[] = 'slug';
+        }
+
+        if ($_DB->schemaManager->hasTimestamps($table) || $lc_useDBAutoFields) {
             $fields[] = 'created';
             $fields[] = 'updated';
         }
+
         $sqlFields = implode(', ', $fields);
         $values = array();
         $i = 0;
@@ -632,15 +639,20 @@ if (!function_exists('db_insert')) {
             }
             $i++;
         }
-        if ($lc_useDBAutoFields) {
-            if ($useSlug) {
-                $slug = _slug($slug, $table);
-                session_set('lastInsertSlug', $slug);
-                $values[] = '"'.$slug.'"';
-            }
+
+        # $lc_useDBAutoFields and $useSlug are still used for backward compatibility
+        # TODO: $lc_useDBAutoFields and $useSlug to be removed in future versions
+        if (($_DB->schemaManager->hasSlug($table) && $useSlug) || ($lc_useDBAutoFields && $useSlug)) {
+            $slug = _slug($slug, $table);
+            session_set('lastInsertSlug', $slug);
+            $values[] = '"'.$slug.'"';
+        }
+
+        if ($_DB->schemaManager->hasTimestamps($table) || $lc_useDBAutoFields) {
             $values[] = '"'.date('Y-m-d H:i:s').'"';
             $values[] = '"'.date('Y-m-d H:i:s').'"';
         }
+
         $sqlValues = implode(', ', $values);
 
         $sql = 'INSERT INTO '.$table.' ('.$sqlFields.')
@@ -690,6 +702,8 @@ if (!function_exists('db_update')) {
         if (count($data) == 0) {
             return;
         }
+
+        global $_DB;
         global $_conn;
         global $lc_useDBAutoFields;
 
@@ -762,14 +776,18 @@ if (!function_exists('db_update')) {
             }
             $notCond = 'NOT ( ' . $cond . ' )';
 
-            if ($lc_useDBAutoFields) {
-                if ($useSlug) {
-                    $slug = _slug($slug, $table, $notCond);
-                    session_set('lastInsertSlug', $slug);
-                    $fields[] = '`slug` = "'.$slug.'"';
-                }
+            # $lc_useDBAutoFields and $useSlug are still used for backward compatibility
+            # TODO: $lc_useDBAutoFields and $useSlug to be removed in future versions
+            if (($_DB->schemaManager->hasSlug($table) && $useSlug) || ($lc_useDBAutoFields && $useSlug)) {
+                $slug = _slug($slug, $table, $notCond);
+                session_set('lastInsertSlug', $slug);
+                $fields[] = '`slug` = "'.$slug.'"';
+            }
+
+            if ($_DB->schemaManager->hasTimestamps($table) || $lc_useDBAutoFields) {
                 $fields[] = '`updated` = "' . date('Y-m-d H:i:s') . '"';
             }
+
             $fields = implode(', ', $fields);
 
             $sql = 'UPDATE ' . QueryBuilder::quote($table) . '
@@ -832,12 +850,18 @@ if (!function_exists('db_delete')) {
         db_query($sql);
         $return = ob_get_clean();
         if ($return) {
+            # If there is FK delete RESTRICT constraint
             if (db_errorNo() == 1451) {
-                # If there is FK delete RESTRICT constraint
-                $sql = 'UPDATE '. QueryBuilder::quote($table) . '
-                        SET `deleted` = "'.date('Y-m-d H:i:s').'" '.$condition.'
-                        LIMIT 1';
-                return (db_query($sql)) ? true : false;
+                # $lc_useDBAutoFields is still used for backward compatibility
+                # TODO: $lc_useDBAutoFields to be removed in future versions
+                if ($_DB->schemaManager->hasTimestamps($table) || $lc_useDBAutoFields) {
+                    $sql = 'UPDATE '. QueryBuilder::quote($table) . '
+                            SET `deleted` = "'.date('Y-m-d H:i:s').'" '.$condition.'
+                            LIMIT 1';
+                    return db_query($sql);
+                } else {
+                    return false;
+                }
             } else {
                 echo $return;
                 return false;
