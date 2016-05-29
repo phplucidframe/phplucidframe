@@ -180,6 +180,8 @@ function _dir($name)
     switch($name) {
         case 'inc':
             return ROOT . 'inc' . _DS_;
+        case 'db':
+            return ROOT . 'db' . _DS_;
         case 'lib':
             return ROOT . 'lib' . _DS_;
         case 'helper':
@@ -1808,6 +1810,22 @@ function _isBot()
         }
     }
     return false;
+}
+
+/**
+ * Write output
+ * @since  PHPLucidFrame v 1.14.0
+ * @param  string $text The text to output
+ * @param  [mixed $args [, mixed ...]] Arguments to the text
+ * @return void
+ */
+function _write($text = '')
+{
+    $args = func_get_args();
+    $text = array_shift($args);
+    if ($text) {
+        echo vsprintf($text, $args);
+    }
 }
 
 /**

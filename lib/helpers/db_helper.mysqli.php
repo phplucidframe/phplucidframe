@@ -15,6 +15,7 @@
  */
 
 use LucidFrame\Core\QueryBuilder;
+use LucidFrame\Core\SchemaManager;
 
 /**
  * @internal
@@ -137,7 +138,17 @@ function db_connect($namespace = 'default')
     if (!mysqli_select_db($_conn, $conf['database'])) {
         die('Can\'t use  : ' . $conf['database'] .' - '. mysqli_error($_conn));
     }
-    $_DB = $conf['database'];
+
+    $_DB = new stdClass();
+    $_DB->name = $conf['database'];
+    $_DB->namespace = $namespace;
+
+    # Load the schema of the currently connected database
+    $schema = _schema($namespace, true);
+    $_DB->schemaManager = new SchemaManager($schema);
+    if (!$_DB->schemaManager->isLoaded()) {
+        $_DB->schemaManager->build($namespace);
+    }
 }
 /**
  * Switch to the given database from the currently active database
@@ -568,13 +579,15 @@ if (!function_exists('db_insert')) {
      *      )
      *
      * @param boolean $useSlug True to include the slug field or False to not exclude it
-     * @return boolean Returns TRUE on success or FALSE on failure
+     * @return mixed Returns inserted id on success or FALSE on failure
      */
     function db_insert($table, $data = array(), $useSlug = true)
     {
         if (count($data) == 0) {
             return;
         }
+
+        global $_DB;
         global $_conn;
         global $lc_useDBAutoFields;
 
@@ -598,13 +611,18 @@ if (!function_exists('db_insert')) {
 
         $fields = array_keys($data);
         $data   = array_values($data);
-        if ($lc_useDBAutoFields) {
-            if ($useSlug) {
-                $fields[] = 'slug';
-            }
+
+        # $lc_useDBAutoFields and $useSlug are still used for backward compatibility
+        # TODO: $lc_useDBAutoFields and $useSlug to be removed in future versions
+        if (($_DB->schemaManager->hasSlug($table) && $useSlug) || ($lc_useDBAutoFields && $useSlug)) {
+            $fields[] = 'slug';
+        }
+
+        if ($_DB->schemaManager->hasTimestamps($table) || $lc_useDBAutoFields) {
             $fields[] = 'created';
             $fields[] = 'updated';
         }
+
         $sqlFields = implode(', ', $fields);
         $values = array();
         $i = 0;
@@ -621,20 +639,25 @@ if (!function_exists('db_insert')) {
             }
             $i++;
         }
-        if ($lc_useDBAutoFields) {
-            if ($useSlug) {
-                $slug = _slug($slug, $table);
-                session_set('lastInsertSlug', $slug);
-                $values[] = '"'.$slug.'"';
-            }
+
+        # $lc_useDBAutoFields and $useSlug are still used for backward compatibility
+        # TODO: $lc_useDBAutoFields and $useSlug to be removed in future versions
+        if (($_DB->schemaManager->hasSlug($table) && $useSlug) || ($lc_useDBAutoFields && $useSlug)) {
+            $slug = _slug($slug, $table);
+            session_set('lastInsertSlug', $slug);
+            $values[] = '"'.$slug.'"';
+        }
+
+        if ($_DB->schemaManager->hasTimestamps($table) || $lc_useDBAutoFields) {
             $values[] = '"'.date('Y-m-d H:i:s').'"';
             $values[] = '"'.date('Y-m-d H:i:s').'"';
         }
+
         $sqlValues = implode(', ', $values);
 
         $sql = 'INSERT INTO '.$table.' ('.$sqlFields.')
                 VALUES ( '.$sqlValues.' )';
-        return db_query($sql);
+        return db_query($sql) ? db_insertId() : false;
     }
 }
 
@@ -679,6 +702,8 @@ if (!function_exists('db_update')) {
         if (count($data) == 0) {
             return;
         }
+
+        global $_DB;
         global $_conn;
         global $lc_useDBAutoFields;
 
@@ -751,14 +776,18 @@ if (!function_exists('db_update')) {
             }
             $notCond = 'NOT ( ' . $cond . ' )';
 
-            if ($lc_useDBAutoFields) {
-                if ($useSlug) {
-                    $slug = _slug($slug, $table, $notCond);
-                    session_set('lastInsertSlug', $slug);
-                    $fields[] = '`slug` = "'.$slug.'"';
-                }
+            # $lc_useDBAutoFields and $useSlug are still used for backward compatibility
+            # TODO: $lc_useDBAutoFields and $useSlug to be removed in future versions
+            if (($_DB->schemaManager->hasSlug($table) && $useSlug) || ($lc_useDBAutoFields && $useSlug)) {
+                $slug = _slug($slug, $table, $notCond);
+                session_set('lastInsertSlug', $slug);
+                $fields[] = '`slug` = "'.$slug.'"';
+            }
+
+            if ($_DB->schemaManager->hasTimestamps($table) || $lc_useDBAutoFields) {
                 $fields[] = '`updated` = "' . date('Y-m-d H:i:s') . '"';
             }
+
             $fields = implode(', ', $fields);
 
             $sql = 'UPDATE ' . QueryBuilder::quote($table) . '
@@ -821,12 +850,18 @@ if (!function_exists('db_delete')) {
         db_query($sql);
         $return = ob_get_clean();
         if ($return) {
+            # If there is FK delete RESTRICT constraint
             if (db_errorNo() == 1451) {
-                # If there is FK delete RESTRICT constraint
-                $sql = 'UPDATE '. QueryBuilder::quote($table) . '
-                        SET `deleted` = "'.date('Y-m-d H:i:s').'" '.$condition.'
-                        LIMIT 1';
-                return (db_query($sql)) ? true : false;
+                # $lc_useDBAutoFields is still used for backward compatibility
+                # TODO: $lc_useDBAutoFields to be removed in future versions
+                if ($_DB->schemaManager->hasTimestamps($table) || $lc_useDBAutoFields) {
+                    $sql = 'UPDATE '. QueryBuilder::quote($table) . '
+                            SET `deleted` = "'.date('Y-m-d H:i:s').'" '.$condition.'
+                            LIMIT 1';
+                    return db_query($sql);
+                } else {
+                    return false;
+                }
             } else {
                 echo $return;
                 return false;

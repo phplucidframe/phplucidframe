@@ -177,6 +177,7 @@ $lc_securitySecret = __secret();
 # $lc_formTokenName - Customize your form token name at your own
 $lc_formTokenName = 'LCFormToken';
 # $lc_useDBAutoFields: Whether use DB auto field such as slug, created, updated, deleted, etc. or not
+# @deprecated
 $lc_useDBAutoFields = true;
 # $lc_minifyHTML: Compacting HTML code, including any inline JavaScript and CSS contained in it,
 # can save many bytes of data and speed up downloading, parsing, and execution time.
