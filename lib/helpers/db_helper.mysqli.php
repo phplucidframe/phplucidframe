@@ -579,7 +579,7 @@ if (!function_exists('db_insert')) {
      *      )
      *
      * @param boolean $useSlug True to include the slug field or False to not exclude it
-     * @return boolean Returns TRUE on success or FALSE on failure
+     * @return mixed Returns inserted id on success or FALSE on failure
      */
     function db_insert($table, $data = array(), $useSlug = true)
     {
@@ -657,7 +657,7 @@ if (!function_exists('db_insert')) {
 
         $sql = 'INSERT INTO '.$table.' ('.$sqlFields.')
                 VALUES ( '.$sqlValues.' )';
-        return db_query($sql);
+        return db_query($sql) ? db_insertId() : false;
     }
 }
 
