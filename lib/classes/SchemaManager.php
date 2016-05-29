@@ -676,6 +676,30 @@ class SchemaManager
     }
 
     /**
+     * Check if the table exists
+     * @param  string $table The table name
+     * @return boolean TRUE if the table exists, otherwise FALSE
+     */
+    public function hasTable($table)
+    {
+        $table = ltrim($table, db_prefix());
+
+        return isset($this->schema[$table]);
+    }
+
+    /**
+     * Check if a field exists
+     * @param  string $table The table name
+     * @param  string $field The field name
+     * @return boolean TRUE if the table exists, otherwise FALSE
+     */
+    public function hasField($table, $field) {
+        $table = ltrim($table, db_prefix());
+
+        return isset($this->schema[$table][$field]);
+    }
+
+    /**
      * Check if the table has the timestamp fields or not
      * @param  string $table The table name without prefix
      * @return boolean TRUE if the table has the timestamp fields, otherwise FALSE
