@@ -258,7 +258,7 @@ class SchemaManager
             $length = 1;
         } elseif (in_array($type, array('text', 'blob', 'array', 'json'))) {
             $length = 0;
-        } elseif ($type == 'decimal' && $type == 'float') {
+        } elseif ($type == 'decimal' || $type == 'float') {
             $length = isset($definition['length']) ? $definition['length'] : 0;
             $length = is_array($length) ? "$length[0], $length[1]" : '0, 0';
         } else {
