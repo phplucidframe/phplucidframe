@@ -82,6 +82,7 @@ return array(
         'm:1' => array('post'),
     ),
     'tag' => array(
+        'slug'          => array('type' => 'string', 'length' => 50),
         'tagName'       => array('type' => 'string', 'length' => 50, 'null' => false),
         'tagName_en'    => array('type' => 'string', 'length' => 50),
         'tagName_my'    => array('type' => 'string', 'length' => 50),

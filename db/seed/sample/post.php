@@ -5,7 +5,7 @@ use LucidFrame\Core\Seeder;
 return array(
     'order' => 3,
     'post-1' => array(
-        'catId'         => Seeder::setReference('category-1'),
+        'catId'         => Seeder::setReference('category-2'),
         'uid'           => Seeder::setReference('user-1'),
         'slug'          => 'welcome-to-the-lucidframe-blog',
         'postTitle'     => 'Welcome to the LucidFrame Blog',
