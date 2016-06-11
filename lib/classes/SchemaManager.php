@@ -166,7 +166,7 @@ class SchemaManager
      */
     public function getFieldStatement($field, $definition, $collate = null)
     {
-        $type = $this->getFieldType($definition);
+        $type = $this->getVendorFieldType($definition);
         if ($type === null) {
             return '';
         }
@@ -212,7 +212,7 @@ class SchemaManager
      * @param  array  &$definition SchemaManager field definition
      * @return string The underlying db field type
      */
-    public function getFieldType(&$definition)
+    public function getVendorFieldType(&$definition)
     {
         if (!isset(self::$dataTypes[$this->driver][$definition['type']])) {
             # if no data type is defined
@@ -721,5 +721,21 @@ class SchemaManager
         $table = ltrim($table, db_prefix());
 
         return isset($this->schema[$table]['slug']) ? true : false;
+    }
+
+    /**
+     * Get data type of the field
+     * @param  string $table The table name
+     * @param  string $field The field name in the table
+     * @return string The data type or null if there is no field
+     */
+    public function getFieldType($table, $field) {
+        $table = ltrim($table, db_prefix());
+
+        if ($this->hasField($table, $field)) {
+            return $this->schema[$table][$field]['type'];
+        }
+
+        return null;
     }
 }

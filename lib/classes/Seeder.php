@@ -110,7 +110,7 @@ class Seeder
                     }
 
                     # Get foreign key field reference
-                    if (strpos($value, __CLASS__ . '::') === 0) {
+                    if (is_string($value) && strpos($value, __CLASS__ . '::') === 0) {
                         $refKeyName = explode('::', $value);
                         $refKey = end($refKeyName);
                         $data[$field] = self::getReference($refKey);

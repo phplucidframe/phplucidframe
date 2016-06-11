@@ -609,8 +609,21 @@ if (!function_exists('db_insert')) {
             $useSlug = false;
         }
 
+        foreach ($data as $field => $value) {
+            $fieldType = $_DB->schemaManager->getFieldType($table, $field);
+            if (is_array($value) && $fieldType == 'array') {
+                $data[$field] = serialize($value);
+                continue;
+            }
+
+            if (is_array($value) && $fieldType == 'json') {
+                $jsonValue = json_encode($value);
+                $data[$field] = $jsonValue ? $jsonValue : null;
+            }
+        }
+
         $fields = array_keys($data);
-        $data   = array_values($data);
+        $dataValues = array_values($data);
 
         # $lc_useDBAutoFields and $useSlug are still used for backward compatibility
         # TODO: $lc_useDBAutoFields and $useSlug to be removed in future versions
@@ -628,7 +641,7 @@ if (!function_exists('db_insert')) {
         $i = 0;
 
         # escape the data
-        foreach ($data as $val) {
+        foreach ($dataValues as $val) {
             if ($i == 0 && $useSlug) {
                 $slug = db_escapeString($val);
             }
@@ -739,12 +752,21 @@ if (!function_exists('db_update')) {
         if ($condition) {
             $slugIndex = 0;
         }
+
         foreach ($data as $field => $value) {
             if ($i === 0 && !$condition) {
                 # $data[0] is for PK condition, but only if $condition is not provided
                 $cond = array($field => db_escapeString($value)); # for PK condition
                 $i++;
                 continue;
+            }
+
+            $fieldType = $_DB->schemaManager->getFieldType($table, $field);
+            if (is_array($value) && $fieldType == 'array') {
+                $value = serialize($value);
+            } elseif (is_array($value) && $fieldType == 'json') {
+                $jsonValue = json_encode($value);
+                $value = $jsonValue ? $jsonValue : null;
             }
 
             if (is_null($value)) {

@@ -106,6 +106,8 @@ return array(
         'email'     => array('type' => 'string', 'length' => 100),
         'role'      => array('type' => 'string', 'length' => 10),
         'isMaster'  => array('type' => 'boolean', 'default' => false),
+        'phone'     => array('type' => 'array', 'null' => true), // example for array type; see /db/seed/sample/user.php
+        'social'    => array('type' => 'json', 'null' => true), // example for json type; see /db/seed/sample/user.php
         //'credit'    => array('type' => 'decimal', 'length' => array(5, 1), 'default' => 0),
         //'balance'   => array('type' => 'float', 'length' => array(10, 2), 'null' => true),
         'options'   => array(

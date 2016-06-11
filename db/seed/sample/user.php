@@ -10,5 +10,13 @@ return array(
         'email'     => 'admin@localhost.com',
         'role'      => 'admin',
         'isMaster'  => 1,
+        'phone'     => array(
+            '09123456789',
+            '09987654321',
+        ),
+        'social'    => array(
+            'facebook'  => 'http://fb.com/lucidframe.myanmar',
+            'twitter'   => 'http://twitter.com/phplucidframe',
+        ),
     ),
 );
