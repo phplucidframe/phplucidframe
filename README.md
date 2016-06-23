@@ -16,7 +16,9 @@ Although it is stated as mini framework, it supports a wide range of web applica
 - Validation helpers
 - Internationalization & Localization
 - User authentication & authorization API
-- Shell & Console
+- Schema Manager
+- Database Seeding
+- Shell & Console Tool
 - Ajax
 
 ## Prerequisites
