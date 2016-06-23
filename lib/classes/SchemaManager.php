@@ -682,6 +682,10 @@ class SchemaManager
      */
     public function hasTable($table)
     {
+        if (!$this->isLoaded()) {
+            return false;
+        }
+
         $table = ltrim($table, db_prefix());
 
         return isset($this->schema[$table]);
@@ -693,7 +697,12 @@ class SchemaManager
      * @param  string $field The field name
      * @return boolean TRUE if the table exists, otherwise FALSE
      */
-    public function hasField($table, $field) {
+    public function hasField($table, $field)
+    {
+        if (!$this->isLoaded()) {
+            return false;
+        }
+
         $table = ltrim($table, db_prefix());
 
         return isset($this->schema[$table][$field]);
@@ -706,6 +715,10 @@ class SchemaManager
      */
     public function hasTimestamps($table)
     {
+        if (!$this->isLoaded()) {
+            return false;
+        }
+
         $table = ltrim($table, db_prefix());
 
         return (isset($this->schema[$table]['options']['timestamps']) && $this->schema[$table]['options']['timestamps']) ? true : false;
@@ -718,6 +731,10 @@ class SchemaManager
      */
     public function hasSlug($table)
     {
+        if (!$this->isLoaded()) {
+            return false;
+        }
+
         $table = ltrim($table, db_prefix());
 
         return isset($this->schema[$table]['slug']) ? true : false;

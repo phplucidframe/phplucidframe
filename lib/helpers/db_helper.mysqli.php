@@ -21,17 +21,20 @@ use LucidFrame\Core\SchemaManager;
  * @internal
  * Return the database configuration of the given namespace
  * @param string $namespace Namespace of the configuration to read from
+ * @return array The array of database configuration
  */
 function db_config($namespace = 'default')
 {
     if (!isset($GLOBALS['lc_databases'][$namespace])) {
         die('Database configuration error for '.$namespace.'!');
     }
+
     return $GLOBALS['lc_databases'][$namespace];
 }
 /**
  * Return the database engine of the given namespace
  * @param string $namespace Namespace of the configuration to read from
+ * @return string Database engine name
  */
 function db_engine($namespace = 'default')
 {
@@ -46,6 +49,7 @@ function db_engine($namespace = 'default')
 /**
  * Return the database host name of the given namespace
  * @param string $namespace Namespace of the configuration to read from
+ * @return string Database host name
  */
 function db_host($namespace = 'default')
 {
@@ -55,6 +59,7 @@ function db_host($namespace = 'default')
 /**
  * Return the database name of the given namespace
  * @param string $namespace Namespace of the configuration to read from
+ * @return string Database name
  */
 function db_name($namespace = 'default')
 {
@@ -67,6 +72,7 @@ function db_name($namespace = 'default')
 /**
  * Return the database user name of the given namespace
  * @param string $namespace Namespace of the configuration to read from
+ * @return string Database username
  */
 function db_user($namespace = 'default')
 {
@@ -79,6 +85,7 @@ function db_user($namespace = 'default')
 /**
  * Return the database table prefix of the given namespace
  * @param string $namespace Namespace of the configuration to read from
+ * @return string The table prefix
  */
 function db_prefix($namespace = 'default')
 {
@@ -88,6 +95,7 @@ function db_prefix($namespace = 'default')
 /**
  * Return the database collation of the given namespace
  * @param string $namespace Namespace of the configuration to read from
+ * @return string Database collation
  */
 function db_collation($namespace = 'default')
 {
@@ -565,6 +573,61 @@ function db_extract($sql, $args = array(), $resultType = LC_FETCH_OBJECT)
     return count($data) ? $data : false;
 }
 
+/**
+ * Check the table has slug field
+ * First, check with SchemaManager
+ * Second, consider $lc_useDBAutoFields and $useSlug
+ *
+ * @param string  $table    The table name without prefix
+ * @param boolean $useSlug  True to include the slug field or False to not exclude it
+ * @return boolean true or false
+ */
+function db_tableHasSlug($table, $useSlug = true)
+{
+    global $_DB;
+    global $lc_useDBAutoFields;
+    $dsm = $_DB->schemaManager;
+
+    if ($useSlug == false) {
+        return false;
+    }
+
+    if ($_DB->schemaManager->hasSlug($table)) {
+        return true;
+    }
+
+    if ($lc_useDBAutoFields) {
+        return true;
+    }
+
+    return false;
+}
+
+/**
+ * Check the table has timestamp fields
+ * First, check with SchemaManager
+ * Second, consider $lc_useDBAutoFields
+ *
+ * @param string  $table    The table name without prefix
+ * @return boolean true or false
+ */
+function db_tableHasTimestamps($table)
+{
+    global $_DB;
+    global $lc_useDBAutoFields;
+    $dsm = $_DB->schemaManager;
+
+    if ($_DB->schemaManager->hasTimestamps($table)) {
+        return true;
+    }
+
+    if ($lc_useDBAutoFields) {
+        return true;
+    }
+
+    return false;
+}
+
 if (!function_exists('db_insert')) {
     /**
      * Handy MYSQL insert operation
@@ -609,29 +672,30 @@ if (!function_exists('db_insert')) {
             $useSlug = false;
         }
 
-        foreach ($data as $field => $value) {
-            $fieldType = $_DB->schemaManager->getFieldType($table, $field);
-            if (is_array($value) && $fieldType == 'array') {
-                $data[$field] = serialize($value);
-                continue;
-            }
+        $dsm = $_DB->schemaManager;
+        if ($dsm->isLoaded()) {
+            foreach ($data as $field => $value) {
+                $fieldType = $_DB->schemaManager->getFieldType($table, $field);
+                if (is_array($value) && $fieldType == 'array') {
+                    $data[$field] = serialize($value);
+                    continue;
+                }
 
-            if (is_array($value) && $fieldType == 'json') {
-                $jsonValue = json_encode($value);
-                $data[$field] = $jsonValue ? $jsonValue : null;
+                if (is_array($value) && $fieldType == 'json') {
+                    $jsonValue = json_encode($value);
+                    $data[$field] = $jsonValue ? $jsonValue : null;
+                }
             }
         }
 
         $fields = array_keys($data);
         $dataValues = array_values($data);
 
-        # $lc_useDBAutoFields and $useSlug are still used for backward compatibility
-        # TODO: $lc_useDBAutoFields and $useSlug to be removed in future versions
-        if (($_DB->schemaManager->hasSlug($table) && $useSlug) || ($lc_useDBAutoFields && $useSlug)) {
+        if (db_tableHasSlug($table, $useSlug)) {
             $fields[] = 'slug';
         }
 
-        if ($_DB->schemaManager->hasTimestamps($table) || $lc_useDBAutoFields) {
+        if (db_tableHasTimestamps($table)) {
             $fields[] = 'created';
             $fields[] = 'updated';
         }
@@ -653,15 +717,13 @@ if (!function_exists('db_insert')) {
             $i++;
         }
 
-        # $lc_useDBAutoFields and $useSlug are still used for backward compatibility
-        # TODO: $lc_useDBAutoFields and $useSlug to be removed in future versions
-        if (($_DB->schemaManager->hasSlug($table) && $useSlug) || ($lc_useDBAutoFields && $useSlug)) {
+        if (db_tableHasSlug($table, $useSlug)) {
             $slug = _slug($slug, $table);
             session_set('lastInsertSlug', $slug);
             $values[] = '"'.$slug.'"';
         }
 
-        if ($_DB->schemaManager->hasTimestamps($table) || $lc_useDBAutoFields) {
+        if (db_tableHasTimestamps($table)) {
             $values[] = '"'.date('Y-m-d H:i:s').'"';
             $values[] = '"'.date('Y-m-d H:i:s').'"';
         }
@@ -753,6 +815,7 @@ if (!function_exists('db_update')) {
             $slugIndex = 0;
         }
 
+        $dsm = $_DB->schemaManager;
         foreach ($data as $field => $value) {
             if ($i === 0 && !$condition) {
                 # $data[0] is for PK condition, but only if $condition is not provided
@@ -761,12 +824,14 @@ if (!function_exists('db_update')) {
                 continue;
             }
 
-            $fieldType = $_DB->schemaManager->getFieldType($table, $field);
-            if (is_array($value) && $fieldType == 'array') {
-                $value = serialize($value);
-            } elseif (is_array($value) && $fieldType == 'json') {
-                $jsonValue = json_encode($value);
-                $value = $jsonValue ? $jsonValue : null;
+            if ($dsm->isLoaded()) {
+                $fieldType = $dsm->getFieldType($table, $field);
+                if (is_array($value) && $fieldType == 'array') {
+                    $value = serialize($value);
+                } elseif (is_array($value) && $fieldType == 'json') {
+                    $jsonValue = json_encode($value);
+                    $value = $jsonValue ? $jsonValue : null;
+                }
             }
 
             if (is_null($value)) {
@@ -798,15 +863,13 @@ if (!function_exists('db_update')) {
             }
             $notCond = 'NOT ( ' . $cond . ' )';
 
-            # $lc_useDBAutoFields and $useSlug are still used for backward compatibility
-            # TODO: $lc_useDBAutoFields and $useSlug to be removed in future versions
-            if (($_DB->schemaManager->hasSlug($table) && $useSlug) || ($lc_useDBAutoFields && $useSlug)) {
+            if (db_tableHasSlug($table, $useSlug)) {
                 $slug = _slug($slug, $table, $notCond);
                 session_set('lastInsertSlug', $slug);
                 $fields[] = '`slug` = "'.$slug.'"';
             }
 
-            if ($_DB->schemaManager->hasTimestamps($table) || $lc_useDBAutoFields) {
+            if (db_tableHasTimestamps($table)) {
                 $fields[] = '`updated` = "' . date('Y-m-d H:i:s') . '"';
             }
 
@@ -876,7 +939,7 @@ if (!function_exists('db_delete')) {
             if (db_errorNo() == 1451) {
                 # $lc_useDBAutoFields is still used for backward compatibility
                 # TODO: $lc_useDBAutoFields to be removed in future versions
-                if ($_DB->schemaManager->hasTimestamps($table) || $lc_useDBAutoFields) {
+                if (db_tableHasTimestamps($table)) {
                     $sql = 'UPDATE '. QueryBuilder::quote($table) . '
                             SET `deleted` = "'.date('Y-m-d H:i:s').'" '.$condition.'
                             LIMIT 1';
