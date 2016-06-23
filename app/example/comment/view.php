@@ -10,7 +10,7 @@
 <p>This is an example page which shows generic form handling without AJAX.</p>
 <p>
     <form id="frmComment" method="post" class="no-ajax">
-        <?php echo flash_get(); ?>
+        <?php echo flash_get('comment_posted'); ?>
         <div class="message"></div>
         <div class="table">
             <div class="row">

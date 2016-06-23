@@ -465,4 +465,61 @@ function __secret($file = null)
     return (is_file($file) && file_exists($file)) ? trim(file_get_contents($file)) : '';
 }
 
+/**
+ * Get schema definition file
+ * @param  string $dbNamespace The namespace for the database
+ * @param  boolean TRUE to look for the file in /db/build/; FALSE in /db/
+ *  `TRUE` to look for the file in such priority
+ *      1. /db/build/schema.{namespace}.inc
+ *      2. /db/build/schema.inc (only for default)
+ *      3. /db/schema.{namespace}.php
+ *      4. /db/schema.php (only for default)
+ *
+ *  `FALSE` to look in this priority
+ *      1. /db/schema.{namespace}.php
+ *      2. /db/schema.php (only for default)
+ *
+ * @return mixed
+ *  array   The schema defination
+ *  null    Incorrect schema defination
+ *  boolean False when the file doesn't exist
+ */
+function _schema($dbNamespace = 'default', $cache = false)
+{
+    if ($cache) {
+        $path = DB.'build'._DS_;
+        $ext = 'inc';
+    } else {
+        $path = DB;
+        $ext = 'php';
+    }
+
+    if ($dbNamespace === 'default') {
+        $files = array("{$path}schema.{$dbNamespace}.{$ext}", "{$path}schema.{$ext}");
+    } else {
+        $files = array("{$path}schema.{$dbNamespace}.{$ext}");
+    }
+
+    if ($cache) {
+        $files[] = DB."schema.{$dbNamespace}.php";
+        $files[] = DB."schema.php";
+    }
+    $files = array_unique($files);
+
+    $file = false;
+    foreach ($files as $f) {
+        if (is_file($f) && file_exists($f)) {
+            $file = $f;
+            break;
+        }
+    }
+
+    if ($file) {
+        $schema = include_once($file);
+        return is_array($schema) ? $schema : null;
+    } else {
+        return false;
+    }
+}
+
 __prerequisite();

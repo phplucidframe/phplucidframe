@@ -169,6 +169,46 @@ function _minifyHTML($html)
     }
     return $html;
 }
+
+/**
+ * Get a full path directory
+ * @param  string $name The short code for directory
+ * @return string Full path directory
+ */
+function _dir($name)
+{
+    switch($name) {
+        case 'inc':
+            return ROOT . 'inc' . _DS_;
+        case 'db':
+            return ROOT . 'db' . _DS_;
+        case 'lib':
+            return ROOT . 'lib' . _DS_;
+        case 'helper':
+            return ROOT . 'lib' . _DS_ . 'helpers' . _DS_;
+        case 'class':
+            return ROOT . 'lib' . _DS_ . 'classes' . _DS_;
+        case 'i18n':
+            return ROOT . 'i18n' . _DS_;
+        case 'vendor':
+            return ROOT . 'vendor' . _DS_;
+        case 'business':
+            return ROOT . 'business' . _DS_;
+        case 'asset':
+            return ROOT . 'assets' . _DS_;
+        case 'image':
+            return ROOT . 'assets' . _DS_ . 'images' . _DS_;
+        case 'file':
+            return ROOT . 'files' . _DS_;
+        case 'cache':
+            return ROOT . 'files' . _DS_ . 'cache' . _DS_;
+        case 'test':
+            return ROOT . 'tests' . _DS_;
+    }
+
+    return ROOT;
+}
+
 /**
  * Auto-load a library, script or file
  * @param string $name The file name without extension
@@ -272,14 +312,15 @@ function _script()
     }
     # user defined variables
     $jsVars = _cfg('jsVars');
+    $script .= 'LC.vars = {};';
     if (count($jsVars)) {
         foreach ($jsVars as $name => $val) {
             if (is_array($val)) {
-                $script .= 'LC.'.$name.' = '.json_encode($val).';';
+                $script .= 'LC.vars.'.$name.' = '.json_encode($val).';';
             } elseif (is_numeric($val)) {
-                $script .= 'LC.'.$name.' = '.$val.';';
+                $script .= 'LC.vars.'.$name.' = '.$val.';';
             } else {
-                $script .= 'LC.'.$name.' = "'.$val.'";';
+                $script .= 'LC.vars.'.$name.' = "'.$val.'";';
             }
         }
     }
@@ -297,6 +338,7 @@ function _addvar($name, $value = '')
     global $lc_jsVars;
     $lc_jsVars[$name] = $value;
 }
+
 /**
  * JS file include helper
  *
@@ -312,37 +354,60 @@ function _js($file)
         return true;
     }
 
+    $includeFiles = array();
     if (stripos($file, 'jquery-ui') === 0) {
         $file = (stripos($file, '.js') !== false) ? $file : 'jquery-ui.min.js';
-        echo '<script src="'. WEB_ROOT . 'js/vendor/jquery-ui/' . $file . '" type="text/javascript"></script>';
-        return true;
-    }
-
-    if (stripos($file, 'jquery') === 0) {
+        if (LC_NAMESPACE) {
+            # for backward compatibility; will be removed in the furture version
+            $includeFiles[] = LC_NAMESPACE . '/js/vendor/jquery-ui/' . $file;
+        }
+        $includeFiles[] = 'assets/js/vendor/jquery-ui/' . $file;
+        $includeFiles[] = 'js/vendor/jquery-ui/' . $file;
+    } elseif (stripos($file, 'jquery') === 0) {
         $file = (stripos($file, '.js') !== false) ? $file : 'jquery.min.js';
-        echo '<script src="'. WEB_ROOT . 'js/vendor/jquery/' . $file . '" type="text/javascript"></script>';
-        return true;
+        if (LC_NAMESPACE) {
+            # for backward compatibility; will be removed in the furture version
+            $includeFiles[] = LC_NAMESPACE . '/js/vendor/jquery/' . $file;
+        }
+        $includeFiles[] = 'assets/js/vendor/jquery/' . $file;
+        $includeFiles[] = 'js/vendor/jquery/' . $file;
+    } else {
+        if (LC_NAMESPACE) {
+            # for backward compatibility; will be removed in the furture version
+            $includeFiles[] = LC_NAMESPACE . '/js/' . $file;
+        }
+        $includeFiles[] = 'assets/js/' . $file;
+        $includeFiles[] = 'js/' . $file;
     }
 
-    $includeFile = 'js/' . $file;
-    $includeFile = _i($includeFile);
-    if (stripos($includeFile, 'http') === 0) {
-        if (stripos($includeFile, WEB_APP_ROOT) === 0) {
-            $fileWithSystemPath = APP_ROOT . str_replace(WEB_APP_ROOT, '', $includeFile);
-        } else {
-            $fileWithSystemPath = ROOT . str_replace(WEB_ROOT, '', $includeFile);
+    foreach ($includeFiles as $includeFile) {
+        $includeFile = _i($includeFile);
+        if (stripos($includeFile, 'http') === 0) {
+            if (stripos($includeFile, WEB_APP_ROOT) === 0) {
+                $fileWithSystemPath = APP_ROOT . str_replace(WEB_APP_ROOT, '', $includeFile);
+            } else {
+                $fileWithSystemPath = ROOT . str_replace(WEB_ROOT, '', $includeFile);
+            }
+            if (file_exists($fileWithSystemPath)) {
+                echo '<script src="' . $includeFile . '" type="text/javascript"></script>';
+                return true;
+            }
         }
-        if (file_exists($fileWithSystemPath)) {
-            echo '<script src="' . $includeFile . '" type="text/javascript"></script>';
-            return true;
-        }
+    }
+
+    if (file_exists(ROOT . 'assets/js/' . $file)) {
+        echo '<script src="'. WEB_ROOT . 'assets/js/' . $file . '" type="text/javascript"></script>';
+        return true;
     }
 
     if (file_exists(ROOT . 'js/' . $file)) {
         echo '<script src="'. WEB_ROOT . 'js/' . $file . '" type="text/javascript"></script>';
+        return true;
     }
-    return true;
+
+    return false;
 }
+
 /**
  * CSS file include helper
  *
@@ -358,30 +423,50 @@ function _css($file)
         return true;
     }
 
+    $includeFiles = array();
     if (stripos($file, 'jquery-ui') === 0) {
-        echo '<link href="' . WEB_ROOT . 'js/vendor/jquery-ui/jquery-ui.min.css" rel="stylesheet" type="text/css" />';
-        return true;
+        if (LC_NAMESPACE) {
+            # for backward compatibility; will be removed in the furture version
+            $includeFiles[] = LC_NAMESPACE . '/js/vendor/jquery-ui/jquery-ui.min.css';
+        }
+        $includeFiles[] = 'assets/js/vendor/jquery-ui/jquery-ui.min.css';
+        $includeFiles[] = 'js/vendor/jquery-ui/jquery-ui.min.css';
+    } else {
+        if (LC_NAMESPACE) {
+            # for backward compatibility; will be removed in the furture version
+            $includeFiles[] = LC_NAMESPACE . '/css/' . $file;
+        }
+        $includeFiles[] = 'assets/css/' . $file;
+        $includeFiles[] = 'css/' . $file;
     }
 
-    $includeFile = 'css/' . $file;
-    $includeFile = _i($includeFile);
-    if (stripos($includeFile, 'http') === 0) {
-        if (stripos($includeFile, WEB_APP_ROOT) === 0) {
-            $fileWithSystemPath = APP_ROOT . str_replace(WEB_APP_ROOT, '', $includeFile);
-        } else {
-            $fileWithSystemPath = ROOT . str_replace(WEB_ROOT, '', $includeFile);
-        }
+    foreach ($includeFiles as $includeFile) {
+        $includeFile = _i($includeFile);
+        if (stripos($includeFile, 'http') === 0) {
+            if (stripos($includeFile, WEB_APP_ROOT) === 0) {
+                $fileWithSystemPath = APP_ROOT . str_replace(WEB_APP_ROOT, '', $includeFile);
+            } else {
+                $fileWithSystemPath = ROOT . str_replace(WEB_ROOT, '', $includeFile);
+            }
 
-        if (file_exists($fileWithSystemPath)) {
-            echo '<link href="' . $includeFile . '" rel="stylesheet" type="text/css" />';
-            return true;
+            if (file_exists($fileWithSystemPath)) {
+                echo '<link href="' . $includeFile . '" rel="stylesheet" type="text/css" />';
+                return true;
+            }
         }
+    }
+
+    if (file_exists(ROOT . 'assets/css/' . $file)) {
+        echo '<link href="' . WEB_ROOT . 'assets/css/' . $file . '" rel="stylesheet" type="text/css" />';
+        return true;
     }
 
     if (file_exists(ROOT . 'css/' . $file)) {
         echo '<link href="' . WEB_ROOT . 'css/' . $file . '" rel="stylesheet" type="text/css" />';
+        return true;
     }
-    return true;
+
+    return false;
 }
 /**
  * Get the absolute image file name
@@ -391,6 +476,17 @@ function _css($file)
  */
 function _img($file)
 {
+    $files = array(
+        'assets/images/' => ROOT . 'assets' . _DS_ . 'images' . _DS_ . $file,
+        'images/'        => ROOT . 'images' . _DS_ . $file
+    );
+
+    foreach ($files as $path => $f) {
+        if (is_file($f) && file_exists($f)) {
+            return WEB_ROOT . $path . $file;
+        }
+    }
+
     return WEB_ROOT . 'images/' . $file;
 }
 
@@ -413,14 +509,17 @@ if (!function_exists('_image')) {
     function _image($file, $caption = '', $dimension = '0x0', $attributes = '')
     {
         $directory = array(
+            'images' => IMAGE,
             'files' => FILE,
-            'images' => IMAGE
         );
         # find the image in the two directories - ./files and ./images
         foreach ($directory as $dir => $path) {
             $image = $path . $file;
             if (is_file($image) && file_exists($image)) {
                 list($width, $height) = getimagesize($image);
+                if (strpos($path, 'assets') !== false) {
+                    $dir = 'assets/images';
+                }
                 break;
             }
         }
@@ -1714,6 +1813,22 @@ function _isBot()
 }
 
 /**
+ * Write output
+ * @since  PHPLucidFrame v 1.14.0
+ * @param  string $text The text to output
+ * @param  [mixed $args [, mixed ...]] Arguments to the text
+ * @return void
+ */
+function _write($text = '')
+{
+    $args = func_get_args();
+    $text = array_shift($args);
+    if ($text) {
+        echo vsprintf($text, $args);
+    }
+}
+
+/**
  * Write output with line feed (\n)
  * @since  PHPLucidFrame v 1.11.0
  * @param  string $text The text to output
@@ -1808,4 +1923,47 @@ function _asynFileUploader()
     } else {
         return new AsynFileUploader();
     }
+}
+
+/**
+ * Get view file
+ * @return string The view file with absolute path
+ */
+function _view()
+{
+    return _i(_r() . _DS_ . 'view.php');
+}
+
+/**
+ * Return directories and file names glued by directory separator
+ * @return string
+ */
+function _ds()
+{
+    $args = func_get_args();
+    return implode(_DS_, $args);
+}
+
+/**
+ * Check if the request is an AJAX request
+ * @return boolean
+ */
+function _isAjax()
+{
+    if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && !empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+       strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+        return true;
+    }
+    return false;
+}
+
+/**
+ * Header sent as JSON
+ * @param array $data Array of data to be encoded as JSON
+ * @return void
+ */
+function _json(array $data)
+{
+    header('Content-Type: text/json');
+    echo json_encode($data);
 }

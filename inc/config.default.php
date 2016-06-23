@@ -177,6 +177,7 @@ $lc_securitySecret = __secret();
 # $lc_formTokenName - Customize your form token name at your own
 $lc_formTokenName = 'LCFormToken';
 # $lc_useDBAutoFields: Whether use DB auto field such as slug, created, updated, deleted, etc. or not
+# If you define your schema in /db, you can neglect this setting
 $lc_useDBAutoFields = true;
 # $lc_minifyHTML: Compacting HTML code, including any inline JavaScript and CSS contained in it,
 # can save many bytes of data and speed up downloading, parsing, and execution time.
@@ -188,6 +189,10 @@ $lc_imageFilterSet = array(
     'resizeMode'   => FILE_RESIZE_BOTH,
     'jpgQuality'   => 75
 );
+# $lc_layoutMode: Enable layout mode or not
+$lc_layoutMode = false;
+# $lc_layoutMode: Default layout file name
+$lc_layoutName = 'layout';
 /**
  * Auth Module Configuration
  */

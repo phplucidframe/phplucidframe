@@ -15,22 +15,26 @@
  */
 
 use LucidFrame\Core\QueryBuilder;
+use LucidFrame\Core\SchemaManager;
 
 /**
  * @internal
  * Return the database configuration of the given namespace
  * @param string $namespace Namespace of the configuration to read from
+ * @return array The array of database configuration
  */
 function db_config($namespace = 'default')
 {
     if (!isset($GLOBALS['lc_databases'][$namespace])) {
         die('Database configuration error for '.$namespace.'!');
     }
+
     return $GLOBALS['lc_databases'][$namespace];
 }
 /**
  * Return the database engine of the given namespace
  * @param string $namespace Namespace of the configuration to read from
+ * @return string Database engine name
  */
 function db_engine($namespace = 'default')
 {
@@ -45,6 +49,7 @@ function db_engine($namespace = 'default')
 /**
  * Return the database host name of the given namespace
  * @param string $namespace Namespace of the configuration to read from
+ * @return string Database host name
  */
 function db_host($namespace = 'default')
 {
@@ -54,6 +59,7 @@ function db_host($namespace = 'default')
 /**
  * Return the database name of the given namespace
  * @param string $namespace Namespace of the configuration to read from
+ * @return string Database name
  */
 function db_name($namespace = 'default')
 {
@@ -66,6 +72,7 @@ function db_name($namespace = 'default')
 /**
  * Return the database user name of the given namespace
  * @param string $namespace Namespace of the configuration to read from
+ * @return string Database username
  */
 function db_user($namespace = 'default')
 {
@@ -78,6 +85,7 @@ function db_user($namespace = 'default')
 /**
  * Return the database table prefix of the given namespace
  * @param string $namespace Namespace of the configuration to read from
+ * @return string The table prefix
  */
 function db_prefix($namespace = 'default')
 {
@@ -87,6 +95,7 @@ function db_prefix($namespace = 'default')
 /**
  * Return the database collation of the given namespace
  * @param string $namespace Namespace of the configuration to read from
+ * @return string Database collation
  */
 function db_collation($namespace = 'default')
 {
@@ -137,7 +146,17 @@ function db_connect($namespace = 'default')
     if (!mysqli_select_db($_conn, $conf['database'])) {
         die('Can\'t use  : ' . $conf['database'] .' - '. mysqli_error($_conn));
     }
-    $_DB = $conf['database'];
+
+    $_DB = new stdClass();
+    $_DB->name = $conf['database'];
+    $_DB->namespace = $namespace;
+
+    # Load the schema of the currently connected database
+    $schema = _schema($namespace, true);
+    $_DB->schemaManager = new SchemaManager($schema);
+    if (!$_DB->schemaManager->isLoaded()) {
+        $_DB->schemaManager->build($namespace);
+    }
 }
 /**
  * Switch to the given database from the currently active database
@@ -554,6 +573,61 @@ function db_extract($sql, $args = array(), $resultType = LC_FETCH_OBJECT)
     return count($data) ? $data : false;
 }
 
+/**
+ * Check the table has slug field
+ * First, check with SchemaManager
+ * Second, consider $lc_useDBAutoFields and $useSlug
+ *
+ * @param string  $table    The table name without prefix
+ * @param boolean $useSlug  True to include the slug field or False to not exclude it
+ * @return boolean true or false
+ */
+function db_tableHasSlug($table, $useSlug = true)
+{
+    global $_DB;
+    global $lc_useDBAutoFields;
+    $dsm = $_DB->schemaManager;
+
+    if ($useSlug == false) {
+        return false;
+    }
+
+    if ($_DB->schemaManager->hasSlug($table)) {
+        return true;
+    }
+
+    if ($lc_useDBAutoFields) {
+        return true;
+    }
+
+    return false;
+}
+
+/**
+ * Check the table has timestamp fields
+ * First, check with SchemaManager
+ * Second, consider $lc_useDBAutoFields
+ *
+ * @param string  $table    The table name without prefix
+ * @return boolean true or false
+ */
+function db_tableHasTimestamps($table)
+{
+    global $_DB;
+    global $lc_useDBAutoFields;
+    $dsm = $_DB->schemaManager;
+
+    if ($_DB->schemaManager->hasTimestamps($table)) {
+        return true;
+    }
+
+    if ($lc_useDBAutoFields) {
+        return true;
+    }
+
+    return false;
+}
+
 if (!function_exists('db_insert')) {
     /**
      * Handy MYSQL insert operation
@@ -568,13 +642,15 @@ if (!function_exists('db_insert')) {
      *      )
      *
      * @param boolean $useSlug True to include the slug field or False to not exclude it
-     * @return boolean Returns TRUE on success or FALSE on failure
+     * @return mixed Returns inserted id on success or FALSE on failure
      */
     function db_insert($table, $data = array(), $useSlug = true)
     {
         if (count($data) == 0) {
             return;
         }
+
+        global $_DB;
         global $_conn;
         global $lc_useDBAutoFields;
 
@@ -596,21 +672,40 @@ if (!function_exists('db_insert')) {
             $useSlug = false;
         }
 
-        $fields = array_keys($data);
-        $data   = array_values($data);
-        if ($lc_useDBAutoFields) {
-            if ($useSlug) {
-                $fields[] = 'slug';
+        $dsm = $_DB->schemaManager;
+        if ($dsm->isLoaded()) {
+            foreach ($data as $field => $value) {
+                $fieldType = $_DB->schemaManager->getFieldType($table, $field);
+                if (is_array($value) && $fieldType == 'array') {
+                    $data[$field] = serialize($value);
+                    continue;
+                }
+
+                if (is_array($value) && $fieldType == 'json') {
+                    $jsonValue = json_encode($value);
+                    $data[$field] = $jsonValue ? $jsonValue : null;
+                }
             }
+        }
+
+        $fields = array_keys($data);
+        $dataValues = array_values($data);
+
+        if (db_tableHasSlug($table, $useSlug)) {
+            $fields[] = 'slug';
+        }
+
+        if (db_tableHasTimestamps($table)) {
             $fields[] = 'created';
             $fields[] = 'updated';
         }
+
         $sqlFields = implode(', ', $fields);
         $values = array();
         $i = 0;
 
         # escape the data
-        foreach ($data as $val) {
+        foreach ($dataValues as $val) {
             if ($i == 0 && $useSlug) {
                 $slug = db_escapeString($val);
             }
@@ -621,20 +716,23 @@ if (!function_exists('db_insert')) {
             }
             $i++;
         }
-        if ($lc_useDBAutoFields) {
-            if ($useSlug) {
-                $slug = _slug($slug, $table);
-                session_set('lastInsertSlug', $slug);
-                $values[] = '"'.$slug.'"';
-            }
+
+        if (db_tableHasSlug($table, $useSlug)) {
+            $slug = _slug($slug, $table);
+            session_set('lastInsertSlug', $slug);
+            $values[] = '"'.$slug.'"';
+        }
+
+        if (db_tableHasTimestamps($table)) {
             $values[] = '"'.date('Y-m-d H:i:s').'"';
             $values[] = '"'.date('Y-m-d H:i:s').'"';
         }
+
         $sqlValues = implode(', ', $values);
 
         $sql = 'INSERT INTO '.$table.' ('.$sqlFields.')
                 VALUES ( '.$sqlValues.' )';
-        return db_query($sql);
+        return db_query($sql) ? db_insertId() : false;
     }
 }
 
@@ -679,6 +777,8 @@ if (!function_exists('db_update')) {
         if (count($data) == 0) {
             return;
         }
+
+        global $_DB;
         global $_conn;
         global $lc_useDBAutoFields;
 
@@ -714,12 +814,24 @@ if (!function_exists('db_update')) {
         if ($condition) {
             $slugIndex = 0;
         }
+
+        $dsm = $_DB->schemaManager;
         foreach ($data as $field => $value) {
             if ($i === 0 && !$condition) {
                 # $data[0] is for PK condition, but only if $condition is not provided
                 $cond = array($field => db_escapeString($value)); # for PK condition
                 $i++;
                 continue;
+            }
+
+            if ($dsm->isLoaded()) {
+                $fieldType = $dsm->getFieldType($table, $field);
+                if (is_array($value) && $fieldType == 'array') {
+                    $value = serialize($value);
+                } elseif (is_array($value) && $fieldType == 'json') {
+                    $jsonValue = json_encode($value);
+                    $value = $jsonValue ? $jsonValue : null;
+                }
             }
 
             if (is_null($value)) {
@@ -751,14 +863,16 @@ if (!function_exists('db_update')) {
             }
             $notCond = 'NOT ( ' . $cond . ' )';
 
-            if ($lc_useDBAutoFields) {
-                if ($useSlug) {
-                    $slug = _slug($slug, $table, $notCond);
-                    session_set('lastInsertSlug', $slug);
-                    $fields[] = '`slug` = "'.$slug.'"';
-                }
+            if (db_tableHasSlug($table, $useSlug)) {
+                $slug = _slug($slug, $table, $notCond);
+                session_set('lastInsertSlug', $slug);
+                $fields[] = '`slug` = "'.$slug.'"';
+            }
+
+            if (db_tableHasTimestamps($table)) {
                 $fields[] = '`updated` = "' . date('Y-m-d H:i:s') . '"';
             }
+
             $fields = implode(', ', $fields);
 
             $sql = 'UPDATE ' . QueryBuilder::quote($table) . '
@@ -821,12 +935,18 @@ if (!function_exists('db_delete')) {
         db_query($sql);
         $return = ob_get_clean();
         if ($return) {
+            # If there is FK delete RESTRICT constraint
             if (db_errorNo() == 1451) {
-                # If there is FK delete RESTRICT constraint
-                $sql = 'UPDATE '. QueryBuilder::quote($table) . '
-                        SET `deleted` = "'.date('Y-m-d H:i:s').'" '.$condition.'
-                        LIMIT 1';
-                return (db_query($sql)) ? true : false;
+                # $lc_useDBAutoFields is still used for backward compatibility
+                # TODO: $lc_useDBAutoFields to be removed in future versions
+                if (db_tableHasTimestamps($table)) {
+                    $sql = 'UPDATE '. QueryBuilder::quote($table) . '
+                            SET `deleted` = "'.date('Y-m-d H:i:s').'" '.$condition.'
+                            LIMIT 1';
+                    return db_query($sql);
+                } else {
+                    return false;
+                }
             } else {
                 echo $return;
                 return false;

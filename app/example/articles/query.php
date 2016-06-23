@@ -77,7 +77,6 @@ $pager = _pager()
     ->set('itemsPerPage', $lc_itemsPerPage = 2)
     ->set('pageNumLimit', $lc_pageNumLimit)
     ->set('total', $totalRecords)
-    ->set('imagePath', WEB_ROOT.'images/pager/')
     ->set('ajax', false)
     ->calculate();
 

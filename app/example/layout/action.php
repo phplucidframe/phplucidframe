@@ -4,6 +4,8 @@
  * It should perform form validation, create, update, delete of data manipulation to database.
  * By default, a form is initiated for AJAX and action.php is automatically invoked if the action attribute is not given in the <form> tag.
  */
+_cfg('layoutMode', true); # Normally this is not needed here if you configured it in /inc/config.php
+
 $success = false;
 
 if (sizeof($_POST)) {
@@ -12,8 +14,8 @@ if (sizeof($_POST)) {
 
     $validations = array(
         'txtName' => array( // The HTML id or name of the input element
-            'caption'   => _t('Name'), // The caption to show in the error message
-            'value'     => $txtName, // The value to be validated
+            'caption'   => _t('Name'),  // The caption to show in the error message
+            'value'     => $txtName,    // The value to be validated
             'rules'     => array('mandatory'), // The valiation rules defined in /helpers/validation_helper.php or /app/helpers/validation_helper.php
         ),
         'txtEmail' => array(
@@ -40,30 +42,19 @@ if (sizeof($_POST)) {
         ),
     );
 
-    /* form token check && input validation check */
     if (form_validate($validations)) {
+
         /**
-        * //// Database operation example
-        *
-        * $data = array(
-        *   // 'fieldname' => data
-        *   'name'       => $txtName,
-        *   'email'      => $txtEmail,
-        *   'comment'    => $txaComment
-        * );
-        *
-        * if (db_insert('comment', $data, $useSlug = false)) { // if the third parameter is omitted, your table must have a field "slug".
-        *   $commentId = db_insertId();
-        *   $success = true;
-        * }
+        Database operations here
         */
-        $success = true; # this should be set to true only when db operation is successful.
+
+        $success = true;
         if ($success) {
             form_set('success', true);
-            flash_set(_t('Your comment has been posted.'), 'comment_posted');
-            _redirect();
+            form_set('message', _t('Your comment has been posted.'));
         }
     } else {
         form_set('error', validation_get('errors'));
     }
 }
+form_respond('frmComment'); # Ajax response
