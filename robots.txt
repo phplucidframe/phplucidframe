@@ -19,7 +19,9 @@
 User-agent: *
 
 # Directories
+Disallow: /assets
 Disallow: /business
+Disallow: /db
 Disallow: /css
 Disallow: /files
 Disallow: /lib
