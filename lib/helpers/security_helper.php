@@ -22,7 +22,7 @@ function security_prerequisite()
 {
     $defaultSecret = md5('lucidframe');
     $secret = trim(_cfg('securitySecret'));
-    if (function_exists('mcrypt_encrypt') && strcmp($secret, $defaultSecret) === 0) {
+    if (function_exists('mcrypt_encrypt') && (empty($secret) || strcmp($secret, $defaultSecret) === 0)) {
         $msg = 'To change your own security secret, ';
         $msg .= 'open your terminal or command line, <code class="inline">cd</code> to your project directory, ';
         $msg .= 'then run <code class="inline">php lucidframe secret:generate</span>';

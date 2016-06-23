@@ -1,5 +1,6 @@
 # User specific & automatically generated files #
 #################################################
+.secret
 /db/build/*
 !/db/build/.gitkeep
 /db/generated/*
