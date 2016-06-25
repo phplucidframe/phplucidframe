@@ -144,13 +144,13 @@ class Seeder
         global $_DB;
 
         $dir = $this->path . $this->dbNamespace;
-        if (is_dir($dir) && $handle = opendir($dir)) {
+        if (is_dir($dir) && $handle = opendir($dir) && is_object($_DB)) {
             $seeding = array();
             while (false !== ($fileName = readdir($handle))) {
                 $dir = rtrim(rtrim($dir, '/'), '\\');
                 $file = $dir . _DS_ . $fileName;
 
-                if ($fileName === '.' || $fileName === '..' || !is_file($file) || $file === '.gitkeep') {
+                if ($fileName === '.' || $fileName === '..' || $fileName === '.gitkeep' || !is_file($file)) {
                     continue;
                 }
 

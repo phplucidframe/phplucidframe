@@ -209,7 +209,7 @@ class SchemaManager
 
     /**
      * Get field type
-     * @param  array  &$definition SchemaManager field definition
+     * @param  array  $definition SchemaManager field definition
      * @return string The underlying db field type
      */
     public function getVendorFieldType(&$definition)
@@ -243,7 +243,7 @@ class SchemaManager
 
     /**
      * Get field length
-     * @param  array    &$definition SchemaManager field definition
+     * @param  array    $definition SchemaManager field definition
      * @return integer  The field length
      */
     public function getFieldLength(&$definition)
