@@ -263,11 +263,12 @@ function _readyloader($name, $path = HELPER)
 function _autoloadDir($dir)
 {
     if (is_dir($dir) && $handle = opendir($dir)) {
+        $filesToSkip = array('.', '..', '.gitkeep', 'empty');
         while (false !== ($fileName = readdir($handle))) {
             $dir = rtrim(rtrim($dir, '/'), '\\');
             $file = $dir . _DS_ . $fileName;
 
-            if ($fileName === '.' || $fileName === '..' || !is_file($file)) {
+            if (in_array($fileName, $filesToSkip) || !is_file($file)) {
                 continue;
             }
 
