@@ -245,7 +245,8 @@ function db_query($sql, $args = array())
     if ($result = mysqli_query($_conn, $sql)) {
         return $result;
     } else {
-        echo 'Invalid query: ' . db_error();
+        $linefeed = php_sapi_name() == "cli" ? "\n" : '<br>';
+        echo $linefeed . 'MySQL error: Invalid query - ' . db_error() . $linefeed;
         return false;
     }
 }

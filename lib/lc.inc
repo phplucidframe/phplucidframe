@@ -515,7 +515,7 @@ function _schema($dbNamespace = 'default', $cache = false)
     }
 
     if ($file) {
-        $schema = include_once($file);
+        $schema = include($file);
         return is_array($schema) ? $schema : null;
     } else {
         return false;

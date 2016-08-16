@@ -315,17 +315,24 @@ class SchemaManager
      * @param  string $table    The table where the FK field will be added
      * @param  string $fkTable  The reference table name
      * @param  array  $relation The relationship definition
+     * @param  array  $schema   The whole schema definition
      * @return array|null Foreign key constraint definition
      */
-    protected function getFKConstraint($table, $fkTable, $relation)
+    protected function getFKConstraint($table, $fkTable, $relation, $schema = array())
     {
         if ($this->schema['_options']['constraints']) {
             $field = $relation['name'];
+            $refField = isset($relation['reference']) ? $relation['reference'] : $field;
+
+            if (!isset($schema[$fkTable][$refField])) {
+                $refField = 'id';
+            }
+
             return array(
                 'name'              => $table.'_FK_'.$field,
                 'fields'            => $field,
                 'reference_table'   => $fkTable,
-                'reference_fields'  => $field,
+                'reference_fields'  => $refField,
                 'on_delete'         => $relation['cascade'] ? 'CASCADE' : 'RESTRICT',
                 'on_update'         => 'NO ACTION'
             );
@@ -413,7 +420,7 @@ class SchemaManager
                     $schema[$jointTable]['options']['pk'][] = $field;
                     $pkFields[$jointTable][$field] = $schema[$jointTable][$field];
                     # Get FK constraints
-                    $constraint = $this->getFKConstraint($jointTable, $table, $relation);
+                    $constraint = $this->getFKConstraint($jointTable, $table, $relation, $schema);
                     if ($constraint) {
                         $constraints[$jointTable][$field] = $constraint;
                     }
@@ -426,7 +433,7 @@ class SchemaManager
                     $schema[$jointTable]['options']['pk'][] = $field;
                     $pkFields[$jointTable][$field] = $schema[$jointTable][$field];
                     # Get FK constraints
-                    $constraint = $this->getFKConstraint($jointTable, $fkTable, $relation);
+                    $constraint = $this->getFKConstraint($jointTable, $fkTable, $relation, $schema);
                     if ($constraint) {
                         $constraints[$jointTable][$field] = $constraint;
                     }
@@ -453,7 +460,7 @@ class SchemaManager
                         # Get FK field definition
                         $fkFields[$field] = $this->getFKField($table, $fkTable, $relation);
                         # Get FK constraints
-                        $constraint = $this->getFKConstraint($table, $fkTable, $relation);
+                        $constraint = $this->getFKConstraint($table, $fkTable, $relation, $schema);
                         if ($constraint) {
                             $constraints[$table][$field] = $constraint;
                         }
@@ -469,7 +476,7 @@ class SchemaManager
                     # Get FK field definition
                     $fkFields[$field] = $this->getFKField($table, $fkTable, $relation);
                     # Get FK constraints
-                    $constraint = $this->getFKConstraint($table, $fkTable, $relation);
+                    $constraint = $this->getFKConstraint($table, $fkTable, $relation, $schema);
                     if ($constraint) {
                         $constraints[$table][$field] = $constraint;
                     }
@@ -480,7 +487,8 @@ class SchemaManager
             $schema[$table] = $def;
 
             # ManyToMany table FK indexes
-            if (isset($def['options']['m:m'])) {
+            if (isset($def['options']['m:m']) && $def['options']['m:m']) {
+                $jointTable = $table;
                 foreach ($schema[$jointTable] as $field => $rule) {
                     if ($field == 'options') {
                         continue;
@@ -579,6 +587,8 @@ class SchemaManager
         $schema['_options'] = $this->schema['_options'];
         $this->schema = $schema;
 
+        $this->export();
+
         return true;
     }
 
@@ -639,8 +649,12 @@ class SchemaManager
             db_switch($dbNamespace);
         }
 
+        $error = false;
         foreach ($this->sqlStatements as $sql) {
-            db_query($sql);
+            if (!db_query($sql)) {
+                $error = true;
+                break;
+            }
         }
 
         if ($this->dbNamespace !== $dbNamespace) {
@@ -650,7 +664,7 @@ class SchemaManager
 
         $this->build($dbNamespace);
 
-        return true;
+        return !$error;
     }
 
     /**
