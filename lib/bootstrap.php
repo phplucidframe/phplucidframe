@@ -99,6 +99,7 @@ _autoloadDir(CLASSES . 'console');
 _autoloadDir(LIB . 'commands');
 _autoloadDir(APP_ROOT . 'commands');
 _autoloadDir(APP_ROOT . 'cmd');
+_autoloadDir(APP_ROOT . 'entity');
 
 # DB configuration & DB helper (required)
 if (isset($lc_databases[$lc_defaultDbSource]) && is_array($lc_databases[$lc_defaultDbSource]) && $lc_databases[$lc_defaultDbSource]['engine']) {
