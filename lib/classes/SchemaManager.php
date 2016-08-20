@@ -587,8 +587,6 @@ class SchemaManager
         $schema['_options'] = $this->schema['_options'];
         $this->schema = $schema;
 
-        $this->export();
-
         return true;
     }
 
