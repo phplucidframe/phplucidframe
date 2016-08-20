@@ -334,12 +334,20 @@ class SchemaManager
                 $refField = 'id';
             }
 
+            if ($relation['cascade'] === true) {
+                $cascade = 'CASCADE';
+            } elseif ($relation['cascade'] === null) {
+                $cascade = 'SET NULL';
+            } else {
+                $cascade = 'RESTRICT';
+            }
+
             return array(
-                'name'              => $table.'_FK_'.$field,
+                'name'              => 'FK_' . strtoupper(_randomCode(15)),
                 'fields'            => $field,
                 'reference_table'   => $fkTable,
                 'reference_fields'  => $refField,
-                'on_delete'         => $relation['cascade'] ? 'CASCADE' : 'RESTRICT',
+                'on_delete'         => $cascade,
                 'on_update'         => 'NO ACTION'
             );
         } else {
