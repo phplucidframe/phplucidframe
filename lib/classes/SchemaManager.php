@@ -403,15 +403,24 @@ class SchemaManager
         });
 
         foreach ($manyToMany as $table => $def) {
-            foreach ($def['m:m'] as $fkTable => $fk) {
+            foreach ($def['m:m'] as $fkTable => $joint) {
+                if (!empty($joint['table']) && isset($schema[$joint['table']])) {
+                    # if the joint table has already been defined
+                    continue;
+                }
+
                 if (isset($schema[$table.'_to_'.$fkTable]) || isset($schema[$fkTable.'_to_'.$table])) {
                     # if the joint table has already been defined
                     continue;
                 }
 
                 if (isset($schema[$fkTable]['m:m'][$table])) {
+                    if (empty($joint['table']) && !empty($schema[$fkTable]['m:m'][$table]['table'])) {
+                        $joint['table'] = $schema[$fkTable]['m:m'][$table]['table'];
+                    }
+
                     # table1_to_table2
-                    $jointTable = $table.'_to_'.$fkTable;
+                    $jointTable = !empty($joint['table']) ? $joint['table'] : $table.'_to_'.$fkTable;
                     $schema[$jointTable]['options'] = array(
                         'pk' => array(),
                         'timestamps' => false, # no need timestamp fields for many-to-many table
@@ -419,7 +428,7 @@ class SchemaManager
                     ) + $this->defaultOptions;
 
                     # table1.field
-                    $relation = $this->getRelationOptions($fk, $table);
+                    $relation = $this->getRelationOptions($joint, $table);
                     $field = $relation['name'];
                     $schema[$jointTable][$field] = $this->getFKField($fkTable, $table, $relation);
                     $schema[$jointTable][$field]['null'] = false;
