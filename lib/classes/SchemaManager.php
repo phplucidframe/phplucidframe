@@ -41,6 +41,7 @@ class SchemaManager
             # The precision represents the number of significant digits that are stored for values, and
             # the scale represents the number of digits that can be stored following the decimal point.
             'string'    => 'VARCHAR',
+            'char'      => 'CHAR',
             'binary'    => 'VARBINARY',
             'text'      => 'TEXT',
             'blob'      => 'BLOB',
@@ -135,7 +136,12 @@ class SchemaManager
      */
     private function getPKDefaultType()
     {
-        return array('type' => 'integer', 'autoinc' => true, 'null' => false, 'unsigned' => true);
+        return array(
+            'type'      => 'int',
+            'autoinc'   => true,
+            'null'      => false,
+            'unsigned'  => true
+        );
     }
 
     /**
@@ -178,7 +184,7 @@ class SchemaManager
             $statement .= "($length)";
         }
 
-        if (in_array($definition['type'], array('string', 'text', 'array', 'json'))) {
+        if (in_array($definition['type'], array('string', 'char', 'text', 'array', 'json'))) {
             # COLLATE for text fields
             $statement .= ' COLLATE ';
             $statement .= $collate ? $collate : $this->schema['_options']['collate'];
@@ -250,7 +256,7 @@ class SchemaManager
     {
         $type = $definition['type'];
 
-        if ($type == 'string') {
+        if ($type == 'string' || $type == 'char') {
             $length = 255;
         } elseif ($type == 'int' || $type == 'integer') {
             $length = 11;
