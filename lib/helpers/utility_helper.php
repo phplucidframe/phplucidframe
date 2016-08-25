@@ -262,8 +262,9 @@ function _readyloader($name, $path = HELPER)
  */
 function _autoloadDir($dir)
 {
-    if (is_dir($dir) && $handle = opendir($dir)) {
-        while (false !== ($fileName = readdir($handle))) {
+    if (is_dir($dir)) {
+        $files = scandir($dir);
+        foreach ($files as $fileName) {
             $dir = rtrim(rtrim($dir, '/'), '\\');
             $file = $dir . _DS_ . $fileName;
 
@@ -275,7 +276,6 @@ function _autoloadDir($dir)
                 require_once $file;
             }
         }
-        closedir($handle);
     }
 }
 /**
