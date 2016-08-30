@@ -16,6 +16,7 @@
  */
 
 chdir('../');
+$_GET['bootstrap'] = true;
 require_once('bootstrap.php');
 
 ### FILE DELETE HANDLER ###
