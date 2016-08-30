@@ -1453,7 +1453,7 @@ if (!function_exists('_slug')) {
     {
         $specChars = array(
             '`','~','!','@','#','$','%','\^','&',
-            '*','(',')','=','+','x','{','}','[',']',
+            '*','(',')','=','+','{','}','[',']',
             ':',';',"'",'"','<','>','\\','|','?','/',','
         );
         $table  = ltrim($table, db_prefix());
@@ -1461,7 +1461,7 @@ if (!function_exists('_slug')) {
         $slug   = trim($slug, '-');
         # clear special characters
         $slug   = preg_replace('/(&amp;|&quot;|&#039;|&lt;|&gt;)/i', '', $slug);
-        $slug   = str_replace($specChars, '', $slug);
+        $slug   = str_replace($specChars, '-', $slug);
         $slug   = str_replace(array(' ', '.'), '-', $slug);
 
         if (is_array($condition)) {
