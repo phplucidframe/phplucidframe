@@ -41,6 +41,7 @@ class SchemaManager
             # The precision represents the number of significant digits that are stored for values, and
             # the scale represents the number of digits that can be stored following the decimal point.
             'string'    => 'VARCHAR',
+            'char'      => 'CHAR',
             'binary'    => 'VARBINARY',
             'text'      => 'TEXT',
             'blob'      => 'BLOB',
@@ -135,7 +136,12 @@ class SchemaManager
      */
     private function getPKDefaultType()
     {
-        return array('type' => 'integer', 'autoinc' => true, 'null' => false, 'unsigned' => true);
+        return array(
+            'type'      => 'int',
+            'autoinc'   => true,
+            'null'      => false,
+            'unsigned'  => true
+        );
     }
 
     /**
@@ -178,7 +184,7 @@ class SchemaManager
             $statement .= "($length)";
         }
 
-        if (in_array($definition['type'], array('string', 'text', 'array', 'json'))) {
+        if (in_array($definition['type'], array('string', 'char', 'text', 'array', 'json'))) {
             # COLLATE for text fields
             $statement .= ' COLLATE ';
             $statement .= $collate ? $collate : $this->schema['_options']['collate'];
@@ -250,7 +256,7 @@ class SchemaManager
     {
         $type = $definition['type'];
 
-        if ($type == 'string') {
+        if ($type == 'string' || $type == 'char') {
             $length = 255;
         } elseif ($type == 'int' || $type == 'integer') {
             $length = 11;
@@ -315,18 +321,33 @@ class SchemaManager
      * @param  string $table    The table where the FK field will be added
      * @param  string $fkTable  The reference table name
      * @param  array  $relation The relationship definition
+     * @param  array  $schema   The whole schema definition
      * @return array|null Foreign key constraint definition
      */
-    protected function getFKConstraint($table, $fkTable, $relation)
+    protected function getFKConstraint($table, $fkTable, $relation, $schema = array())
     {
         if ($this->schema['_options']['constraints']) {
             $field = $relation['name'];
+            $refField = isset($relation['reference']) ? $relation['reference'] : $field;
+
+            if (!isset($schema[$fkTable][$refField])) {
+                $refField = 'id';
+            }
+
+            if ($relation['cascade'] === true) {
+                $cascade = 'CASCADE';
+            } elseif ($relation['cascade'] === null) {
+                $cascade = 'SET NULL';
+            } else {
+                $cascade = 'RESTRICT';
+            }
+
             return array(
-                'name'              => $table.'_FK_'.$field,
+                'name'              => 'FK_' . strtoupper(_randomCode(15)),
                 'fields'            => $field,
                 'reference_table'   => $fkTable,
-                'reference_fields'  => $field,
-                'on_delete'         => $relation['cascade'] ? 'CASCADE' : 'RESTRICT',
+                'reference_fields'  => $refField,
+                'on_delete'         => $cascade,
                 'on_update'         => 'NO ACTION'
             );
         } else {
@@ -390,15 +411,24 @@ class SchemaManager
         });
 
         foreach ($manyToMany as $table => $def) {
-            foreach ($def['m:m'] as $fkTable => $fk) {
+            foreach ($def['m:m'] as $fkTable => $joint) {
+                if (!empty($joint['table']) && isset($schema[$joint['table']])) {
+                    # if the joint table has already been defined
+                    continue;
+                }
+
                 if (isset($schema[$table.'_to_'.$fkTable]) || isset($schema[$fkTable.'_to_'.$table])) {
                     # if the joint table has already been defined
                     continue;
                 }
 
                 if (isset($schema[$fkTable]['m:m'][$table])) {
+                    if (empty($joint['table']) && !empty($schema[$fkTable]['m:m'][$table]['table'])) {
+                        $joint['table'] = $schema[$fkTable]['m:m'][$table]['table'];
+                    }
+
                     # table1_to_table2
-                    $jointTable = $table.'_to_'.$fkTable;
+                    $jointTable = !empty($joint['table']) ? $joint['table'] : $table.'_to_'.$fkTable;
                     $schema[$jointTable]['options'] = array(
                         'pk' => array(),
                         'timestamps' => false, # no need timestamp fields for many-to-many table
@@ -406,14 +436,14 @@ class SchemaManager
                     ) + $this->defaultOptions;
 
                     # table1.field
-                    $relation = $this->getRelationOptions($fk, $table);
+                    $relation = $this->getRelationOptions($joint, $table);
                     $field = $relation['name'];
                     $schema[$jointTable][$field] = $this->getFKField($fkTable, $table, $relation);
                     $schema[$jointTable][$field]['null'] = false;
                     $schema[$jointTable]['options']['pk'][] = $field;
                     $pkFields[$jointTable][$field] = $schema[$jointTable][$field];
                     # Get FK constraints
-                    $constraint = $this->getFKConstraint($jointTable, $table, $relation);
+                    $constraint = $this->getFKConstraint($jointTable, $table, $relation, $schema);
                     if ($constraint) {
                         $constraints[$jointTable][$field] = $constraint;
                     }
@@ -426,7 +456,7 @@ class SchemaManager
                     $schema[$jointTable]['options']['pk'][] = $field;
                     $pkFields[$jointTable][$field] = $schema[$jointTable][$field];
                     # Get FK constraints
-                    $constraint = $this->getFKConstraint($jointTable, $fkTable, $relation);
+                    $constraint = $this->getFKConstraint($jointTable, $fkTable, $relation, $schema);
                     if ($constraint) {
                         $constraints[$jointTable][$field] = $constraint;
                     }
@@ -453,7 +483,7 @@ class SchemaManager
                         # Get FK field definition
                         $fkFields[$field] = $this->getFKField($table, $fkTable, $relation);
                         # Get FK constraints
-                        $constraint = $this->getFKConstraint($table, $fkTable, $relation);
+                        $constraint = $this->getFKConstraint($table, $fkTable, $relation, $schema);
                         if ($constraint) {
                             $constraints[$table][$field] = $constraint;
                         }
@@ -469,7 +499,7 @@ class SchemaManager
                     # Get FK field definition
                     $fkFields[$field] = $this->getFKField($table, $fkTable, $relation);
                     # Get FK constraints
-                    $constraint = $this->getFKConstraint($table, $fkTable, $relation);
+                    $constraint = $this->getFKConstraint($table, $fkTable, $relation, $schema);
                     if ($constraint) {
                         $constraints[$table][$field] = $constraint;
                     }
@@ -480,7 +510,8 @@ class SchemaManager
             $schema[$table] = $def;
 
             # ManyToMany table FK indexes
-            if (isset($def['options']['m:m'])) {
+            if (isset($def['options']['m:m']) && $def['options']['m:m']) {
+                $jointTable = $table;
                 foreach ($schema[$jointTable] as $field => $rule) {
                     if ($field == 'options') {
                         continue;
@@ -639,8 +670,12 @@ class SchemaManager
             db_switch($dbNamespace);
         }
 
+        $error = false;
         foreach ($this->sqlStatements as $sql) {
-            db_query($sql);
+            if (!db_query($sql)) {
+                $error = true;
+                break;
+            }
         }
 
         if ($this->dbNamespace !== $dbNamespace) {
@@ -650,7 +685,7 @@ class SchemaManager
 
         $this->build($dbNamespace);
 
-        return true;
+        return !$error;
     }
 
     /**

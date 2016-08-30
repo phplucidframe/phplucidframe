@@ -488,5 +488,9 @@ function router()
         return $_page;
     }
 
-    return _i('inc/tpl/404.php');
+    if (in_array(_arg(0), array('401', '403'))) {
+        return _i('inc/tpl/'._arg(0).'.php');
+    } else {
+        return _i('inc/tpl/404.php');
+    }
 }

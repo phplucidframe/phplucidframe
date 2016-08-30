@@ -245,7 +245,8 @@ function db_query($sql, $args = array())
     if ($result = mysqli_query($_conn, $sql)) {
         return $result;
     } else {
-        echo 'Invalid query: ' . db_error();
+        $linefeed = php_sapi_name() == "cli" ? "\n" : '<br>';
+        echo $linefeed . 'MySQL error: Invalid query - ' . db_error() . $linefeed;
         return false;
     }
 }
@@ -678,12 +679,11 @@ if (!function_exists('db_insert')) {
                 $fieldType = $_DB->schemaManager->getFieldType($table, $field);
                 if (is_array($value) && $fieldType == 'array') {
                     $data[$field] = serialize($value);
-                    continue;
-                }
-
-                if (is_array($value) && $fieldType == 'json') {
+                } elseif (is_array($value) && $fieldType == 'json') {
                     $jsonValue = json_encode($value);
                     $data[$field] = $jsonValue ? $jsonValue : null;
+                } elseif ($fieldType == 'boolean') {
+                    $data[$field] = $value ? 1 : 0;
                 }
             }
         }
@@ -831,6 +831,8 @@ if (!function_exists('db_update')) {
                 } elseif (is_array($value) && $fieldType == 'json') {
                     $jsonValue = json_encode($value);
                     $value = $jsonValue ? $jsonValue : null;
+                } elseif ($fieldType == 'boolean') {
+                    $value = $value ? 1 : 0;
                 }
             }
 

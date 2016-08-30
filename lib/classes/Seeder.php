@@ -144,9 +144,10 @@ class Seeder
         global $_DB;
 
         $dir = $this->path . $this->dbNamespace;
-        if (is_dir($dir) && $handle = opendir($dir) && is_object($_DB)) {
+        if (is_dir($dir) && is_object($_DB)) {
             $seeding = array();
-            while (false !== ($fileName = readdir($handle))) {
+            $files = scandir($dir);
+            foreach ($files as $fileName) {
                 $dir = rtrim(rtrim($dir, '/'), '\\');
                 $file = $dir . _DS_ . $fileName;
 
@@ -169,7 +170,7 @@ class Seeder
                     $this->tables[] = $table;
                 }
             }
-            closedir($handle);
+
             ksort($seeding);
 
             foreach ($seeding as $data) {

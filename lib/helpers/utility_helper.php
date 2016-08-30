@@ -262,12 +262,13 @@ function _readyloader($name, $path = HELPER)
  */
 function _autoloadDir($dir)
 {
-    if (is_dir($dir) && $handle = opendir($dir)) {
-        while (false !== ($fileName = readdir($handle))) {
+    if (is_dir($dir)) {
+        $files = scandir($dir);
+        foreach ($files as $fileName) {
             $dir = rtrim(rtrim($dir, '/'), '\\');
             $file = $dir . _DS_ . $fileName;
 
-            if ($fileName === '.' || $fileName === '..' || !is_file($file)) {
+            if (!in_array(substr($fileName, -3), array('php', 'inc')) || !is_file($file)) {
                 continue;
             }
 
@@ -275,7 +276,6 @@ function _autoloadDir($dir)
                 require_once $file;
             }
         }
-        closedir($handle);
     }
 }
 /**
@@ -1453,7 +1453,7 @@ if (!function_exists('_slug')) {
     {
         $specChars = array(
             '`','~','!','@','#','$','%','\^','&',
-            '*','(',')','=','+','x','{','}','[',']',
+            '*','(',')','=','+','{','}','[',']',
             ':',';',"'",'"','<','>','\\','|','?','/',','
         );
         $table  = ltrim($table, db_prefix());
@@ -1461,7 +1461,7 @@ if (!function_exists('_slug')) {
         $slug   = trim($slug, '-');
         # clear special characters
         $slug   = preg_replace('/(&amp;|&quot;|&#039;|&lt;|&gt;)/i', '', $slug);
-        $slug   = str_replace($specChars, '', $slug);
+        $slug   = str_replace($specChars, '-', $slug);
         $slug   = str_replace(array(' ', '.'), '-', $slug);
 
         if (is_array($condition)) {
