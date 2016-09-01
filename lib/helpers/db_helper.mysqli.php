@@ -674,7 +674,7 @@ if (!function_exists('db_insert')) {
         }
 
         $dsm = $_DB->schemaManager;
-        if ($dsm->isLoaded()) {
+        if (is_object($dsm) && $dsm->isLoaded()) {
             foreach ($data as $field => $value) {
                 $fieldType = $_DB->schemaManager->getFieldType($table, $field);
                 if (is_array($value) && $fieldType == 'array') {
@@ -824,7 +824,7 @@ if (!function_exists('db_update')) {
                 continue;
             }
 
-            if ($dsm->isLoaded()) {
+            if (is_object($dsm) && $dsm->isLoaded()) {
                 $fieldType = $dsm->getFieldType($table, $field);
                 if (is_array($value) && $fieldType == 'array') {
                     $value = serialize($value);
