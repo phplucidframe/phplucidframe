@@ -31,7 +31,7 @@ Although it is stated as mini framework, it supports a wide range of web applica
 
 - Extract [the downloaded archive](http://phplucidframe.sithukyaw.com/download/release/latest) in your local webserver document root, and you will get a folder named **phplucidframe-x.y.z** where **x.y.z** would be your downloaded version.
 - Rename it as **phplucidframe**.
-- Open your terminal or command line and CD to your project root, and then run `php lucidframe secret:generate`. For more about the PHPLucidFrame console, read [the documentation section 16](http://phplucidframe.sithukyaw.com/cookbook).
+- Open your terminal or command line and CD to your project root, and then run `php lucidframe secret:generate`. For more about the PHPLucidFrame console, read [the documentation section "The LucidFrame Console"](http://phplucidframe.sithukyaw.com/cookbook).
 - Check `http://localhost/phplucidframe` in your browser.
 - (Optional, but recommended) Copy `/inc/tpl/head.php` to `/app/inc/tpl/head.php` if you want to update it.
 
