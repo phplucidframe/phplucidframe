@@ -170,7 +170,7 @@ if ($file = _i('inc/site.config.php', false)) {
 }
 
 # Validation helper (unloadable from /inc/autoload.php)
-if ($file = _i('helpers/validation_helper.php', false)) {
+if ($file = _i('helpers/validation_helper.php')) {
     include_once $file;
 }
 if ($moduleValidation = _readyloader('validation_helper')) {
@@ -180,7 +180,7 @@ if ($moduleValidation = _readyloader('validation_helper')) {
 _unloader('validation_helper', HELPER);
 
 # Auth helper (unloadable from /inc/autoload.php)
-if ($file = _i('helpers/auth_helper.php', false)) {
+if ($file = _i('helpers/auth_helper.php')) {
     include_once $file;
 }
 if ($moduleAuth = _readyloader('auth_helper')) {
@@ -189,7 +189,7 @@ if ($moduleAuth = _readyloader('auth_helper')) {
 _unloader('auth_helper', HELPER);
 
 # Pager helper
-if ($file = _i('helpers/pager_helper.php', false)) {
+if ($file = _i('helpers/pager_helper.php')) {
     include_once $file;
 }
 if ($modulePager = _readyloader('pager_helper')) {
@@ -207,7 +207,7 @@ if ($moduleForm = _readyloader('form_helper')) {
 _unloader('form_helper', HELPER);
 
 # File helper
-if ($file = _i('helpers/file_helper.php', false)) {
+if ($file = _i('helpers/file_helper.php')) {
     include_once $file;
 }
 if ($moduleFile = _readyloader('file_helper')) {

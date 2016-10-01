@@ -201,14 +201,18 @@ function _i($file, $recursive = true)
 
         if ($recursive == true) {
             if ($root === ROOT && substr($file, 0, 7) === 'helpers') {
-                return LIB . $file;
+                $file = LIB . $file;
             } else {
-                return $root . $file;
+                $file = $root . $file;
             }
         }
-    } else {
-        return '';
+
+        if (is_file($file) && file_exists($file)) {
+            return $file;
+        }
     }
+
+    return '';
 }
 /**
  * Get the host name or server name
