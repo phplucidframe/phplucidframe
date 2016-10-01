@@ -163,8 +163,10 @@ class Router
         }
 
         if ($found) {
-            $_GET = array_merge($_GET, $vars);
-            return trim($value['to'], '/');
+            $toRoute     = trim($value['to'], '/');
+            $_GET[ROUTE] = $toRoute;
+            $_GET        = array_merge($_GET, $vars);
+            return $toRoute;
         }
 
         return false;
