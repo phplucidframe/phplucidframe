@@ -549,6 +549,32 @@ ul#menu li a:hover, ul#menu li a.active {
     background-color: #333333;
 }
 
+#menu-bar {
+    background: #444444;
+}
+
+#menu-bar ul#menu {
+    margin-top: 0;
+}
+
+#menu-bar ul#menu li {
+    margin-right: 0;
+}
+
+#menu-bar ul#menu li a {
+    background: none;
+    -moz-border-radius: 0;
+    -webkit-border-radius: 0;
+    border-radius: 0;
+    padding: 10px 12px 2px 12px;
+}
+
+#menu-bar ul#menu li a:hover,
+#menu-bar ul#menu li a.active {
+    background-color: #333333;
+
+}
+
 ul.social-icons {
     float: right;
     margin: 0;

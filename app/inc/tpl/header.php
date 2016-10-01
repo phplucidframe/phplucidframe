@@ -22,6 +22,10 @@
                 }
                 ?>
                 </div>
+            </div>
+        </div>
+        <div id="menu-bar">
+            <div class="container clearfix">
                 <ul id="menu" class="clearfix">
                     <li>
                         <a href="<?php echo _url('home'); ?>" <?php if (_arg(0) == '' || _arg(0) == 'home') echo 'class="active"'; ?>><?php echo _t('Welcome'); ?></a>
@@ -48,7 +52,7 @@
                         <a href="<?php echo _url('example/layout'); ?>" <?php if (_arg(1) == 'layout') echo 'class="active"'; ?> title="Layout Mode Example"><?php echo _t('Example 7'); ?></a>
                     </li>
                     <li>
-                        <a href="http://phplucidframe.github.io/downloads" target="_blank"><?php echo _t('Downloads'); ?></a>
+                        <a href="http://www.phplucidframe.com/downloads" target="_blank"><?php echo _t('Downloads'); ?></a>
                     </li>
                     <li>
                         <a href="https://github.com/phplucidframe/phplucidframe" target="_blank">GitHub</a>
