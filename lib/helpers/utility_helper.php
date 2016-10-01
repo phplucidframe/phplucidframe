@@ -1618,7 +1618,7 @@ function _metaSeoTags()
 
     $tags['twitter']            = array();
     $tags['twitter']['card']    = _meta('twitter:card') ? _meta('twitter:card') : 'summary';
-    $tags['twitter']['site']    = _meta('twitter:site') ? _meta('twitter:site') : current(explode('.', _cfg('siteDomain')));
+    $tags['twitter']['site']    = _meta('twitter:site') ? '@'._meta('twitter:site') : '@'._cfg('siteDomain');
     $tags['twitter']['title']   = _meta('twitter:title') ? _meta('twitter:title') : _cfg('siteName');
     $tags['twitter']['description'] = _meta('twitter:description') ? _meta('twitter:description') : _cfg('metaDescription');
     $tags['twitter']['image']   = _meta('twitter:image') ? _meta('twitter:image') : _img('logo-120x120.jpg');
