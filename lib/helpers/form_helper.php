@@ -56,6 +56,7 @@ function form_token()
 function form_validate($validations = null)
 {
     if (!isset($_POST['lc_formToken_'._cfg('formTokenName')])) {
+        Validation::addError('', _t('Invalid form token.'));
         return false;
     }
     $token        = _decrypt(session_get(_cfg('formTokenName')));
