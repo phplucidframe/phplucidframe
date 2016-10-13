@@ -15,7 +15,7 @@
     <li>MySQL 5.0+ with MySQLi enabled.</li>
 </ul>
 <p>
-    <a href="http://phplucidframe.github.io" class="button large green"><?php echo _t('Download PHPLucidFrame'); ?></a>
+    <a href="http://phplucidframe.com" class="button large green"><?php echo _t('Download PHPLucidFrame'); ?></a>
 </p>
 <p>
     <a href="<?php echo _url('example/blog'); ?>" class="button">AJAX List <?php echo _t('Example'); ?></a>

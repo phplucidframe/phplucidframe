@@ -7,7 +7,7 @@
  * @since       PHPLucidFrame v 1.11.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>
- * @link        http://phplucidframe.github.io
+ * @link        http://phplucidframe.com
  * @license     http://www.opensource.org/licenses/mit-license.php MIT License
  *
  * This source file is subject to the MIT license that is bundled
@@ -105,7 +105,7 @@ class Console
                     _writeln('PHP Version: %s', phpversion());
                     _writeln('The MIT License');
                     _writeln('Simple, lightweight & yet powerful PHP Application Framework');
-                    _writeln('Copyright (c) 2014-%d, phplucidframe.github.io', date('Y'));
+                    _writeln('Copyright (c) 2014-%d, phplucidframe.com', date('Y'));
                 } else {
                     _writeln('Command "%s" not found.', $this->commandName);
                 }
