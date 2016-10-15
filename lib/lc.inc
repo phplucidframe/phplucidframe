@@ -180,12 +180,16 @@ function _i($file, $recursive = true)
     foreach ($folders as $key => $value) {
         if ($key === ROOT && substr($file, 0, 7) === 'helpers') {
             $fileWithPath = LIB . $file;
+            $libHelper = true;
         } else {
             $fileWithPath = $key . $file;
+            $libHelper = false;
         }
 
         if (is_file($fileWithPath) && file_exists($fileWithPath)) {
-            $fileWithPath = $value . $file;
+            if ($libHelper === false) {
+                $fileWithPath = $value . $file;
+            }
             return $fileWithPath;
         }
 

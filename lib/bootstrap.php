@@ -81,17 +81,17 @@ define('TEST_DIR', ROOT.'tests'._DS_);
 define('CACHE', FILE.'cache'._DS_);
 
 # System prerequisites
-require_once LIB . 'lc.inc';
+require LIB . 'lc.inc';
 # System configuration variables
-require_once INC . 'config.php';
+require INC . 'config.php';
 # Load environment settings
 __envLoader();
 
 # Utility helpers (required)
 if ($file = _i('helpers/utility_helper.php', false)) {
-    include_once $file;
+    include $file;
 }
-require_once HELPER . 'utility_helper.php';
+require HELPER . 'utility_helper.php';
 
 # Autoload all files by directory
 _autoloadDir(CLASSES);
@@ -104,7 +104,7 @@ _autoloadDir(APP_ROOT . 'entity');
 # DB configuration & DB helper (required)
 if (isset($lc_databases[$lc_defaultDbSource]) && is_array($lc_databases[$lc_defaultDbSource]) && $lc_databases[$lc_defaultDbSource]['engine']) {
     if ($file = _i('helpers/db_helper.php', false)) {
-        include_once $file;
+        include $file;
     }
 
     $dbEngine = $lc_databases[$lc_defaultDbSource]['engine'];
@@ -112,7 +112,7 @@ if (isset($lc_databases[$lc_defaultDbSource]) && is_array($lc_databases[$lc_defa
         $dbEngine = 'mysqli';
     }
 
-    require_once HELPER . 'db_helper.' . $dbEngine . '.php';
+    require HELPER . 'db_helper.' . $dbEngine . '.php';
 
     if (db_host($lc_defaultDbSource) && db_user($lc_defaultDbSource) && db_name($lc_defaultDbSource)) {
         # Start DB connection
@@ -129,29 +129,29 @@ _loader('form_helper', HELPER);
 _loader('file_helper', HELPER);
 
 if (file_exists(INC.'autoload.php')) {
-    require_once INC.'autoload.php';
+    require INC.'autoload.php';
 }
 
 # Session helper (unloadable from /inc/autoload.php)
 if ($file = _i('helpers/session_helper.php', false)) {
-    include_once $file;
+    include $file;
 }
 if ($moduleSession = _readyloader('session_helper')) {
-    require_once $moduleSession;
+    require $moduleSession;
     __session_init();
 }
 _unloader('session_helper', HELPER);
 
 # Translation helper (unloadable from /inc/autoload.php)
 if ($moduleI18n = _readyloader('i18n_helper')) {
-    require_once $moduleI18n;
+    require $moduleI18n;
 }
 _unloader('i18n_helper', HELPER);
 
 # Route helper (required)
-require_once HELPER . 'route_helper.php'; # WEB_ROOT and WEB_APP_ROOT is created in route_helper
+require HELPER . 'route_helper.php'; # WEB_ROOT and WEB_APP_ROOT is created in route_helper
 # Routing configuration
-include_once INC . 'route.config.php';
+include INC . 'route.config.php';
 __route_init();
 
 define('CSS', WEB_ROOT.'css/');
@@ -166,52 +166,52 @@ if ($moduleI18n) {
 # Site-specific configuration variables
 require INC . 'site.config.php';
 if ($file = _i('inc/site.config.php', false)) {
-    include_once $file;
+    include $file;
 }
 
 # Validation helper (unloadable from /inc/autoload.php)
-if ($file = _i('helpers/validation_helper.php')) {
-    include_once $file;
+if ($file = _i('helpers/validation_helper.php', false)) {
+    include $file;
 }
 if ($moduleValidation = _readyloader('validation_helper')) {
-    require_once $moduleValidation;
+    require $moduleValidation;
     __validation_init();
 }
 _unloader('validation_helper', HELPER);
 
 # Auth helper (unloadable from /inc/autoload.php)
-if ($file = _i('helpers/auth_helper.php')) {
-    include_once $file;
+if ($file = _i('helpers/auth_helper.php', false)) {
+    include $file;
 }
 if ($moduleAuth = _readyloader('auth_helper')) {
-    require_once $moduleAuth;
+    require $moduleAuth;
 }
 _unloader('auth_helper', HELPER);
 
 # Pager helper
-if ($file = _i('helpers/pager_helper.php')) {
-    include_once $file;
+if ($file = _i('helpers/pager_helper.php', false)) {
+    include $file;
 }
 if ($modulePager = _readyloader('pager_helper')) {
-    require_once $modulePager;
+    require $modulePager;
 }
 _unloader('pager_helper', HELPER);
 
 # Security helper (required)
-require_once HELPER . 'security_helper.php';
+require HELPER . 'security_helper.php';
 
 # Ajax Form helper (unloadable from /inc/autoload.php)
 if ($moduleForm = _readyloader('form_helper')) {
-    require_once $moduleForm;
+    require $moduleForm;
 }
 _unloader('form_helper', HELPER);
 
 # File helper
-if ($file = _i('helpers/file_helper.php')) {
-    include_once $file;
+if ($file = _i('helpers/file_helper.php', false)) {
+    include $file;
 }
 if ($moduleFile = _readyloader('file_helper')) {
-    require_once $moduleFile;
+    require $moduleFile;
 }
 _unloader('file_helper', HELPER);
 
@@ -224,7 +224,7 @@ security_prerequisite();
 $module = null;
 foreach ($lc_autoload as $file) {
     if ($module = _readyloader($file)) {
-        require_once $module;
+        require $module;
     }
 }
 unset($module);
@@ -235,5 +235,5 @@ unset($cmdDir);
 # Composer Autoloader
 $composerAutoloader = VENDOR . 'autoload.php';
 if (is_file($composerAutoloader) && file_exists($composerAutoloader)) {
-    require_once $composerAutoloader;
+    require $composerAutoloader;
 }
