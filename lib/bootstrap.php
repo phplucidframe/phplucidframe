@@ -200,7 +200,10 @@ _unloader('pager_helper', HELPER);
 # Security helper (required)
 require HELPER . 'security_helper.php';
 
-# Ajax Form helper (unloadable from /inc/autoload.php)
+# Form helper (unloadable from /inc/autoload.php)
+if ($file = _i('helpers/form_helper.php', false)) {
+    include $file;
+}
 if ($moduleForm = _readyloader('form_helper')) {
     require $moduleForm;
 }
