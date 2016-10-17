@@ -803,6 +803,15 @@ function _rr()
     return (_isRewriteRule()) ? REQUEST_URI : _r();
 }
 /**
+ * Get the clean routing path without the query string
+ * For example, `example.com/post/1/edit` would return `post`
+ * @return string The route path starting from the site root
+ */
+function _cr()
+{
+    return _cfg('cleanRoute');
+}
+/**
  * Get the absolute URL path
  * @param string $path     Routing path such as "foo/bar"; null for the current path
  * @param array  $queryStr Query string as
