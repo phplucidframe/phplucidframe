@@ -1931,7 +1931,15 @@ function _asynFileUploader()
  */
 function _view()
 {
-    return _i(_r() . _DS_ . 'view.php');
+    if (_cfg('view')) {
+        $viewName = 'view_'._cfg('view');
+    } elseif (_g('view')) {
+        $viewName = 'view_'._g('view');
+    } else {
+        $viewName = 'view';
+    }
+
+    return _i(_ds(_cr(), $viewName.'.php'));
 }
 
 /**
