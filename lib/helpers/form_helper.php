@@ -98,7 +98,9 @@ function form_respond($formId, $errors = null)
     Form::set('id', $formId);
     $errorStr = '';
     $ajaxResponse = true;
-    if (is_array($errors)) {
+
+    form_set('error', validation_get('errors'));
+    if (is_array($errors) && count($errors)) {
         Form::set('error', $errors);
         $ajaxResponse = false;
         # if no error message and no other message, no need to respond
