@@ -202,13 +202,14 @@
                     window.location = '#' + response.formId;
                 } else {
                     if (response.success) {
-                        if (response.msg) {
-                            $message.removeClass('error').addClass('success');
-                            $message.html('<ul><li>'+response.msg+'</li></ul>').show();
-                        }
                         if (response.redirect) {
                             window.location = response.redirect;
                         } else {
+                            LC.Form.clear(response.formId);
+                            if (response.msg) {
+                                $message.removeClass('error').addClass('success');
+                                $message.html('<ul><li>'+response.msg+'</li></ul>').show();
+                            }
                             window.location = '#' + response.formId;
                         }
                     }
