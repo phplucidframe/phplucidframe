@@ -250,6 +250,18 @@
                 return $row;
             }
             return false;
+        },
+        /**
+         * LC.Form.slug()
+         * Generate slug value from the given string
+         */
+        slug : function( str ) {
+            str = str.toLowerCase();
+            str = str.replace(/\s|`|~|!|@|#|\$|%|\^|&|\*|\(|\)|{|}|\[|\]|=|-|:|;|'|"|<|>|\|\||\?|,/g, '-'); // replace special chars
+            str = str.replace(/-{2,}/g, '-'); // replace 1 dashes for two or more dashes
+            str = str.replace(/(^-)|(-$)/g, ''); // trim leading and trailing dashes
+
+            return str;
         }
     };
     // Add under the namespace "LC"
