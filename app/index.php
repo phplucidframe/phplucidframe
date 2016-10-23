@@ -18,7 +18,12 @@ require_once '../lib/bootstrap.php';
 
 ob_start('_flush');
 
-require_once router();
+$_page = router();
+require $_page;
+
+if (in_array(rtrim(substr($_page, -7), '.php'), array('401', '403', '404'))) {
+    _cfg('layoutMode', false);
+}
 
 if (_cfg('layoutMode') && _isAjax() === false) {
     $query = _ds(APP_ROOT, _r(), 'query.php');
