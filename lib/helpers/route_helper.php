@@ -18,6 +18,8 @@ use LucidFrame\Core\Router;
 
 /**
  * @internal
+ * @ignore
+ *
  * Initialize URL routing
  */
 function __route_init()
@@ -56,6 +58,7 @@ function __route_init()
 
 /**
  * @internal
+ * @ignore
  *
  * Returns the requested URL path of the page being viewed.
  * Examples:
@@ -394,6 +397,8 @@ function route_updateQueryStr($path, &$queryStr = array())
 
 /**
  * @internal
+ * @ignore
+ *
  * Get the absolute path from root of the given route
  * @return string
  */
@@ -435,6 +440,8 @@ function route($name)
 
 /**
  * @internal
+ * @ignore
+ *
  * Matching the current route to the defined custom routes
  * @return string|boolean The matched route or false if no matched route is found
  */
@@ -445,6 +452,7 @@ function route_match()
 
 /**
  * @internal
+ * @ignore
  *
  * Route to a page according to request
  * interally called by /app/index.php

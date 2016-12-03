@@ -48,41 +48,49 @@ define('LC_CONSOLE_OPTION_NOVALUE', 6);
 
 /**
  * @internal
+ * @ignore
  * Site-wide warnings to be shown
  */
 $lc_sitewideWarnings = array();
 /**
  * @internal
+ * @ignore
  * Auto load/unload configuration
  */
 $lc_autoload = array();
 /**
  * @internal
+ * @ignore
  * Namespace which will later be available as a constant LC_NAMESPACE
  */
 $lc_namespace = '';
 /**
  * @internal
+ * @ignore
  * The clean route without query string or without file name
  */
 $lc_cleanRoute = '';
 /**
  * @internal
+ * @ignore
  * The global javascript variables that will be rentered in the <head> section
  */
 $lc_jsVars = array();
 /**
  * @internal
+ * @ignore
  * The canonical URL for the current page
  */
 $lc_canonical = '';
 /**
  * @internal
+ * @ignore
  * Meta information for the current page
  */
 $_meta = array();
 /**
  * @internal
+ * @ignore
  * @type array It contains the built and executed queries through out the script execuation
  */
 global $db_builtQueries;
@@ -91,6 +99,7 @@ $db_printQuery = false;
 
 /**
  * @internal
+ * @ignore
  * Prerequisite check
  */
 function __prerequisite()
@@ -276,6 +285,7 @@ function _p($name)
 }
 /**
  * @internal
+ * @ignore
  * Dot notation access to multi-dimensional array
  * Get the values by providing dot notation string key
  * Set the values by providing dot notation string key
@@ -378,6 +388,7 @@ function __dotNotationToArray($key, $scope = 'global', $value = '', $serialize =
 }
 /**
  * @internal
+ * @ignore
  * Load running environment settings
  * Initalize the site language(s), error reporting
  * Define two constants - REQUEST_URI and LC_NAMESPACE
@@ -459,6 +470,7 @@ function __envLoader()
 }
 /**
  * @internal
+ * @ignore
  * Read .secret and return the hash string which is the value for $lc_securitySecret
  * @param  string $file The optional file path
  * @return string

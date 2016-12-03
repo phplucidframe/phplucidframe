@@ -21,15 +21,15 @@ namespace LucidFrame\Console;
  */
 class Console
 {
-    /** @var LucidFrame\Console\Command The command being run **/
+    /** @var LucidFrame\Console\Command The command being run */
     protected $command;
-    /** @var string The command name **/
+    /** @var string The command name */
     private $commandName;
-    /** @var integer No of arguments passed to script **/
+    /** @var integer No of arguments passed to script */
     protected $argc;
-    /** @var array Array of arguments passed to script **/
+    /** @var array Array of arguments passed to script */
     protected $argv;
-    /** @var array list of registered commands **/
+    /** @var array list of registered commands */
     protected static $commands = array();
 
     /**

@@ -19,6 +19,8 @@ use LucidFrame\Core\SchemaManager;
 
 /**
  * @internal
+ * @ignore
+ *
  * Return the database configuration of the given namespace
  * @param string $namespace Namespace of the configuration to read from
  * @return array The array of database configuration
@@ -104,6 +106,7 @@ function db_collation($namespace = 'default')
 }
 /**
  * @internal
+ * @ignore
  * Check and get the database configuration settings
  * @param string $namespace Namespace of the configuration to read from
  */
@@ -281,6 +284,7 @@ function db_escapeString($str)
 }
 /**
  * @internal
+ * @ignore
  *
  * Quote and return the value if it is string; otherwise return as it is
  * This is used for array_map()
@@ -1016,6 +1020,8 @@ if (!function_exists('db_delete_multi')) {
 }
 /**
  * @internal
+ * @ignore
+ *
  * Build the SQL WHERE clause from the various condition arrays
  *
  * @param array $cond The condition array, for example
@@ -1090,6 +1096,7 @@ function db_or($cond = array())
 }
 /**
  * @internal
+ * @ignore
  *
  * Build the SQL expression like SUM, MAX, AVG, etc
  *

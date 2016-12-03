@@ -16,6 +16,8 @@
 
 /**
  * @internal
+ * @ignore
+ *
  * Check the default security secret to be changed
  */
 function security_prerequisite()
@@ -110,6 +112,7 @@ function _sanitize($input)
 }
 /**
  * @internal
+ * @ignore
  *
  * Strips javascript tags in the value to prevent from XSS attack
  * @param mixed $value The value being stripped.

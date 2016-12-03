@@ -95,6 +95,8 @@ class Pager
 
     /**
      * @internal
+     * @ignore
+     *
      * Setter functions for the property "htmlTag"
      * @param string $value The HTML tag - <table>, <ul> or <div>
      * @return object Pager

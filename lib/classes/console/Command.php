@@ -23,27 +23,27 @@ use LucidFrame\Console\ConsoleTable;
  */
 class Command
 {
-    /** @var string The command name **/
+    /** @var string The command name */
     protected $name;
-    /** @var string The description for the command **/
+    /** @var string The description for the command */
     protected $description;
-    /** @var string The help tip for the command **/
+    /** @var string The help tip for the command */
     protected $help;
-    /** @var array The options for the command such as --help etc. **/
+    /** @var array The options for the command such as --help etc. */
     protected $options = array();
-    /** @var array The short options of the long options defined for the command such as -h for --help, etc. **/
+    /** @var array The short options of the long options defined for the command such as -h for --help, etc. */
     protected $shortcuts = array();
-    /** @var array The arguments for the command **/
+    /** @var array The arguments for the command */
     protected $arguments = array();
     /** @var array Array of the argument names */
     protected $argumentNames = array();
-    /** @var closure Anonymous function that performs the job of the command **/
+    /** @var closure Anonymous function that performs the job of the command */
     protected $definition;
-    /** @var array Array of arguments passed to script **/
+    /** @var array Array of arguments passed to script */
     private $argv;
-    /** @var array The parsed options from the command running **/
+    /** @var array The parsed options from the command running */
     private $parsedOptions = array();
-    /** @var array The parsed arguments from the command running **/
+    /** @var array The parsed arguments from the command running */
     private $parsedArguments = array();
     /** @var string The longest option name */
     private $longestArgument = '';

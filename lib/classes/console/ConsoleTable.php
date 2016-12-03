@@ -23,17 +23,17 @@ class ConsoleTable
 {
     const HEADER_INDEX = -1;
 
-    /** @var array Array of table data **/
+    /** @var array Array of table data */
     protected $data = array();
-    /** @var boolean Border shown or not **/
+    /** @var boolean Border shown or not */
     protected $border = true;
-    /** @var integer Table padding **/
+    /** @var integer Table padding */
     protected $padding = 1;
-    /** @var integer Table left margin **/
+    /** @var integer Table left margin */
     protected $indent = 0;
-    /** @var integer **/
+    /** @var integer Row index */
     private $rowIndex = -1;
-    /** @var array **/
+    /** @var array Column width */
     private $columnWidths = array();
 
     /**

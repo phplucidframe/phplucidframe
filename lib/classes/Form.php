@@ -222,6 +222,8 @@ class Form
     }
     /**
      * @internal
+     * @ignore
+     *
      * Allow you to select a checkbox or a radio button or an option of a drop-down list
      *
      * @param string $name The field name of the checkbox or radio button or drop-down list

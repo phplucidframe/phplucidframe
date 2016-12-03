@@ -40,6 +40,7 @@ function _version()
 
 /**
  * @internal
+ * @ignore
  *
  * ob_start callback function to output buffer
  * It also adds the following to <html>
@@ -240,6 +241,8 @@ function _unloader($name, $path = HELPER)
 }
 /**
  * @internal
+ * @ignore
+ *
  * Check a library, script or file is ready to load
  * @param string $name The file name without extension
  * @param string $path The directory path for the library, script or file; default to helpers/
@@ -1796,8 +1799,11 @@ function _isBot()
         'Googlebot',
         'Slurp',
         'msnbot',
+        'bingbot',
+        'yahoo',
         'search.msn.com',
         'Baidu',
+        'baiduspider',
         'Yandex',
         'nutch',
         'FAST',
@@ -1811,7 +1817,18 @@ function _isBot()
         'ASPSeek',
         'simpy',
         'ips-agent',
-        'Libwww-perl'
+        'Libwww-perl',
+        'ask jeeves',
+        'fastcrawler',
+        'infoseek',
+        'lycos',
+        'mediapartners-google',
+        'CRAZYWEBCRAWLER',
+        'adsbot-google',
+        'curious george',
+        'ia_archiver',
+        'MJ12bot',
+        'Uptimebot',
     );
     foreach ($bots as $bot) {
         if (false !== strpos(strtolower($userAgent), strtolower($bot))) {
@@ -1889,7 +1906,7 @@ function _consoleTable()
 /**
  * Simple helper to get all registered commands
  * @since  PHPLucidFrame v 1.12.0
- * @return array
+ * @return array The array of command LucidFrame\Console\Command
  */
 function _consoleCommands()
 {
@@ -1901,7 +1918,7 @@ function _consoleCommands()
  * Simple helper to create Pager object
  * @since   PHPLucidFrame v 1.11.0
  * @param   string $pageQueryStr The customized page query string name
- * @return  Pager
+ * @return  object LucidFrame\Core\Pager
  */
 function _pager($pageQueryStr = '')
 {
@@ -1912,7 +1929,7 @@ function _pager($pageQueryStr = '')
  * Simple helper to create File object
  * @since   PHPLucidFrame v 1.11.0
  * @param   string $fileName (optinal) Path to the file
- * @return  LucidFrame\File\File
+ * @return  object LucidFrame\File\File
  */
 function _fileHelper($fileName = '')
 {
@@ -1923,7 +1940,7 @@ function _fileHelper($fileName = '')
  * Simple helper to create AsynFileUploader object
  * @since   PHPLucidFrame v 1.11.0
  * @param   string/array anonymous The input file name or The array of property/value pairs
- * @return  LucidFrame\File\AsynFileUploader
+ * @return  object LucidFrame\File\AsynFileUploader
  */
 function _asynFileUploader()
 {
@@ -1963,7 +1980,7 @@ function _ds()
 
 /**
  * Check if the request is an AJAX request
- * @return boolean
+ * @return boolean TRUE if the request is XmlHttpRequest, otherwise FALSE
  */
 function _isAjax()
 {
@@ -1975,7 +1992,7 @@ function _isAjax()
 }
 
 /**
- * Header sent as JSON
+ * Header sent as text/json
  * @param array $data Array of data to be encoded as JSON
  * @return void
  */

@@ -56,6 +56,8 @@ $lc_validationMessages = array(
 
 /**
  * @internal
+ * @ignore
+ *
  * Initialize the validation messages
  */
 function __validation_init()

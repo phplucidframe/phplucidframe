@@ -88,6 +88,7 @@ function _tc($fileName, $args = array())
 }
 /**
  * @internal
+ * @ignore
  *
  * Loads the text .po file and returns array of translations
  * @param string $filename Text .po file to load
