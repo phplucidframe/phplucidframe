@@ -1154,23 +1154,23 @@ div.table .row .actions a span {
 
 table.list tr td.colAction a.edit,
 div.table .row .actions a.edit {
-    background: url(../images/icons/ico-edit.png) no-repeat;
+    background: url(../images/ico-edit.png) no-repeat;
 }
 
 table.list tr td.colAction a.delete,
 div.table .row .actions a.delete {
-    background: url(../images/icons/ico-delete.png) no-repeat;
+    background: url(../images/ico-delete.png) no-repeat;
 }
 
 table.list tr td.colAction span.edit.disabled,
 div.table .row .actions span.edit.disabled {
-    background: url(../images/icons/ico-edit-disable.png) no-repeat;
+    background: url(../images/ico-edit-disable.png) no-repeat;
     display: block;
 }
 
 table.list tr td.colAction span.delete.disabled,
 div.table .row .actions span.delete.disabled {
-    background: url(../images/icons/ico-delete-disable.png) no-repeat;
+    background: url(../images/ico-delete-disable.png) no-repeat;
     display: block;
 }
 
