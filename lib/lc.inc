@@ -175,9 +175,9 @@ function _i($file, $recursive = true)
 
     if (isset($lc_sites) && is_array($lc_sites) && count($lc_sites)) {
         if (array_key_exists(LC_NAMESPACE, $lc_sites)) {
-        # Find in SUB-DIR -> APP_ROOT -> ROOT
+            # Find in SUB-DIR -> APP_ROOT -> ROOT
             $folders = array(
-                APP_ROOT.$lc_sites[LC_NAMESPACE].'/' => $appRoot . $lc_sites[LC_NAMESPACE] . '/',
+                APP_ROOT.$lc_sites[LC_NAMESPACE]._DS_ => $appRoot . $lc_sites[LC_NAMESPACE] . _DS_,
                 APP_ROOT => $appRoot,
                 ROOT => $root
             );
@@ -199,6 +199,7 @@ function _i($file, $recursive = true)
             if ($libHelper === false) {
                 $fileWithPath = $value . $file;
             }
+
             return $fileWithPath;
         }
 
@@ -208,16 +209,14 @@ function _i($file, $recursive = true)
     }
 
     if (strstr($_SERVER['PHP_SELF'], APP_DIR)) {
-        if (is_file($file) && file_exists($file)) {
-            return $file;
-        }
-
         if ($recursive == true) {
             if ($root === ROOT && substr($file, 0, 7) === 'helpers') {
                 $file = LIB . $file;
             } else {
                 $file = $root . $file;
             }
+        } else {
+            $file = $root . $file;
         }
 
         if (is_file($file) && file_exists($file)) {
