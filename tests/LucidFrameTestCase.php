@@ -20,6 +20,23 @@ class LucidFrameTestCase extends \UnitTestCase
 {
     public function setUp()
     {
+        $this->cleanup();
+    }
+
+    public function tearDown()
+    {
+    }
+
+    public static function oneline($string)
+    {
+        return preg_replace('/\s{2,}/u', ' ', trim($string));
+    }
+
+    protected function cleanup()
+    {
+        /*
+        // Data cleanup by each test run
+        // This is an example for the sample database
         db_delete_multi('document');
         db_delete_multi('post_image');
         db_delete_multi('post');
@@ -36,14 +53,6 @@ class LucidFrameTestCase extends \UnitTestCase
             'role'      => 'admin',
             'isMaster'  => 1
         ));
-    }
-
-    public function tearDown()
-    {
-    }
-
-    public static function oneline($string)
-    {
-        return preg_replace('/\s{2,}/u', ' ', trim($string));
+        */
     }
 }
