@@ -327,10 +327,11 @@ class SchemaManager
     protected function getFKConstraint($table, $fkTable, $relation, $schema = array())
     {
         if ($this->schema['_options']['constraints']) {
-            $field = $relation['name'];
-            $refField = isset($relation['reference']) ? $relation['reference'] : $field;
+            $pkFields   = $this->schema['_options']['pk'];
+            $field      = $relation['name'];
+            $refField   = $field;
 
-            if (!isset($schema[$fkTable][$refField])) {
+            if (!isset($pkFields[$fkTable][$refField])) {
                 $refField = 'id';
             }
 
