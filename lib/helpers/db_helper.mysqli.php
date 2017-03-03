@@ -146,7 +146,7 @@ function db_connect($namespace = 'default')
         db_query('SET NAMES utf8 COLLATE ' . db_collation());
     }
     # Select DB
-    if (!mysqli_select_db($_conn, $conf['database'])) {
+    if ($conf['database'] && !mysqli_select_db($_conn, $conf['database'])) {
         die('Can\'t use  : ' . $conf['database'] .' - '. mysqli_error($_conn));
     }
 
