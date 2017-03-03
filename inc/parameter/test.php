@@ -19,7 +19,7 @@ return array(
             'username'  => '',
             'password'  => '',
             'prefix'    => '',
-            'collation' => 'utf8_general_ci'
+            'collation' => 'utf8_unicode_ci',
         )
     ),
     # The site contact email address - This address used as "To" for all incoming mails
