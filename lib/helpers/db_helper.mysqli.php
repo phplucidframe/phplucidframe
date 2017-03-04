@@ -21,12 +21,37 @@ use LucidFrame\Core\SchemaManager;
  * @internal
  * @ignore
  *
+ * Return the current database namespace
+ * if $namespace is not provided, $lc_defaultDbSource will be returned
+ * if $lc_defaultDbSource is empty, `default` will be returned
+ *
+ * @param string $namespace The given namespace
+ * @return string The database namespace
+ */
+function db_namespace($namespace = null)
+{
+    if (!empty($namespace)) {
+        return $namespace;
+    }
+
+    if ($namespace === null) {
+        return _cfg('defaultDbSource');
+    }
+
+    return 'default';
+}
+/**
+ * @internal
+ * @ignore
+ *
  * Return the database configuration of the given namespace
  * @param string $namespace Namespace of the configuration to read from
  * @return array The array of database configuration
  */
-function db_config($namespace = 'default')
+function db_config($namespace = null)
 {
+    $namespace = db_namespace($namespace);
+
     if (!isset($GLOBALS['lc_databases'][$namespace])) {
         die('Database configuration error for '.$namespace.'!');
     }
@@ -38,9 +63,9 @@ function db_config($namespace = 'default')
  * @param string $namespace Namespace of the configuration to read from
  * @return string Database engine name
  */
-function db_engine($namespace = 'default')
+function db_engine($namespace = null)
 {
-    $conf = db_config($namespace);
+    $conf = db_config(db_namespace($namespace));
 
     if ($conf['engine'] === 'mysql') {
         $conf['engine'] = 'mysqli';
@@ -53,9 +78,10 @@ function db_engine($namespace = 'default')
  * @param string $namespace Namespace of the configuration to read from
  * @return string Database host name
  */
-function db_host($namespace = 'default')
+function db_host($namespace = null)
 {
-    $conf = db_config($namespace);
+    $conf = db_config(db_namespace($namespace));
+
     return $conf['host'];
 }
 /**
@@ -63,12 +89,13 @@ function db_host($namespace = 'default')
  * @param string $namespace Namespace of the configuration to read from
  * @return string Database name
  */
-function db_name($namespace = 'default')
+function db_name($namespace = null)
 {
-    $conf = db_config($namespace);
+    $conf = db_config(db_namespace($namespace));
     if (!isset($conf['database'])) {
         die('Database name is not set.');
     }
+
     return $conf['database'];
 }
 /**
@@ -76,12 +103,13 @@ function db_name($namespace = 'default')
  * @param string $namespace Namespace of the configuration to read from
  * @return string Database username
  */
-function db_user($namespace = 'default')
+function db_user($namespace = null)
 {
-    $conf = db_config($namespace);
+    $conf = db_config(db_namespace($namespace));
     if (!isset($conf['username'])) {
         die('Database username is not set.');
     }
+
     return $conf['username'];
 }
 /**
@@ -89,9 +117,10 @@ function db_user($namespace = 'default')
  * @param string $namespace Namespace of the configuration to read from
  * @return string The table prefix
  */
-function db_prefix($namespace = 'default')
+function db_prefix($namespace = null)
 {
-    $conf = $GLOBALS['lc_databases'][$namespace];
+    $conf = $GLOBALS['lc_databases'][db_namespace($namespace)];
+
     return isset($conf['prefix']) ? $conf['prefix'] : '';
 }
 /**
@@ -99,9 +128,10 @@ function db_prefix($namespace = 'default')
  * @param string $namespace Namespace of the configuration to read from
  * @return string Database collation
  */
-function db_collation($namespace = 'default')
+function db_collation($namespace = null)
 {
-    $conf = db_config($namespace);
+    $conf = db_config(db_namespace($namespace));
+
     return isset($conf['collation']) ? $conf['collation'] : '';
 }
 /**
@@ -110,8 +140,10 @@ function db_collation($namespace = 'default')
  * Check and get the database configuration settings
  * @param string $namespace Namespace of the configuration to read from
  */
-function db_prerequisite($namespace = 'default')
+function db_prerequisite($namespace = null)
 {
+    $namespace = db_namespace($namespace);
+
     if (db_host($namespace) && db_user($namespace) && db_name($namespace)) {
         return db_config($namespace);
     } else {
@@ -127,11 +159,14 @@ function db_prerequisite($namespace = 'default')
  * Establish a new database connection to the MySQL server
  * @param string $namespace Namespace of the configuration.
  */
-function db_connect($namespace = 'default')
+function db_connect($namespace = null)
 {
     global $_conn;
     global $_DB;
+
+    $namespace = db_namespace($namespace);
     $conf = db_config($namespace);
+
     # Connection
     $_conn = mysqli_connect($conf['host'], $conf['username'], $conf['password']);
     if (!$_conn) {
@@ -166,11 +201,12 @@ function db_connect($namespace = 'default')
  * @param string $namespace Namespace of the configuration to read from
  * @return void
  */
-function db_switch($namespace = 'default')
+function db_switch($namespace = null)
 {
     global $_conn;
+
     db_close();
-    db_connect($namespace);
+    db_connect(db_namespace($namespace));
 }
 /**
  * Sets the default client character set
