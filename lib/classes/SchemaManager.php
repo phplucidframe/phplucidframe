@@ -62,7 +62,7 @@ class SchemaManager
     /** @var string The namespace for the database */
     private $dbNamespace = 'default';
     /** @var array The array of generated SQL statements */
-    private $sqlStatements;
+    private $sqlStatements = array();
 
     /**
      * Constructor
@@ -362,12 +362,9 @@ class SchemaManager
      */
     private function load()
     {
+        $options = $this->getOptions();
+
         $schema = $this->schema;
-        if (isset($schema['_options'])) {
-            $options = $schema['_options'] + $this->defaultOptions;
-        } else {
-            $options = $this->defaultOptions;
-        }
         unset($schema['_options']);
 
         if (count($schema) == 0) {
@@ -375,237 +372,36 @@ class SchemaManager
         }
 
         # Populate primary key fields
-        $pkFields = array();
-        foreach ($schema as $table => $def) {
-            $fullTableName = db_prefix().$table;
-
-            if (isset($def['options'])) {
-                $def['options'] += $options;
-            } else {
-                $def['options'] = $options;
-            }
-            $schema[$table] = $def;
-
-            # PK Field(s)
-            $pkFields[$table] = array();
-            if (isset($def['options']['pk'])) {
-                foreach ($def['options']['pk'] as $pk) {
-                    if (isset($def[$pk])) {
-                        // user-defined PK field type
-                        $pkFields[$table][$pk] = $def[$pk];
-                    } else {
-                        // default PK field type
-                        $pkFields[$table][$pk] = $this->getPKDefaultType();
-                    }
-                }
-            } else {
-                $pkFields[$table]['id'] = $this->getPKDefaultType();
-            }
-        }
-
-        $this->schema['_options']['pk'] = $pkFields;
-
+        $this->populatePrimaryKeys($schema);
         # Add ManyToMany tables to the schema
-        $constraints = array();
-        $manyToMany = array_filter($schema, function($def) {
-            return isset($def['m:m']) ? true : false;
-        });
+        $constraints = $this->populatePivots($schema);
 
-        foreach ($manyToMany as $table => $def) {
-            foreach ($def['m:m'] as $fkTable => $joint) {
-                if (!empty($joint['table']) && isset($schema[$joint['table']])) {
-                    # if the joint table has already been defined
-                    continue;
-                }
-
-                if (isset($schema[$table.'_to_'.$fkTable]) || isset($schema[$fkTable.'_to_'.$table])) {
-                    # if the joint table has already been defined
-                    continue;
-                }
-
-                if (isset($schema[$fkTable]['m:m'][$table])) {
-                    if (empty($joint['table']) && !empty($schema[$fkTable]['m:m'][$table]['table'])) {
-                        $joint['table'] = $schema[$fkTable]['m:m'][$table]['table'];
-                    }
-
-                    # table1_to_table2
-                    $jointTable = !empty($joint['table']) ? $joint['table'] : $table.'_to_'.$fkTable;
-                    $schema[$jointTable]['options'] = array(
-                        'pk' => array(),
-                        'timestamps' => false, # no need timestamp fields for many-to-many table
-                        'm:m' => true
-                    ) + $this->defaultOptions;
-
-                    # table1.field
-                    $relation = $this->getRelationOptions($joint, $table);
-                    $field = $relation['name'];
-                    $schema[$jointTable][$field] = $this->getFKField($fkTable, $table, $relation);
-                    $schema[$jointTable][$field]['null'] = false;
-                    $schema[$jointTable]['options']['pk'][] = $field;
-                    $pkFields[$jointTable][$field] = $schema[$jointTable][$field];
-                    # Get FK constraints
-                    $constraint = $this->getFKConstraint($jointTable, $table, $relation, $schema);
-                    if ($constraint) {
-                        $constraints[$jointTable][$field] = $constraint;
-                    }
-
-                    # table2.field
-                    $relation = $this->getRelationOptions($schema[$fkTable]['m:m'][$table], $fkTable);
-                    $field = $relation['name'];
-                    $schema[$jointTable][$field] = $this->getFKField($table, $fkTable, $relation);
-                    $schema[$jointTable][$field]['null'] = false;
-                    $schema[$jointTable]['options']['pk'][] = $field;
-                    $pkFields[$jointTable][$field] = $schema[$jointTable][$field];
-                    # Get FK constraints
-                    $constraint = $this->getFKConstraint($jointTable, $fkTable, $relation, $schema);
-                    if ($constraint) {
-                        $constraints[$jointTable][$field] = $constraint;
-                    }
-                }
-            }
-        }
-
-        $this->schema['_options']['pk'] = $pkFields;
+        $pkFields = $this->getPrimaryKeys();
 
         $sql = array();
         $sql[] = 'SET FOREIGN_KEY_CHECKS=0;';
-        # loop the tables
+
+        # Create each table
         foreach ($schema as $table => $def) {
-            $fullTableName = db_prefix().$table;
-
-            # Populate foreign key fields
-            $fkFields = array();
-            # OneToMany
-            if (isset($def['m:1']) && is_array($def['m:1'])) {
-                foreach ($def['m:1'] as $fkTable) {
-                    if (isset($schema[$fkTable]['1:m'][$table])) {
-                        $relation = $this->getRelationOptions($schema[$fkTable]['1:m'][$table], $fkTable);
-                        $field = $relation['name'];
-                        # Get FK field definition
-                        $fkFields[$field] = $this->getFKField($table, $fkTable, $relation);
-                        # Get FK constraints
-                        $constraint = $this->getFKConstraint($table, $fkTable, $relation, $schema);
-                        if ($constraint) {
-                            $constraints[$table][$field] = $constraint;
-                        }
-                    }
-                }
+            $fullTableName = db_prefix().$table; # The full table name with prefix
+            $createSql = $this->createTableStatement($table, $schema, $pkFields, $constraints);
+            if ($createSql) {
+                $sql[] = '--';
+                $sql[] = '-- Table structure for table `'.$fullTableName.'`';
+                $sql[] = '--';
+                $sql[] = "DROP TABLE IF EXISTS `{$fullTableName}`;";
+                $sql[] = $createSql;
             }
-
-            # OneToOne
-            if (isset($def['1:1']) && is_array($def['1:1'])) {
-                foreach ($def['1:1'] as $fkTable => $fk) {
-                    $relation = $this->getRelationOptions($fk, $fkTable);
-                    $field = $relation['name'];
-                    # Get FK field definition
-                    $fkFields[$field] = $this->getFKField($table, $fkTable, $relation);
-                    # Get FK constraints
-                    $constraint = $this->getFKConstraint($table, $fkTable, $relation, $schema);
-                    if ($constraint) {
-                        $constraints[$table][$field] = $constraint;
-                    }
-                }
-            }
-
-            $def = array_merge($pkFields[$table], $fkFields, $def);
-            $schema[$table] = $def;
-
-            # ManyToMany table FK indexes
-            if (isset($def['options']['m:m']) && $def['options']['m:m']) {
-                $jointTable = $table;
-                foreach ($schema[$jointTable] as $field => $rule) {
-                    if ($field == 'options') {
-                        continue;
-                    }
-                    $fkFields[$field] = $rule;
-                }
-            }
-
-            # Timestamp fields
-            if ($def['options']['timestamps']) {
-                $def['created'] = array('type' => 'datetime', 'null' => true);
-                $def['updated'] = array('type' => 'datetime', 'null' => true);
-                $def['deleted'] = array('type' => 'datetime', 'null' => true);
-            }
-
-            # CREATE TABLE Statement
-            $sql[] = '--';
-            $sql[] = '-- Table structure for table `'.$fullTableName.'`';
-            $sql[] = '--';
-
-            $sql[] = "DROP TABLE IF EXISTS `{$fullTableName}`;";
-            $createTableSql = "CREATE TABLE IF NOT EXISTS `{$fullTableName}` (\n";
-            # loop the fields
-            $autoinc = false;
-            foreach ($def as $name => $rule) {
-                # Skip for relationship and option definitions
-                if (in_array($name, self::$relationships) || $name == 'options') {
-                    continue;
-                }
-
-                $collate = isset($def['options']['collate']) ? $def['options']['collate'] : null;
-                $createTableSql .= '  '.$this->getFieldStatement($name, $rule, $collate).",\n";
-
-                # if there is any unique index
-                if (isset($rule['unique']) && $rule['unique']) {
-                    $fkFields[$name] = $rule;
-                }
-
-                if (isset($rule['autoinc']) && $rule['autoinc']) {
-                    $autoinc = true;
-                }
-            }
-
-            # Indexes
-            if (count($fkFields)) {
-                foreach (array_keys($fkFields) as $name) {
-                    if (isset($fkFields[$name]['unique']) && $fkFields[$name]['unique']) {
-                        $createTableSql .= '  UNIQUE KEY';
-                    } else {
-                        $createTableSql .= '  KEY';
-                    }
-                    $createTableSql .= " `IDX_$name` (`$name`),\n";
-                }
-            }
-
-            # Primay key indexes
-            if (count($pkFields)) {
-                $createTableSql .= '  PRIMARY KEY (`'.implode('`,`', array_keys($pkFields[$table])).'`)'."\n";
-            }
-
-            $createTableSql .= ')';
-            $createTableSql .= ' ENGINE='.$options['engine'];
-            $createTableSql .= ' DEFAULT CHARSET='.$options['charset'];
-            $createTableSql .= ' COLLATE='.$options['collate'];
-            if ($autoinc) {
-                $createTableSql .= ' AUTO_INCREMENT=1';
-            }
-            $createTableSql .= ";\n";
-            $sql[] = $createTableSql;
         }
 
-        # FK constraints
-        if ($options['constraints']) {
-            foreach ($constraints as $table => $constraint) {
-                $fullTableName = db_prefix().$table;
-                $sql[] = '--';
-                $sql[] = '-- Constraints for table `'.$fullTableName.'`';
-                $sql[] = '--';
-
-                $constraintSql = "ALTER TABLE `{$fullTableName}`\n";
-                $statement = array();
-                foreach ($constraint as $field => $rule) {
-                    $statement[] = "  ADD CONSTRAINT `{$rule['name']}` FOREIGN KEY (`{$rule['fields']}`)"
-                        . " REFERENCES `{$rule['reference_table']}` (`{$rule['reference_fields']}`)"
-                        . " ON DELETE {$rule['on_delete']}"
-                        . " ON UPDATE {$rule['on_update']}";
-                }
-                $constraintSql .= implode(",\n", $statement) . ";\n";
-                $sql[] = $constraintSql;
-            }
+        # Generate FK constraints
+        $constraintSql = $this->createConstraintStatements($constraints);
+        if ($constraintSql) {
+            $sql = array_merge($sql, $constraintSql);
         }
 
         $sql[] = 'SET FOREIGN_KEY_CHECKS=1;';
+
         $this->sqlStatements = $sql;
 
         $schema['_options'] = $this->schema['_options'];
@@ -706,7 +502,11 @@ class SchemaManager
             return false;
         }
 
-        $dump = implode("\n", $this->sqlStatements);
+        $dump = "--\n"
+            ."-- Generated by PHPLucidFrame "._version()."\n"
+            ."-- ".date('r')."\n"
+            ."--\n\n"
+            .implode("\n", $this->sqlStatements);
 
         return file_put_contents(DB.'generated'._DS_.'schema.'.$dbNamespace.'.sql', $dump) ? true : false;
     }
@@ -782,7 +582,8 @@ class SchemaManager
      * @param  string $field The field name in the table
      * @return string The data type or null if there is no field
      */
-    public function getFieldType($table, $field) {
+    public function getFieldType($table, $field)
+    {
         $table = ltrim($table, db_prefix());
 
         if ($this->hasField($table, $field)) {
@@ -790,5 +591,402 @@ class SchemaManager
         }
 
         return null;
+    }
+
+    /**
+     * Get schema options if it is defined
+     * otherwise return the default options
+     *
+     * @return array
+     */
+    protected function getOptions()
+    {
+        if (isset($this->schema['_options'])) {
+            $options = $this->schema['_options'] + $this->defaultOptions;
+        } else {
+            $options = $this->defaultOptions;
+        }
+
+        return $options;
+    }
+
+    /**
+     * Populate primary keys acccording to the schema defined
+     * @param  array $schema The database schema
+     * @return array
+     */
+    public function populatePrimaryKeys(&$schema)
+    {
+        $options = $this->getOptions();
+        # Populate primary key fields
+        $pkFields = array();
+        foreach ($schema as $table => $def) {
+            $fullTableName = db_prefix().$table;
+
+            if (isset($def['options'])) {
+                $def['options'] += $options;
+            } else {
+                $def['options'] = $options;
+            }
+            $schema[$table] = $def;
+
+            # PK Field(s)
+            $pkFields[$table] = array();
+            if (isset($def['options']['pk'])) {
+                foreach ($def['options']['pk'] as $pk) {
+                    if (isset($def[$pk])) {
+                        # user-defined PK field type
+                        $pkFields[$table][$pk] = $def[$pk];
+                    } else {
+                        # default PK field type
+                        $pkFields[$table][$pk] = $this->getPKDefaultType();
+                    }
+                }
+            } else {
+                $pkFields[$table]['id'] = $this->getPKDefaultType();
+            }
+        }
+
+        $this->setPrimaryKeys($pkFields);
+
+        return $pkFields;
+    }
+
+    /**
+     * Populate pivot tables (joint tables fo many-to-many relationship) into the schema
+     * @param  array $schema The database schema
+     * @return array Array of constraints
+     */
+    public function populatePivots(&$schema)
+    {
+        $constraints = array();
+        $pkFields = $this->getPrimaryKeys();
+
+        $manyToMany = array_filter($schema, function ($def) {
+            return isset($def['m:m']) ? true : false;
+        });
+
+        foreach ($manyToMany as $table => $def) {
+            foreach ($def['m:m'] as $fkTable => $joint) {
+                if (!empty($joint['table']) && isset($schema[$joint['table']])) {
+                    # if the joint table has already been defined
+                    continue;
+                }
+
+                if (isset($schema[$table.'_to_'.$fkTable]) || isset($schema[$fkTable.'_to_'.$table])) {
+                    # if the joint table has already been defined
+                    continue;
+                }
+
+                if (isset($schema[$fkTable]['m:m'][$table])) {
+                    if (empty($joint['table']) && !empty($schema[$fkTable]['m:m'][$table]['table'])) {
+                        $joint['table'] = $schema[$fkTable]['m:m'][$table]['table'];
+                    }
+
+                    # table1_to_table2
+                    $jointTable = !empty($joint['table']) ? $joint['table'] : $table.'_to_'.$fkTable;
+                    $schema[$jointTable]['options'] = array(
+                        'pk' => array(),
+                        'timestamps' => false, # no need timestamp fields for many-to-many table
+                        'm:m' => true
+                    ) + $this->defaultOptions;
+
+                    # table1.field
+                    $relation = $this->getRelationOptions($joint, $table);
+                    $field = $relation['name'];
+                    $schema[$jointTable][$field] = $this->getFKField($fkTable, $table, $relation);
+                    $schema[$jointTable][$field]['null'] = false;
+                    $schema[$jointTable]['options']['pk'][] = $field;
+                    $pkFields[$jointTable][$field] = $schema[$jointTable][$field];
+                    # Get FK constraints
+                    $constraint = $this->getFKConstraint($jointTable, $table, $relation, $schema);
+                    if ($constraint) {
+                        $constraints[$jointTable][$field] = $constraint;
+                    }
+
+                    # table2.field
+                    $relation = $this->getRelationOptions($schema[$fkTable]['m:m'][$table], $fkTable);
+                    $field = $relation['name'];
+                    $schema[$jointTable][$field] = $this->getFKField($table, $fkTable, $relation);
+                    $schema[$jointTable][$field]['null'] = false;
+                    $schema[$jointTable]['options']['pk'][] = $field;
+                    $pkFields[$jointTable][$field] = $schema[$jointTable][$field];
+                    # Get FK constraints
+                    $constraint = $this->getFKConstraint($jointTable, $fkTable, $relation, $schema);
+                    if ($constraint) {
+                        $constraints[$jointTable][$field] = $constraint;
+                    }
+                }
+            }
+        }
+
+        $this->setPrimaryKeys($pkFields);
+        $this->setConstraints($constraints);
+
+        return $constraints;
+    }
+
+    /**
+     * Generate CREATE TABLE SQL
+     * @param  string   $table      The new table name
+     * @param  array    $schema     The database schema
+     * @return string
+     */
+    public function createTableStatement($table, &$schema, &$pkFields, &$constraints)
+    {
+        if (!isset($schema[$table])) {
+            return null;
+        }
+
+        $def            = $schema[$table]; # The table definition
+        $fullTableName  = db_prefix().$table; # The full table name with prefix
+        $fkFields       = array(); # Populate foreign key fields
+
+        # OneToMany
+        if (isset($def['m:1']) && is_array($def['m:1'])) {
+            foreach ($def['m:1'] as $fkTable) {
+                if (isset($schema[$fkTable]['1:m'][$table])) {
+                    $relation = $this->getRelationOptions($schema[$fkTable]['1:m'][$table], $fkTable);
+                    $field = $relation['name'];
+                    # Get FK field definition
+                    $fkFields[$field] = $this->getFKField($table, $fkTable, $relation);
+                    # Get FK constraints
+                    $constraint = $this->getFKConstraint($table, $fkTable, $relation, $schema);
+                    if ($constraint) {
+                        $constraints[$table][$field] = $constraint;
+                    }
+                }
+            }
+        }
+
+        # OneToOne
+        if (isset($def['1:1']) && is_array($def['1:1'])) {
+            foreach ($def['1:1'] as $fkTable => $fk) {
+                $relation = $this->getRelationOptions($fk, $fkTable);
+                $field = $relation['name'];
+                # Get FK field definition
+                $fkFields[$field] = $this->getFKField($table, $fkTable, $relation);
+                # Get FK constraints
+                $constraint = $this->getFKConstraint($table, $fkTable, $relation, $schema);
+                if ($constraint) {
+                    $constraints[$table][$field] = $constraint;
+                }
+            }
+        }
+
+        $this->setConstraints($constraints);
+
+        $def = array_merge($pkFields[$table], $fkFields, $def);
+        $schema[$table] = $def;
+
+        # ManyToMany table FK indexes
+        if (isset($def['options']['m:m']) && $def['options']['m:m']) {
+            $jointTable = $table;
+            foreach ($schema[$jointTable] as $field => $rule) {
+                if ($field == 'options') {
+                    continue;
+                }
+                $fkFields[$field] = $rule;
+            }
+        }
+
+        $options = $this->getOptions();
+
+        if (isset($def['options'])) {
+            $def['options'] += $options;
+        } else {
+            $def['options'] = $options;
+        }
+
+        if ($def['options']['timestamps']) {
+            $def['created'] = array('type' => 'datetime', 'null' => true);
+            $def['updated'] = array('type' => 'datetime', 'null' => true);
+            $def['deleted'] = array('type' => 'datetime', 'null' => true);
+        }
+
+        # CREATE TABLE Statement
+        $sql = "CREATE TABLE IF NOT EXISTS `{$fullTableName}` (\n";
+
+        # loop the fields
+        $autoinc = false;
+        foreach ($def as $name => $rule) {
+            # Skip for relationship and option definitions
+            if (in_array($name, self::$relationships) || $name == 'options') {
+                continue;
+            }
+
+            $sql .= '  '.$this->getFieldStatement($name, $rule, $this->getTableCollation($name, $schema)).",\n";
+
+            # if there is any unique index
+            if (isset($rule['unique']) && $rule['unique']) {
+                $fkFields[$name] = $rule;
+            }
+
+            if (isset($rule['autoinc']) && $rule['autoinc']) {
+                $autoinc = true;
+            }
+        }
+
+        # Indexes
+        if (count($fkFields)) {
+            foreach (array_keys($fkFields) as $name) {
+                if (isset($fkFields[$name]['unique']) && $fkFields[$name]['unique']) {
+                    $sql .= '  UNIQUE KEY';
+                } else {
+                    $sql .= '  KEY';
+                }
+                $sql .= " `IDX_$name` (`$name`),\n";
+            }
+        }
+
+        # Primay key indexes
+        if (isset($pkFields[$table])) {
+            $sql .= '  PRIMARY KEY (`'.implode('`,`', array_keys($pkFields[$table])).'`)'."\n";
+        }
+
+        $sql .= ')';
+        $sql .= ' ENGINE='.$options['engine'];
+        $sql .= ' DEFAULT CHARSET='.$options['charset'];
+        $sql .= ' COLLATE='.$options['collate'];
+
+        if ($autoinc) {
+            $sql .= ' AUTO_INCREMENT=1';
+        }
+
+        $sql .= ";\n";
+
+        return $sql;
+    }
+
+    /**
+     * Generate foreign key constraints SQL statements
+     * @param  array $constraints Array of populated constraints
+     * @return array Array of SQL statements
+     */
+    public function createConstraintStatements($constraints = null)
+    {
+        if ($constraints === null) {
+            $constraints = $this->getConstraints();
+        }
+
+        $options = $this->getOptions();
+        $sql = array();
+        # FK constraints
+        if ($options['constraints']) {
+            foreach ($constraints as $table => $constraint) {
+                $fullTableName = db_prefix().$table;
+                $sql[] = '--';
+                $sql[] = '-- Constraints for table `'.$fullTableName.'`';
+                $sql[] = '--';
+
+                $constraintSql = "ALTER TABLE `{$fullTableName}`\n";
+                $statement = array();
+                foreach ($constraint as $field => $rule) {
+                    $statement[] = "  ADD CONSTRAINT `{$rule['name']}` FOREIGN KEY (`{$rule['fields']}`)"
+                        . " REFERENCES `{$rule['reference_table']}` (`{$rule['reference_fields']}`)"
+                        . " ON DELETE {$rule['on_delete']}"
+                        . " ON UPDATE {$rule['on_update']}";
+                }
+                $constraintSql .= implode(",\n", $statement) . ";\n";
+                $sql[] = $constraintSql;
+            }
+        }
+
+        return count($sql) ? $sql : null;
+    }
+
+    /**
+     * Generate DROP foreign key constraints SQL statements
+     * @param  array $constraints Array of populated constraints
+     * @return array Array of SQL statements
+     */
+    public function dropConstraintStatements($constraints = null)
+    {
+        if ($constraints === null) {
+            $constraints = $this->getConstraints();
+        }
+
+        $options = $this->getOptions();
+        $sql = array();
+        # FK constraints
+        if ($options['constraints']) {
+            foreach ($constraints as $table => $constraint) {
+                $fullTableName = db_prefix().$table;
+                $constraintSql = "ALTER TABLE `{$fullTableName}`\n";
+
+                $drop = array();
+                foreach ($constraint as $field => $rule) {
+                    $drop[] = " DROP FOREIGN KEY `{$rule['name']}`";
+                }
+
+                $constraintSql .= implode(",\n", $drop) . ';';
+                $sql[] = $constraintSql;
+            }
+        }
+
+        return count($sql) ? $sql : null;
+    }
+
+    /**
+     * Set the populated primary keys into the schema database options
+     * @param  array $pkFields Array of primary keys
+     * @return void
+     */
+    public function setPrimaryKeys($pkFields)
+    {
+        $this->schema['_options']['pk'] = $pkFields;
+    }
+
+    /**
+     * Get the populated primary keys from the schema database options
+     * @param  array $schema The schema definition
+     * @return array Array of primary keys
+     */
+    public function getPrimaryKeys($schema = null)
+    {
+        if ($schema === null) {
+            $schema = $this->schema;
+        }
+
+        return !empty($schema['_options']['pk']) ? $schema['_options']['pk'] : array();
+    }
+
+    /**
+     * Set the populated foreign key constraints into the schema database options
+     * @param  array $constraints Array of FK constraints
+     * @return void
+     */
+    public function setConstraints($constraints)
+    {
+        $this->schema['_options']['fkConstraints'] = $constraints;
+    }
+
+    /**
+     * Get the populated foreign key constraints from the schema database options
+     * @param  array $schema The schema definition
+     * @return array Array of FK constraints
+     */
+    public function getConstraints($schema = null)
+    {
+        if ($schema === null) {
+            $schema = $this->schema;
+        }
+
+        return !empty($schema['_options']['fkConstraints']) ? $schema['_options']['fkConstraints'] : array();
+    }
+
+    /**
+     * Return table collation from the schema definition
+     * @param string $table The table name
+     * @param array  $schema The schema definition (optional)
+     * @return string
+     */
+    public function getTableCollation($table, $schema = null)
+    {
+        if ($schema === null) {
+            $schema = $this->schema;
+        }
+
+        return isset($schema[$table]['options']['collate']) ? $schema[$table]['options']['collate'] : null;
     }
 }
