@@ -611,23 +611,52 @@ class SchemaManager
     }
 
     /**
+     * Get table options if it is defined
+     * otherwise return the default options
+     *
+     * @param array $tableDef The table definition
+     * @return array
+     */
+    protected function getTableOptions($tableDef)
+    {
+        $options = $this->getOptions();
+
+        if (isset($options['pk'])) {
+            unset($options['pk']);
+        }
+
+        if (isset($options['fkConstraints'])) {
+            unset($options['fkConstraints']);
+        }
+
+        if (isset($tableDef['options'])) {
+            $tableDef['options'] += $options;
+        } else {
+            $tableDef['options'] = $options;
+        }
+
+        return $tableDef['options'];
+    }
+
+    /**
      * Populate primary keys acccording to the schema defined
      * @param  array $schema The database schema
      * @return array
      */
     public function populatePrimaryKeys(&$schema)
     {
-        $options = $this->getOptions();
         # Populate primary key fields
         $pkFields = array();
         foreach ($schema as $table => $def) {
             $fullTableName = db_prefix().$table;
+            $def['options'] = $this->getTableOptions($def);
 
-            if (isset($def['options'])) {
-                $def['options'] += $options;
-            } else {
-                $def['options'] = $options;
+            if ($def['options']['timestamps']) {
+                $def['created'] = array('type' => 'datetime', 'null' => true);
+                $def['updated'] = array('type' => 'datetime', 'null' => true);
+                $def['deleted'] = array('type' => 'datetime', 'null' => true);
             }
+
             $schema[$table] = $def;
 
             # PK Field(s)
@@ -662,7 +691,7 @@ class SchemaManager
         $constraints = array();
         $pkFields = $this->getPrimaryKeys();
 
-        $manyToMany = array_filter($schema, function ($def) {
+        $manyToMany = array_filter($schema, function($def) {
             return isset($def['m:m']) ? true : false;
         });
 
@@ -790,19 +819,8 @@ class SchemaManager
             }
         }
 
-        $options = $this->getOptions();
-
-        if (isset($def['options'])) {
-            $def['options'] += $options;
-        } else {
-            $def['options'] = $options;
-        }
-
-        if ($def['options']['timestamps']) {
-            $def['created'] = array('type' => 'datetime', 'null' => true);
-            $def['updated'] = array('type' => 'datetime', 'null' => true);
-            $def['deleted'] = array('type' => 'datetime', 'null' => true);
-        }
+        $options = $this->getTableOptions($def);
+        $def['options'] = $options;
 
         # CREATE TABLE Statement
         $sql = "CREATE TABLE IF NOT EXISTS `{$fullTableName}` (\n";
