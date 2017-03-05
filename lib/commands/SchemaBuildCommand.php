@@ -25,8 +25,10 @@ use LucidFrame\Core\SchemaManager;
 _consoleCommand('schema:build')
     ->setDescription('Build the schema in /db/build/')
     ->addArgument('db', 'The database namespace defined in $lc_databases of config.php', 'default')
+    ->addOption('backup', null, 'Create a backup file', null, LC_CONSOLE_OPTION_NOVALUE)
     ->setDefinition(function(\LucidFrame\Console\Command $cmd) {
         $db = $cmd->getArgument('db');
+        $backupOption = (bool) $cmd->getOption('backup');
 
         $schema = _schema($db);
         if ($schema === null) {
@@ -35,7 +37,7 @@ _consoleCommand('schema:build')
             _writeln('Unable to find the schema file "%s".', DB.'schema.'.$db.'.php');
         } else {
             $sm = new SchemaManager($schema);
-            if ($sm->build($db)) {
+            if ($sm->build($db, $backupOption)) {
                 _writeln('The schema has been build at "db/build/schema.%s.inc".', $db);
             } else {
                 _writeln('No schema is loaded.');

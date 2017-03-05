@@ -422,9 +422,10 @@ class SchemaManager
     /**
      * Export the built schema definition into a file
      * @param  string $dbNamespace The namespace for the database
+     * @param  boolean $backup Create a backup file or not
      * @return boolean TRUE for success; FALSE for failure
      */
-    public function build($dbNamespace = null)
+    public function build($dbNamespace = null, $backup = false)
     {
         if (!$this->isLoaded()) {
             $this->load();
@@ -443,7 +444,17 @@ class SchemaManager
         $content .= "return ";
         $content .= $builtSchema;
         $content .= ";\n";
-        return file_put_contents(DB.'build'._DS_.'schema.'.$dbNamespace.'.inc', $content);
+
+        $result = file_put_contents(DB.'build'._DS_.'schema.'.$dbNamespace.'.inc', $content);
+        if ($result) {
+            if ($backup) {
+                copy(DB.'build'._DS_.'schema.'.$dbNamespace.'.inc', DB.'build'._DS_.'~schema.'.$dbNamespace.'.inc');
+            }
+
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -480,7 +491,7 @@ class SchemaManager
             db_switch($this->dbNamespace);
         }
 
-        $this->build($dbNamespace);
+        $this->build($dbNamespace, true);
 
         return !$error;
     }
