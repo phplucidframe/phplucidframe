@@ -157,7 +157,7 @@ class Pager
 
         if (!($this->page && $this->itemsPerPage && $this->pageNumLimit && $this->total)) {
             $this->enabled = false;
-            return false;
+            return $this;
         }
 
         if (!is_numeric($this->page)) {
