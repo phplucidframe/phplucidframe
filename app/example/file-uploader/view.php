@@ -8,7 +8,7 @@
 
 <h3><?php echo $pageTitle; ?></h3>
 <p>This is an example page which shows generic file upload handling.</p>
-<p>
+<div>
     <form id="frmUpload" method="post" class="no-ajax" enctype="multipart/form-data">
         <?php echo flash_get('file-upload-success'); ?>
         <div class="message"></div>
@@ -23,6 +23,6 @@
         <?php form_token(); ?>
     </form>
     <?php form_respond('frmUpload', validation_get('errors')); ?>
-</p>
+</div>
 
 <?php include( _i('inc/tpl/footer.php') ); ?>

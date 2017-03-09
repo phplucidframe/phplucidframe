@@ -97,7 +97,7 @@ function form_respond($formId, $errors = null)
 {
     Form::set('id', $formId);
     $errorStr = '';
-    $ajaxResponse = true;
+    $ajaxResponse = $errors === null ? true : false;
 
     form_set('error', validation_get('errors'));
     if (is_array($errors) && count($errors)) {

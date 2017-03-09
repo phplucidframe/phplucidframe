@@ -8,7 +8,7 @@
 
 <h3><?php echo $pageTitle; ?></h3>
 <p>This is an example page which shows generic form handling without AJAX.</p>
-<p>
+<div>
     <form id="frmComment" method="post" class="no-ajax">
         <?php echo flash_get('comment_posted'); ?>
         <div class="message"></div>
@@ -32,6 +32,6 @@
         <?php form_token(); ?>
     </form>
     <?php form_respond('frmComment', validation_get('errors')); ?>
-</p>
+</div>
 
 <?php include( _i('inc/tpl/footer.php') ); ?>
