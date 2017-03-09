@@ -615,6 +615,26 @@ function db_extract($sql, $args = array(), $resultType = LC_FETCH_OBJECT)
 }
 
 /**
+ * Get the full table name with prefix
+ * @param string $table The table name with or without prefix
+ * @return string The table name with prefix
+ */
+function db_table($table)
+{
+    $prefix = db_prefix();
+
+    if (empty($prefix)) {
+        return $table;
+    }
+
+    if ($prefix == substr($table, 0, strlen($prefix))) {
+        return $table;
+    }
+
+    return $prefix.$table;
+}
+
+/**
  * Check the table has slug field
  * First, check with SchemaManager
  * Second, consider $lc_useDBAutoFields and $useSlug
@@ -695,8 +715,7 @@ if (!function_exists('db_insert')) {
         global $_conn;
         global $lc_useDBAutoFields;
 
-        $table = ltrim($table, db_prefix());
-        $table = db_prefix().$table;
+        $table = db_table($table);
 
         # Invoke the hook db_insert_[table_name] if any
         $hook = 'db_insert_' . strtolower($table);
@@ -827,8 +846,7 @@ if (!function_exists('db_update')) {
             $useSlug = true;
         }
 
-        $table  = ltrim($table, db_prefix());
-        $table  = db_prefix().$table;
+        $table = db_table($table);
 
         # Invoke the hook db_update_[table_name] if any
         $hook = 'db_update_' . strtolower($table);
@@ -952,8 +970,7 @@ if (!function_exists('db_delete')) {
      */
     function db_delete($table, $condition = null)
     {
-        $table = ltrim($table, db_prefix());
-        $table = db_prefix().$table;
+        $table = db_table($table);
 
         # Invoke the hook db_delete_[table_name] if any
         $hook = 'db_delete_' . strtolower($table);
@@ -1022,8 +1039,7 @@ if (!function_exists('db_delete_multi')) {
      */
     function db_delete_multi($table, $condition = null)
     {
-        $table = ltrim($table, db_prefix());
-        $table = db_prefix().$table;
+        $table = db_table($table);
 
         # Invoke the hook db_delete_[table_name] if any
         $hook = 'db_delete_multi_' . strtolower($table);

@@ -48,7 +48,7 @@ function __session_init()
     }
 
     if ($type === 'database') {
-        define('LC_SESSION_TABLE', db_prefix() . $options['table']);
+        define('LC_SESSION_TABLE', db_table($options['table']));
     }
 
     if (isset($options['table'])) {

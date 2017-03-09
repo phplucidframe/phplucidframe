@@ -1468,7 +1468,7 @@ if (!function_exists('_slug')) {
             '*','(',')','=','+','{','}','[',']',
             ':',';',"'",'"','<','>','\\','|','?','/',','
         );
-        $table  = ltrim($table, db_prefix());
+        $table  = db_table($table);
         $slug   = strtolower(trim($string));
         $slug   = trim($slug, '-');
         # clear special characters

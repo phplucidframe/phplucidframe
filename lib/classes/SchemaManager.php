@@ -383,7 +383,7 @@ class SchemaManager
 
         # Create each table
         foreach ($schema as $table => $def) {
-            $fullTableName = db_prefix().$table; # The full table name with prefix
+            $fullTableName = db_table($table); # The full table name with prefix
             $createSql = $this->createTableStatement($table, $schema, $pkFields, $constraints);
             if ($createSql) {
                 $sql[] = '--';
@@ -533,7 +533,7 @@ class SchemaManager
             return false;
         }
 
-        $table = ltrim($table, db_prefix());
+        $table = db_table($table);
 
         return isset($this->schema[$table]);
     }
@@ -550,7 +550,7 @@ class SchemaManager
             return false;
         }
 
-        $table = ltrim($table, db_prefix());
+        $table = db_table($table);
 
         return isset($this->schema[$table][$field]);
     }
@@ -566,7 +566,7 @@ class SchemaManager
             return false;
         }
 
-        $table = ltrim($table, db_prefix());
+        $table = db_table($table);
 
         return (isset($this->schema[$table]['options']['timestamps']) && $this->schema[$table]['options']['timestamps']) ? true : false;
     }
@@ -582,7 +582,7 @@ class SchemaManager
             return false;
         }
 
-        $table = ltrim($table, db_prefix());
+        $table = db_table($table);
 
         return isset($this->schema[$table]['slug']) ? true : false;
     }
@@ -595,7 +595,7 @@ class SchemaManager
      */
     public function getFieldType($table, $field)
     {
-        $table = ltrim($table, db_prefix());
+        $table = db_table($table);
 
         if ($this->hasField($table, $field)) {
             return $this->schema[$table][$field]['type'];
@@ -659,7 +659,7 @@ class SchemaManager
         # Populate primary key fields
         $pkFields = array();
         foreach ($schema as $table => $def) {
-            $fullTableName = db_prefix().$table;
+            $fullTableName = db_table($table);
             $def['options'] = $this->getTableOptions($def);
 
             if ($def['options']['timestamps']) {
@@ -779,7 +779,7 @@ class SchemaManager
         }
 
         $def            = $schema[$table]; # The table definition
-        $fullTableName  = db_prefix().$table; # The full table name with prefix
+        $fullTableName  = db_table($table); # The full table name with prefix
         $fkFields       = array(); # Populate foreign key fields
 
         # OneToMany
@@ -903,7 +903,7 @@ class SchemaManager
         # FK constraints
         if ($options['constraints']) {
             foreach ($constraints as $table => $constraint) {
-                $fullTableName = db_prefix().$table;
+                $fullTableName = db_table($table);
                 $sql[] = '--';
                 $sql[] = '-- Constraints for table `'.$fullTableName.'`';
                 $sql[] = '--';
@@ -940,7 +940,7 @@ class SchemaManager
         # FK constraints
         if ($options['constraints']) {
             foreach ($constraints as $table => $constraint) {
-                $fullTableName = db_prefix().$table;
+                $fullTableName = db_table($table);
                 $constraintSql = "ALTER TABLE `{$fullTableName}`\n";
 
                 $drop = array();

@@ -115,7 +115,7 @@ class QueryBuilder
             $alias = $table;
         }
 
-        $this->table = db_prefix() . $table;
+        $this->table = db_table($table);
         $this->alias = $alias;
 
         return $this;
@@ -216,7 +216,7 @@ class QueryBuilder
         }
 
         $this->joins[] = array(
-            'table'     => db_prefix() . $table,
+            'table'     => db_table($table),
             'alias'     => $alias === null ? $table : $alias,
             'condition' => $condition,
             'type'      => $type

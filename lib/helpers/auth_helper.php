@@ -29,7 +29,7 @@ if (!function_exists('auth_create')) {
         $lc_auth = auth_prerequisite();
         $auth    = auth_get();
         if (!$auth) {
-            $table     = db_prefix() . str_replace(db_prefix(), '', $lc_auth['table']);
+            $table     = db_table($lc_auth['table']);
             $fieldId   = $lc_auth['fields']['id'];
             $fieldRole = $lc_auth['fields']['role'];
 
