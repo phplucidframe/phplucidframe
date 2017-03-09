@@ -478,12 +478,19 @@ class SchemaManager
             db_switch($dbNamespace);
         }
 
+        db_transaction();
+
         $error = false;
         foreach ($this->sqlStatements as $sql) {
             if (!db_query($sql)) {
                 $error = true;
+                db_rollback();
                 break;
             }
+        }
+
+        if (!$error) {
+            db_commit();
         }
 
         if ($this->dbNamespace !== $dbNamespace) {

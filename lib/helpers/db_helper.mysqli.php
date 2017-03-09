@@ -1146,6 +1146,34 @@ function db_or($cond = array())
     }
     return implode(' OR ', $builtCond);
 }
+
+/**
+ * Start a new transaction
+ */
+function db_transaction()
+{
+    db_query('SET AUTOCOMMIT=0');
+    db_query('START TRANSACTION');
+}
+
+/**
+ * Commit the current transaction, making its changes permanent.
+ */
+function db_commit()
+{
+    db_query('COMMIT');
+    db_query('SET AUTOCOMMIT=1');
+}
+
+/**
+ * Roll back the current transaction, canceling its changes.
+ */
+function db_rollback()
+{
+    db_query('ROLLBACK');
+    db_query('SET AUTOCOMMIT=1');
+}
+
 /**
  * @internal
  * @ignore
