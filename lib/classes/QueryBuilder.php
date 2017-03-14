@@ -282,14 +282,7 @@ class QueryBuilder
      */
     public function where($condition = null)
     {
-        if ($condition === null) {
-            $this->where['AND'] = array();
-        } else {
-            $this->where = self::buildCondition($condition, 'AND');
-        }
-        $this->whereType = 'AND';
-
-        return $this;
+        return $this->andWhere($condition);
     }
 
     /**
@@ -322,7 +315,7 @@ class QueryBuilder
         if ($condition === null) {
             $this->where['AND'] = array();
         } else {
-            $this->where = $this->where($condition);
+            $this->where['AND'][] = self::buildCondition($condition, 'AND');
         }
         $this->whereType = 'AND';
 
@@ -359,7 +352,7 @@ class QueryBuilder
         if ($condition === null) {
             $this->where['OR'] = array();
         } else {
-            $this->where = self::buildCondition($condition, 'OR');
+            $this->where['OR'][] = self::buildCondition($condition, 'OR');
         }
         $this->whereType = 'OR';
 
