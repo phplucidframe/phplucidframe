@@ -34,7 +34,7 @@ _consoleCommand('schema:export')
         } elseif ($schema === false) {
             _writeln('Unable to find the schema file "%s".', DB.'schema.'.$db.'.php');
         } else {
-            $sm = new SchemaManager($schema);
+            $sm = new SchemaManager($schema, $db);
             if ($sm->export($db)) {
                 _writeln('"%s" has been exported.', DB.'generated'._DS_.'schema.'.$db.'.sql');
             } else {

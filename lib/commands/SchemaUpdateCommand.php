@@ -1,19 +1,19 @@
 <?php
 /**
  * This file is part of the PHPLucidFrame library.
- * The script executes the command `php lucidframe schema:load [options] [<db>]`
+ * The script executes the command `php lucidframe schema:update [<db>]`
  *
  * Usage:
- *      schema:load [options] [<db>]
+ *      schema:update [<db>]
  *
  * Arguments:
  *      db      The database namespace defined in $lc_databases of config.php [default: "default"]
  *
  * @package     PHPLucidFrame\Console
- * @since       PHPLucidFrame v 1.14.0
+ * @since       PHPLucidFrame v 1.17.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @author      Sithu K. <cithukyaw@gmail.com>
- * @link        http://phplucidframe.com
+ * @link        http://www.phplucidframe.com
  * @license     http://www.opensource.org/licenses/mit-license.php MIT License
  *
  * This source file is subject to the MIT license that is bundled
@@ -22,8 +22,8 @@
 
 use LucidFrame\Core\SchemaManager;
 
-_consoleCommand('schema:load')
-    ->setDescription('Process the schema and import the database')
+_consoleCommand('schema:update')
+    ->setDescription('Generates and executes the SQL to synchronize the database schema with the current mapping metadata.')
     ->addArgument('db', 'The database namespace defined in $lc_databases of config.php', 'default')
     ->setDefinition(function(\LucidFrame\Console\Command $cmd) {
         $db = $cmd->getArgument('db');
@@ -34,12 +34,13 @@ _consoleCommand('schema:load')
         } elseif ($schema === false) {
             _writeln('Unable to find the schema file "%s".', DB.'schema.'.$db.'.php');
         } else {
-            if ($cmd->confirm('The database will be purged. Type "y" or "yes" to continue:')) {
+            if ($cmd->confirm('IMPORTANT! Backup your database before executing this command.'."\n".'Some of your data may be lost. Type "y" or "yes" to continue:')) {
                 $sm = new SchemaManager($schema, $db);
-                if ($sm->import($db)) {
-                    _writeln('Schema is successfully loaded. The database for "%s" has been imported.', $db);
+                if ($sm->update($cmd, $db)) {
+                    _writeln('Done.');
                 } else {
-                    _writeln('No schema is loaded.');
+                    _writeln();
+                    _writeln('Nothing to update.');
                 }
             } else {
                 _writeln('Aborted.');

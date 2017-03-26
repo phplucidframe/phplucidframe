@@ -36,7 +36,7 @@ _consoleCommand('schema:build')
         } elseif ($schema === false) {
             _writeln('Unable to find the schema file "%s".', DB.'schema.'.$db.'.php');
         } else {
-            $sm = new SchemaManager($schema);
+            $sm = new SchemaManager($schema, $db);
             if ($sm->build($db, $backupOption)) {
                 _writeln('The schema has been build at "db/build/schema.%s.inc".', $db);
             } else {
