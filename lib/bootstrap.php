@@ -154,9 +154,9 @@ require HELPER . 'route_helper.php'; # WEB_ROOT and WEB_APP_ROOT is created in r
 include INC . 'route.config.php';
 __route_init();
 
-define('CSS', WEB_ROOT.'css'._DS_);
-define('JS', WEB_ROOT.'js'._DS_);
-define('WEB_VENDOR', WEB_ROOT.'vendor'._DS_);
+define('CSS', WEB_ROOT.'assets/css/');
+define('JS', WEB_ROOT.'assets/js/');
+define('WEB_VENDOR', WEB_ROOT.'vendor/');
 
 # Load translations
 if ($moduleI18n) {

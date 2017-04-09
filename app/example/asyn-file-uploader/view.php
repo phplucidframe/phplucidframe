@@ -34,8 +34,8 @@
                     // $file->setButtons('btnSubmit'); # The button #btnSubmit will be disabled while file upload is in progress
                     // $file->isFileNameDisplayed(false);
                     // $file->isDeletable(false);
-                    $file->setOnUpload('example_photoUpload'); # This hook is defined in /app/helpers/file_helper.php
-                    $file->setOnDelete('example_photoDelete'); # This hook is defined in /app/helpers/file_helper.php
+                    // $file->setOnUpload('example_photoUpload'); # Uncomment this if db is connected. This hook is defined in /app/helpers/file_helper.php
+                    // $file->setOnDelete('example_photoDelete'); # Uncomment this if db is connected. This hook is defined in /app/helpers/file_helper.php
                     $file->setHidden('postId', $id); # FK
                     if (isset($image) && $image) {
                         # $image is retrieved in query.php
@@ -62,8 +62,8 @@
                     $file = _asynFileUploader('doc');
                     $file->setMaxSize(MAX_FILE_UPLOAD_SIZE);
                     $file->setExtensions(array('pdf', 'doc', 'docx', 'odt', 'ods', 'txt'));
-                    $file->setOnUpload('example_docUpload'); # This hook is defined in /app/helpers/file_helper.php
-                    $file->setOnDelete('example_docDelete'); # This hook is defined in /app/helpers/file_helper.php
+                    // $file->setOnUpload('example_docUpload'); # Uncomment this if db is connected. This hook is defined in /app/helpers/file_helper.php
+                    // $file->setOnDelete('example_docDelete'); # Uncomment this if db is connected. This hook is defined in /app/helpers/file_helper.php
                     if (isset($doc) && $doc) {
                         # $doc is retrieved in query.php
                         $file->setValue($doc->docFileName, $doc->docId);
