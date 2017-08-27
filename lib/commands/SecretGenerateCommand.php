@@ -15,17 +15,14 @@
  */
 
 _consoleCommand('secret:generate')
-    ->setDescription('Generate a secret hash key')
-    ->addOption('method', 'm', 'The hashing algorithm method (e.g. "md5", "sha256", etc..)', 'md5')
-    ->addOption('data', 'd', 'Secret text to be hashed.')
+    ->setDescription('Generate a secret key')
+    ->addOption('show', 's', 'Display the generated secret key', null, LC_CONSOLE_OPTION_NOVALUE)
     ->setDefinition(function(\LucidFrame\Console\Command $cmd) {
-        $data = $cmd->getOption('data');
-        if (!$data) {
-            $data = time();
-        }
-
-        $secret = hash($cmd->getOption('method'), $data) . "\n";
+        $secret = _randomCode(32);
         $file = INC . '.secret';
-        file_put_contents($file, $secret);
+        file_put_contents($file, $secret . PHP_EOL);
+        if ($cmd->getOption('show')) {
+            _writeln($secret);
+        }
     })
     ->register();
