@@ -359,7 +359,12 @@ class File extends \SplFileInfo
      */
     protected function resizeImageByDimension($dimensions, $file, $newFileName, $extension = null)
     {
-        $dimensions = is_string($dimensions) ? array($dimensions) : $dimensions;
+        $singleDimension = false;
+        if (!is_array($dimensions)) {
+            $dimensions = array($dimensions);
+            $singleDimension = true;
+        }
+
         $extension = ($extension) ? $extension : strtolower(pathinfo($file, PATHINFO_EXTENSION));
 
         if ($extension == "jpg" || $extension == "jpeg") {
@@ -390,7 +395,7 @@ class File extends \SplFileInfo
                     $tmp = File::resizeImageBoth($img, $file, $resizeWidth, $resizeHeight);
                 }
 
-                $targetDir = (is_string(func_get_arg(0))) ? $this->uploadPath : $this->uploadPath . $dimension . _DS_;
+                $targetDir = $singleDimension ? $this->uploadPath : $this->uploadPath . $dimension . _DS_;
                 if (!is_dir($targetDir)) {
                     @mkdir($targetDir, 0777, true);
                 }
