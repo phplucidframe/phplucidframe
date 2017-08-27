@@ -1628,6 +1628,7 @@ table.formView.tableView tr.toggle td {
 .asynfileuploader-button {
     cursor: pointer;
     display: inline-block;
+    height: 30px;
     padding: 0;
     position: relative;
     margin: 0;
