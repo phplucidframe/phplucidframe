@@ -29,7 +29,7 @@ define('_DS_', DIRECTORY_SEPARATOR);
 
 if (!defined('APP_ROOT')) {
     $APP_ROOT = rtrim(getcwd(), _DS_) . _DS_;
-    if (isset($_GET['bootstrap'])) {
+    if (isset($_GET['bootstrap']) && strrpos($APP_ROOT, APP_DIR . _DS_) === false) {
         $APP_ROOT .= APP_DIR . _DS_;
     }
     define('APP_ROOT', $APP_ROOT); # including trailing slash
