@@ -22,30 +22,26 @@ namespace LucidFrame\Console;
 class ConsoleTable
 {
     const HEADER_INDEX = -1;
+    const HR = 'HR';
 
     /** @var array Array of table data */
     protected $data = array();
     /** @var boolean Border shown or not */
     protected $border = true;
+    /** @var boolean All borders shown or not */
+    protected $allBorders = false;
     /** @var integer Table padding */
     protected $padding = 1;
     /** @var integer Table left margin */
     protected $indent = 0;
-    /** @var integer Row index */
+    /** @var integer */
     private $rowIndex = -1;
-    /** @var array Column width */
+    /** @var array */
     private $columnWidths = array();
 
     /**
-     * Constructor
-     */
-    public function __construct()
-    {
-    }
-
-    /**
      * Adds a column to the table header
-     * @param  mixed  $content Header cell content
+     * @param  mixed  Header cell content
      * @return object LucidFrame\Console\ConsoleTable
      */
     public function addHeader($content = '')
@@ -56,8 +52,8 @@ class ConsoleTable
     }
 
     /**
-     * Adds the headers for the columns
-     * @param  array  $content  Array of header cell content
+     * Set headers for the columns in one-line
+     * @param  array  Array of header cell content
      * @return object LucidFrame\Console\ConsoleTable
      */
     public function setHeaders(array $content)
@@ -80,7 +76,7 @@ class ConsoleTable
      * @param  array  $data The row data to add
      * @return object LucidFrame\Console\ConsoleTable
      */
-    public function addRow($data = null)
+    public function addRow(array $data = null)
     {
         $this->rowIndex++;
 
@@ -135,6 +131,18 @@ class ConsoleTable
     }
 
     /**
+     * Show all table borders
+     * @return object LucidFrame\Console\ConsoleTable
+     */
+    public function showAllBorders()
+    {
+        $this->showBorder();
+        $this->allBorders = true;
+
+        return $this;
+    }
+
+    /**
      * Set padding for each cell
      * @param  integer $value The integer value, defaults to 1
      * @return object LucidFrame\Console\ConsoleTable
@@ -159,6 +167,18 @@ class ConsoleTable
     }
 
     /**
+     * Add horizontal border line
+     * @return object LucidFrame\Console\ConsoleTable
+     */
+    public function addBorderLine()
+    {
+        $this->rowIndex++;
+        $this->data[$this->rowIndex] = self::HR;
+
+        return $this;
+    }
+
+    /**
      * Print the table
      * @return void
      */
@@ -177,16 +197,36 @@ class ConsoleTable
 
         $output = $this->border ? $this->getBorderLine() : '';
         foreach ($this->data as $y => $row) {
+            if ($row === self::HR) {
+                if (!$this->allBorders) {
+                    $output .= $this->getBorderLine();
+                    unset($this->data[$y]);
+                }
+
+                continue;
+            }
+
             foreach ($row as $x => $cell) {
                 $output .= $this->getCellOutput($x, $row);
             }
-            $output .= "\n";
+            $output .= PHP_EOL;
 
             if ($y === self::HEADER_INDEX) {
                 $output .= $this->getBorderLine();
+            } else {
+                if ($this->allBorders) {
+                    $output .= $this->getBorderLine();
+                }
             }
         }
-        $output .= $this->border ? $this->getBorderLine() : '';
+
+        if (!$this->allBorders) {
+            $output .= $this->border ? $this->getBorderLine() : '';
+        }
+
+        if (PHP_SAPI !== 'cli') {
+            $output = '<pre>'.$output.'</pre>';
+        }
 
         return $output;
     }
@@ -206,7 +246,7 @@ class ConsoleTable
         if ($this->border) {
             $output .= '+';
         }
-        $output .= "\n";
+        $output .= PHP_EOL;
 
         return $output;
     }
@@ -251,12 +291,14 @@ class ConsoleTable
     private function calculateColumnWidth()
     {
         foreach ($this->data as $y => $row) {
-            foreach ($row as $x => $col) {
-                if (!isset($this->columnWidths[$x])) {
-                    $this->columnWidths[$x] = strlen($col);
-                } else {
-                    if (strlen($col) > $this->columnWidths[$x]) {
+            if (is_array($row)) {
+                foreach ($row as $x => $col) {
+                    if (!isset($this->columnWidths[$x])) {
                         $this->columnWidths[$x] = strlen($col);
+                    } else {
+                        if (strlen($col) > $this->columnWidths[$x]) {
+                            $this->columnWidths[$x] = strlen($col);
+                        }
                     }
                 }
             }
