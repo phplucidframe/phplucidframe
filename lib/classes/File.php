@@ -56,6 +56,7 @@ class File extends \SplFileInfo
             parent::__construct($fileName);
         }
     }
+
     /**
      * Set default image filter set and merge with user's options
      * @return object File
@@ -71,6 +72,7 @@ class File extends \SplFileInfo
         $this->setImageResizeMode($this->imageFilterSet['resizeMode']);
         return $this;
     }
+
     /**
      * Set image resize mode
      * @param  const  $value FILE_RESIZE_BOTH, FILE_RESIZE_WIDTH or FILE_RESIZE_HEIGHT
@@ -85,6 +87,7 @@ class File extends \SplFileInfo
         }
         return $this;
     }
+
     /**
      * Setter for the class properties
      * @param string $key The property name
@@ -122,6 +125,7 @@ class File extends \SplFileInfo
         $this->{$key} = $value;
         return $this;
     }
+
     /**
      * Getter for the class properties
      * @param string $key The property name
@@ -137,6 +141,7 @@ class File extends \SplFileInfo
         }
         return null;
     }
+
     /**
      * Getter for the orignal uploaded file name
      */
@@ -144,6 +149,7 @@ class File extends \SplFileInfo
     {
         return $this->originalFileName;
     }
+
     /**
      * Getter for the file name generated
      */
@@ -151,6 +157,7 @@ class File extends \SplFileInfo
     {
         return $this->fileName;
     }
+
     /**
      * Getter for the property `error`
      * @return array The array of error information
@@ -165,6 +172,7 @@ class File extends \SplFileInfo
     {
         return $this->error;
     }
+
     /**
      * Get file upload error message for the given error code
      * @param  int $code The error code
@@ -206,6 +214,7 @@ class File extends \SplFileInfo
         }
         return $message;
     }
+
     /**
      * Move the uploaded file into the given directory.
      * If the uploaded file is image, this will create the various images according to the given $dimension
@@ -293,6 +302,7 @@ class File extends \SplFileInfo
 
         return $this->uploads;
     }
+
     /**
      * Get a new unique file name
      *
@@ -303,6 +313,7 @@ class File extends \SplFileInfo
         $this->fileName = $this->getUniqueId() . '.' . $this->guessExtension();
         return $this->fileName;
     }
+
     /**
      * Get a unique id string
      * @return string
@@ -311,6 +322,7 @@ class File extends \SplFileInfo
     {
         return ($this->uniqueId) ? $this->uniqueId : uniqid();
     }
+
     /**
      * Return the extension of the original file name
      * @param  string $file The optional file name; if it is not given, the original file name will be used
@@ -326,6 +338,7 @@ class File extends \SplFileInfo
             return '';
         }
     }
+
     /**
      * Move the uploaded file to the new location with new file name
      * @param  string $file         The source file
@@ -348,6 +361,7 @@ class File extends \SplFileInfo
             return null;
         }
     }
+
     /**
      * Resize the image file into the given width and height
      * @param  string|array $dimensions   The dimension or array of dimensions,
@@ -388,11 +402,11 @@ class File extends \SplFileInfo
                 $resizeHeight = $resize[1];
 
                 if ($this->imageFilterSet['resizeMode'] == FILE_RESIZE_WIDTH) {
-                    $tmp = File::resizeImageWidth($img, $file, $resizeWidth);
+                    $tmp = File::resizeImageWidth($img, $file, $resizeWidth, $extension);
                 } elseif ($this->imageFilterSet['resizeMode'] == FILE_RESIZE_HEIGHT) {
-                    $tmp = File::resizeImageHeight($img, $file, $resizeHeight);
+                    $tmp = File::resizeImageHeight($img, $file, $resizeHeight. $extension);
                 } else {
-                    $tmp = File::resizeImageBoth($img, $file, $resizeWidth, $resizeHeight);
+                    $tmp = File::resizeImageBoth($img, $file, $resizeWidth, $resizeHeight, $extension);
                 }
 
                 $targetDir = $singleDimension ? $this->uploadPath : $this->uploadPath . $dimension . _DS_;
@@ -404,6 +418,7 @@ class File extends \SplFileInfo
                 if ($extension == "gif") {
                     imagegif($tmp, $targetFileName);
                 } elseif ($extension == "png") {
+                    imagealphablending($tmp, true);
                     imagesavealpha($tmp, true);
                     imagepng($tmp, $targetFileName);
                 } else {
@@ -424,54 +439,77 @@ class File extends \SplFileInfo
         }
         return null;
     }
+
     /**
      * Resize an image to a desired width and height by given width
      *
      * @param resource $img The image resource identifier
      * @param string $file The image file name
      * @param int $newWidth The new width to resize
+     * @param  string       $extension    The file extension
      *
      * @return resource An image resource identifier on success, FALSE on errors
      */
-    public static function resizeImageWidth(&$img, $file, $newWidth)
+    public static function resizeImageWidth(&$img, $file, $newWidth, $extension = null)
     {
+        $extension = $extension ? $extension : strtolower(pathinfo($file, PATHINFO_EXTENSION));
         list($width, $height) = getimagesize($file);
         $newHeight = ($height/$width) * $newWidth;
+
         $tmp = imagecreatetruecolor($newWidth, $newHeight);
         imagealphablending($tmp, false);
+        if ($extension == 'png') {
+            imagesavealpha($tmp, true);
+        }
+
         imagecopyresampled($tmp, $img, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+
         return $tmp;
     }
+
     /**
      * Resize an image to a desired width and height by given height
      *
-     * @param resource $img The image resource identifier
-     * @param string $file The image file name
-     * @param int $newHeight The new height to resize
+     * @param resource  $img        The image resource identifier
+     * @param string    $file       The image file name
+     * @param int       $newHeight  The new height to resize
+     * @param string    $extension  The file extension
      *
      * @return resource An image resource identifier on success, FALSE on errors
      */
-    public static function resizeImageHeight(&$img, $file, $newHeight)
+    public static function resizeImageHeight(&$img, $file, $newHeight, $extension = null)
     {
+        $extension = $extension ? $extension : strtolower(pathinfo($file, PATHINFO_EXTENSION));
+
         list($width, $height) = getimagesize($file);
         $newWidth = ($width/$height) * $newHeight;
+
         $tmp = imagecreatetruecolor($newWidth, $newHeight);
         imagealphablending($tmp, false);
+        if ($extension == 'png') {
+            imagesavealpha($tmp, true);
+        }
+
         imagecopyresampled($tmp, $img, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+
         return $tmp;
     }
+
     /**
      * Resize an image to a desired width and height by given width and height
      *
-     * @param resource $img The image resource identifier
-     * @param string $file The image file name
-     * @param int $newWidth The new width to resize
-     * @param int $newHeight The new height to resize
+     * @param resource  $img        The image resource identifier
+     * @param string    $file       The image file name
+     * @param int       $newWidth   The new width to resize
+     * @param int       $newHeight  The new height to resize
+     * @param string    $extension  The file extension
      *
      * @return resource An image resource identifier on success, FALSE on errors
      */
-    public static function resizeImageBoth(&$img, $file, $newWidth, $newHeight)
+    public static function resizeImageBoth(&$img, $file, $newWidth, $newHeight, $extension = null)
     {
+        $extension = $extension ? $extension : strtolower(pathinfo($file, PATHINFO_EXTENSION));
+
         list($width, $height) = getimagesize($file);
 
         $scale = min($newWidth/$width, $newHeight/$height);
@@ -489,9 +527,15 @@ class File extends \SplFileInfo
 
         $tmp = imagecreatetruecolor($newWidth, $newHeight);
         imagealphablending($tmp, false);
+        if ($extension == 'png') {
+            imagesavealpha($tmp, true);
+        }
+
         imagecopyresampled($tmp, $img, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+
         return $tmp;
     }
+
     /**
      * Display an image fitting into the desired dimension
      *
