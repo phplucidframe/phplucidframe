@@ -824,6 +824,22 @@ class SchemaManager
 
                                 foreach ($diffOptions['diff'] as $optName => $optValue) {
                                     switch ($optName) {
+                                        case 'unique':
+                                            // Drop old composite unique indices
+                                            if (isset($fromFieldOptions['unique'])) {
+                                                foreach ($fromFieldOptions['unique'] as $keyName => $uniqueFields) {
+                                                    $sql['up'][] = "ALTER TABLE `{$fullTableName}` DROP INDEX `IDX_$keyName`;";
+                                                }
+                                            }
+
+                                            if (isset($toFieldOptions['unique'])) {
+                                                // Add new compsite unique indices
+                                                foreach ($toFieldOptions['unique'] as $keyName => $uniqueFields) {
+                                                    $sql['up'][] = "ALTER TABLE `{$fullTableName}` ADD UNIQUE `IDX_$keyName` (`" . implode('`,`', $uniqueFields) . "`);";
+                                                }
+                                            }
+                                            break;
+
                                         case 'engine':
                                             $sql['up'][] = "ALTER TABLE `{$fullTableName}` ENGINE={$toFieldOptions['engine']};";
                                             break;
@@ -842,6 +858,12 @@ class SchemaManager
 
                             $sql['up'][] = "ALTER TABLE `{$fullTableName}` CHANGE COLUMN `{$oldField}` ".
                                 $this->getFieldStatement($newField, $schemaTo[$table][$newField], $collate).';';
+
+                            if (isset($schemaFrom[$table][$oldField]['unique']) && !isset($schemaTo[$table][$newField]['unique'])) {
+                                $sql['up'][] = "ALTER TABLE `{$fullTableName}` DROP INDEX `IDX_$oldField`;";
+                            } elseif (!isset($schemaFrom[$table][$oldField]['unique']) && isset($schemaTo[$table][$newField]['unique'])) {
+                                $sql['up'][] = "ALTER TABLE `{$fullTableName}` ADD UNIQUE `IDX_$newField` (`$newField`);";
+                            }
 
                             $fieldNamesChanged[] = $table.'.'.$oldField;
                             $fieldNamesChanged = array_unique($fieldNamesChanged);
@@ -1510,6 +1532,14 @@ class SchemaManager
             }
         }
 
+        // Unique indexes for composite unique fields
+        if (isset($options['unique']) && is_array($options['unique'])) {
+            foreach ($options['unique'] as $keyName => $uniqueFields) {
+                $sql .= '  UNIQUE KEY';
+                $sql .= " `IDX_$keyName` (`" . implode('`,`', $uniqueFields) . "`)," . PHP_EOL;
+            }
+        }
+
         # Primay key indexes
         if (isset($pkFields[$table])) {
             $sql .= '  PRIMARY KEY (`'.implode('`,`', array_keys($pkFields[$table])).'`)'.PHP_EOL;
@@ -1975,10 +2005,25 @@ class SchemaManager
         $changes = 0;
         $diff = array();
         foreach ($from as $key => $value) {
-            if (!isset($to[$key]) || (isset($to[$key]) && $from[$key] != $to[$key])) {
+            if (!isset($to[$key])) {
                 $diff[$key] = $value;
                 $changes++;
+                continue;
             }
+
+            if (isset($to[$key]) && $from[$key] != $to[$key]) {
+                $diff[$key] = $to[$key];
+                $changes++;
+                continue;
+            }
+        }
+
+        $fromKeys   = array_keys($from);
+        $toKeys     = array_keys($to);
+        $diffKeys   = array_diff($toKeys, $fromKeys);
+        foreach ($diffKeys as $key) {
+            $diff[$key] = $to[$key];
+            $changes++;
         }
 
         return array(
