@@ -1829,6 +1829,8 @@ function _isBot()
         'ia_archiver',
         'MJ12bot',
         'Uptimebot',
+        'Dataprovider.com',
+        'Go-http-client',
     );
     foreach ($bots as $bot) {
         if (false !== strpos(strtolower($userAgent), strtolower($bot))) {
