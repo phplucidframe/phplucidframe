@@ -48,6 +48,11 @@ if (strcasecmp(APP_ROOT, ROOT) === 0) {
     die('Enable mod_rewrite in your server and "AllowOverride All" from .htaccess');
 }
 
+# Constants for environment
+define('ENV_DEV', 'development');
+define('ENV_PROD', 'production');
+define('ENV_TEST', 'test');
+
 # path to inc/ folder
 define('INC', ROOT.'inc'._DS_);
 # path to db/ folder

@@ -43,7 +43,7 @@ define('ROUTE', 'route');
 define('S_PREFIX', '__LucidFrame__');
 
 # $lc_env: The setting for running environment: `development` or `production`
-$lc_env = 'development';
+$lc_env = __env();
 # $lc_debugLevel: The debug level. If $lc_env = 'production', this is not considered.
 # `1` - show fatal errors, parse errors, but no PHP startup errors
 # `2` - show fatal errors, parse errors, warnings and notices

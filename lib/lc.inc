@@ -274,8 +274,8 @@ function _p($name)
         $env = _cfg('env');
     }
 
-    if (!in_array($env, array('development', 'production', 'test'))) {
-        die('Wrong environment configuration. Use "development" or "production" or "test".');
+    if (!in_array($env, array(ENV_DEV, ENV_PROD, ENV_TEST))) {
+        die(sprintf('Wrong environment configuration. Use "%s" or "%s" or "%s".', ENV_DEV, ENV_PROD, ENV_TEST));
     }
 
     $param = include(INC.'parameter/'.$env.'.php');
@@ -404,10 +404,10 @@ function __envLoader()
     global $lc_minifyHTML;
 
     $lc_env = strtolower($lc_env);
-    if (!in_array($lc_env, array('development', 'production', 'test'))) {
-        $lc_env = 'production';
+    if (!in_array($lc_env, array(ENV_DEV, ENV_PROD, ENV_TEST))) {
+        $lc_env = ENV_PROD;
     }
-    if ($lc_env == 'production') {
+    if ($lc_env == ENV_PROD) {
         error_reporting(0);
         ini_set('display_errors', 0);
         ini_set('display_startup_errors', 0);
@@ -539,6 +539,23 @@ function _schema($dbNamespace = 'default', $cache = false)
     } else {
         return false;
     }
+}
+
+/**
+ * @internal
+ * @ignore
+ * Read and get the environment setting from .env
+ * @return string
+ */
+function __env()
+{
+    $file = ROOT . '.env';
+
+    if (!(is_file($file) && file_exists($file))) {
+        file_put_contents($file, ENV_PROD);
+    }
+
+    return trim(file_get_contents($file));
 }
 
 __prerequisite();
