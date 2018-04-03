@@ -552,10 +552,15 @@ function __env()
     $file = ROOT . '.env';
 
     if (!(is_file($file) && file_exists($file))) {
-        file_put_contents($file, ENV_PROD);
+        file_put_contents($file, ENV_DEV);
     }
 
-    return trim(file_get_contents($file));
+    $env = trim(file_get_contents($file));
+    if (!in_array($env, array(ENV_DEV, ENV_PROD, ENV_TEST, 'dev', 'prod'))) {
+        $env = ENV_PROD;
+    }
+
+    return $env;
 }
 
 __prerequisite();
