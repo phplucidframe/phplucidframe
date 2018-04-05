@@ -1831,6 +1831,8 @@ function _isBot()
         'Uptimebot',
         'Dataprovider.com',
         'Go-http-client',
+        'Barkrowler',
+        'panscient.com'
     );
     foreach ($bots as $bot) {
         if (false !== strpos(strtolower($userAgent), strtolower($bot))) {
