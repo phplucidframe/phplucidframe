@@ -549,10 +549,19 @@ function _schema($dbNamespace = 'default', $cache = false)
  */
 function __env()
 {
-    $file = ROOT . '.env';
+    $defaultEnv = ENV_DEV;
 
+    $oldFile = ROOT . '.env';
+    if (is_file($oldFile) && file_exists($oldFile)) {
+        $defaultEnv = trim(file_get_contents($oldFile));
+        if (in_array($defaultEnv, array(ENV_DEV, ENV_PROD, ENV_TEST, 'dev', 'prod'))) {
+            unlink($oldFile);
+        }
+    }
+
+    $file = ROOT . FILE_ENV;
     if (!(is_file($file) && file_exists($file))) {
-        file_put_contents($file, ENV_DEV);
+        file_put_contents($file, $defaultEnv);
     }
 
     $env = trim(file_get_contents($file));

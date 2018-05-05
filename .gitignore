@@ -2,6 +2,7 @@
 #################################################
 .secret
 .env
+.lcenv
 /db/build/*
 !/db/build/.gitkeep
 /db/generated/*

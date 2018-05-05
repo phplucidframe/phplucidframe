@@ -36,7 +36,7 @@ _consoleCommand('env')
             $env = ENV_PROD;
         }
 
-        if (file_put_contents(ROOT . '.env', $env)) {
+        if (file_put_contents(ROOT . FILE_ENV, $env)) {
             _writeln('%s environment is now active.', ucfirst($env));
         } else {
             _writeln('failed to change env setting.');

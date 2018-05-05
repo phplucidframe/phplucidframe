@@ -53,6 +53,8 @@ define('ENV_DEV', 'development');
 define('ENV_PROD', 'production');
 define('ENV_TEST', 'test');
 
+define('FILE_ENV', '.lcenv');
+
 # path to inc/ folder
 define('INC', ROOT.'inc'._DS_);
 # path to db/ folder
