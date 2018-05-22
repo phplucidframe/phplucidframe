@@ -3,6 +3,7 @@
 .secret
 .env
 .lcenv
+/inc/parameter/parameter.env.inc
 /db/build/*
 !/db/build/.gitkeep
 /db/generated/*

@@ -85,6 +85,12 @@ $lc_canonical = '';
 /**
  * @internal
  * @ignore
+ * The array of configurations from parameter.env.inc
+ */
+$lc_envParameters = null;
+/**
+ * @internal
+ * @ignore
  * Meta information for the current page
  */
 $_meta = array();
@@ -587,6 +593,27 @@ function _p($name)
     $param = include(INC.'parameter/'.$env.'.php');
 
     return __dotNotationToArray($name, $param);
+}
+
+/**
+ * Get the parameter value by name defined in parameter.env.inc
+ * @param  string $name The parameter name in dot annotation format such as prod.db.default.username
+ * @return mixed
+ */
+function _env($name)
+{
+    global $lc_envParameters;
+
+    if ($lc_envParameters === null) {
+        $file = INC . 'parameter/parameter.inc';
+        if (is_file($file) && file_exists($file)) {
+            $lc_envParameters = include(INC.'parameter/parameter.inc');
+        } else {
+            return null;
+        }
+    }
+
+    return __dotNotationToArray($name, $lc_envParameters);
 }
 
 __prerequisite();
