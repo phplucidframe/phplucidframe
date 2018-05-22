@@ -252,13 +252,18 @@ function _cfg($key = '', $value = '')
     $key = 'lc_' . $key;
     return (count(func_get_args()) == 2) ? __dotNotationToArray($key, 'global', $value) : __dotNotationToArray($key, 'global');
 }
+
 /**
  * Get the parameter value by name defined in /inc/parameter/*
- * @param  string $name The parameter name
+ * @param  string $name The parameter name; if $name == 'env', it returns the current environment setting from .lcenv
  * @return mixed
  */
 function _p($name)
 {
+    if ($name == 'env') {
+        return __env();
+    }
+
     global $argv;
 
     if (PHP_SAPI == 'cli' && $argv[0] === 'lucidframe') {
@@ -544,7 +549,7 @@ function _schema($dbNamespace = 'default', $cache = false)
 /**
  * @internal
  * @ignore
- * Read and get the environment setting from .env
+ * Read and get the environment setting from .lcenv
  * @return string
  */
 function __env()

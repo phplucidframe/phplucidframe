@@ -20,7 +20,7 @@ _consoleCommand('env')
     ->addOption('show', null, 'Display the current active environment setting', null, LC_CONSOLE_OPTION_NOVALUE)
     ->setDefinition(function(\LucidFrame\Console\Command $cmd) {
         if ($cmd->getOption('show')) {
-            _writeln('%s environment is currently active.', ucfirst(__env()));
+            _writeln('%s environment is currently active.', ucfirst(_p('env')));
             exit;
         }
 
