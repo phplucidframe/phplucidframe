@@ -480,8 +480,9 @@ function _css($file)
 function _img($file)
 {
     $files = array(
+        'app/assets/images/' => APP_ROOT . 'assets' . _DS_ . 'images' . _DS_ . $file,
         'assets/images/' => ROOT . 'assets' . _DS_ . 'images' . _DS_ . $file,
-        'images/'        => ROOT . 'images' . _DS_ . $file
+        'images/' => ROOT . 'images' . _DS_ . $file
     );
 
     foreach ($files as $path => $f) {
