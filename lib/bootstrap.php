@@ -50,6 +50,7 @@ if (strcasecmp(APP_ROOT, ROOT) === 0) {
 
 # Constants for environment
 define('ENV_DEV', 'development');
+define('ENV_STAGING', 'staging');
 define('ENV_PROD', 'production');
 define('ENV_TEST', 'test');
 

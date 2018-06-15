@@ -16,7 +16,7 @@
 
 _consoleCommand('env')
     ->setDescription('Change environment setting')
-    ->addArgument('env', 'The envirnoment name: development or production')
+    ->addArgument('env', 'The envirnoment name: [dev, development, staging, prod, production]')
     ->addOption('show', null, 'Display the current active environment setting', null, LC_CONSOLE_OPTION_NOVALUE)
     ->setDefinition(function(\LucidFrame\Console\Command $cmd) {
         if ($cmd->getOption('show')) {
@@ -25,13 +25,15 @@ _consoleCommand('env')
         }
 
         $env = $cmd->getArgument('env');
-        if (!in_array($env, array(ENV_DEV, ENV_PROD, 'dev', 'prod'))) {
-            _writeln('Wrong environment configuration. Use "dev", "prod", "%s", or "%s".', ENV_DEV, ENV_PROD);
+        if (!in_array($env, array(ENV_DEV, ENV_STAGING, ENV_PROD, 'dev', 'prod'))) {
+            _writeln('Wrong environment configuration. Use "dev", "staging", "prod", "%s" or "%s".', ENV_DEV, ENV_PROD);
             exit;
         }
 
         if ($env == 'dev') {
             $env = ENV_DEV;
+        } elseif ($env == 'staging') {
+            $env = ENV_STAGING;
         } elseif ($env == 'prod') {
             $env = ENV_PROD;
         }

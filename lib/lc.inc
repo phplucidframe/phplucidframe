@@ -255,7 +255,7 @@ function __envLoader()
     global $lc_minifyHTML;
 
     $lc_env = strtolower($lc_env);
-    if (!in_array($lc_env, array(ENV_DEV, ENV_PROD, ENV_TEST))) {
+    if (!in_array($lc_env, __envList())) {
         $lc_env = ENV_PROD;
     }
     if ($lc_env == ENV_PROD) {
@@ -348,7 +348,7 @@ function __env()
     $oldFile = ROOT . '.env';
     if (is_file($oldFile) && file_exists($oldFile)) {
         $defaultEnv = trim(file_get_contents($oldFile));
-        if (in_array($defaultEnv, array(ENV_DEV, ENV_PROD, ENV_TEST, 'dev', 'prod'))) {
+        if (in_array($defaultEnv, __envList())) {
             unlink($oldFile);
         }
     }
@@ -359,11 +359,20 @@ function __env()
     }
 
     $env = trim(file_get_contents($file));
-    if (!in_array($env, array(ENV_DEV, ENV_PROD, ENV_TEST, 'dev', 'prod'))) {
+    if (!in_array($env, __envList())) {
         $env = ENV_PROD;
     }
 
     return $env;
+}
+
+/**
+ * Return list of env name array
+ * @return array
+ */
+function __envList()
+{
+    return array(ENV_PROD, ENV_STAGING, ENV_DEV, ENV_TEST, 'dev', 'prod');
 }
 
 /*************************/
@@ -586,8 +595,8 @@ function _p($name)
         $env = _cfg('env');
     }
 
-    if (!in_array($env, array(ENV_DEV, ENV_PROD, ENV_TEST))) {
-        die(sprintf('Wrong environment configuration. Use "%s" or "%s" or "%s".', ENV_DEV, ENV_PROD, ENV_TEST));
+    if (!in_array($env, __envList())) {
+        die(sprintf('Wrong environment configuration. Use "%s" or "%s" or "%s" or "%s".', ENV_DEV, ENV_STAGING, ENV_PROD, ENV_TEST));
     }
 
     $param = include(INC.'parameter/'.$env.'.php');
