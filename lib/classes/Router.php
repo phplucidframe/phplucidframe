@@ -68,7 +68,7 @@ class Router
         $this->name = $name;
 
         $method = strtoupper($method);
-        if (!in_array($method, array('GET', 'POST', 'PUT', 'DELETE'))) {
+        if (!in_array($method, array('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))) {
             $method = 'GET';
         }
 
