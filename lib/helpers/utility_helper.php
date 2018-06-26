@@ -1833,7 +1833,8 @@ function _isBot()
         'Dataprovider.com',
         'Go-http-client',
         'Barkrowler',
-        'panscient.com'
+        'panscient.com',
+        'Symfony BrowserKit',
     );
     foreach ($bots as $bot) {
         if (false !== strpos(strtolower($userAgent), strtolower($bot))) {
