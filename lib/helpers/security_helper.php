@@ -36,8 +36,12 @@ function security_prerequisite()
  * @param  mixed $get The value or The array of values being sanitized.
  * @return mixed The cleaned value
  */
-function _get($get)
+function _get($get = null)
 {
+    if ($get === null) {
+        $get = $_GET;
+    }
+
     if (is_array($get)) {
         foreach ($get as $name => $value) {
             if (is_array($value)) {
@@ -59,8 +63,12 @@ function _get($get)
  * @param  mixed $post The value or The array of values being sanitized.
  * @return mixed the cleaned value
  */
-function _post($post)
+function _post($post = null)
 {
+    if ($post === null) {
+        $post = $_POST;
+    }
+
     if (is_array($post)) {
         foreach ($post as $name => $value) {
             if (is_array($value)) {
