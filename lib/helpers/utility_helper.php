@@ -853,6 +853,16 @@ function _self($queryStr = array(), $lang = '')
     return route_url(null, $queryStr, $lang);
 }
 /**
+ * Send HTTP header
+ * @param int $status The HTTP status code
+ * @param string $message Message along with status code
+ * @return void
+ */
+function _header($status, $message = null)
+{
+    header('HTTP/1.1 ' . $status . ($message ? ' ' . $message : ''));
+}
+/**
  * Header redirect to a specific location
  * @param string $path Routing path such as "foo/bar"; null for the current path
  * @param array $queryStr Query string as
@@ -865,7 +875,7 @@ function _self($queryStr = array(), $lang = '')
  *
  * @param string $lang The Languague code to be prepended to $path such as "en/foo/bar".
  *   It will be useful for site language switch redirect
- * @param int $status The HTTP status code - 301 for permanent redirect;
+ * @param int $status The HTTP status code
  *   use `_redirect301()` instead; do not provide this for default 302 redirect.
  * @return void
  */
@@ -873,19 +883,22 @@ function _redirect($path = null, $queryStr = array(), $lang = '', $status = null
 {
     if (stripos($path, 'http') === 0) {
         if ($status === 301) {
-            header("HTTP/1.1 301 Moved Permanently");
+            _header(301, 'Moved Permanently');
         }
         header('Location: ' . $path);
         exit;
     }
+
     if ($path == 'self') {
         $url = _self(null, $lang);
     } else {
         $url = route_url($path, $queryStr, $lang);
     }
+
     if ($status === 301) {
-        header("HTTP/1.1 301 Moved Permanently");
+        _header(301, 'Moved Permanently');
     }
+
     header('Location: ' . $url);
     exit;
 }
