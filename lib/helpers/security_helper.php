@@ -33,7 +33,7 @@ function security_prerequisite()
 }
 /**
  * Sanitize input values from GET
- * @param  mixed $get The value or The array of values being sanitized.
+ * @param  mixed $get (Optional) The value or The array of values being sanitized.
  * @return mixed The cleaned value
  */
 function _get($get = null)
@@ -60,7 +60,7 @@ function _get($get = null)
 }
 /**
  * Sanitize input values from POST
- * @param  mixed $post The value or The array of values being sanitized.
+ * @param  mixed $post (Optional) The value or The array of values being sanitized
  * @return mixed the cleaned value
  */
 function _post($post = null)
@@ -86,6 +86,27 @@ function _post($post = null)
     }
     return $post;
 }
+
+/**
+ * Accessing PUT request data
+ * @param  string $name The optional name of the value to be sanitized
+ * @return mixed the cleaned value
+ */
+function _put($name = null)
+{
+    return __input($name);
+}
+
+/**
+ * Accessing PATCH request data
+ * @param  string $name The optional name of the value to be sanitized
+ * @return mixed the cleaned value
+ */
+function _patch($name = null)
+{
+    return __input($name);
+}
+
 /**
  * Strips javascript tags in the value to prevent from XSS attack
  * @param mixed $value The value or The array of values being stripped.
@@ -117,6 +138,34 @@ function _xss($value)
 function _sanitize($input)
 {
     return htmlspecialchars(trim($input), ENT_NOQUOTES);
+}
+
+/**
+ * @internal
+ * @ignore
+ *
+ * Accessing PUT/PATCH data
+ * @param  string $name The optional name of the value to be sanitized
+ * @return mixed the cleaned value
+ */
+function __input($name = null)
+{
+    $input = file_get_contents("php://input");
+    if ($_SERVER['CONTENT_TYPE'] == 'application/json') {
+        $vars = json_decode($input, true);
+    } else {
+        parse_str($input, $vars);
+    }
+
+    if ($name) {
+        return isset($vars[$name]) ? _sanitize(stripslashes($vars[$name])) : null;
+    }
+
+    foreach ($vars as $key => $value) {
+        $vars[$key] = _sanitize(stripslashes($value));
+    }
+
+    return $vars;
 }
 /**
  * @internal
