@@ -24,6 +24,8 @@ class Router
 {
     /** @var array The custom routes defined */
     static protected $routes = array();
+    /** @var string The route name matched */
+    static protected $matchedRouteName;
     /** @var string The route name that is unique to the mapped path */
     protected $name;
 
@@ -42,6 +44,14 @@ class Router
     public static function getRoutes()
     {
         return self::$routes;
+    }
+
+    /**
+     * Getter for $matchedRouteName
+     */
+    public static function getMatchedName()
+    {
+        return self::$matchedRouteName;
     }
 
     /**
@@ -139,6 +149,7 @@ class Router
                         if (isset($value['patterns'][$name]) && $value['patterns'][$name]) {
                             $regex = $value['patterns'][$name];
                             if (!preg_match('/^'.$regex.'$/', $var)) {
+                                _header(400);
                                 throw new \InvalidArgumentException(sprintf('The Router does not satify the argument value "%s" for "%s".', $var, $regex));
                             }
                         }
@@ -154,6 +165,7 @@ class Router
 
             if (route_path() === implode('/', $matchedPath)) {
                 if (!in_array($_SERVER['REQUEST_METHOD'], $value['method'])) {
+                    _header(405);
                     throw new \RuntimeException(sprintf('The Router does not allow the method "%s" for "%s".', $_SERVER['REQUEST_METHOD'], $key));
                 }
 
@@ -163,6 +175,7 @@ class Router
         }
 
         if ($found) {
+            self::$matchedRouteName = $key;
             $toRoute     = trim($value['to'], '/');
             $_GET[ROUTE] = $toRoute;
             $_GET        = array_merge($_GET, $vars);
@@ -189,5 +202,25 @@ class Router
     public static function clean()
     {
         self::$routes = array();
+    }
+
+    /**
+     * Define route group
+     * @param string   $prefix   A prefix for the group of the routes
+     * @param function $callback The callback function that defines each route in the group
+     */
+    public static function group($prefix, $callback)
+    {
+        $before = self::$routes;
+
+        $callback();
+
+        $groupRoutes = array_splice(self::$routes, count($before));
+        foreach ($groupRoutes as $name => $route) {
+            $route['path'] = '/' . ltrim($prefix, '/') . '/' . trim($route['path'], '/');
+            $groupRoutes[$name] = $route;
+        }
+
+        self::$routes += $groupRoutes;
     }
 }

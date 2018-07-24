@@ -31,3 +31,11 @@ route('lc_blog_show')->map('/blog/{id}/{slug}', '/example/blog-page', 'GET', arr
     'id'    => '\d+', # {id} must be digits
     'slug'  => '[a-zA-Z\-_]+' # {slug} must only contain alphabets, dashes and underscores
 ));
+
+route_group('/api/post', function () {
+    route('lc_post')->map('/', '/example/api/post', 'GET');
+    route('lc_post_create')->map('/create', '/example/api/post/create', 'POST');
+    route('lc_post_update')->map('/{id}/update', '/example/api/post/update', 'PATCH', array('id' => '\d+'));
+    route('lc_post_delete')->map('/{id}/delete', '/example/api/post/delete', 'DELETE', array('id' => '\d+'));
+});
+

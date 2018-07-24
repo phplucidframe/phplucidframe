@@ -175,7 +175,7 @@ function route_search()
         return $path;
     }
 
-    $append    = array('/index.php', '.php');
+    $append = array('/index.php', '.php');
     for ($i=$count; $i>0; $i--) {
         # try to look for
         # ~/path/to/the-given-name/index.php
@@ -185,10 +185,30 @@ function route_search()
             $path = $cleanRoute . $a;
             if (is_file($path) && file_exists($path)) {
                 _cfg('cleanRoute', rtrim($cleanRoute, '/'));
+
+                $definedRoutes = Router::getRoutes();
+                // Find matching routes for this clean route
+                $routes = array_filter($definedRoutes, function ($route) use ($cleanRoute) {
+                    return ltrim($route['to'], '/') == ltrim($cleanRoute, '/');
+                });
+
+                foreach ($routes as $key => $value) {
+                    if (!in_array($_SERVER['REQUEST_METHOD'], $value['method'])) {
+                        if ($key == Router::getMatchedName()) {
+                            _header(405);
+                            throw new \RuntimeException(sprintf('The Router does not allow the method "%s" for "%s".', $_SERVER['REQUEST_METHOD'], $key));
+                        } else {
+                            _header(404);
+                            throw new \RuntimeException(sprintf('The Router is not found for "%s".', Router::getMatchedName()));
+                        }
+                    }
+                }
+
                 return $path;
             }
         }
     }
+
     return false;
 }
 
@@ -406,7 +426,8 @@ function route_getAbsolutePathToRoot($q)
 {
     # Get the complete path to root
     $_page = ROOT . $q;
-    if (!file_exists($_page)) {
+
+    if (!(is_file($_page) && file_exists($_page))) {
         # Get the complete path with app/
         $_page = APP_ROOT . $q;
         # Find the clean route
@@ -422,6 +443,11 @@ function route_getAbsolutePathToRoot($q)
     # if it is a directory, it should have index.php
     if (is_dir($_page)) {
         $_page .= '/index.php';
+    } else {
+        $pathInfo = pathinfo($_page);
+        if (!isset($pathInfo['extension'])) {
+            $_page .= '.php';
+        }
     }
 
     return $_page;
@@ -436,6 +462,16 @@ function route_getAbsolutePathToRoot($q)
 function route($name)
 {
     return new Router($name);
+}
+
+/**
+ * Define route group
+ * @param string $prefix A prefix for the group of the routes
+ * @param function $callback The callback function that defines each route in the group
+ */
+function route_group($prefix, $callback)
+{
+    Router::group($prefix, $callback);
 }
 
 /**
@@ -466,7 +502,10 @@ function router()
     # Get a route from the defined custom routes (if any)
     $_page = route_match();
     if ($_page) {
-        return route_getAbsolutePathToRoot($_page);
+        $pathToPage = route_getAbsolutePathToRoot($_page);
+        if (is_file($pathToPage) && file_exists($pathToPage)) {
+            return $pathToPage;
+        }
     }
 
     $q = route_path();
@@ -482,7 +521,7 @@ function router()
 
     # Get the complete path to root
     $_page = route_getAbsolutePathToRoot($q);
-    if (!empty($_page) && file_exists($_page)) {
+    if (!empty($_page) && is_file($_page) && file_exists($_page)) {
         return $_page;
     }
 
