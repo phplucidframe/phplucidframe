@@ -2013,10 +2013,13 @@ function _isAjax()
 /**
  * Header sent as text/json
  * @param array $data Array of data to be encoded as JSON
+ * @param int $status HTTP status code, default to 200
  * @return void
  */
-function _json(array $data)
+function _json(array $data, $status = 200)
 {
+    _header($status);
     header('Content-Type: text/json');
     echo json_encode($data);
+    exit;
 }
