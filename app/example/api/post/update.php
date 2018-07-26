@@ -1,7 +1,21 @@
 <?php
 
-$id = _arg('id');
-$data = _patch();
+$id     = _arg('id');
+$data   = _patch();
+
+# Validation example here
+//$post = db_select('post', 'p')
+//    ->where()
+//    ->condition('postId', $id)
+//    ->getSingleResult();
+//if (!$post) {
+//    _json([
+//        'errors' => [
+//            'msg' => 'Post not found.',
+//        ],
+//        'data' => $data,
+//    ], 404);
+//}
 
 $validations['title'] = array(
     'caption'   => _t('Title'),
@@ -9,16 +23,32 @@ $validations['title'] = array(
     'rules'     => array('mandatory'),
 );
 
-$errors = null;
-if (validation_check($validations)) {
-    /**
-     * //// Database operation example
-     */
-} else {
-    $errors = validation_get('errors');
+$validations['body'] = array(
+    'caption'   => _t('Body'),
+    'value'     => $data['body'],
+    'rules'     => array('mandatory'),
+);
+
+if (!validation_check($validations)) {
+    _json([
+        'errors' => validation_get('errors'),
+        'data' => $data,
+    ], 400);
 }
 
+# Database operations here for update
+//$postData = array(
+//    'postTitle' => $data['title'],
+//    'postBody' => $data['body']
+//);
+//
+//db_update('post', [
+//    'postId'    => $id,
+//    'postTitle' => $data['title'],
+//    'postBody'  => $data['body']
+//]);
+
 _json([
-    'errors' => $errors,
+    'errors' => null,
     'data' => $data,
 ]);
