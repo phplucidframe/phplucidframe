@@ -167,6 +167,8 @@ $lc_defaultLang = 'en';
 $lc_lang = $lc_defaultLang;
 # $lc_cleanURL: Enable/Disable clean URL
 $lc_cleanURL = true;
+# $lc_cipher: OpenSSL cipher method to use for encryption
+$lc_cipher = 'AES-256-CBC';
 # $lc_securitySecret: the key with which the data will be encrypted
 # default hash string is located at ./inc/.secret
 # It is strongly recommended to change this and use the hash functions to create a key from a string.

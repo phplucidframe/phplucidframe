@@ -1552,19 +1552,17 @@ function _sqlDate($date, $givenFormat = 'dmy', $separator = '-')
 function _encrypt($text)
 {
     $secret = _cfg('securitySecret');
-    if (!$secret || !function_exists('mcrypt_encrypt')) {
+    if (!$secret || !function_exists('openssl_encrypt')) {
         return md5($text);
     }
-    return trim(base64_encode(
-        mcrypt_encrypt(
-            MCRYPT_RIJNDAEL_256,
-            $secret,
-            $text,
-            MCRYPT_MODE_ECB,
-            mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND)
-        )
-    ));
+
+    $method = _cipher();
+    $ivlen = openssl_cipher_iv_length($method);
+    $iv = openssl_random_pseudo_bytes($ivlen);
+
+    return openssl_encrypt($text, $method, $secret, OPENSSL_RAW_DATA, $iv);
 }
+
 /**
  * Decrypts the given text using security salt if mcrypt extension is enabled,
  * otherwise return the original encrypted string
@@ -1575,16 +1573,29 @@ function _encrypt($text)
 function _decrypt($text)
 {
     $secret = _cfg('securitySecret');
-    if (!$secret || !function_exists('mcrypt_encrypt')) {
+    if (!$secret || !function_exists('openssl_decrypt')) {
         return $text;
     }
-    return trim(mcrypt_decrypt(
-        MCRYPT_RIJNDAEL_256,
-        $secret,
-        base64_decode($text),
-        MCRYPT_MODE_ECB,
-        mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND)
-    ));
+
+    $method = _cipher();
+    $ivlen = openssl_cipher_iv_length($method);
+    $iv = openssl_random_pseudo_bytes($ivlen);
+
+    return openssl_decrypt($text, $method, $secret, OPENSSL_RAW_DATA, $iv);
+}
+
+/**
+ * Get current using cipher method
+ * @return string
+ */
+function _cipher()
+{
+    $method = _cfg('cipher');
+    if (!in_array($method, openssl_get_cipher_methods())) {
+        $method = 'AES-256-CBC';
+    }
+
+    return $method;
 }
 
 /**
