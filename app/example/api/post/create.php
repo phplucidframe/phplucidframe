@@ -16,10 +16,10 @@ $validations['body'] = array(
 );
 
 if (!validation_check($validations)) {
-    _json([
+    _json(array(
         'errors' => validation_get('errors'),
         'data' => $data,
-    ], 400);
+    ), 400);
 }
 
 # Database operations here for insert
@@ -33,7 +33,7 @@ if (!validation_check($validations)) {
 //    'postBody'  => $data['body']
 //]);
 
-_json([
+_json(array(
     'errors' => $errors,
     'data' => $data,
-]);
+));

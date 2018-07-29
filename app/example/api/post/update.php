@@ -9,12 +9,12 @@ $data   = _patch();
 //    ->condition('postId', $id)
 //    ->getSingleResult();
 //if (!$post) {
-//    _json([
-//        'errors' => [
+//    _json(array(
+//        'errors' => array(
 //            'msg' => 'Post not found.',
-//        ],
+//        ),
 //        'data' => $data,
-//    ], 404);
+//    ), 404);
 //}
 
 $validations['title'] = array(
@@ -30,10 +30,10 @@ $validations['body'] = array(
 );
 
 if (!validation_check($validations)) {
-    _json([
+    _json(array(
         'errors' => validation_get('errors'),
         'data' => $data,
-    ], 400);
+    ), 400);
 }
 
 # Database operations here for update
@@ -48,7 +48,7 @@ if (!validation_check($validations)) {
 //    'postBody'  => $data['body']
 //]);
 
-_json([
+_json(array(
     'errors' => null,
     'data' => $data,
-]);
+));

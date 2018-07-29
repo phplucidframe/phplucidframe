@@ -8,14 +8,14 @@ $id = _arg('id');
 //    ->condition('postId', $id)
 //    ->getSingleResult();
 //if (!$post) {
-//    _json([
+//    _json(array(
 //        'id' => $id
-//    ], 404);
+//    ), 404);
 //}
 
 # Database operations here for delete
 //db_delete('post', array('postId' => $id));
 
-_json([
+_json(array(
     'id' => $id
-]);
+));
