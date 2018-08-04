@@ -1,4 +1,7 @@
 <?php
+/**
+ * GET /api/posts
+ */
 
 $blog = array();
 

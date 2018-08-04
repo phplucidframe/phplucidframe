@@ -1,4 +1,7 @@
 <?php
+/**
+ * DELETE /api/posts/{id}
+ */
 
 $id = _arg('id');
 

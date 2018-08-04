@@ -1,4 +1,7 @@
 <?php
+/**
+ * POST /api/posts
+ */
 
 $data = _post();
 
@@ -34,6 +37,6 @@ if (!validation_check($validations)) {
 //]);
 
 _json(array(
-    'errors' => $errors,
+    'errors' => null,
     'data' => $data,
 ));

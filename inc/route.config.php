@@ -32,10 +32,10 @@ route('lc_blog_show')->map('/blog/{id}/{slug}', '/example/blog-page', 'GET', arr
     'slug'  => '[a-zA-Z\-_]+' # {slug} must only contain alphabets, dashes and underscores
 ));
 
-route_group('/api/post', function () {
+route_group('/api/posts', function () {
     route('lc_post')->map('/', '/example/api/post', 'GET');
-    route('lc_post_create')->map('/create', '/example/api/post/create', 'POST');
-    route('lc_post_update')->map('/{id}/update', '/example/api/post/update', 'PATCH', array('id' => '\d+'));
-    route('lc_post_delete')->map('/{id}/delete', '/example/api/post/delete', 'DELETE', array('id' => '\d+'));
+    route('lc_post_create')->map('/', '/example/api/post/create', 'POST');
+    route('lc_post_update')->map('/{id}', '/example/api/post/update', 'PUT', array('id' => '\d+'));
+    route('lc_post_delete')->map('/{id}', '/example/api/post/delete', 'DELETE', array('id' => '\d+'));
 });
 

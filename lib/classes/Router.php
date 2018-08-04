@@ -164,13 +164,22 @@ class Router
             }
 
             if (route_path() === implode('/', $matchedPath)) {
-                if (!in_array($_SERVER['REQUEST_METHOD'], $value['method'])) {
-                    _header(405);
-                    throw new \RuntimeException(sprintf('The Router does not allow the method "%s" for "%s".', $_SERVER['REQUEST_METHOD'], $key));
-                }
+                # Find all routes that have same route paths and are valid for the current request method
+                $matchedRoute = array_filter($routes, function ($array) use ($value) {
+                    return $array['path'] == $value['path'] && in_array($_SERVER['REQUEST_METHOD'], $array['method']);
+                });
 
-                $found = true;
-                break;
+                if (count($matchedRoute)) {
+                    $key = array_keys($matchedRoute)[0];
+                    $value = $matchedRoute[$key];
+                    $found = true;
+                    break;
+                } else {
+                    if (!in_array($_SERVER['REQUEST_METHOD'], $value['method'])) {
+                        _header(405);
+                        throw new \RuntimeException(sprintf('The Router does not allow the method "%s" for "%s".', $_SERVER['REQUEST_METHOD'], $key));
+                    }
+                }
             }
         }
 

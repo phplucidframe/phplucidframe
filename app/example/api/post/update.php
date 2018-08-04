@@ -1,4 +1,7 @@
 <?php
+/**
+ * PUT /api/posts/{id}
+ */
 
 $id     = _arg('id');
 $data   = _patch();
