@@ -64,95 +64,100 @@ function _version()
 function _flush($buffer, $phase)
 {
     if (function_exists('__flush')) {
-        return __flush($buffer, $phase); # Run the hook if any
-    }
+        $buffer = __flush($buffer, $phase); # Run the hook if any
+    } else {
+        $posHtml = stripos($buffer, '<html');
+        $posHead = stripos($buffer, '<head');
 
-    $posHtml = stripos($buffer, '<html');
-    $posHead = stripos($buffer, '<head');
+        $beforeHtmlTag = substr($buffer, 0, $posHtml);
+        $afterHtmlTag = substr($buffer, $posHead);
+        $htmlTag = trim(str_ireplace($beforeHtmlTag, '', substr($buffer, 0, $posHead)));
 
-    $beforeHtmlTag = substr($buffer, 0, $posHtml);
-    $afterHtmlTag = substr($buffer, $posHead);
-    $htmlTag = trim(str_ireplace($beforeHtmlTag, '', substr($buffer, 0, $posHead)));
-
-    if (trim($htmlTag)) {
-        $htmlTag = trim(ltrim($htmlTag, '<html.<HTML'), '>. ');
-        $attributes = array();
-        $attrList = explode(' ', $htmlTag);
-        foreach ($attrList as $list) {
-            $attr = explode('=', $list);
-            $attr[0] = trim($attr[0]);
-            if (count($attr) == 2) {
-                $attr[1] = trim($attr[1], '".\'');
+        if (trim($htmlTag)) {
+            $htmlTag = trim(ltrim($htmlTag, '<html.<HTML'), '>. ');
+            $attributes = array();
+            $attrList = explode(' ', $htmlTag);
+            foreach ($attrList as $list) {
+                $attr = explode('=', $list);
+                $attr[0] = trim($attr[0]);
+                if (count($attr) == 2) {
+                    $attr[1] = trim($attr[1], '".\'');
+                }
+                $attributes[$attr[0]] = $attr;
             }
-            $attributes[$attr[0]] = $attr;
-        }
 
-        $IE = false;
-        $IEVersion = '';
-        $userAgent = $_SERVER['HTTP_USER_AGENT'];
-        if (strpos($userAgent, 'MSIE') !== false || strpos($userAgent, 'Trident') !== false) {
-            $IE = true;
-            if (preg_match('/(MSIE|rv)\s(\d+)/i', $userAgent, $m)) {
-                $IEVersion = 'ie' . $m[2];
+            $IE = false;
+            $IEVersion = '';
+            $userAgent = $_SERVER['HTTP_USER_AGENT'];
+            if (strpos($userAgent, 'MSIE') !== false || strpos($userAgent, 'Trident') !== false) {
+                $IE = true;
+                if (preg_match('/(MSIE|rv)\s(\d+)/i', $userAgent, $m)) {
+                    $IEVersion = 'ie' . $m[2];
+                }
             }
-        }
 
-        if (array_key_exists('class', $attributes)) {
-            # if there is class attribute provided
-            if ($IE) {
-                $attributes['class'][1] .= ' ie ' . $IEVersion;
-            }
-            if (_multilingual()) {
-                $attributes['class'][1] .= ' ' . _lang();
-            }
-        } else {
-            # if there is not class attributes provided
-            if ($IE || _multilingual()) {
-                $value = array();
+            if (array_key_exists('class', $attributes)) {
+                # if there is class attribute provided
                 if ($IE) {
-                    $value[] = 'ie ' . $IEVersion; # ie class
+                    $attributes['class'][1] .= ' ie ' . $IEVersion;
                 }
                 if (_multilingual()) {
-                    $value[] = _lang(); # lang class
+                    $attributes['class'][1] .= ' ' . _lang();
                 }
-                if (count($value)) {
-                    $attributes['class'] = array('class', implode(' ', $value));
+            } else {
+                # if there is not class attributes provided
+                if ($IE || _multilingual()) {
+                    $value = array();
+                    if ($IE) {
+                        $value[] = 'ie ' . $IEVersion; # ie class
+                    }
+                    if (_multilingual()) {
+                        $value[] = _lang(); # lang class
+                    }
+                    if (count($value)) {
+                        $attributes['class'] = array('class', implode(' ', $value));
+                    }
                 }
             }
-        }
 
-        if (_multilingual()) {
-            # lang attributes
-            if (!array_key_exists('lang', $attributes)) {
-                # if there is no lang attribute provided
-                $attributes['lang'] = array('lang', _lang());
+            if (_multilingual()) {
+                # lang attributes
+                if (!array_key_exists('lang', $attributes)) {
+                    # if there is no lang attribute provided
+                    $attributes['lang'] = array('lang', _lang());
+                }
             }
-        }
 
-        if (!array_key_exists('itemscope', $attributes)) {
-            $attributes['itemscope'] = array('itemscope');
-        }
-
-        if (!array_key_exists('itemtype', $attributes)) {
-            # if there is no itemtype attribute provided
-            # default to "WebPage"
-            $attributes['itemtype'] = array('itemtype', "http://schema.org/WebPage");
-        }
-
-        ksort($attributes);
-        $html = '<html';
-        foreach ($attributes as $key => $value) {
-            $html .= ' '.$key;
-            if (isset($value[1])) {
-                # some attribute may not have value, such as itemscope
-                $html .= '="' . $value[1] . '"';
+            if (!array_key_exists('itemscope', $attributes)) {
+                $attributes['itemscope'] = array('itemscope');
             }
+
+            if (!array_key_exists('itemtype', $attributes)) {
+                # if there is no itemtype attribute provided
+                # default to "WebPage"
+                $attributes['itemtype'] = array('itemtype', "http://schema.org/WebPage");
+            }
+
+            ksort($attributes);
+            $html = '<html';
+            foreach ($attributes as $key => $value) {
+                $html .= ' '.$key;
+                if (isset($value[1])) {
+                    # some attribute may not have value, such as itemscope
+                    $html .= '="' . $value[1] . '"';
+                }
+            }
+            $html .= '>' . "\r\n";
+            $buffer = $beforeHtmlTag . $html . $afterHtmlTag;
         }
-        $html .= '>' . "\r\n";
-        $buffer = $beforeHtmlTag . $html . $afterHtmlTag;
     }
+
     # compress the output
     $buffer = _minifyHTML($buffer);
+
+    $posDoc = stripos($buffer, '<!DOCTYPE');
+    $buffer = substr($buffer, $posDoc);
+
     return $buffer;
 }
 /**
@@ -860,6 +865,7 @@ function _self($queryStr = array(), $lang = '')
  */
 function _header($status, $message = null)
 {
+    _g('httpStatusCode', $status);
     header('HTTP/1.1 ' . $status . ($message ? ' ' . $message : ''));
 }
 /**

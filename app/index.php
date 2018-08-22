@@ -36,7 +36,8 @@ if (_cfg('layoutMode') && _isAjax() === false) {
     if (is_file($layout) && file_exists($layout)) {
         require_once $layout;
     } else {
-        die('Layout file is missing: ' . $layout);
+        _header(500);
+        throw new \RuntimeException(sprintf('Layout file is missing: %s', $layout));
     }
 }
 

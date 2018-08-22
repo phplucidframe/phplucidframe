@@ -869,6 +869,56 @@ span.invalid {
 }
 
 /*************/
+/* EXCEPTION */
+/*************/
+
+.container-box.exception-box {
+    width: 80%;
+    margin-top: 50px;
+}
+
+.container-box.exception-box .box {
+    padding-bottom: 60px;
+}
+
+.error-stacktrace .block-exception {
+    background: darkred;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    color: #ffffff;
+    padding: 20px;
+}
+
+.error-stacktrace .block-exception p {
+    background: #dc4343;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    font-size: 17px;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+}
+
+.error-stacktrace .block-exception code.inline {
+    background: darkred;
+}
+
+.error-stacktrace .block-stacktrace {
+    background: #f9f9f9;
+    border: 1px #eee solid;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    margin-top: 20px;
+    padding: 25px;
+}
+
+.error-stacktrace .block-stacktrace code.inline {
+    background: #ffffff;
+}
+
+/*************/
 /* TABLE DIV */
 /*************/
 

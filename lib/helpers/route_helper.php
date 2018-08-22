@@ -536,8 +536,10 @@ function router()
     }
 
     if (in_array(_arg(0), array('401', '403'))) {
+        _header(_arg(0));
         return _i('inc/tpl/'._arg(0).'.php');
     } else {
+        _header(404);
         return _i('inc/tpl/404.php');
     }
 }

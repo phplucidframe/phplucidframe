@@ -147,12 +147,8 @@ function db_prerequisite($namespace = null)
     if (db_host($namespace) && db_user($namespace) && db_name($namespace)) {
         return db_config($namespace);
     } else {
-        $error = new stdClass();
-        $error->message = 'Required to configure <code class="inline">db</code> in "/inc/parameters/'._cfg('env').'.php".';
-        $error->message = array(function_exists('_t') ? _t($error->message) : $error->message);
-        $error->type    = 'sitewide-message error';
-        include( _i('inc/tpl/site.error.php') );
-        exit;
+        _header(400);
+        throw new \InvalidArgumentException('Required to configure <code class="inline">db</code> in <code class="inline">/inc/parameters/'._cfg('env').'.php</code>.');
     }
 }
 /**

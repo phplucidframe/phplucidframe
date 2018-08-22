@@ -61,19 +61,17 @@ if (!function_exists('auth_create')) {
 function auth_prerequisite()
 {
     global $lc_siteErrors;
+
     db_prerequisite();
     $auth = _cfg('auth');
+
     if (isset($auth['table']) && $auth['table'] &&
         isset($auth['fields']['id']) && $auth['fields']['id'] &&
         isset($auth['fields']['role']) && $auth['fields']['role']) {
         return $auth;
     } else {
-        $error = new stdClass();
-        $error->message = 'Required to configure <code class="inline">$lc_auth</code> in "/inc/config.php" or "/inc/site.config.php".';
-        $error->message = array(function_exists('_t') ? _t($error->message) : $error->message);
-        $error->type    = 'sitewide-message error';
-        include( _i('inc/tpl/site.error.php') );
-        exit;
+        _header(400);
+        throw new \InvalidArgumentException('Required to configure <code class="inline">$lc_auth</code> in <code class="inline">/inc/config.php</code> or <code class="inline">/inc/site.config.php</code>.');
     }
 }
 /**

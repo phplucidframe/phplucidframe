@@ -49,6 +49,12 @@ define('LC_CONSOLE_OPTION_NOVALUE', 6);
 /**
  * @internal
  * @ignore
+ * HTTP status code
+ */
+$lc_httpStatusCode = 200;
+/**
+ * @internal
+ * @ignore
  * Site-wide warnings to be shown
  */
 $lc_sitewideWarnings = array();
@@ -367,12 +373,119 @@ function __env()
 }
 
 /**
+ * @internal
+ * @ignore
  * Return list of env name array
  * @return array
  */
 function __envList()
 {
     return array(ENV_PROD, ENV_STAGING, ENV_DEV, ENV_TEST, 'dev', 'prod');
+}
+
+/**
+ * @internal
+ * @ignore
+ *
+ * Custom error handler
+ *
+ * @param  integer $code    Error code
+ * @param  string  $message Error message
+ * @param  string  $file    File name
+ * @param  integer $line    Error line number
+ * @return void
+ */
+function __kernelErrorHandler($code, $message, $file, $line)
+{
+    if (!(error_reporting() & $code)) {
+        // This error code is not included in error_reporting, so let it fall
+        // through to the standard PHP error handler
+        return false;
+    }
+
+    $type = __kernelErrorTypes($code);
+    $trace = array_reverse(debug_backtrace());
+
+    $status = _g('httpStatusCode');
+    if (empty($status) || $status == 200) {
+        $status = 500;
+        _g('httpStatusCode', $status);
+    }
+
+    _header($status);
+    include( _i('inc/tpl/exception.php') );
+}
+
+/**
+ * @internal
+ * @ignore
+ *
+ * Custom shutdown handler
+ */
+function __kernelShutdownHandler()
+{
+    $error = error_get_last();
+    __kernelErrorHandler($error['type'], $error['message'], $error['file'], $error['line']);
+}
+
+/**
+ * @internal
+ * @ignore
+ *
+ * Get friendly error type by code
+ * @param  integer $code Error code
+ * @return string The friendly error type
+ */
+function __kernelErrorTypes($code)
+{
+    switch($code) {
+        case E_ERROR: # 1
+            return 'E_ERROR: Fatal error';
+
+        case E_WARNING: # 2
+            return 'E_WARNING: Warning';
+
+        case E_PARSE: # 4
+            return 'E_PARSE: Parse error';
+
+        case E_NOTICE: # 8
+            return 'E_NOTICE: Notice';
+
+        case E_CORE_ERROR: # 16
+            return 'E_CORE_ERROR: Fatal error';
+
+        case E_CORE_WARNING: # 32
+            return 'E_CORE_WARNING: Warning';
+
+        case E_COMPILE_ERROR: # 64
+            return 'E_COMPILE_ERROR: Fatal error';
+
+        case E_COMPILE_WARNING: # 128
+            return 'E_COMPILE_WARNING: Warning';
+
+        case E_USER_ERROR: # 256
+            return 'E_USER_ERROR: User-generated error';
+
+        case E_USER_WARNING: # 512
+            return 'E_USER_WARNING: User-generated warning';
+
+        case E_USER_NOTICE: # 1024
+            return 'E_USER_NOTICE: User-generated notice';
+
+        case E_STRICT: # 2048
+            return 'E_STRICT: Information';
+
+        case E_RECOVERABLE_ERROR: # 4096
+            return 'E_RECOVERABLE_ERROR: Catchable fatal error';
+
+        case E_DEPRECATED: # 8192
+            return 'E_DEPRECATED: Deprecated warning';
+
+        case E_USER_DEPRECATED: # 16384
+            return 'E_USER_DEPRECATED: User-generated deprecated warning';
+    }
+
+    return 'E_ERROR, Error';
 }
 
 /*************************/
@@ -626,3 +739,6 @@ function _env($name)
 }
 
 __prerequisite();
+
+set_error_handler('__kernelErrorHandler');
+register_shutdown_function('__kernelShutdownHandler');
