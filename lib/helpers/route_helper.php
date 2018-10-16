@@ -454,27 +454,6 @@ function route_getAbsolutePathToRoot($q)
 }
 
 /**
- * Initialize a route to define
- *
- * @param string $name The route name that is unique to the mapped path
- * @return object Router
- */
-function route($name)
-{
-    return new Router($name);
-}
-
-/**
- * Define route group
- * @param string $prefix A prefix for the group of the routes
- * @param function $callback The callback function that defines each route in the group
- */
-function route_group($prefix, $callback)
-{
-    Router::group($prefix, $callback);
-}
-
-/**
  * @internal
  * @ignore
  *
@@ -542,4 +521,66 @@ function router()
         _header(404);
         return _i('inc/tpl/404.php');
     }
+}
+
+/**
+ * Initialize a route to define
+ *
+ * @param string $name The route name that is unique to the mapped path
+ * @return object Router
+ */
+function route($name)
+{
+    return new Router($name);
+}
+
+/**
+ * Define route group
+ * @param string $prefix A prefix for the group of the routes
+ * @param function $callback The callback function that defines each route in the group
+ */
+function route_group($prefix, $callback)
+{
+    Router::group($prefix, $callback);
+}
+
+/**
+ * Get the current route name
+ * @return string The route name defined in route.config.php
+ */
+function route_name()
+{
+    return Router::getMatchedName();
+}
+
+/**
+ * Check if the current route is equal to the given uri or route name
+ * @param  string $uri URI string or the route name defined in route.config.php
+ * @return boolean true if it is matched, otherwise false
+ */
+function route_equal($uri)
+{
+    $uri = trim($uri, '/');
+
+    return $uri == _rr() || $uri == route_name();
+}
+
+/**
+ * Check if the current route uri is started with the given uri
+ * @param  string $uri URI string
+ * @return boolean true/false
+ */
+function route_start($uri)
+{
+    return stripos(_rr(), trim($uri, '/')) === 0;
+}
+
+/**
+ * Check if the current route uri contains the given uri
+ * @param  string $uri URI string
+ * @return boolean true/false
+ */
+function route_contain($uri)
+{
+    return stristr(_rr(), trim($uri, '/')) ? true : false;
 }

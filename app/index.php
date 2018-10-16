@@ -14,11 +14,14 @@
  * with this source code in the file LICENSE
  */
 
+use LucidFrame\Core\Middleware;
+
 require_once '../lib/bootstrap.php';
+
+Middleware::runBefore();
 
 ob_start('_flush');
 
-$_page = router();
 require $_page;
 
 if (in_array(rtrim(substr($_page, -7), '.php'), array('401', '403', '404'))) {
@@ -42,3 +45,5 @@ if (_cfg('layoutMode') && _isAjax() === false) {
 }
 
 ob_end_flush();
+
+Middleware::runAfter();

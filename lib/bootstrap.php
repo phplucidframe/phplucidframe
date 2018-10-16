@@ -101,13 +101,10 @@ if ($file = _i('helpers'._DS_.'utility_helper.php', false)) {
 }
 require HELPER . 'utility_helper.php';
 
-# Autoload all files by directory
+# Autoload all system files by directory
 _autoloadDir(CLASSES);
 _autoloadDir(CLASSES . 'console');
 _autoloadDir(LIB . 'commands');
-_autoloadDir(APP_ROOT . 'commands');
-_autoloadDir(APP_ROOT . 'cmd');
-_autoloadDir(APP_ROOT . 'entity');
 
 # DB configuration & DB helper (required)
 if (isset($lc_databases[$lc_defaultDbSource]) && is_array($lc_databases[$lc_defaultDbSource]) && $lc_databases[$lc_defaultDbSource]['engine']) {
@@ -259,3 +256,12 @@ $composerAutoloader = VENDOR . 'autoload.php';
 if (is_file($composerAutoloader) && file_exists($composerAutoloader)) {
     require $composerAutoloader;
 }
+
+# Handling request to a route and map to a page
+$_page = router();
+
+# Autoload all app files by directory
+_autoloadDir(APP_ROOT . 'commands');
+_autoloadDir(APP_ROOT . 'cmd');
+_autoloadDir(APP_ROOT . 'entity');
+_autoloadDir(APP_ROOT . 'middleware');

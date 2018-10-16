@@ -17,6 +17,7 @@
 use LucidFrame\Console\Command;
 use LucidFrame\Console\Console;
 use LucidFrame\Console\ConsoleTable;
+use LucidFrame\Core\Middleware;
 use LucidFrame\Core\Pager;
 use LucidFrame\File\AsynFileUploader;
 use LucidFrame\File\File;
@@ -1949,7 +1950,6 @@ function _consoleCommands()
     return Console::getCommands();
 }
 
-
 /**
  * Simple helper to create Pager object
  * @since   PHPLucidFrame v 1.11.0
@@ -1985,6 +1985,17 @@ function _asynFileUploader()
     } else {
         return new AsynFileUploader();
     }
+}
+
+/**
+ * Simple helper to register a middleware
+ * @since  PHPLucidFrame v 2.0.0
+ * @param  Closure Anonymous function
+ * @return object LucidFrame\Console\Middleware
+ */
+function _middleware(\Closure $closure, $event = Middleware::BEFORE)
+{
+    return (new Middleware())->register($closure, $event);
 }
 
 /**
@@ -2036,7 +2047,10 @@ function _isAjax()
 function _json(array $data, $status = 200)
 {
     _header($status);
+
     header('Content-Type: text/json');
     echo json_encode($data);
+
+    Middleware::runAfter();
     exit;
 }
