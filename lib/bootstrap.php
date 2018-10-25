@@ -261,7 +261,6 @@ if (is_file($composerAutoloader) && file_exists($composerAutoloader)) {
 $_page = router();
 
 # Autoload all app files by directory
-_autoloadDir(APP_ROOT . 'commands');
 _autoloadDir(APP_ROOT . 'cmd');
 _autoloadDir(APP_ROOT . 'entity');
 _autoloadDir(APP_ROOT . 'middleware');
