@@ -11,6 +11,7 @@ DirectoryIndex index.php index.html index.htm
 
 <IfModule mod_rewrite.c>
     RewriteEngine on
+    RewriteRule .* - [e=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
     RewriteRule ^index.php$ app/index.php [NC,L]
 

@@ -18,6 +18,8 @@ if (route_start('api')) {
      */
     _middleware(function () {
         // Do something before page process is not started
+        // for example, checking bearer token from HTTP Authorization
+        // $authorization = _requestHeader('Authorization')
     }, 'before'); // 'before' is optional and default
 }
 

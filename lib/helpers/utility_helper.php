@@ -2054,3 +2054,54 @@ function _json(array $data, $status = 200)
     Middleware::runAfter();
     exit;
 }
+
+/**
+ * Fetch all HTTP request headers
+ * @return array An associative array of all the HTTP headers in the current request, or FALSE on failure.
+ */
+function _requestHeaders()
+{
+    if (function_exists('getallheaders')) {
+        return getallheaders();
+    }
+
+    if (function_exists('apache_request_headers')) {
+        return apache_request_headers();
+    }
+
+    $headers = array();
+    foreach ($_SERVER as $name => $value) {
+        $name = strtolower($name);
+        if (substr($name, 0, 5) == 'http_') {
+            $headers[str_replace(' ', '-', ucwords(str_replace('_', ' ', substr($name, 5))))] = $value;
+        } elseif ($name == 'content_type') {
+            $headers['Content-Type'] = $value;
+        } elseif ($name == 'content_length') {
+            $headers['Content-Length'] = $value;
+        }
+    }
+
+    return $headers;
+}
+
+/**
+ * Fetch a HTTP request header by name
+ * @param  string $name The HTTP header name
+ * @return string The HTTP header value from the request
+ */
+function _requestHeader($name)
+{
+    $headers = _requestHeaders();
+    if (!is_array($headers)) {
+        return null;
+    }
+
+    $headers = array_change_key_case($headers);
+    $name = strtolower($name);
+
+    if (isset($headers[$name])) {
+        return $headers[$name];
+    }
+
+    return null;
+}
