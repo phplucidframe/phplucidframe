@@ -38,7 +38,7 @@ class Middleware
     public function register(\Closure $closure, $event = self::BEFORE)
     {
         if (in_array($event, array(self::BEFORE, self::AFTER))) {
-            self::$$event[] = $closure;
+            self::${$event}[] = $closure;
         }
 
         return $this;
