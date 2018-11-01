@@ -102,7 +102,7 @@ return array(
         'slug'      => array('type' => 'string', 'length' => 100),
         'fullName'  => array('type' => 'string', 'length' => 50),
         'username'  => array('type' => 'string', 'length' => 20),
-        'password'  => array('type' => 'string', 'length' => 50),
+        'password'  => array('type' => 'string', 'length' => 125),
         'email'     => array('type' => 'string', 'length' => 100),
         'role'      => array('type' => 'string', 'length' => 10),
         'isMaster'  => array('type' => 'boolean', 'default' => false),
