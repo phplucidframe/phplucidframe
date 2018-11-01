@@ -1564,31 +1564,45 @@ function _encrypt($text)
     }
 
     $method = _cipher();
-    $ivlen = openssl_cipher_iv_length($method);
-    $iv = openssl_random_pseudo_bytes($ivlen);
+    $ivlen  = openssl_cipher_iv_length($method);
+    $iv     = openssl_random_pseudo_bytes($ivlen);
 
-    return openssl_encrypt($text, $method, $secret, OPENSSL_RAW_DATA, $iv);
+    $textRaw = openssl_encrypt($text, $method, $secret, OPENSSL_RAW_DATA, $iv);
+    $hmac = hash_hmac('sha256', $textRaw, $secret, true);
+
+    return base64_encode($iv . $hmac . $textRaw );
 }
 
 /**
  * Decrypts the given text using security salt if mcrypt extension is enabled,
  * otherwise return the original encrypted string
  *
- * @param   string $text Text to be decrypted
+ * @param   string $encryptedText Text to be decrypted
  * @return  string The decrypted text
  */
-function _decrypt($text)
+function _decrypt($encryptedText)
 {
     $secret = _cfg('securitySecret');
     if (!$secret || !function_exists('openssl_decrypt')) {
         return $text;
     }
 
-    $method = _cipher();
-    $ivlen = openssl_cipher_iv_length($method);
-    $iv = openssl_random_pseudo_bytes($ivlen);
+    $method  = _cipher();
+    $sha2len = 32;
+    $ivlen   = openssl_cipher_iv_length($method);
+    $text    = base64_decode($encryptedText);
+    $iv      = substr($text, 0, $ivlen);
 
-    return openssl_decrypt($text, $method, $secret, OPENSSL_RAW_DATA, $iv);
+    $rawText = substr($text, $ivlen + $sha2len);
+    $plainText = openssl_decrypt($rawText, $method, $secret, OPENSSL_RAW_DATA, $iv);
+
+    $hmac = substr($text, $ivlen, $sha2len);
+    $mac = hash_hmac('sha256', $rawText, $secret, true);
+    if (hash_equals($hmac, $mac)) {
+        return $plainText;
+    }
+
+    return $text;
 }
 
 /**
