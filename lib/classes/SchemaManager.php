@@ -477,20 +477,17 @@ class SchemaManager
             $dbNamespace = $this->dbNamespace;
         }
 
-        $builtSchema = str_replace('  ', '    ', var_export($this->schema, true));
-        $builtSchema = preg_replace('/\s+\\n/', PHP_EOL, $builtSchema);
-        $builtSchema = preg_replace('/=>\\n/', "=>", $builtSchema);
-        $builtSchema = preg_replace('/=>\s+/', "=> ", $builtSchema);
-
-        $content = '<?php'.PHP_EOL.PHP_EOL;
-        $content .= 'return ';
-        $content .= $builtSchema;
-        $content .= ';'.PHP_EOL;
-
-        $result = file_put_contents(DB.'build'._DS_.'schema.'.$dbNamespace.'.inc', $content);
+        $fileName = self::getSchemaLockFileName($dbNamespace);
+        $result = file_put_contents($fileName, serialize($this->schema));
         if ($result) {
             if ($backup) {
-                copy(DB.'build'._DS_.'schema.'.$dbNamespace.'.inc', DB.'build'._DS_.'~schema.'.$dbNamespace.'.inc');
+                copy($fileName, self::getSchemaLockFileName($dbNamespace, true));
+            }
+
+            # Delete the deprecated built files with extension .inc
+            $deprecatedFileName = self::getSchemaLockFileName($dbNamespace, false, 'inc');
+            if (is_file($deprecatedFileName) && file_exists($deprecatedFileName)) {
+                unlink($deprecatedFileName);
             }
 
             return true;
@@ -560,8 +557,7 @@ class SchemaManager
             $dbNamespace = $this->dbNamespace;
         }
 
-        $file = DB._DS_.'build'._DS_.'schema.'.$dbNamespace.'.inc';
-        $schemaFrom = include $file;
+        $schemaFrom = self::getSchemaLockDefinition($dbNamespace);
 
         if (!$this->isLoaded()) {
             $this->load();
@@ -660,8 +656,7 @@ class SchemaManager
             $dbNamespace = $this->dbNamespace;
         }
 
-        $file = DB._DS_.'build'._DS_.'schema.'.$dbNamespace.'.inc';
-        $schemaFrom = include $file;
+        $schemaFrom = self::getSchemaLockDefinition($dbNamespace);
 
         if (!$this->isLoaded()) {
             $this->load();
@@ -1100,9 +1095,7 @@ class SchemaManager
     public function getCurrentVersion()
     {
         $version = 0;
-        $file = DB._DS_.'build'._DS_.'schema.'.$this->dbNamespace.'.inc';
-        if (is_file($file) && file_exists($file)) {
-            $schema = include $file;
+        if ($schema = self::getSchemaLockDefinition($this->dbNamespace)) {
             $version = isset($schema['_options']['version']) ? $schema['_options']['version'] : 0;
         }
 
@@ -2077,5 +2070,66 @@ class SchemaManager
         }
 
         return $versionDir;
+    }
+
+    /**
+     * Get schema definition from the built schema file
+     * @param  string $dbNamespace The namespace for the database
+     * @return array The schema definition; NULL when there is no file
+     */
+    public static function getSchemaLockDefinition($dbNamespace = null)
+    {
+        $extensions = array('lock', 'inc'); # @TODO: Remove inc for backward compatibility support
+
+        foreach ($extensions as $ext) {
+            $file = DB._DS_.'build'._DS_.'schema';
+            if ($dbNamespace) {
+                $file .= '.' . $dbNamespace;
+            }
+            $file .= '.' . $ext;
+
+            if (!(is_file($file) && file_exists($file))) {
+                continue;
+            }
+
+            if ($ext === 'lock') {
+                return unserialize(file_get_contents($file));
+            } else {
+                return include $file;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Get schema lock file name
+     * @param  string $dbNamespace The namespace for the database
+     * @param  boolean $backupFileName If true, ~ will be prefixed in the file name
+     * @param  string $ext The file extension, default to .lock
+     * @return string The file name with full path
+     */
+    public static function getSchemaLockFileName($dbNamespace = null, $backupFileName = false, $ext = 'lock')
+    {
+        if (!in_array($ext, array('lock', 'inc'))) {
+            # @TODO: Remove inc for backward compatibility support
+            $ext = 'lock';
+        }
+
+        $file = DB . _DS_ . 'build' . _DS_;
+
+        if ($backupFileName) {
+            $file .= '~';
+        }
+
+        $file .= 'schema';
+
+        if ($dbNamespace) {
+            $file .= '.' . $dbNamespace;
+        }
+
+        $file .= '.' . $ext;
+
+        return $file;
     }
 }

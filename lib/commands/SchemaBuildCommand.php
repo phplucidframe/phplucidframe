@@ -38,7 +38,7 @@ _consoleCommand('schema:build')
         } else {
             $sm = new SchemaManager($schema, $db);
             if ($sm->build($db, $backupOption)) {
-                _writeln('The schema has been build at "db/build/schema.%s.inc".', $db);
+                _writeln('The schema has been build at "db/build/schema.%s.lock".', $db);
             } else {
                 _writeln('No schema is loaded.');
             }

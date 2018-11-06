@@ -13,6 +13,8 @@
  * with this source code in the file LICENSE
  */
 
+ use LucidFrame\Core\SchemaManager;
+
 /**
  * @ignore Flag for image resize to the fitted dimension to the given dimension
  */
@@ -497,8 +499,8 @@ function __kernelErrorTypes($code)
  * @param  string $dbNamespace The namespace for the database
  * @param  boolean TRUE to look for the file in /db/build/; FALSE in /db/
  *  `TRUE` to look for the file in such priority
- *      1. /db/build/schema.{namespace}.inc
- *      2. /db/build/schema.inc (only for default)
+ *      1. /db/build/schema.{namespace}.lock
+ *      2. /db/build/schema.lock (only for default)
  *      3. /db/schema.{namespace}.php
  *      4. /db/schema.php (only for default)
  *
@@ -513,40 +515,32 @@ function __kernelErrorTypes($code)
  */
 function _schema($dbNamespace = 'default', $cache = false)
 {
+    $files = array();
     if ($cache) {
-        $path = DB.'build'._DS_;
-        $ext = 'inc';
-    } else {
-        $path = DB;
-        $ext = 'php';
+        $files[] = SchemaManager::getSchemaLockFileName($dbNamespace);
+        $files[] = SchemaManager::getSchemaLockFileName();
+        # @TODO: Remove inc for backward compatibility support
+        $files[] = SchemaManager::getSchemaLockFileName($dbNamespace, false, 'inc');
+        $files[] = SchemaManager::getSchemaLockFileName(null, false, 'inc');
     }
 
-    if ($dbNamespace === 'default') {
-        $files = array("{$path}schema.{$dbNamespace}.{$ext}", "{$path}schema.{$ext}");
-    } else {
-        $files = array("{$path}schema.{$dbNamespace}.{$ext}");
-    }
-
-    if ($cache) {
-        $files[] = DB."schema.{$dbNamespace}.php";
-        $files[] = DB."schema.php";
-    }
-    $files = array_unique($files);
+    $files[] = DB."schema.{$dbNamespace}.php";
+    $files[] = DB."schema.php";
 
     $file = false;
     foreach ($files as $f) {
         if (is_file($f) && file_exists($f)) {
             $file = $f;
-            break;
+            if (pathinfo($file, PATHINFO_EXTENSION) == 'lock') {
+                return unserialize(file_get_contents($file));
+            } else {
+                $schema = include($file);
+                return is_array($schema) ? $schema : null;
+            }
         }
     }
 
-    if ($file) {
-        $schema = include($file);
-        return is_array($schema) ? $schema : null;
-    } else {
-        return false;
-    }
+    return false;
 }
 
 /**
