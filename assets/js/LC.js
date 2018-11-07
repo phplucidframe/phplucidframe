@@ -15,6 +15,7 @@
 (function(win, $) {
     var LC = win.LC;
     var Form = {
+        formData: {},
         /**
          * @internal
          * LC.Form.init()
@@ -235,6 +236,7 @@
             $form.find('.message').filter(':first').html('').hide();
         },
         /**
+         * @deprecated Use getFormData() instead
          * LC.Form.data()
          * Get the embedded JSON form data
          */
@@ -249,6 +251,17 @@
                 }
                 return $row;
             }
+            return false;
+        },
+        /**
+         * LC.Form.getFormData()
+         * Get the embedded JSON form data
+         */
+        getFormData : function(formId, id) {
+            if (typeof LC.Form.formData[formId][id] !== 'undefined') {
+                return LC.Form.formData[formId][id];
+            }
+
             return false;
         },
         /**

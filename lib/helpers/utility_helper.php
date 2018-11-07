@@ -2119,3 +2119,13 @@ function _requestHeader($name)
 
     return null;
 }
+
+/**
+ * Convert form data into js variable
+ * @param string $name The form name or scope name
+ * @param array $data Array of data
+ */
+function _addFormData($name, array $data)
+{
+    echo '<script>LC.Form.formData["' . $name . '"] = ' . json_encode($data) . ';</script>';
+}
