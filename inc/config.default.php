@@ -130,11 +130,11 @@ $lc_defaultDbSource = 'default';
  *   /app/admin/helpers
  *   /app/admin/js
  * you could also set 'lc-admin' => 'admin', then you can access http://localhost/phplucidframe/lc-admin
- * Leave this an empty array if you don't want this feature
  * @see https://github.com/phplucidframe/phplucidframe/wiki/Configuration-for-The-Sample-Administration-Module
  */
 $lc_sites = array(
     /* 'virtual_folder_name (namespace)'  => 'path/to/physical_folder_name_directly_under_app_directory' */
+    'admin' => 'admin'
 );
 # $lc_homeRouting: Home page routing; if it is not set, default is 'home'
 # @deprecated
