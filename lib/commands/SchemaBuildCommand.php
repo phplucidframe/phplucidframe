@@ -24,10 +24,13 @@ use LucidFrame\Core\SchemaManager;
 
 _consoleCommand('schema:build')
     ->setDescription('Build the schema in /db/build/')
-    ->addArgument('db', 'The database namespace defined in $lc_databases of config.php', 'default')
+    ->addArgument('db', 'The database namespace defined in $lc_databases of config.php; if not provided $lc_defaultDbSource will be used.')
     ->addOption('backup', null, 'Create a backup file', null, LC_CONSOLE_OPTION_NOVALUE)
     ->setDefinition(function(\LucidFrame\Console\Command $cmd) {
         $db = $cmd->getArgument('db');
+        if (empty($db)) {
+            $db = _cfg('defaultDbSource');
+        }
         $backupOption = (bool) $cmd->getOption('backup');
 
         $schema = _schema($db);
