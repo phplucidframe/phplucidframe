@@ -38,19 +38,24 @@
     font-style: normal;
 }
 
-.my body, .my{
-    font-family: "Arial", "myanmar3", "myanmar3regular", "zawgyi-oneregular", "Zawgyi-One", Helvetica, sans-serif;
+.my body, .my, .my p {
+    font-family: "Padauk", "myanmar3", "myanmar3regular", "zawgyi-oneregular", "Zawgyi-One", Helvetica, sans-serif;
+    font-size: 15px;
 }
 
-.my input, input[name$='_my'], input.my, select.my, textarea.my, .my button{
-    font-family: "Arial", "myanmar3", "myanmar3regular", "zawgyi-oneregular", "Zawgyi-One", Helvetica, sans-serif !important;
+.my input, input[name$='_my'], input.my, select.my, textarea.my, .my button {
+    font-family: "Padauk", "myanmar3", "myanmar3regular", "zawgyi-oneregular", "Zawgyi-One", Helvetica, sans-serif !important;
+    font-size: 14px;
 }
 
 .my h1, .my h2, .my h3, .my h4, .my h5, .my h6 {
-    font-family: "Arial", "myanmar3", "myanmar3regular", "zawgyi-oneregular", "Zawgyi-One", Helvetica, sans-serif;
-    letter-spacing: 1px;
+    font-family: "Padauk", "myanmar3", "myanmar3regular", "zawgyi-oneregular", "Zawgyi-One", Helvetica, sans-serif;
 }
 
 .my .ui-widget {
-    font-family: "Arial", "myanmar3", "myanmar3regular", "zawgyi-oneregular", "Zawgyi-One", Arial, sans-serif;
+    font-family: "Padauk", "myanmar3", "myanmar3regular", "zawgyi-oneregular", "Zawgyi-One", Arial, sans-serif;
+}
+
+.my code {
+    font-size: 12px;
 }

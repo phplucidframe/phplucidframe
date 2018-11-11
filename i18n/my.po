@@ -76,6 +76,9 @@ msgstr "ဥပမာ ၅"
 msgid "Example 6"
 msgstr "ဥပမာ ၆"
 
+msgid "Example 7"
+msgstr "ဥပမာ ၇"
+
 msgid "Download"
 msgstr "ဒေါင်းလုဒ်လုပ်မည်"
 

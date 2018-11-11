@@ -5,6 +5,7 @@
 <?php _metaSeoTags(); ?>
 <link rel="shortcut icon" href="<?php echo _img('favicon.ico'); ?>" type="image/x-icon" />
 <?php _css('base.css'); ?>
+<link href="https://fonts.googleapis.com/css?family=Padauk:400,700" rel="stylesheet">
 <?php _css('base.'._lang().'.css'); ?>
 <?php _css('jquery-ui'); ?>
 <?php _js('jquery'); ?>

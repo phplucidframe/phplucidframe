@@ -165,7 +165,7 @@ input[type=text], input[type=password] {
 
 input[type=text], input[type=password], textarea, select {
     border: 1px #b8b8b8 solid;
-    padding: 3px 5px;
+    padding: 8px 10px;
     background: #ffffff;
     -moz-border-radius: 3px;
     -webkit-border-radius: 3px;
@@ -1023,7 +1023,7 @@ table.form td.label, div.tableForm .label,
 table.form td.labelSeperator, table.form td.labelSeparator,
 div.tableForm .labelSeperator, div.tableForm .labelSeparator
 table.form td.nextLabel {
-    padding-top: 9px;
+    padding-top: 12px;
 }
 
 table.form td.nextLabel {
@@ -1286,7 +1286,7 @@ ul.pager li {
 
 .pager .pages a,
 .pager .pages span.currentPage {
-    padding: 1px 5px;
+    padding: 1px 8px;
     background: #ccc;
     margin: 0 1px;
 }
