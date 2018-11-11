@@ -238,7 +238,15 @@ class ConsoleTable
     private function getBorderLine()
     {
         $output = '';
-        $columnCount = count($this->data[0]);
+
+        if (isset($this->data[0])) {
+            $columnCount = count($this->data[0]);
+        } elseif (isset($this->data[self::HEADER_INDEX])) {
+            $columnCount = count($this->data[self::HEADER_INDEX]);
+        } else {
+            return $output;
+        }
+
         for ($col = 0; $col < $columnCount; $col++) {
             $output .= $this->getCellOutput($col);
         }
@@ -275,7 +283,10 @@ class ConsoleTable
         }
 
         $output .= $padding; # left padding
-        $output .= str_pad($cell, $width, $row ? ' ' : '-'); # cell content
+        $cell    = trim(preg_replace('/\s+/', ' ', $cell)); # remove line breaks
+        $content = preg_replace('#\x1b[[][^A-Za-z]*[A-Za-z]#', '', $cell);
+        $delta   = strlen($cell) - strlen($content);
+        $output .= str_pad($cell, $width + $delta, $row ? ' ' : '-'); # cell content
         $output .= $padding; # right padding
         if ($row && $index == count($row)-1 && $this->border) {
             $output .= $row ? '|' : '+';
@@ -297,7 +308,7 @@ class ConsoleTable
                     if (!isset($this->columnWidths[$x])) {
                         $this->columnWidths[$x] = strlen($content);
                     } else {
-                        if (strlen($col) > $this->columnWidths[$x]) {
+                        if (strlen($content) > $this->columnWidths[$x]) {
                             $this->columnWidths[$x] = strlen($content);
                         }
                     }
