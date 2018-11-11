@@ -11,4 +11,4 @@
 <?php _js('jquery-ui'); ?>
 <?php _script(); ?>
 <?php _js('LC.js'); ?>
-<?php _js('site.js'); ?>
+<?php _js('app.js'); ?>
