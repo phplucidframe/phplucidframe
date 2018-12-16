@@ -45,12 +45,12 @@ $lc_validationMessages = array(
     'fileMaxSize'            => "'%s' cannot exceed the maximum allowed upload size %dMB.",
     'fileMaxWidth'           => "'%s' cannot exceed the maximum allowed width %dpx.",
     'fileMaxHeight'          => "'%s' cannot exceed the maximum allowed height %dpx.",
-    'fileMaxDimension'       => "'%s' cannot exceed the maximum allowed dimension %dx%dpx.",
+    'fileMaxDimension'       => "'%s' cannot exceed the maximum allowed dimension %dpx%dpx.",
     'fileExactDimension'     => "'%s' should have the dimension %dx%dpx.",
     'fileExtension'          => "'%s' must be one of the file types: %s.",
     'date'                   => "'%s' should be valid for the date format '%s'.",
-    'time'                   => "'%s' should be valid for %s format.",
-    'datetime'               => "'%s' should be valid for the date/time format '%s' %s.",
+    'time'                   => "'%s' should be valid for the time format '%s'.",
+    'datetime'               => "'%s' should be valid for the date/time format '%s %s'.",
     'custom'                 => "'%s' should be a valid format."
 );
 

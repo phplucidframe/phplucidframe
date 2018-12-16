@@ -101,8 +101,8 @@ msgstr "'%s' cannot exceed the maximum allowed width %dpx."
 msgid "'%s' cannot exceed the maximum allowed height %dpx."
 msgstr "'%s' cannot exceed the maximum allowed height %dpx."
 
-msgid "'%s' cannot exceed the maximum allowed dimension %dx%dpx."
-msgstr "'%s' cannot exceed the maximum allowed dimension %dx%dpx."
+msgid "'%s' cannot exceed the maximum allowed dimension %dpx%dpx."
+msgstr "'%s' cannot exceed the maximum allowed dimension %dpx%dpx."
 
 msgid "'%s' should have the dimension %dx%dpx."
 msgstr "'%s' should have the dimension %dx%dpx."
@@ -113,11 +113,11 @@ msgstr "'%s' must be one of the file types: %s."
 msgid "'%s' should be valid for the date format '%s'."
 msgstr "'%s' should be valid for the date format '%s'."
 
-msgid "'%s' should be valid for %s format."
-msgstr "'%s' should be valid for %s format."
+msgid "'%s' should be valid for the time format '%s'."
+msgstr "'%s' should be valid for the time format '%s'."
 
-msgid "'%s' should be valid for the date/time format '%s' %s."
-msgstr "'%s' should be valid for the date/time format '%s' %s."
+msgid "'%s' should be valid for the date/time format '%s %s'."
+msgstr "'%s' should be valid for the date/time format '%s %s'."
 
 msgid "'%s' should be a valid format."
 msgstr "'%s' should be a valid format."
