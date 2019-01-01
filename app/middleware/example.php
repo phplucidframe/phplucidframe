@@ -13,7 +13,7 @@ _middleware(function () {
 
 if (route_start('api')) {
     /**
-     * This is an example middleware running before page starts
+     * This is an example middleware running before page request
      * This will be executed on all pages which URI starts with "api"
      */
     _middleware(function () {
@@ -25,12 +25,12 @@ if (route_start('api')) {
 
 if (route_start('api/posts')) {
     /**
-     * This is an example middleware running before page starts
-     * This will be executed on all pages which URI starts with "api"
+     * This is an example middleware running before page request
+     * This will be executed on all pages which URI starts with "api/posts"
      */
     _middleware(function () {
-        // Do something before page process is not started
-    }, 'after');
+        // Do something before the page request
+    }, 'before');
 }
 
 if (route_equal('lc_blog_show')) {
@@ -40,16 +40,16 @@ if (route_equal('lc_blog_show')) {
      * this is defined in route.config.php
      */
     _middleware(function () {
-        // Do something at the end of the page process
+        // Do something at the end of the page request
     }, 'after');
 }
 
 if (route_contain('file-uploader')) {
     /**
      * This is an example middleware running after page ends
-     * This will be executed on all pages which URI contains "file-upload"
+     * This will be executed on all pages which URI contains "file-uploader"
      */
     _middleware(function () {
-        // Do something at the end of the page process
+        // Do something at the end of the page request
     }, 'after');
 }
