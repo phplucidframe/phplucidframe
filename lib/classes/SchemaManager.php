@@ -308,7 +308,9 @@ class SchemaManager
             $length = 0;
         } elseif ($type == 'decimal' || $type == 'float') {
             $length = isset($definition['length']) ? $definition['length'] : 0;
-            $length = is_array($length) ? "$length[0], $length[1]" : '0, 0';
+            if (is_array($length) && count($length) == 2) {
+                $length = implode(', ', $length);
+            }
         } else {
             $length = 0;
         }
