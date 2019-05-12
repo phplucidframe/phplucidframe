@@ -136,9 +136,6 @@ $lc_sites = array(
     /* 'virtual_folder_name (namespace)'  => 'path/to/physical_folder_name_directly_under_app_directory' */
     'admin' => 'admin'
 );
-# $lc_homeRouting: Home page routing; if it is not set, default is 'home'
-# @deprecated
-$lc_homeRouting = 'home';
 # $lc_translationEnabled - Enable/Disable language translation
 $lc_translationEnabled = true;
 # $lc_languages: Site languages (leave this as an empty array for single-language site)

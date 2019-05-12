@@ -272,12 +272,6 @@ function route_url($path = null, $queryStr = array(), $lang = '')
         $queryStr = array(); // clean query strings to not be processed later
     }
 
-    if (strtolower($path) == 'home') {
-        if (isset($GLOBALS['lc_homeRouting']) && $GLOBALS['lc_homeRouting']) {
-            $path = $GLOBALS['lc_homeRouting'];
-        }
-    }
-
     if ($path && is_string($path)) {
         $path = rtrim($path, '/');
     } else {
@@ -476,8 +470,6 @@ function route_match()
  */
 function router()
 {
-    global $lc_homeRouting;
-
     # Get a route from the defined custom routes (if any)
     $_page = route_match();
     if ($_page) {
@@ -488,10 +480,6 @@ function router()
     }
 
     $q = route_path();
-    # if the route is empty, get it from the config
-    if (empty($q) && $lc_homeRouting) {
-        $q = $lc_homeRouting;
-    }
 
     # if it is still empty, set it to the system default
     if (empty($q)) {
