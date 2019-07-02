@@ -169,7 +169,6 @@ if ($moduleI18n) {
 }
 
 # Site-specific configuration variables
-require INC . 'site.config.php';
 if ($file = _i('inc'._DS_.'site.config.php', false)) {
     include $file;
 }

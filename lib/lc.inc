@@ -132,12 +132,6 @@ function __prerequisite()
     if (!file_exists(INC . 'config.php')) {
         copy(INC . 'config.default.php', INC . 'config.php');
     }
-    /**
-     * Check site.config.php
-     */
-    if (!file_exists(INC . 'site.config.php')) {
-        copy(INC . 'site.config.default.php', INC . 'site.config.php');
-    }
 }
 
 /**
