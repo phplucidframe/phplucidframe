@@ -232,7 +232,7 @@ class Form
      *
      * @return bool TRUE if the option is found, otherwise FALSE
      */
-    private static function inputSelection($name, $value, $defaultValue = null)
+    public static function inputSelection($name, $value, $defaultValue = null)
     {
         if (count($_POST)) {
             $name = preg_replace('/(\[\])$/', '', $name); // group[] will be replaced as group
