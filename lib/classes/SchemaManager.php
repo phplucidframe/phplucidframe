@@ -324,12 +324,11 @@ class SchemaManager
 
     /**
      * Get foreign key schema definition
-     * @param  string $table    The table where the FK field will be added
      * @param  string $fkTable  The reference table name
      * @param  array  $relation The relationship definition
      * @return array Foreign key schema definition
      */
-    protected function getFKField($table, $fkTable, $relation)
+    protected function getFKField($fkTable, $relation)
     {
         $field = $relation['name'];
         $pkFields = $this->schema['_options']['pk'];
@@ -362,13 +361,12 @@ class SchemaManager
 
     /**
      * Get foreign key constraint definition
-     * @param  string $table    The table where the FK field will be added
      * @param  string $fkTable  The reference table name
      * @param  array  $relation The relationship definition
      * @param  array  $schema   The whole schema definition
      * @return array|null Foreign key constraint definition
      */
-    protected function getFKConstraint($table, $fkTable, $relation, $schema = array())
+    protected function getFKConstraint($fkTable, $relation, $schema = array())
     {
         if ($this->schema['_options']['constraints']) {
             $pkFields   = $this->schema['_options']['pk'];
@@ -395,9 +393,9 @@ class SchemaManager
                 'on_delete'         => $cascade,
                 'on_update'         => 'NO ACTION'
             );
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
@@ -597,7 +595,7 @@ class SchemaManager
             }
         }
 
-        if (count($sql['up'])) {
+        if (!empty($sql['up'])) {
             _writeln();
             _writeln('##########');
             foreach ($sql['up'] as $query) {
@@ -610,13 +608,12 @@ class SchemaManager
         $dropConstraintSql = $this->dropConstraintStatements($this->getConstraints($schemaFrom));
         $createConstraintSql = $this->createConstraintStatements();
 
-        if (count($sql['up']) == 0 && count($dropConstraintSql) == 0 && count($createConstraintSql) == 0) {
+        if (empty($sql['up']) && count($dropConstraintSql) == 0 && count($createConstraintSql) == 0) {
             return false;
         }
 
         # Confirm before executing the queries
         $statements = array();
-        $noOfQueries = 0;
         if ($cmd->confirm('Type "y" to execute or type "n" to abort:')) {
             $statements[] = 'SET FOREIGN_KEY_CHECKS = 0;';
             $statements = array_merge($statements, $dropConstraintSql, $sql['up'], $createConstraintSql);
@@ -975,6 +972,7 @@ class SchemaManager
             _writeln();
         }
 
+        $version = false;
         $noOfQueries = 0;
         foreach ($versions as $verFile) {
             $version = str_replace($this->sqlExtension, '', $verFile);
@@ -1318,7 +1316,6 @@ class SchemaManager
         # Populate primary key fields
         $pkFields = array();
         foreach ($schema as $table => $def) {
-            $fullTableName = db_table($table);
             $def['options'] = $this->getTableOptions($def);
 
             if ($def['options']['timestamps']) {
@@ -1393,12 +1390,12 @@ class SchemaManager
                     # table1.field
                     $relation = $this->getRelationOptions($joint, $table);
                     $field = $relation['name'];
-                    $schema[$jointTable][$field] = $this->getFKField($fkTable, $table, $relation);
+                    $schema[$jointTable][$field] = $this->getFKField($table, $relation);
                     $schema[$jointTable][$field]['null'] = false;
                     $schema[$jointTable]['options']['pk'][] = $field;
                     $pkFields[$jointTable][$field] = $schema[$jointTable][$field];
                     # Get FK constraints
-                    $constraint = $this->getFKConstraint($jointTable, $table, $relation, $schema);
+                    $constraint = $this->getFKConstraint($table, $relation, $schema);
                     if ($constraint) {
                         $constraints[$jointTable][$field] = $constraint;
                     }
@@ -1406,12 +1403,12 @@ class SchemaManager
                     # table2.field
                     $relation = $this->getRelationOptions($schema[$fkTable]['m:m'][$table], $fkTable);
                     $field = $relation['name'];
-                    $schema[$jointTable][$field] = $this->getFKField($table, $fkTable, $relation);
+                    $schema[$jointTable][$field] = $this->getFKField($fkTable, $relation);
                     $schema[$jointTable][$field]['null'] = false;
                     $schema[$jointTable]['options']['pk'][] = $field;
                     $pkFields[$jointTable][$field] = $schema[$jointTable][$field];
                     # Get FK constraints
-                    $constraint = $this->getFKConstraint($jointTable, $fkTable, $relation, $schema);
+                    $constraint = $this->getFKConstraint($fkTable, $relation, $schema);
                     if ($constraint) {
                         $constraints[$jointTable][$field] = $constraint;
                     }
@@ -1455,9 +1452,9 @@ class SchemaManager
                     $relation = $this->getRelationOptions($relationOptions, $fkTable);
                     $field = $relation['name'];
                     # Get FK field definition
-                    $fkFields[$field] = $this->getFKField($table, $fkTable, $relation);
+                    $fkFields[$field] = $this->getFKField($fkTable, $relation);
                     # Get FK constraints
-                    $constraint = $this->getFKConstraint($table, $fkTable, $relation, $schema);
+                    $constraint = $this->getFKConstraint($fkTable, $relation, $schema);
                     if ($constraint) {
                         $constraints[$table][$field] = $constraint;
                     }
@@ -1471,9 +1468,9 @@ class SchemaManager
                 $relation = $this->getRelationOptions($fk, $fkTable);
                 $field = $relation['name'];
                 # Get FK field definition
-                $fkFields[$field] = $this->getFKField($table, $fkTable, $relation);
+                $fkFields[$field] = $this->getFKField($fkTable, $relation);
                 # Get FK constraints
-                $constraint = $this->getFKConstraint($table, $fkTable, $relation, $schema);
+                $constraint = $this->getFKConstraint($fkTable, $relation, $schema);
                 if ($constraint) {
                     $constraints[$table][$field] = $constraint;
                 }
