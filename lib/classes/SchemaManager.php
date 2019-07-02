@@ -549,7 +549,7 @@ class SchemaManager
 
     /**
      * Update schema to the latest version
-     * @param  object $cmd LucidFrame\Console\Command
+     * @param  Command $cmd LucidFrame\Console\Command
      * @param  string $dbNamespace The namespace for the database
      * @return boolean TRUE for success; FALSE for failure
      */
@@ -648,7 +648,7 @@ class SchemaManager
 
     /**
      * Find the schema difference and generate SQL file
-     * @param  object $cmd LucidFrame\Console\Command
+     * @param  Command $cmd LucidFrame\Console\Command
      * @param  string $dbNamespace The namespace for the database
      * @return boolean TRUE for SQL file exported; FALSE for no updates
      */
@@ -730,7 +730,7 @@ class SchemaManager
      * Get schema difference and generate SQL statements
      * @param  array $schemaFrom Array of the current schema data
      * @param  array $schemaTo Array of the updated schema data
-     * @param  object $cmd LucidFrame\Console\Command
+     * @param  Command $cmd LucidFrame\Console\Command
      * @return array
      */
     public function generateSqlFromDiff($schemaFrom, $schemaTo, Command $cmd)
@@ -743,7 +743,7 @@ class SchemaManager
             'down'  => array(),
         );
 
-        # Detect table renamings
+        # Detect table renaming
         $this->detectTableRenamings($schemaFrom, $schemaTo);
         if (count($this->tablesRenamed)) {
             _writeln();
@@ -751,14 +751,14 @@ class SchemaManager
             _writeln();
         }
 
-        # Get user confirmation for table renamings
+        # Get user confirmation for table renaming
         foreach($this->tablesRenamed as $from => $to) {
             if (!$cmd->confirm('Table renaming from `'.$from.'` to `'.$to.'`:')) {
                 unset($this->tablesRenamed[$from]);
             }
         }
 
-        # Detect field renamings
+        # Detect field renaming
         $this->detectColumnRenamings($schemaFrom, $schemaTo);
         if (count($this->columnsRenamed)) {
             _writeln();
@@ -766,7 +766,7 @@ class SchemaManager
             _writeln();
         }
 
-        # Get user confirmation for column renamings
+        # Get user confirmation for column renaming
         foreach($this->columnsRenamed as $from => $to) {
             $fieldFrom = explode('.', $from);
             if (!$cmd->confirm('Field renaming from `'.$fieldFrom[1].'` to `'.$fieldFrom[0].'.'.$to.'`:')) {
@@ -830,7 +830,7 @@ class SchemaManager
                                             }
 
                                             if (isset($toFieldOptions['unique'])) {
-                                                // Add new compsite unique indices
+                                                // Add new composite unique indices
                                                 foreach ($toFieldOptions['unique'] as $keyName => $uniqueFields) {
                                                     $sql['up'][] = "ALTER TABLE `{$fullTableName}` ADD UNIQUE `IDX_$keyName` (`" . implode('`,`', $uniqueFields) . "`);";
                                                 }
@@ -962,7 +962,7 @@ class SchemaManager
      * @param  array $schemaFrom Array of the current schema data
      * @param  array $schemaTo Array of the updated schema data
      * @param  bool  $verbose Output in console or not
-     * @return array
+     * @return string|bool
      */
     public function migrate(array $versions, array $schemaFrom, array $schemaTo, $verbose = true)
     {
@@ -1427,8 +1427,10 @@ class SchemaManager
 
     /**
      * Generate CREATE TABLE SQL
-     * @param  string   $table      The new table name
-     * @param  array    $schema     The database schema
+     * @param  string   $table       The new table name
+     * @param  array    $schema      The database schema
+     * @param  array    $pkFields    Array of PK fields
+     * @param  array    $constraints Array of FK constraints
      * @return string
      */
     public function createTableStatement($table, &$schema, &$pkFields, &$constraints)
@@ -1535,7 +1537,7 @@ class SchemaManager
             }
         }
 
-        # Primay key indexes
+        # Primary key indexes
         if (isset($pkFields[$table])) {
             $sql .= '  PRIMARY KEY (`'.implode('`,`', array_keys($pkFields[$table])).'`)'.PHP_EOL;
         }

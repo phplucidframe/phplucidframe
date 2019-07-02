@@ -51,7 +51,7 @@ function form_token()
 /**
  * Form token validation
  * @param  array $validations The array of validation rules
- * @return void
+ * @return boolean
  */
 function form_validate($validations = null)
 {
@@ -96,7 +96,6 @@ function form_validate($validations = null)
 function form_respond($formId, $errors = null)
 {
     Form::set('id', $formId);
-    $errorStr = '';
     $ajaxResponse = $errors === null ? true : false;
 
     form_set('error', validation_get('errors'));

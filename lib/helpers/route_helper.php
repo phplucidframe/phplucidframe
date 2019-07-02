@@ -71,7 +71,6 @@ function route_request()
     global $lc_baseURL;
     global $lc_languages;
     global $lc_lang;
-    global $lc_cleanURL;
     global $lc_langInURI;
 
     $lc_langInURI = _getLangInURI();
@@ -241,7 +240,7 @@ function route_path()
  *       'key3' => $value3 or array($value3, $value4)
  *     )
  *
- * @param string $lang Languague code to be prepended to $path such as "en/foo/bar".
+ * @param string $lang Language code to be prepended to $path such as "en/foo/bar".
  *   It will be useful for site language switch redirect
  *
  * @return string
@@ -414,6 +413,7 @@ function route_updateQueryStr($path, &$queryStr = array())
  * @ignore
  *
  * Get the absolute path from root of the given route
+ * @param string $q
  * @return string
  */
 function route_getAbsolutePathToRoot($q)
@@ -525,7 +525,7 @@ function route($name)
 /**
  * Define route group
  * @param string $prefix A prefix for the group of the routes
- * @param function $callback The callback function that defines each route in the group
+ * @param callable $callback The callback function that defines each route in the group
  */
 function route_group($prefix, $callback)
 {

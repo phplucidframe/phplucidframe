@@ -99,7 +99,7 @@ function validation_get($key)
  *  "multi" to return all error messages occurred;
  *  "single" to return the first error message occurred
  *
- * @return void
+ * @return bool
  */
 function validation_check($validations, $type = 'multi')
 {

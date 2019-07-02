@@ -216,7 +216,7 @@ class Router
     /**
      * Define route group
      * @param string   $prefix   A prefix for the group of the routes
-     * @param function $callback The callback function that defines each route in the group
+     * @param callable $callback The callback function that defines each route in the group
      */
     public static function group($prefix, $callback)
     {

@@ -832,9 +832,9 @@ function _cr()
  *       'key3' => $value3 or array($value3, $value4)
  *     )
  *
- * @param string $lang Languague code to be prepended to $path such as "en/foo/bar".
+ * @param string $lang Language code to be prepended to $path such as "en/foo/bar".
  *   It will be useful for site language switch redirect
- * @return void
+ * @return string
  */
 function _url($path = null, $queryStr = array(), $lang = '')
 {

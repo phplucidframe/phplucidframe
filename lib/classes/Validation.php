@@ -57,7 +57,7 @@ class Validation
      *  "multi" to return all error messages occurred;
      *  "single" to return the first error message occurred
      *
-     * @return void
+     * @return bool
      */
     public static function check($validations, $type = 'multi')
     {
@@ -310,6 +310,7 @@ class Validation
                 } # foreach ($v['rules'] as $rule)
             } # if (is_array($v['rules']) )
         } # foreach ($validations as $id => $v)
+
         return (count(self::$errors)) ? false : true;
     }
     /**
