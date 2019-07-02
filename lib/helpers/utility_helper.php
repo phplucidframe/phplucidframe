@@ -2003,14 +2003,16 @@ function _asynFileUploader()
 
 /**
  * Simple helper to register a middleware
- * @since  PHPLucidFrame v 2.0.0
- * @param  callable $closure Anonymous function
- * @param  string $event before (default) or after
- * @return object LucidFrame\Console\Middleware
+ * @since PHPLucidFrame v 2.0.0
+ * @param Closure $closure Anonymous function
+ * @param string $event before (default) or after
+ * @return object LucidFrame\Core\Middleware
  */
 function _middleware(\Closure $closure, $event = 'before')
 {
-    return (new Middleware())->register($closure, $event);
+    $middleware = new Middleware();
+
+    return $middleware->register($closure, $event);
 }
 
 /**
