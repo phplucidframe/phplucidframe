@@ -1446,8 +1446,13 @@ class SchemaManager
         # OneToMany
         if (isset($def['m:1']) && is_array($def['m:1'])) {
             foreach ($def['m:1'] as $fkTable) {
-                if (isset($schema[$fkTable]['1:m'][$table])) {
-                    $relation = $this->getRelationOptions($schema[$fkTable]['1:m'][$table], $fkTable);
+                if (isset($schema[$fkTable]['1:m'][$table]) || array_search($table, $schema[$fkTable]['1:m']) !== false) {
+                    $relationOptions = array();
+                    if (isset($schema[$fkTable]['1:m'][$table])) {
+                        $relationOptions = $schema[$fkTable]['1:m'][$table];
+                    }
+
+                    $relation = $this->getRelationOptions($relationOptions, $fkTable);
                     $field = $relation['name'];
                     # Get FK field definition
                     $fkFields[$field] = $this->getFKField($table, $fkTable, $relation);
