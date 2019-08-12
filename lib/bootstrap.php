@@ -36,9 +36,9 @@ if (!defined('APP_ROOT')) {
 }
 
 if (!defined('ROOT')) {
-    $regex = '/\\'._DS_.APP_DIR.'\b$/';
+    $regex = '/\\' . _DS_ . APP_DIR . '\b$/';
     $ROOT = preg_replace($regex, '', rtrim(APP_ROOT, _DS_));
-    if (strrpos($ROOT, _DS_) != strlen($ROOT)-1) {
+    if (strrpos($ROOT, _DS_) != strlen($ROOT) - 1) {
         $ROOT .= _DS_; # include trailing slash if not
     }
     define('ROOT', $ROOT);
@@ -57,36 +57,36 @@ define('ENV_TEST', 'test');
 define('FILE_ENV', '.lcenv');
 
 # path to inc/ folder
-define('INC', ROOT.'inc'._DS_);
+define('INC', ROOT . 'inc' . _DS_);
 # path to db/ folder
-define('DB', ROOT.'db'._DS_);
+define('DB', ROOT . 'db' . _DS_);
 # path to lib/ folder
-define('LIB', ROOT.'lib'._DS_);
+define('LIB', ROOT . 'lib' . _DS_);
 # path to lib/helpers/ folder
-define('HELPER', LIB.'helpers'._DS_);
+define('HELPER', LIB . 'helpers' . _DS_);
 # path to lib/classes/ folder
-define('CLASSES', LIB.'classes'._DS_);
+define('CLASSES', LIB . 'classes' . _DS_);
 # path to i18n/ folder
-define('I18N', ROOT.'i18n'._DS_);
+define('I18N', ROOT . 'i18n' . _DS_);
 # path to vendor/ folder
-define('VENDOR', ROOT.'vendor'._DS_);
+define('VENDOR', ROOT . 'vendor' . _DS_);
 # path to business/ folder
-define('BUSINESS', ROOT.'business'._DS_);
+define('BUSINESS', ROOT . 'business' . _DS_);
 # path to files/ folder
-define('FILE', ROOT.'files'._DS_);
+define('FILE', ROOT . 'files' . _DS_);
 # path to images/ folder
-if (is_dir(ROOT.'assets'._DS_.'images'._DS_)) {
-    define('IMAGE', ROOT.'assets'._DS_.'images'._DS_);
+if (is_dir(ROOT . 'assets' . _DS_ . 'images' . _DS_)) {
+    define('IMAGE', ROOT . 'assets' . _DS_ . 'images' . _DS_);
 } else {
-    define('IMAGE', ROOT.'images'._DS_);
+    define('IMAGE', ROOT . 'images' . _DS_);
 }
 # path to assets/ folder
-define('ASSETS', ROOT.'assets'._DS_);
+define('ASSETS', ROOT . 'assets' . _DS_);
 # path to files/tests folder
-define('TEST', ROOT.'tests'._DS_);
-define('TEST_DIR', ROOT.'tests'._DS_);
+define('TEST', ROOT . 'tests' . _DS_);
+define('TEST_DIR', ROOT . 'tests' . _DS_);
 # path to files/cache folder
-define('CACHE', FILE.'cache'._DS_);
+define('CACHE', FILE . 'cache' . _DS_);
 
 # System prerequisites
 require LIB . 'lc.inc';
@@ -96,7 +96,7 @@ require INC . 'config.php';
 __envLoader();
 
 # Utility helpers (required)
-if ($file = _i('helpers'._DS_.'utility_helper.php', false)) {
+if ($file = _i('helpers' . _DS_ . 'utility_helper.php', false)) {
     include $file;
 }
 require HELPER . 'utility_helper.php';
@@ -108,7 +108,7 @@ _autoloadDir(LIB . 'commands');
 
 # DB configuration & DB helper (required)
 if (isset($lc_databases[$lc_defaultDbSource]) && is_array($lc_databases[$lc_defaultDbSource]) && $lc_databases[$lc_defaultDbSource]['engine']) {
-    if ($file = _i('helpers'._DS_.'db_helper.php', false)) {
+    if ($file = _i('helpers' . _DS_ . 'db_helper.php', false)) {
         include $file;
     }
 
@@ -133,12 +133,12 @@ _loader('pager_helper', HELPER);
 _loader('form_helper', HELPER);
 _loader('file_helper', HELPER);
 
-if (file_exists(INC.'autoload.php')) {
-    require INC.'autoload.php';
+if (file_exists(INC . 'autoload.php')) {
+    require INC . 'autoload.php';
 }
 
 # Session helper (unloadable from /inc/autoload.php)
-if ($file = _i('helpers'._DS_.'session_helper.php', false)) {
+if ($file = _i('helpers' . _DS_ . 'session_helper.php', false)) {
     include $file;
 }
 if ($moduleSession = _readyloader('session_helper')) {
@@ -159,9 +159,9 @@ require HELPER . 'route_helper.php'; # WEB_ROOT and WEB_APP_ROOT is created in r
 include INC . 'route.config.php';
 __route_init();
 
-define('CSS', WEB_ROOT.'assets/css/');
-define('JS', WEB_ROOT.'assets/js/');
-define('WEB_VENDOR', WEB_ROOT.'vendor/');
+define('CSS', WEB_ROOT . 'assets/css/');
+define('JS', WEB_ROOT . 'assets/js/');
+define('WEB_VENDOR', WEB_ROOT . 'vendor/');
 
 # Load translations
 if ($moduleI18n) {
@@ -169,12 +169,13 @@ if ($moduleI18n) {
 }
 
 # Site-specific configuration variables
-if ($file = _i('inc'._DS_.'site.config.php', false)) {
-    include $file;
+require_once APP_ROOT . 'inc' . _DS_ . 'site.config.php';
+if ($file = _i('inc' . _DS_ . 'site.config.php', false)) {
+    require_once $file;
 }
 
 # Validation helper (unloadable from /inc/autoload.php)
-if ($file = _i('helpers'._DS_.'validation_helper.php')) {
+if ($file = _i('helpers' . _DS_ . 'validation_helper.php')) {
     include $file;
 }
 
@@ -187,7 +188,7 @@ if ($moduleValidation = _readyloader('validation_helper')) {
 _unloader('validation_helper', HELPER);
 
 # Auth helper (unloadable from /inc/autoload.php)
-if ($file = _i('helpers'._DS_.'auth_helper.php')) {
+if ($file = _i('helpers' . _DS_ . 'auth_helper.php')) {
     include $file;
 }
 if ($moduleAuth = _readyloader('auth_helper')) {
@@ -198,7 +199,7 @@ if ($moduleAuth = _readyloader('auth_helper')) {
 _unloader('auth_helper', HELPER);
 
 # Pager helper
-if ($file = _i('helpers'._DS_.'pager_helper.php')) {
+if ($file = _i('helpers' . _DS_ . 'pager_helper.php')) {
     include $file;
 }
 if ($modulePager = _readyloader('pager_helper')) {
@@ -212,7 +213,7 @@ _unloader('pager_helper', HELPER);
 require HELPER . 'security_helper.php';
 
 # Form helper (unloadable from /inc/autoload.php)
-if ($file = _i('helpers'._DS_.'form_helper.php')) {
+if ($file = _i('helpers' . _DS_ . 'form_helper.php')) {
     include $file;
 }
 if ($moduleForm = _readyloader('form_helper')) {
@@ -223,7 +224,7 @@ if ($moduleForm = _readyloader('form_helper')) {
 _unloader('form_helper', HELPER);
 
 # File helper
-if ($file = _i('helpers'._DS_.'file_helper.php')) {
+if ($file = _i('helpers' . _DS_ . 'file_helper.php')) {
     include $file;
 }
 if ($moduleFile = _readyloader('file_helper')) {
