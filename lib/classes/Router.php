@@ -65,11 +65,11 @@ class Router
     /**
      * Define the custom routing path
      *
-     * @param string     $name      Any unique route name to the mapped $path
-     * @param string     $path      URL path with optional dynamic variables such as `/post/{id}/edit`
-     * @param string     $to        The real path to a directory or file in /app
-     * @param string     $method    GET, POST, PUT or DELETE or any combination with `|` such as GET|POST
-     * @param array|null $patterns  array of the regex patterns for variables in $path such s `array('id' => '\d+')`
+     * @param string $name Any unique route name to the mapped $path
+     * @param string $path URL path with optional dynamic variables such as `/post/{id}/edit`
+     * @param string $to The real path to a directory or file in /app
+     * @param string $method GET, POST, PUT or DELETE or any combination with `|` such as GET|POST
+     * @param array|null $patterns array of the regex patterns for variables in $path such s `array('id' => '\d+')`
      *
      * @return Router
      */
@@ -95,10 +95,10 @@ class Router
     /**
      * Define the custom routing path
      *
-     * @param string     $path      URL path with optional dynamic variables such as `/post/{id}/edit`
-     * @param string     $to        The real path to a directory or file in `/app`
-     * @param string     $method    GET, POST, PUT or DELETE or any combination with `|` such as GET|POST
-     * @param array|null $patterns  array of the regex patterns for variables in $path such s `array('id' => '\d+')`
+     * @param string $path URL path with optional dynamic variables such as `/post/{id}/edit`
+     * @param string $to The real path to a directory or file in `/app`
+     * @param string $method GET, POST, PUT or DELETE or any combination with `|` such as GET|POST
+     * @param array|null $patterns array of the regex patterns for variables in $path such s `array('id' => '\d+')`
      *
      * @return Router
      */
@@ -136,25 +136,25 @@ class Router
                 } else {
                     if (preg_match('/([a-z0-9\-_\.]*)?{([a-z0-9\_]+)}([a-z0-9\-_\.]*)?/i', $segment, $matches)) {
                         $name = $matches[2];
-                        $var  = $realPath[$i];
+                        $var = $realPath[$i];
 
                         if ($matches[1]) {
-                            $var = ltrim($var, $matches[1].'{');
+                            $var = ltrim($var, $matches[1] . '{');
                         }
 
                         if ($matches[3]) {
-                            $var = rtrim($var, '}'.$matches[3]);
+                            $var = rtrim($var, '}' . $matches[3]);
                         }
 
                         if (isset($value['patterns'][$name]) && $value['patterns'][$name]) {
                             $regex = $value['patterns'][$name];
-                            if (!preg_match('/^'.$regex.'$/', $var)) {
+                            if (!preg_match('/^' . $regex . '$/', $var)) {
                                 _header(400);
                                 throw new \InvalidArgumentException(sprintf('The Router does not satify the argument value "%s" for "%s".', $var, $regex));
                             }
                         }
 
-                        $vars[$name]     = $var;
+                        $vars[$name] = $var;
                         $matchedPath[$i] = $realPath[$i];
 
                         continue;
@@ -196,7 +196,7 @@ class Router
 
     /**
      * Get the path from the given name
-     * @param  string $name The route name that is unique to the mapped path
+     * @param string $name The route name that is unique to the mapped path
      * @return string|null
      */
     public static function getPathByName($name)
@@ -215,7 +215,7 @@ class Router
 
     /**
      * Define route group
-     * @param string   $prefix   A prefix for the group of the routes
+     * @param string $prefix A prefix for the group of the routes
      * @param callable $callback The callback function that defines each route in the group
      */
     public static function group($prefix, $callback)

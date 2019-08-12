@@ -25,7 +25,7 @@ class Form
     private static $id;
     /** @var array The error messages and their associated HTML ID */
     private static $error = array();
-    /** @var boolean TRUE/FALSE for form valiation success */
+    /** @var boolean TRUE/FALSE for form validation success */
     private static $success = false;
     /** @var string The form message */
     private static $message = '';
@@ -33,18 +33,20 @@ class Form
     private static $redirect = '';
     /** @var string The Javascript callback function to be invoked upon form submission completed */
     private static $callback = '';
+
     /**
      * Constructor
      */
     public static function init()
     {
-        self::$id       = '';
-        self::$error    = array();
-        self::$success  = false;
-        self::$message  = '';
+        self::$id = '';
+        self::$error = array();
+        self::$success = false;
+        self::$message = '';
         self::$redirect = '';
         self::$callback = '';
     }
+
     /**
      * Setter for the class properties
      * @param string $key The property name
@@ -55,19 +57,22 @@ class Form
     {
         self::$$key = $value;
     }
+
     /**
      * Getter for the class properties
-     * @param  string $key The property name
-     * @param  mixed  $value The value for the property
+     * @param string $key The property name
+     * @param mixed $value The default value for the property
      * @return mixed
      */
-    public static function get($key, $value = '')
+    public static function get($key, $value = null)
     {
         if (isset(self::$$key)) {
             return self::$$key;
         }
-        return null;
+
+        return $value;
     }
+
     /**
      * Form token generation
      * @return void
@@ -76,28 +81,30 @@ class Form
     {
         $token = _encrypt(time());
         session_set(_cfg('formTokenName'), $token);
-        echo '<input type="hidden" name="lc_formToken_'._cfg('formTokenName').'" value="'.$token.'" />';
+        echo '<input type="hidden" name="lc_formToken_' . _cfg('formTokenName') . '" value="' . $token . '" />';
     }
+
     /**
      * Form token validation
-     * @param  array $validations The array of validation rules
-     * @return void
+     * @param array $validations The array of validation rules
+     * @return boolean
      */
     public static function validate($validations = null)
     {
-        if (!isset($_POST['lc_formToken_'._cfg('formTokenName')])) {
+        if (!isset($_POST['lc_formToken_' . _cfg('formTokenName')])) {
             return false;
         }
-        $token        = _decrypt(session_get(_cfg('formTokenName')));
-        $postedToken  = _decrypt(_post($_POST['lc_formToken_'._cfg('formTokenName')]));
-        $result       = false;
+
+        $token = _decrypt(session_get(_cfg('formTokenName')));
+        $postedToken = _decrypt(_post($_POST['lc_formToken_' . _cfg('formTokenName')]));
+        $result = false;
         # check token first
         if ($token == $postedToken) {
             # check referer if it is requesting in the same site
             if (isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] && _cfg('siteDomain')) {
                 $siteDomain = _cfg('siteDomain');
                 $siteDomain = preg_replace('/^www\./', '', $siteDomain);
-                $parsedURL  = parse_url($_SERVER['HTTP_REFERER']);
+                $parsedURL = parse_url($_SERVER['HTTP_REFERER']);
                 $parsedURL['host'] = preg_replace('/^www\./', '', $parsedURL['host']);
                 if (strcasecmp($siteDomain, $parsedURL['host']) == 0) {
                     $result = true;
@@ -105,7 +112,7 @@ class Form
             }
         }
         if ($result == false) {
-            Validation::addError('', _t('Error occured during form submission. Please refresh the page to try again.'));
+            Validation::addError('', _t('Error occurred during form submission. Please refresh the page to try again.'));
             return false;
         }
 
@@ -115,6 +122,7 @@ class Form
 
         return true;
     }
+
     /**
      * AJAX form responder
      * @param string $formId The HTML form ID
@@ -124,7 +132,6 @@ class Form
     public static function respond($formId, $errors = null)
     {
         self::$id = $formId;
-        $errorStr = '';
         $ajaxResponse = true;
         if (is_array($errors)) {
             self::$error = $errors;
@@ -136,10 +143,10 @@ class Form
         }
 
         $response = array(
-            'formId'   => self::$id,
-            'success'  => (self::$success) ? true : false,
-            'error'    => self::$error,
-            'msg'      => self::$message,
+            'formId' => self::$id,
+            'success' => (self::$success) ? true : false,
+            'error' => self::$error,
+            'msg' => self::$message,
             'redirect' => self::$redirect,
             'callback' => self::$callback
         );
@@ -152,6 +159,7 @@ class Form
             echo '</script>';
         }
     }
+
     /**
      * Permits you to set the value of an input or textarea.
      * Allows you to safely use HTML and characters such as quotes within form elements without breaking out of the form
@@ -168,11 +176,13 @@ class Form
                 return '';
             }
             $value = _post($_POST[$name]);
+
             return _h($value);
-        } else {
-            return _h($defaultValue);
         }
+
+        return _h($defaultValue);
     }
+
     /**
      * Permits you to set the value to a rich text editor or any input where HTML source is required to be rendered.
      * Allows you to safely use HTML and characters such as quotes within form elements without breaking out of the form
@@ -189,11 +199,13 @@ class Form
                 return '';
             }
             $value = _xss($_POST[$name]);
+
             return _h($value);
-        } else {
-            return _h($defaultValue);
         }
+
+        return _h($defaultValue);
     }
+
     /**
      * Allow you to select the option of a drop-down list.
      *
@@ -207,6 +219,7 @@ class Form
     {
         return (self::inputSelection($name, $value, $defaultValue)) ? 'selected="selected"' : '';
     }
+
     /**
      * Allow you to select a checkbox or a radio button
      *
@@ -220,17 +233,18 @@ class Form
     {
         return (self::inputSelection($name, $value, $defaultValue)) ? 'checked="checked"' : '';
     }
+
     /**
-     * @internal
-     * @ignore
-     *
-     * Allow you to select a checkbox or a radio button or an option of a drop-down list
-     *
      * @param string $name The field name of the checkbox or radio button or drop-down list
      * @param mixed $value The value to check against
      * @param mixed $defaultValue The default selected value (optional)
      *
      * @return bool TRUE if the option is found, otherwise FALSE
+     * @internal
+     * @ignore
+     *
+     * Allow you to select a checkbox or a radio button or an option of a drop-down list
+     *
      */
     public static function inputSelection($name, $value, $defaultValue = null)
     {

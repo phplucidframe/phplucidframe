@@ -62,7 +62,7 @@ class Pager
             $this->pageQueryStr = $pageQueryStr;
         }
         $page = _arg($this->pageQueryStr);
-        $this->page = ( $page ) ? $page : 1;
+        $this->page = ($page) ? $page : 1;
     }
 
     /**
@@ -94,19 +94,19 @@ class Pager
     }
 
     /**
+     * Setter functions for the property "htmlTag"
+     *
+     * @param string $tag The HTML tag - <table>, <ul> or <div>
+     * @return object Pager
      * @internal
      * @ignore
-     *
-     * Setter functions for the property "htmlTag"
-     * @param string $value The HTML tag - <table>, <ul> or <div>
-     * @return object Pager
      */
     private function setHtmlTag($tag = '<table>')
     {
-        if (!in_array($tag, array('<table>','<ul>', '<div>'))) {
+        if (!in_array($tag, array('<table>', '<ul>', '<div>'))) {
             $this->htmlTag = '<table>';
         }
-        switch($this->htmlTag) {
+        switch ($this->htmlTag) {
             case '<table>':
                 $this->parentOpenTag = '<table class="pager" border="0" cellpadding="0" cellspacing="0"><tr>';
                 $this->parentCloseTag = '</tr></table>';
@@ -166,21 +166,21 @@ class Pager
         $this->offset = ($this->page - 1) * $this->itemsPerPage;
 
         $nav = array();
-        $nav['offset']   = $this->offset;
+        $nav['offset'] = $this->offset;
         $nav['thisPage'] = $this->page;
 
-        $maxPage = ceil($this->total/$this->itemsPerPage);
+        $maxPage = ceil($this->total / $this->itemsPerPage);
         if ($this->page <= $this->pageNumLimit) {
             $startPage = 1;
         } else {
-            $startPage = (floor(($this->page-1) / $this->pageNumLimit) * $this->pageNumLimit)+1;
+            $startPage = (floor(($this->page - 1) / $this->pageNumLimit) * $this->pageNumLimit) + 1;
         }
 
         $j = 0;
         $k = 0;
         $nav['beforePages'] = array();
         $nav['afterPages'] = array();
-        for ($pageCount=0, $i = $startPage; $i<=$maxPage; $i++) {
+        for ($pageCount = 0, $i = $startPage; $i <= $maxPage; $i++) {
             if ($i < $this->page) {
                 $nav['beforePages'][$j] = $i;
                 $j++;
@@ -191,7 +191,7 @@ class Pager
                 $k++;
             }
 
-            $pageCount ++;
+            $pageCount++;
             if ($pageCount == $this->pageNumLimit) {
                 # display page number only.
                 break;
@@ -208,7 +208,7 @@ class Pager
 
         # Previous Page
         if ($this->page > 1) {
-            $nav['prePageNo'] = $this->page-1;
+            $nav['prePageNo'] = $this->page - 1;
             $nav['prePageEnable'] = 1;
         } else {
             $nav['prePageEnable'] = 0;
@@ -264,9 +264,9 @@ class Pager
      */
     public function display()
     {
-        $url        = ($this->url) ? $this->url : null;
-        $ajax       = $this->ajax;
-        $imagePath  = isset($this->imagePath) ? $this->imagePath : '';
+        $url = ($this->url) ? $this->url : null;
+        $ajax = $this->ajax;
+        $imagePath = isset($this->imagePath) ? $this->imagePath : '';
 
         $this->setHtmlTag($this->htmlTag);
 
@@ -276,134 +276,134 @@ class Pager
             echo $this->parentOpenTag;
             # first
             if ($firstPageEnable) {
-                echo '<'.$this->childTag.' class="first-enabled">';
+                echo '<' . $this->childTag . ' class="first-enabled">';
                 if ($ajax) {
-                    echo '<a href="'._url($url).'" rel="'.$firstPageNo.'">';
+                    echo '<a href="' . _url($url) . '" rel="' . $firstPageNo . '">';
                 } else {
-                    echo '<a href="'._url($url, array($this->pageQueryStr => $firstPageNo)).'">';
+                    echo '<a href="' . _url($url, array($this->pageQueryStr => $firstPageNo)) . '">';
                 }
                 if ($imagePath) {
-                    echo '<img border="0" src="'.$imagePath.'start.png" />';
+                    echo '<img border="0" src="' . $imagePath . 'start.png" />';
                 } else {
-                    echo '<label>'._t('First').'</label>';
+                    echo '<label>' . _t('First') . '</label>';
                 }
                 echo '</a>';
-                echo '</'.$this->childTag.'>';
+                echo '</' . $this->childTag . '>';
             } else {
-                echo '<'.$this->childTag.' class="first-disabled">';
+                echo '<' . $this->childTag . ' class="first-disabled">';
                 if ($imagePath) {
-                    echo '<img border="0" src="'.$imagePath.'start_disabled.png" />';
+                    echo '<img border="0" src="' . $imagePath . 'start_disabled.png" />';
                 } else {
-                    echo '<label>'._t('First').'</label>';
+                    echo '<label>' . _t('First') . '</label>';
                 }
-                echo '</'.$this->childTag.'>';
+                echo '</' . $this->childTag . '>';
             }
             # prev
             if ($prePageEnable) {
-                echo '<'.$this->childTag.' class="prev-enabled">';
+                echo '<' . $this->childTag . ' class="prev-enabled">';
                 if ($ajax) {
-                    echo '<a href="'._url($url).'" rel="'.$prePageNo.'">';
+                    echo '<a href="' . _url($url) . '" rel="' . $prePageNo . '">';
                 } else {
-                    echo '<a href="'._url($url, array($this->pageQueryStr => $prePageNo)).'">';
+                    echo '<a href="' . _url($url, array($this->pageQueryStr => $prePageNo)) . '">';
                 }
                 if ($imagePath) {
-                    echo '<img border="0" src="'.$imagePath.'previous.png" />';
+                    echo '<img border="0" src="' . $imagePath . 'previous.png" />';
                 } else {
-                    echo '<label>'._t('&laquo; Prev').'</label>';
+                    echo '<label>' . _t('&laquo; Prev') . '</label>';
                 }
                 echo '</a>';
-                echo '</'.$this->childTag.'>';
+                echo '</' . $this->childTag . '>';
             } else {
-                echo '<'.$this->childTag.' class="prev-disabled">';
+                echo '<' . $this->childTag . ' class="prev-disabled">';
                 if ($imagePath) {
-                    echo '<img border="0" src="'.$imagePath.'previous_disabled.png" />';
+                    echo '<img border="0" src="' . $imagePath . 'previous_disabled.png" />';
                 } else {
-                    echo '<label>'._t('&laquo; Prev').'</label>';
+                    echo '<label>' . _t('&laquo; Prev') . '</label>';
                 }
-                echo '</'.$this->childTag.'>';
+                echo '</' . $this->childTag . '>';
             }
-            echo '<'.$this->childTag.' class="pages">';
+            echo '<' . $this->childTag . ' class="pages">';
 
             # before pages
             if (isset($beforePages) && $beforePages) {
                 foreach ($beforePages as $oneBeforePage) {
                     echo '<span>';
                     if ($ajax) {
-                        echo '<a href="'._url($url).'" rel="'.$oneBeforePage.'">'.$oneBeforePage.'</a>';
+                        echo '<a href="' . _url($url) . '" rel="' . $oneBeforePage . '">' . $oneBeforePage . '</a>';
                     } else {
-                        echo '<a href="'._url($url, array($this->pageQueryStr => $oneBeforePage)).'">';
+                        echo '<a href="' . _url($url, array($this->pageQueryStr => $oneBeforePage)) . '">';
                         echo $oneBeforePage;
                         echo '</a>';
                     }
                     echo '</span>';
                 }
             }
-            echo '<span class="currentPage">'.$thisPage.'</span>';
+            echo '<span class="currentPage">' . $thisPage . '</span>';
 
             # after pages
             if (isset($afterPages) && $afterPages) {
                 foreach ($afterPages as $oneAfterPage) {
                     echo '<span>';
                     if ($ajax) {
-                        echo '<a href="'._url($url).'" rel="'.$oneAfterPage.'">'.$oneAfterPage.'</a>';
+                        echo '<a href="' . _url($url) . '" rel="' . $oneAfterPage . '">' . $oneAfterPage . '</a>';
                     } else {
-                        echo '<a href="'._url($url, array($this->pageQueryStr => $oneAfterPage)).'">';
+                        echo '<a href="' . _url($url, array($this->pageQueryStr => $oneAfterPage)) . '">';
                         echo $oneAfterPage;
                         echo '</a>';
                     }
                     echo '</span>';
                 }
             }
-            echo '</'.$this->childTag.'>';
+            echo '</' . $this->childTag . '>';
 
             # next
             if ($nextPageEnable) {
-                echo '<'.$this->childTag.' class="next-enabled">';
+                echo '<' . $this->childTag . ' class="next-enabled">';
                 if ($ajax) {
-                    echo '<a href="'._url($url).'" rel="'.$nextPageNo.'">';
+                    echo '<a href="' . _url($url) . '" rel="' . $nextPageNo . '">';
                 } else {
-                    echo '<a href="'._url($url, array($this->pageQueryStr => $nextPageNo)).'">';
+                    echo '<a href="' . _url($url, array($this->pageQueryStr => $nextPageNo)) . '">';
                 }
                 if ($imagePath) {
-                    echo '<img border="0" src="'.$imagePath.'next.png" />';
+                    echo '<img border="0" src="' . $imagePath . 'next.png" />';
                 } else {
-                    echo '<label>'._t('Next &raquo;').'</label>';
+                    echo '<label>' . _t('Next &raquo;') . '</label>';
                 }
                 echo '</a>';
-                echo '</'.$this->childTag.'>';
+                echo '</' . $this->childTag . '>';
             } else {
-                echo '<'.$this->childTag.' class="next-disabled">';
+                echo '<' . $this->childTag . ' class="next-disabled">';
                 if ($imagePath) {
-                    echo '<img border="0" src="'.$imagePath.'next_disabled.png" />';
+                    echo '<img border="0" src="' . $imagePath . 'next_disabled.png" />';
                 } else {
-                    echo '<label>'._t('Next &raquo;').'</label>';
+                    echo '<label>' . _t('Next &raquo;') . '</label>';
                 }
-                echo '</'.$this->childTag.'>';
+                echo '</' . $this->childTag . '>';
             }
 
             # last
             if ($lastPageEnable) {
-                echo '<'.$this->childTag.' class="last-enabled">';
+                echo '<' . $this->childTag . ' class="last-enabled">';
                 if ($ajax) {
-                    echo '<a href="'._url($url).'" rel="'.$lastPageNo.'">';
+                    echo '<a href="' . _url($url) . '" rel="' . $lastPageNo . '">';
                 } else {
-                    echo '<a href="'._url($url, array($this->pageQueryStr => $lastPageNo)).'">';
+                    echo '<a href="' . _url($url, array($this->pageQueryStr => $lastPageNo)) . '">';
                 }
                 if ($imagePath) {
-                    echo '<img border="0" src="'.$imagePath.'end.png" />';
+                    echo '<img border="0" src="' . $imagePath . 'end.png" />';
                 } else {
-                    echo '<label>'._t('Last').'</label>';
+                    echo '<label>' . _t('Last') . '</label>';
                 }
                 echo '</a>';
-                echo '</'.$this->childTag.'>';
+                echo '</' . $this->childTag . '>';
             } else {
-                echo '<'.$this->childTag.' class="last-disabled">';
+                echo '<' . $this->childTag . ' class="last-disabled">';
                 if ($imagePath) {
-                    echo '<img border="0" src="'.$imagePath.'end_disabled.png" />';
+                    echo '<img border="0" src="' . $imagePath . 'end_disabled.png" />';
                 } else {
-                    echo '<label>'._t('Last').'</label>';
+                    echo '<label>' . _t('Last') . '</label>';
                 }
-                echo '</'.$this->childTag.'>';
+                echo '</' . $this->childTag . '>';
             }
 
             echo $this->parentCloseTag;

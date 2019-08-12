@@ -75,7 +75,7 @@ class File extends \SplFileInfo
 
     /**
      * Set image resize mode
-     * @param  const  $value FILE_RESIZE_BOTH, FILE_RESIZE_WIDTH or FILE_RESIZE_HEIGHT
+     * @param  string  $value FILE_RESIZE_BOTH, FILE_RESIZE_WIDTH or FILE_RESIZE_HEIGHT
      * @return object File
      */
     private function setImageResizeMode($value)
@@ -92,7 +92,7 @@ class File extends \SplFileInfo
      * Setter for the class properties
      * @param string $key The property name
      * @param mixed $value The value to be set
-     * @return void
+     * @return object
      */
     public function set($key, $value)
     {
@@ -143,7 +143,7 @@ class File extends \SplFileInfo
     }
 
     /**
-     * Getter for the orignal uploaded file name
+     * Getter for the original uploaded file name
      */
     public function getOriginalFileName()
     {
@@ -212,6 +212,7 @@ class File extends \SplFileInfo
                 $message = _t('Unknown upload error.');
                 break;
         }
+
         return $message;
     }
 
@@ -260,8 +261,6 @@ class File extends \SplFileInfo
         $info         = pathinfo($fileName);
         $extension    = strtolower($info['extension']);
         $uploaded     = null;
-        $path         = $this->uploadPath;
-        $dimensions   = $this->dimensions;
 
         if ($fileName && $file['error'] === UPLOAD_ERR_OK) {
             $this->originalFileName = $fileName;
@@ -311,6 +310,7 @@ class File extends \SplFileInfo
     private function getNewFileName()
     {
         $this->fileName = $this->getUniqueId() . '.' . $this->guessExtension();
+
         return $this->fileName;
     }
 
@@ -330,13 +330,14 @@ class File extends \SplFileInfo
      */
     public function guessExtension($file = '')
     {
-        $file = ($file) ? $file : $this->originalFileName;
-        if ($this->originalFileName) {
-            $info = pathinfo($this->originalFileName);
+        $file = $file ? $file : $this->originalFileName;
+
+        if ($file) {
+            $info = pathinfo($file);
             return $info['extension'];
-        } else {
-            return '';
         }
+
+        return '';
     }
 
     /**
@@ -517,7 +518,7 @@ class File extends \SplFileInfo
         if ($scale < 1) {
             # new width for the image
             $newWidth = floor($scale * $width);
-            # new heigth for the image
+            # new height for the image
             $newHeight = floor($scale * $height);
         } else {
         # if the image is small than than the resized width and height

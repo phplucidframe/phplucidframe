@@ -30,8 +30,8 @@ class Validation
 
     /**
      * Setter
-     * @param string $key   The property name
-     * @param mixed  $value The value for the property
+     * @param string $key The property name
+     * @param mixed $value The value for the property
      * @return void
      */
     public static function set($key, $value = null)
@@ -41,7 +41,7 @@ class Validation
 
     /**
      * Getter
-     * @param string $key   The property name
+     * @param string $key The property name
      * @return mixed
      */
     public static function get($key)
@@ -77,7 +77,7 @@ class Validation
                     if (is_array($v['value']) && in_array($rule, self::$batchRules)) {
                         # Batch validation rules may be applied for array of values
                         $values = $v['value'];
-                        $func = 'validate_'.$rule;
+                        $func = 'validate_' . $rule;
                         if (function_exists($func)) {
                             $success = call_user_func_array($func, array($values));
                             if (!$success) {
@@ -109,10 +109,10 @@ class Validation
                                 self::setError($id, $rule, $v);
                             }
                         } else {
-                        # Pre-defined validation functions
-                            $func = 'validate_'.$rule;
+                            # Pre-defined validation functions
+                            $func = 'validate_' . $rule;
                             if (function_exists($func)) {
-                                switch($rule) {
+                                switch ($rule) {
                                     case 'min':
                                         # Required property: min
                                         if (!isset($v['min'])) {
@@ -170,7 +170,7 @@ class Validation
 
                                     case 'ip':
                                         # Required property: protocol
-                                        if (!isset($v['protocol']) || ( isset($v['protocol']) && !in_array($v['protocol'], array('ipv4','ipv6')))) {
+                                        if (!isset($v['protocol']) || (isset($v['protocol']) && !in_array($v['protocol'], array('ipv4', 'ipv6')))) {
                                             $v['protocol'] = 'ipv4';
                                         }
                                         $success = call_user_func_array($func, array($value, $v['protocol']));
@@ -274,7 +274,7 @@ class Validation
                                         }
                                         $success = call_user_func_array($func, array($value, $v['timeFormat']));
                                         if (!$success) {
-                                            self::setError($id, $rule, $v, ($v['timeFormat'] === 'both') ? '12/24-hour' : $v['timeFormat'].'-hour');
+                                            self::setError($id, $rule, $v, ($v['timeFormat'] === 'both') ? '12/24-hour' : $v['timeFormat'] . '-hour');
                                         }
                                         break;
 
@@ -288,7 +288,7 @@ class Validation
                                         }
                                         $success = call_user_func_array($func, array($value, $v['dateFormat'], $v['timeFormat']));
                                         if (!$success) {
-                                            self::setError($id, $rule, $v, $v['dateFormat'], ($v['timeFormat'] === 'both') ? '12/24-hour' : $v['timeFormat'].'-hour');
+                                            self::setError($id, $rule, $v, $v['dateFormat'], ($v['timeFormat'] === 'both') ? '12/24-hour' : $v['timeFormat'] . '-hour');
                                         }
                                         break;
 
@@ -313,15 +313,20 @@ class Validation
 
         return (count(self::$errors)) ? false : true;
     }
+
     /**
      * @internal
+     * @param string $id
+     * @param string $rule
+     * @param array $element
      */
     private static function setError($id, $rule, $element)
     {
-        $caption  = $element['caption'];
-        $msg      = ( isset(self::$messages[$rule]) ) ? self::$messages[$rule] : self::$messages['default'];
-        $msg      = ( isset($element['messages'][$rule]) ) ? $element['messages'][$rule] : $msg;
-        $args = func_get_args();
+        $caption    = $element['caption'];
+        $msg        = ( isset(self::$messages[$rule]) ) ? self::$messages[$rule] : self::$messages['default'];
+        $msg        = ( isset($element['messages'][$rule]) ) ? $element['messages'][$rule] : $msg;
+        $args       = func_get_args();
+
         if (count($args) > 3) {
             $args = array_slice($args, 3);
             array_unshift($args, $caption);
@@ -336,8 +341,9 @@ class Validation
             );
         }
     }
+
     /**
-     * Add an external error messsage
+     * Add an external error message
      *
      * @param string $id HTML ID
      * @param string $msg The error message to show

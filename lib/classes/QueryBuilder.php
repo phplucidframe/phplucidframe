@@ -58,11 +58,11 @@ class QueryBuilder
     );
     /** @var array Collection of LIKE expressions */
     private static $likes = array(
-        'like'    => 'LIKE "%:likeValue%"',
-        'like%%'  => 'LIKE "%:likeValue%"',
-        'like%~'  => 'LIKE "%:likeValue"',
-        'like~%'  => 'LIKE ":likeValue%"',
-        'nlike'   => 'NOT LIKE "%:likeValue%"',
+        'like' => 'LIKE "%:likeValue%"',
+        'like%%' => 'LIKE "%:likeValue%"',
+        'like%~' => 'LIKE "%:likeValue"',
+        'like~%' => 'LIKE ":likeValue%"',
+        'nlike' => 'NOT LIKE "%:likeValue%"',
         'nlike%%' => 'NOT LIKE "%:likeValue%"',
         'nlike%~' => 'NOT LIKE "%:likeValue"',
         'nlike~%' => 'NOT LIKE ":likeValue%"',
@@ -125,7 +125,7 @@ class QueryBuilder
      * Add fields to SELECT
      *
      * @param string $alias The table alias
-     * @param array  $fields Array of field names
+     * @param array $fields Array of field names
      *
      * @return object QueryBuilder
      */
@@ -138,11 +138,12 @@ class QueryBuilder
 
         return $this;
     }
+
     /**
      * Add field to SELECT
      *
-     * @param string $field  The field name
-     * @param array  $alias  The alias for the field name
+     * @param string $field The field name
+     * @param array $alias The alias for the field name
      *
      * @return object QueryBuilder
      */
@@ -199,7 +200,7 @@ class QueryBuilder
      * @param string $table The table name
      * @param string $alias The alias for the table
      * @param string $condition The join condition e.g., t1.pk = t2.fk
-     * @param string $type  INNER, LEFT, RIGHT or OUTER
+     * @param string $type INNER, LEFT, RIGHT or OUTER
      *
      * @return object QueryBuilder
      */
@@ -363,7 +364,7 @@ class QueryBuilder
      * Create simple WHERE condition with field/value assignment
      *
      * @param string $field The field name
-     * @param mixed  $value The value to check against the field name
+     * @param mixed $value The value to check against the field name
      *
      *    $qb = db_select('post', 'p')
      *        ->orWhere()
@@ -375,7 +376,7 @@ class QueryBuilder
     public function condition($field, $value)
     {
         if (isset($this->where[$this->whereType][$field])) {
-            $field .= uniqid('__'.trim(__METHOD__, 'LucidFrame\Core').'__');
+            $field .= uniqid('__' . trim(__METHOD__, 'LucidFrame\Core') . '__');
         }
         $this->where[$this->whereType][$field] = $value;
 
@@ -386,7 +387,7 @@ class QueryBuilder
      * Add ORDER BY clause
      *
      * @param string $field The field name to sort
-     * @param string $sort  ASC or DESC
+     * @param string $sort ASC or DESC
      *
      * @return object QueryBuilder
      */
@@ -450,10 +451,9 @@ class QueryBuilder
 
     /**
      * Create AND HAVING ... condition
-     * @see having()
-     *
      * @param array $condition The array of conditions
      * @return object QueryBuilder
+     * @see having()
      */
     public function andHaving(array $condition = array())
     {
@@ -464,10 +464,9 @@ class QueryBuilder
 
     /**
      * Create OR HAVING ... condition
-     * @see having()
-     *
      * @param array $condition The array of conditions
      * @return object QueryBuilder
+     * @see having()
      */
     public function orHaving(array $condition = array())
     {
@@ -484,7 +483,7 @@ class QueryBuilder
      * OR
      *
      * @param int argument1 The row count
-    * @return object QueryBuilder
+     * @return object QueryBuilder
      */
     public function limit()
     {
@@ -505,7 +504,7 @@ class QueryBuilder
      * @param string $field The field name
      * @param string $alias The alias field name to retrieve
      *
-     * @object QueryBuilder
+     * @return object QueryBuilder
      */
     public function count($field = null, $alias = null)
     {
@@ -520,7 +519,7 @@ class QueryBuilder
      * @param string $field The field name
      * @param string $alias The alias field name to retrieve
      *
-     * @object QueryBuilder
+     * @return object QueryBuilder
      */
     public function max($field, $alias = null)
     {
@@ -535,7 +534,7 @@ class QueryBuilder
      * @param string $field The field name
      * @param string $alias The alias field name to retrieve
      *
-     * @object QueryBuilder
+     * @return object QueryBuilder
      */
     public function min($field, $alias = null)
     {
@@ -550,7 +549,7 @@ class QueryBuilder
      * @param string $field The field name
      * @param string $alias The alias field name to retrieve
      *
-     * @object QueryBuilder
+     * @return object QueryBuilder
      */
     public function sum($field, $alias = null)
     {
@@ -565,7 +564,7 @@ class QueryBuilder
      * @param string $field The field name
      * @param string $alias The alias field name to retrieve
      *
-     * @object QueryBuilder
+     * @return object QueryBuilder
      */
     public function avg($field, $alias = null)
     {
@@ -581,7 +580,7 @@ class QueryBuilder
      * @param string $field The field name
      * @param string $alias The alias field name to retrieve
      *
-     * @object QueryBuilder
+     * @return object QueryBuilder
      */
     protected function setAggregate($name, $field = null, $alias = null)
     {
@@ -641,7 +640,7 @@ class QueryBuilder
         if ($this->joins) {
             $joins = array();
             foreach ($this->joins as $join) {
-                $join = (object) $join;
+                $join = (object)$join;
                 if (preg_match_all('/([a-z0-9_]+\.[a-z0-9_]+)/i', $join->condition, $matches)) {
                     $matchedFields = array_unique($matches[0]);
                     foreach ($matchedFields as $field) {
@@ -706,7 +705,7 @@ class QueryBuilder
     /**
      * Execute the query
      *
-     * @return The result object
+     * @return object The result object
      */
     public function execute()
     {
@@ -756,7 +755,7 @@ class QueryBuilder
                 if ($resultType === LC_FETCH_ARRAY) {
                     return array_values($row);
                 } elseif ($resultType === LC_FETCH_OBJECT) {
-                    return (object) $row;
+                    return (object)$row;
                 } else {
                     return $row;
                 }
@@ -907,16 +906,18 @@ class QueryBuilder
         if (!is_array($cond)) {
             return $cond;
         }
+
         if (empty($cond)) {
             return '';
         }
-        $type      = strtoupper($type);
+
+        $type = strtoupper($type);
         $condition = array();
 
         foreach ($cond as $field => $value) {
-            $field    = trim($field);
+            $field = trim($field);
             $fieldOpr = explode(' ', $field);
-            $field    = trim($fieldOpr[0]);
+            $field = trim($fieldOpr[0]);
 
             if (strpos($field, '__QueryBuilder::condition__') !== false) {
                 $field = substr($field, 0, strpos($field, '__QueryBuilder::condition__'));

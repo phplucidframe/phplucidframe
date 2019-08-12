@@ -31,9 +31,9 @@ class Middleware
 
     /**
      * Register a middleware
-     * @param  Closure $closure Anonymous function
-     * @param  string $event before or after
-     * @return object \LucidFrame\Core\Middleware
+     * @param \Closure $closure Anonymous function
+     * @param string $event before or after
+     * @return $this
      */
     public function register(\Closure $closure, $event = self::BEFORE)
     {

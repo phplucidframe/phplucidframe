@@ -16,8 +16,6 @@
 
 namespace LucidFrame\Console;
 
-use LucidFrame\Console\ConsoleTable;
-
 /**
  * This class manages the process of a Command
  */
@@ -126,11 +124,11 @@ class Command
     /**
      * Add an option for the command
      *
-     * @param string $name          The option name without the prefix `--`, i.e,. `help` for `--help`
-     * @param string $shortcut      The short option name without the prefix `-`, i.e, `h` for `-h`
-     * @param string $description   A short description for the option
-     * @param mixed  $default       The default value for the option
-     * @param int    $type          A constant: LC_CONSOLE_OPTION_REQUIRED, LC_CONSOLE_OPTION_OPTIONAL, LC_CONSOLE_OPTION_NOVALUE
+     * @param string $name The option name without the prefix `--`, i.e,. `help` for `--help`
+     * @param string $shortcut The short option name without the prefix `-`, i.e, `h` for `-h`
+     * @param string $description A short description for the option
+     * @param mixed $default The default value for the option
+     * @param int $type A constant: LC_CONSOLE_OPTION_REQUIRED, LC_CONSOLE_OPTION_OPTIONAL, LC_CONSOLE_OPTION_NOVALUE
      *
      * @return object LucidFrame\Console\Command
      */
@@ -162,9 +160,9 @@ class Command
     /**
      * Add an argument for the command
      *
-     * @param string $name          The argument name
-     * @param string $description   A short description for the argument
-     * @param mixed  $default       The default value for the option
+     * @param string $name The argument name
+     * @param string $description A short description for the argument
+     * @param mixed $default The default value for the option
      *
      * @return object LucidFrame\Console\Command
      */
@@ -277,7 +275,7 @@ class Command
 
     /**
      * Run the command
-     * @param  array $argv Array of arguments passed to script
+     * @param array $argv Array of arguments passed to script
      * @return mixed
      */
     public function run($argv = array())
@@ -322,7 +320,7 @@ class Command
                     $table->addColumn($arg['name']);
                     $desc = $arg['description'];
                     if ($arg['default']) {
-                        $desc .= ' [default: "'.$arg['default'].'"]';
+                        $desc .= ' [default: "' . $arg['default'] . '"]';
                     }
                     $table->addColumn($desc);
                 }
@@ -341,7 +339,7 @@ class Command
                     $table->addColumn($opt['key']);
                     $desc = $opt['description'];
                     if ($opt['default']) {
-                        $desc .= ' [default: "'.$opt['default'].'"]';
+                        $desc .= ' [default: "' . $opt['default'] . '"]';
                     }
                     $table->addColumn($desc);
                 }
@@ -358,8 +356,8 @@ class Command
 
     /**
      * Validate the option
-     * @param  string $name
-     * @param  string $type
+     * @param string $name
+     * @param string $type
      * @return string|boolean
      */
     private function validateOption($name, $type)
@@ -413,7 +411,7 @@ class Command
 
     /**
      * Parse the arguments for the command
-     * @param  array $argv Array of arguments passed to script
+     * @param array $argv Array of arguments passed to script
      * @return array
      */
     public function parseArguments($argv = array())
@@ -424,7 +422,7 @@ class Command
 
         foreach ($argv as $pos => $arg) {
             list($type, $name) = $this->getArgTypeAndName($pos);
-            list($lastType, $lastName) = $this->getArgTypeAndName($pos-1);
+            list($lastType, $lastName) = $this->getArgTypeAndName($pos - 1);
 
             $name = $this->validateOption($name, $type);
             if (!$name) {
@@ -472,17 +470,17 @@ class Command
 
     /**
      * Console confirmation prompt
-     * @param string        $message    The confirmation message
-     * @param string|array  $input      The input to be allowed or to be checked against
+     * @param string $message The confirmation message
+     * @param string|array $input The input to be allowed or to be checked against
      * @return boolean TRUE if it is passed; otherwise FALSE
      */
     public function confirm($message = 'Are you sure? Type "yes" or "y" to continue:', $input = array('yes', 'y'))
     {
-        _write(trim($message).' ');
+        _write(trim($message) . ' ');
 
         $handle = fopen("php://stdin", "r");
-        $line   = fgets($handle);
-        $line   = strtolower(trim($line));
+        $line = fgets($handle);
+        $line = strtolower(trim($line));
 
         if (is_string($input) && $line == $input) {
             fclose($handle);

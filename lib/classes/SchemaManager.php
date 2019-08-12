@@ -104,7 +104,7 @@ class SchemaManager
 
     /**
      * Setter for the property `schema`
-     * @param  array $schema The array of schema definition
+     * @param array $schema The array of schema definition
      * @return object SchemaManager
      */
     public function setSchema($schema)
@@ -132,7 +132,7 @@ class SchemaManager
     /**
      * Setter for the property `driver`
      * Currently driver allows mysql only, that's why this method is private
-     * @param  string $driver Database driver
+     * @param string $driver Database driver
      * @return object SchemaManager
      */
     private function setDriver($driver)
@@ -153,7 +153,7 @@ class SchemaManager
 
     /**
      * Setter for the property `dbNamespace`
-     * @param  string $namespace The namespace
+     * @param string $namespace The namespace
      * @return object SchemaManager
      */
     public function setDbNamespace($namespace)
@@ -188,14 +188,14 @@ class SchemaManager
 
     /**
      * Get relationship options with defaults
-     * @param  array  $relation The relationship options
-     * @param  string $fkTable The FK table
+     * @param array $relation The relationship options
+     * @param string $fkTable The FK table
      * @return array  The relationship options with defaults
      */
     private function getRelationOptions($relation, $fkTable = '')
     {
         if (!isset($relation['name'])) {
-            $relation['name'] = $fkTable.'_id';
+            $relation['name'] = $fkTable . '_id';
         }
 
         return $relation + array(
@@ -207,9 +207,9 @@ class SchemaManager
 
     /**
      * Get field statement for CREATE TABLE
-     * @param  string   $field        The field name
-     * @param  array    $definition   SchemaManager field definition
-     * @param  string   $collate      The collation for the field; if it is null, db collation is used
+     * @param string $field The field name
+     * @param array $definition SchemaManager field definition
+     * @param string $collate The collation for the field; if it is null, db collation is used
      * @return string   The field statement
      */
     public function getFieldStatement($field, $definition, $collate = null)
@@ -244,7 +244,7 @@ class SchemaManager
         }
 
         if (isset($definition['default'])) {
-            $statement .= sprintf(" DEFAULT '%d'", (int) $definition['default']);
+            $statement .= sprintf(" DEFAULT '%d'", (int)$definition['default']);
         }
 
         if (isset($definition['autoinc']) && $definition['autoinc']) {
@@ -257,7 +257,7 @@ class SchemaManager
 
     /**
      * Get field type
-     * @param  array  $definition SchemaManager field definition
+     * @param array $definition SchemaManager field definition
      * @return string The underlying db field type
      */
     public function getVendorFieldType(&$definition)
@@ -271,7 +271,7 @@ class SchemaManager
 
         if (in_array($definition['type'], array('text', 'blob', 'array', 'json'))) {
             if (isset($definition['length']) && in_array($definition['length'], array('tiny', 'medium', 'long'))) {
-                return strtoupper($definition['length']).$type;
+                return strtoupper($definition['length']) . $type;
             } else {
                 return $definition['type'] == 'blob' ? self::$dataTypes[$this->driver]['blob'] : self::$dataTypes[$this->driver]['text'];
             }
@@ -280,7 +280,7 @@ class SchemaManager
         if ($definition['type'] == 'boolean') {
             # if type is boolean, force unsigned, not null and default 0
             $definition['unsigned'] = true;
-            $definition['null']     = false;
+            $definition['null'] = false;
             if (!isset($definition['default'])) {
                 $definition['default'] = false;
             }
@@ -291,7 +291,7 @@ class SchemaManager
 
     /**
      * Get field length
-     * @param  array    $definition SchemaManager field definition
+     * @param array $definition SchemaManager field definition
      * @return integer  The field length
      */
     public function getFieldLength(&$definition)
@@ -324,8 +324,8 @@ class SchemaManager
 
     /**
      * Get foreign key schema definition
-     * @param  string $fkTable  The reference table name
-     * @param  array  $relation The relationship definition
+     * @param string $fkTable The reference table name
+     * @param array $relation The relationship definition
      * @return array Foreign key schema definition
      */
     protected function getFKField($fkTable, $relation)
@@ -361,17 +361,17 @@ class SchemaManager
 
     /**
      * Get foreign key constraint definition
-     * @param  string $fkTable  The reference table name
-     * @param  array  $relation The relationship definition
-     * @param  array  $schema   The whole schema definition
+     * @param string $fkTable The reference table name
+     * @param array $relation The relationship definition
+     * @param array $schema The whole schema definition
      * @return array|null Foreign key constraint definition
      */
     protected function getFKConstraint($fkTable, $relation, $schema = array())
     {
         if ($this->schema['_options']['constraints']) {
-            $pkFields   = $this->schema['_options']['pk'];
-            $field      = $relation['name'];
-            $refField   = $field;
+            $pkFields = $this->schema['_options']['pk'];
+            $field = $relation['name'];
+            $refField = $field;
 
             if (!isset($pkFields[$fkTable][$refField])) {
                 $refField = 'id';
@@ -429,7 +429,7 @@ class SchemaManager
             $createSql = $this->createTableStatement($table, $schema, $pkFields, $constraints);
             if ($createSql) {
                 $sql[] = '--';
-                $sql[] = '-- Table structure for table `'.$fullTableName.'`';
+                $sql[] = '-- Table structure for table `' . $fullTableName . '`';
                 $sql[] = '--';
                 $sql[] = "DROP TABLE IF EXISTS `{$fullTableName}`;";
                 $sql[] = $createSql;
@@ -463,8 +463,8 @@ class SchemaManager
 
     /**
      * Export the built schema definition into a file
-     * @param  string $dbNamespace The namespace for the database
-     * @param  boolean $backup Create a backup file or not
+     * @param string $dbNamespace The namespace for the database
+     * @param boolean $backup Create a backup file or not
      * @return boolean TRUE for success; FALSE for failure
      */
     public function build($dbNamespace = null, $backup = false)
@@ -498,7 +498,7 @@ class SchemaManager
 
     /**
      * Import schema to the database
-     * @param  string $dbNamespace The namespace for the database
+     * @param string $dbNamespace The namespace for the database
      * @return boolean TRUE for success; FALSE for failure
      */
     public function import($dbNamespace = null)
@@ -521,7 +521,7 @@ class SchemaManager
 
     /**
      * Export sql dump file
-     * @param  string $dbNamespace The namespace for the database
+     * @param string $dbNamespace The namespace for the database
      * @return boolean TRUE for success; FALSE for failure
      */
     public function export($dbNamespace = null)
@@ -536,19 +536,19 @@ class SchemaManager
             return false;
         }
 
-        $dump = '--'.PHP_EOL
-            .'-- Generated by PHPLucidFrame '._version().PHP_EOL
-            .'-- '.date('r').PHP_EOL
-            .'--'.PHP_EOL.PHP_EOL
-            .implode(PHP_EOL, $this->sqlStatements);
+        $dump = '--' . PHP_EOL
+            . '-- Generated by PHPLucidFrame ' . _version() . PHP_EOL
+            . '-- ' . date('r') . PHP_EOL
+            . '--' . PHP_EOL . PHP_EOL
+            . implode(PHP_EOL, $this->sqlStatements);
 
-        return file_put_contents(DB.'generated'._DS_.'schema.'.$dbNamespace.'.sql', $dump) ? true : false;
+        return file_put_contents(DB . 'generated' . _DS_ . 'schema.' . $dbNamespace . '.sql', $dump) ? true : false;
     }
 
     /**
      * Update schema to the latest version
-     * @param  Command $cmd LucidFrame\Console\Command
-     * @param  string $dbNamespace The namespace for the database
+     * @param Command $cmd LucidFrame\Console\Command
+     * @param string $dbNamespace The namespace for the database
      * @return boolean TRUE for success; FALSE for failure
      */
     public function update(Command $cmd, $dbNamespace = null)
@@ -645,8 +645,8 @@ class SchemaManager
 
     /**
      * Find the schema difference and generate SQL file
-     * @param  Command $cmd LucidFrame\Console\Command
-     * @param  string $dbNamespace The namespace for the database
+     * @param Command $cmd LucidFrame\Console\Command
+     * @param string $dbNamespace The namespace for the database
      * @return boolean TRUE for SQL file exported; FALSE for no updates
      */
     public function diff(Command $cmd, $dbNamespace = null)
@@ -678,8 +678,8 @@ class SchemaManager
                     $versionDir = $this->getVersionDir($dbNamespace);
 
                     _writeln();
-                    _writeln($versionDir._DS_.$dbVersion.$this->sqlExtension.' is exported.');
-                    _writeln('Check the file and run `php lucidframe schema:update '.$dbNamespace.'`');
+                    _writeln($versionDir . _DS_ . $dbVersion . $this->sqlExtension . ' is exported.');
+                    _writeln('Check the file and run `php lucidframe schema:update ' . $dbNamespace . '`');
 
                     return true;
                 }
@@ -691,8 +691,8 @@ class SchemaManager
 
     /**
      * Export the SQL file with .sqlc extension in the directory /db/version/{namespace}/
-     * @param  array  $sql Array of SQL statements
-     * @param  string $dbNamespace The namespace for the database
+     * @param array $sql Array of SQL statements
+     * @param string $dbNamespace The namespace for the database
      * @return mixed The version number on success or FALSE on failure
      */
     private function exportVersionFile(array $sql, $dbNamespace = null)
@@ -708,15 +708,15 @@ class SchemaManager
         # Export version sql file
         $dbVersion = date('YmdHis');
 
-        $dump = '--'.PHP_EOL
-            .'-- Version '.$dbVersion.PHP_EOL
-            .'-- Generated by PHPLucidFrame '._version().PHP_EOL
-            .'-- '.date('r').PHP_EOL
-            .'--'.PHP_EOL.PHP_EOL
-            .implode(PHP_EOL.PHP_EOL, $sql);
+        $dump = '--' . PHP_EOL
+            . '-- Version ' . $dbVersion . PHP_EOL
+            . '-- Generated by PHPLucidFrame ' . _version() . PHP_EOL
+            . '-- ' . date('r') . PHP_EOL
+            . '--' . PHP_EOL . PHP_EOL
+            . implode(PHP_EOL . PHP_EOL, $sql);
 
         $versionDir = $this->getVersionDir($dbNamespace);
-        if (file_put_contents($versionDir._DS_.$dbVersion.$this->sqlExtension, $dump)) {
+        if (file_put_contents($versionDir . _DS_ . $dbVersion . $this->sqlExtension, $dump)) {
             return $dbVersion;
         }
 
@@ -725,15 +725,15 @@ class SchemaManager
 
     /**
      * Get schema difference and generate SQL statements
-     * @param  array $schemaFrom Array of the current schema data
-     * @param  array $schemaTo Array of the updated schema data
-     * @param  Command $cmd LucidFrame\Console\Command
+     * @param array $schemaFrom Array of the current schema data
+     * @param array $schemaTo Array of the updated schema data
+     * @param Command $cmd LucidFrame\Console\Command
      * @return array
      */
     public function generateSqlFromDiff($schemaFrom, $schemaTo, Command $cmd)
     {
-        $fieldNamesChanged  = array();
-        $this->columnsRenamed     = array();
+        $fieldNamesChanged = array();
+        $this->columnsRenamed = array();
 
         $sql = array(
             'up'    => array(),
@@ -749,8 +749,8 @@ class SchemaManager
         }
 
         # Get user confirmation for table renaming
-        foreach($this->tablesRenamed as $from => $to) {
-            if (!$cmd->confirm('Table renaming from `'.$from.'` to `'.$to.'`:')) {
+        foreach ($this->tablesRenamed as $from => $to) {
+            if (!$cmd->confirm('Table renaming from `' . $from . '` to `' . $to . '`:')) {
                 unset($this->tablesRenamed[$from]);
             }
         }
@@ -764,9 +764,9 @@ class SchemaManager
         }
 
         # Get user confirmation for column renaming
-        foreach($this->columnsRenamed as $from => $to) {
+        foreach ($this->columnsRenamed as $from => $to) {
             $fieldFrom = explode('.', $from);
-            if (!$cmd->confirm('Field renaming from `'.$fieldFrom[1].'` to `'.$fieldFrom[0].'.'.$to.'`:')) {
+            if (!$cmd->confirm('Field renaming from `' . $fieldFrom[1] . '` to `' . $fieldFrom[0] . '.' . $to . '`:')) {
                 unset($this->columnsRenamed[$from]);
             }
         }
@@ -789,9 +789,9 @@ class SchemaManager
                 }
 
                 foreach ($tableDef as $field => $fieldDef) {
-                    $collate = $this->getTableCollation($table, $schemaTo);
-                    $oldField = $field;
-                    $renamedField = $this->isRenamed($table.'.'.$field, $this->columnsRenamed);
+                    $collate        = $this->getTableCollation($table, $schemaTo);
+                    $oldField       = $field;
+                    $renamedField   = $this->isRenamed($table . '.' . $field, $this->columnsRenamed);
 
                     if (isset($schemaTo[$table][$field]) || ($renamedField && isset($schemaTo[$table][$renamedField]))) {
                         # Existing field
@@ -812,9 +812,9 @@ class SchemaManager
                                     continue;
                                 }
 
-                                $fromFieldOptions   = $fieldDef;
-                                $toFieldOptions     = $schemaTo[$table][$field];
-                                $diffOptions        = $this->diffColumns($fromFieldOptions, $toFieldOptions);
+                                $fromFieldOptions = $fieldDef;
+                                $toFieldOptions = $schemaTo[$table][$field];
+                                $diffOptions = $this->diffColumns($fromFieldOptions, $toFieldOptions);
 
                                 foreach ($diffOptions['diff'] as $optName => $optValue) {
                                     switch ($optName) {
@@ -850,8 +850,8 @@ class SchemaManager
 
                             $newField = $field;
 
-                            $sql['up'][] = "ALTER TABLE `{$fullTableName}` CHANGE COLUMN `{$oldField}` ".
-                                $this->getFieldStatement($newField, $schemaTo[$table][$newField], $collate).';';
+                            $sql['up'][] = "ALTER TABLE `{$fullTableName}` CHANGE COLUMN `{$oldField}` " .
+                                $this->getFieldStatement($newField, $schemaTo[$table][$newField], $collate) . ';';
 
                             if (isset($schemaFrom[$table][$oldField]['unique']) && !isset($schemaTo[$table][$newField]['unique'])) {
                                 $sql['up'][] = "ALTER TABLE `{$fullTableName}` DROP INDEX `IDX_$oldField`;";
@@ -859,13 +859,13 @@ class SchemaManager
                                 $sql['up'][] = "ALTER TABLE `{$fullTableName}` ADD UNIQUE `IDX_$newField` (`$newField`);";
                             }
 
-                            $fieldNamesChanged[] = $table.'.'.$oldField;
+                            $fieldNamesChanged[] = $table . '.' . $oldField;
                             $fieldNamesChanged = array_unique($fieldNamesChanged);
                         } else {
                             if ($renamedField) {
-                                $fieldNamesChanged[] = $table.'.'.$renamedField;
-                                $sql['up'][] = "ALTER TABLE `{$fullTableName}` CHANGE COLUMN `{$oldField}` ".
-                                    $this->getFieldStatement($renamedField, $schemaTo[$table][$renamedField], $collate).';';
+                                $fieldNamesChanged[] = $table . '.' . $renamedField;
+                                $sql['up'][] = "ALTER TABLE `{$fullTableName}` CHANGE COLUMN `{$oldField}` " .
+                                    $this->getFieldStatement($renamedField, $schemaTo[$table][$renamedField], $collate) . ';';
                             }
                         }
                     } else {
@@ -874,7 +874,7 @@ class SchemaManager
                             continue;
                         }
 
-                        if (in_array($table.'.'.$field, $fieldNamesChanged)) {
+                        if (in_array($table . '.' . $field, $fieldNamesChanged)) {
                             # The field name is already changed, no need to drop it
                             continue;
                         }
@@ -893,7 +893,7 @@ class SchemaManager
 
                 # Rename table
                 if ($renamedTable) {
-                    $sql['up'][] = 'RENAME TABLE `'.$fullTableName.'` TO `'.db_table($renamedTable).'`;';
+                    $sql['up'][] = 'RENAME TABLE `' . $fullTableName . '` TO `' . db_table($renamedTable) . '`;';
                 }
             } else {
                 # Drop table
@@ -909,10 +909,10 @@ class SchemaManager
                 continue;
             }
 
-            $collate        = $this->getTableCollation($table, $schemaTo);
-            $fullTableName  = db_table($table);
-            $tableFrom      = $table;
-            $fieldBefore    = '';
+            $collate = $this->getTableCollation($table, $schemaTo);
+            $fullTableName = db_table($table);
+            $tableFrom = $table;
+            $fieldBefore = '';
 
             if (!isset($schemaFrom[$table])) {
                 $oldTable = array_search($table, $this->tablesRenamed);
@@ -935,7 +935,7 @@ class SchemaManager
                     continue;
                 }
 
-                if (!isset($schemaFrom[$tableFrom][$field]) && array_search($table.'.'.$field, $fieldNamesChanged) === false) {
+                if (!isset($schemaFrom[$tableFrom][$field]) && array_search($table . '.' . $field, $fieldNamesChanged) === false) {
                     # Add a new field
                     $alterSql = "ALTER TABLE `{$fullTableName}` ADD COLUMN ";
                     $alterSql .= $this->getFieldStatement($field, $fieldDef, $collate);
@@ -955,10 +955,10 @@ class SchemaManager
 
     /**
      * Migrate db to the latest version
-     * @param  array $versions Array of versions (older to newer)
-     * @param  array $schemaFrom Array of the current schema data
-     * @param  array $schemaTo Array of the updated schema data
-     * @param  bool  $verbose Output in console or not
+     * @param array $versions Array of versions (older to newer)
+     * @param array $schemaFrom Array of the current schema data
+     * @param array $schemaTo Array of the updated schema data
+     * @param bool $verbose Output in console or not
      * @return string|bool
      */
     public function migrate(array $versions, array $schemaFrom, array $schemaTo, $verbose = true)
@@ -978,15 +978,15 @@ class SchemaManager
             $version = str_replace($this->sqlExtension, '', $verFile);
 
             if ($verbose) {
-                _writeln('Executing '.$version);
+                _writeln('Executing ' . $version);
             }
 
-            $sql = file_get_contents(DB.'version'._DS_.$this->dbNamespace._DS_.$verFile);
+            $sql = file_get_contents(DB . 'version' . _DS_ . $this->dbNamespace . _DS_ . $verFile);
             if (empty($sql)) {
                 return false;
             }
 
-            $executed = $this->executeQueries($this->dbNamespace, explode(PHP_EOL.PHP_EOL, $sql));
+            $executed = $this->executeQueries($this->dbNamespace, explode(PHP_EOL . PHP_EOL, $sql));
             if (!$executed) {
                 return false;
             }
@@ -1005,8 +1005,8 @@ class SchemaManager
     /**
      * Execute batch queries
      *
-     * @param  string   $dbNamespace The namespace for the database
-     * @param  array    $queries Array of SQL statements
+     * @param string $dbNamespace The namespace for the database
+     * @param array $queries Array of SQL statements
      * @return boolean  TRUE for success; FALSE for failure
      */
     private function executeQueries($dbNamespace, $queries)
@@ -1063,7 +1063,7 @@ class SchemaManager
     /**
      * Check if schema changed
      * @param array $from The last schema
-     * @param array $from The changed schema
+     * @param array $to The changed schema
      * @return bool TRUE if the schema is changed, otherwise FALSE
      */
     public function isSchemaChanged(array $from, array $to)
@@ -1089,7 +1089,6 @@ class SchemaManager
 
     /**
      * Get the current db version
-     * @param  string $dbNamespace The namespace for the database
      * @return integer The version number
      */
     public function getCurrentVersion()
@@ -1113,7 +1112,7 @@ class SchemaManager
     public function checkVersions(array $schema)
     {
         # Check if there is version files in the version directory
-        $versionDir = DB.'version'._DS_.$this->dbNamespace;
+        $versionDir = DB . 'version' . _DS_ . $this->dbNamespace;
         if (!is_dir($versionDir)) {
             return 0;
         }
@@ -1125,19 +1124,20 @@ class SchemaManager
         $lastVersion = 0;
         if (isset($schema['_options']['version'])) {
             $lastVersion = $schema['_options']['version'];
-            if ($lastVersion.$this->sqlExtension == $files[0]) {
+            if ($lastVersion . $this->sqlExtension == $files[0]) {
                 return 1;
             }
         }
 
         # Filter all version greater than the last version
-        $files = array_filter($files, function ($fileName) use ($lastVersion) {
-            if (preg_match('/\d{14}\\'.$this->sqlExtension.'/', $fileName)) {
+        $manager = $this;
+        $files = array_filter($files, function ($fileName) use ($lastVersion, $manager) {
+            if (preg_match('/\d{14}\\' . $manager->sqlExtension . '/', $fileName)) {
                 if ($lastVersion == 0) {
                     return true;
                 }
 
-                $version = str_replace($this->sqlExtension, '', $fileName);
+                $version = str_replace($manager->sqlExtension, '', $fileName);
                 if ($version > $lastVersion) {
                     return true;
                 }
@@ -1167,7 +1167,7 @@ class SchemaManager
      * Check if a table or field is renamed
      *
      * @param string $needle The table or field name
-     * @param array  $haystack Array of renamed fields or tables
+     * @param array $haystack Array of renamed fields or tables
      * @return mixed The renamed table name or field name or false
      */
     protected function isRenamed($needle, $haystack)
@@ -1181,7 +1181,7 @@ class SchemaManager
 
     /**
      * Check if the table exists
-     * @param  string $table The table name
+     * @param string $table The table name
      * @return boolean TRUE if the table exists, otherwise FALSE
      */
     public function hasTable($table)
@@ -1197,8 +1197,8 @@ class SchemaManager
 
     /**
      * Check if a field exists
-     * @param  string $table The table name
-     * @param  string $field The field name
+     * @param string $table The table name
+     * @param string $field The field name
      * @return boolean TRUE if the table exists, otherwise FALSE
      */
     public function hasField($table, $field)
@@ -1214,7 +1214,7 @@ class SchemaManager
 
     /**
      * Check if the table has the timestamp fields or not
-     * @param  string $table The table name without prefix
+     * @param string $table The table name without prefix
      * @return boolean TRUE if the table has the timestamp fields, otherwise FALSE
      */
     public function hasTimestamps($table)
@@ -1230,7 +1230,7 @@ class SchemaManager
 
     /**
      * Check if the table has the slug field or not
-     * @param  string $table The table name without prefix
+     * @param string $table The table name without prefix
      * @return boolean TRUE if the table has the slug field, otherwise FALSE
      */
     public function hasSlug($table)
@@ -1246,8 +1246,8 @@ class SchemaManager
 
     /**
      * Get data type of the field
-     * @param  string $table The table name
-     * @param  string $field The field name in the table
+     * @param string $table The table name
+     * @param string $field The field name in the table
      * @return string The data type or null if there is no field
      */
     public function getFieldType($table, $field)
@@ -1308,7 +1308,7 @@ class SchemaManager
 
     /**
      * Populate primary keys acccording to the schema defined
-     * @param  array $schema The database schema
+     * @param array $schema The database schema
      * @return array
      */
     public function populatePrimaryKeys(&$schema)
@@ -1350,7 +1350,7 @@ class SchemaManager
 
     /**
      * Populate pivot tables (joint tables fo many-to-many relationship) into the schema
-     * @param  array $schema The database schema
+     * @param array $schema The database schema
      * @return array Array of constraints
      */
     public function populatePivots(&$schema)
@@ -1358,7 +1358,7 @@ class SchemaManager
         $constraints = array();
         $pkFields = $this->getPrimaryKeys();
 
-        $manyToMany = array_filter($schema, function($def) {
+        $manyToMany = array_filter($schema, function ($def) {
             return isset($def['m:m']) ? true : false;
         });
 
@@ -1369,7 +1369,7 @@ class SchemaManager
                     continue;
                 }
 
-                if (isset($schema[$table.'_to_'.$fkTable]) || isset($schema[$fkTable.'_to_'.$table])) {
+                if (isset($schema[$table . '_to_' . $fkTable]) || isset($schema[$fkTable . '_to_' . $table])) {
                     # if the joint table has already been defined
                     continue;
                 }
@@ -1380,12 +1380,12 @@ class SchemaManager
                     }
 
                     # table1_to_table2
-                    $jointTable = !empty($joint['table']) ? $joint['table'] : $table.'_to_'.$fkTable;
+                    $jointTable = !empty($joint['table']) ? $joint['table'] : $table . '_to_' . $fkTable;
                     $schema[$jointTable]['options'] = array(
-                        'pk' => array(),
-                        'timestamps' => false, # no need timestamp fields for many-to-many table
-                        'm:m' => true
-                    ) + $this->defaultOptions;
+                            'pk' => array(),
+                            'timestamps' => false, # no need timestamp fields for many-to-many table
+                            'm:m' => true
+                        ) + $this->defaultOptions;
 
                     # table1.field
                     $relation = $this->getRelationOptions($joint, $table);
@@ -1424,10 +1424,10 @@ class SchemaManager
 
     /**
      * Generate CREATE TABLE SQL
-     * @param  string   $table       The new table name
-     * @param  array    $schema      The database schema
-     * @param  array    $pkFields    Array of PK fields
-     * @param  array    $constraints Array of FK constraints
+     * @param string $table The new table name
+     * @param array $schema The database schema
+     * @param array $pkFields Array of PK fields
+     * @param array $constraints Array of FK constraints
      * @return string
      */
     public function createTableStatement($table, &$schema, &$pkFields, &$constraints)
@@ -1497,7 +1497,7 @@ class SchemaManager
         $def['options'] = $options;
 
         # CREATE TABLE Statement
-        $sql = "CREATE TABLE IF NOT EXISTS `{$fullTableName}` (".PHP_EOL;
+        $sql = "CREATE TABLE IF NOT EXISTS `{$fullTableName}` (" . PHP_EOL;
 
         # loop the fields
         $autoinc = false;
@@ -1507,7 +1507,7 @@ class SchemaManager
                 continue;
             }
 
-            $sql .= '  '.$this->getFieldStatement($name, $rule, $this->getTableCollation($name, $schema)).','.PHP_EOL;
+            $sql .= '  ' . $this->getFieldStatement($name, $rule, $this->getTableCollation($name, $schema)) . ',' . PHP_EOL;
 
             # if there is any unique index
             if (isset($rule['unique']) && $rule['unique']) {
@@ -1527,7 +1527,7 @@ class SchemaManager
                 } else {
                     $sql .= '  KEY';
                 }
-                $sql .= " `IDX_$name` (`$name`),".PHP_EOL;
+                $sql .= " `IDX_$name` (`$name`)," . PHP_EOL;
             }
         }
 
@@ -1541,26 +1541,26 @@ class SchemaManager
 
         # Primary key indexes
         if (isset($pkFields[$table])) {
-            $sql .= '  PRIMARY KEY (`'.implode('`,`', array_keys($pkFields[$table])).'`)'.PHP_EOL;
+            $sql .= '  PRIMARY KEY (`' . implode('`,`', array_keys($pkFields[$table])) . '`)' . PHP_EOL;
         }
 
         $sql .= ')';
-        $sql .= ' ENGINE='.$options['engine'];
-        $sql .= ' DEFAULT CHARSET='.$options['charset'];
-        $sql .= ' COLLATE='.$options['collate'];
+        $sql .= ' ENGINE=' . $options['engine'];
+        $sql .= ' DEFAULT CHARSET=' . $options['charset'];
+        $sql .= ' COLLATE=' . $options['collate'];
 
         if ($autoinc) {
             $sql .= ' AUTO_INCREMENT=1';
         }
 
-        $sql .= ';'.PHP_EOL;
+        $sql .= ';' . PHP_EOL;
 
         return $sql;
     }
 
     /**
      * Generate foreign key constraints SQL statements
-     * @param  array $constraints Array of populated constraints
+     * @param array $constraints Array of populated constraints
      * @return array Array of SQL statements
      */
     public function createConstraintStatements($constraints = null)
@@ -1575,7 +1575,7 @@ class SchemaManager
         if ($options['constraints']) {
             foreach ($constraints as $table => $constraint) {
                 $fullTableName = db_table($table);
-                $constraintSql = "ALTER TABLE `{$fullTableName}`".PHP_EOL;
+                $constraintSql = "ALTER TABLE `{$fullTableName}`" . PHP_EOL;
                 $statement = array();
                 foreach ($constraint as $field => $rule) {
                     $statement[] = "  ADD CONSTRAINT `{$rule['name']}` FOREIGN KEY (`{$rule['fields']}`)"
@@ -1583,7 +1583,7 @@ class SchemaManager
                         . " ON DELETE {$rule['on_delete']}"
                         . " ON UPDATE {$rule['on_update']}";
                 }
-                $constraintSql .= implode(','.PHP_EOL, $statement) . ';'.PHP_EOL;
+                $constraintSql .= implode(',' . PHP_EOL, $statement) . ';' . PHP_EOL;
                 $sql[] = $constraintSql;
             }
         }
@@ -1593,7 +1593,7 @@ class SchemaManager
 
     /**
      * Generate DROP foreign key constraints SQL statements
-     * @param  array $constraints Array of populated constraints
+     * @param array $constraints Array of populated constraints
      * @return array Array of SQL statements
      */
     public function dropConstraintStatements($constraints = null)
@@ -1619,7 +1619,7 @@ class SchemaManager
                     }
 
                     if (count($fKeys)) {
-                        $sql[] = "ALTER TABLE `{$fullTableName}`".PHP_EOL.implode(','.PHP_EOL, $fKeys) . ';';
+                        $sql[] = "ALTER TABLE `{$fullTableName}`" . PHP_EOL . implode(',' . PHP_EOL, $fKeys) . ';';
                     }
                 }
             }
@@ -1630,7 +1630,7 @@ class SchemaManager
 
     /**
      * Set the populated primary keys into the schema database options
-     * @param  array $pkFields Array of primary keys
+     * @param array $pkFields Array of primary keys
      * @return void
      */
     public function setPrimaryKeys($pkFields)
@@ -1640,7 +1640,7 @@ class SchemaManager
 
     /**
      * Get the populated primary keys from the schema database options
-     * @param  array $schema The schema definition
+     * @param array $schema The schema definition
      * @return array Array of primary keys
      */
     public function getPrimaryKeys($schema = null)
@@ -1654,7 +1654,7 @@ class SchemaManager
 
     /**
      * Set the populated foreign key constraints into the schema database options
-     * @param  array $constraints Array of FK constraints
+     * @param array $constraints Array of FK constraints
      * @return void
      */
     public function setConstraints($constraints)
@@ -1664,7 +1664,7 @@ class SchemaManager
 
     /**
      * Get the populated foreign key constraints from the schema database options
-     * @param  array $schema The schema definition
+     * @param array $schema The schema definition
      * @return array Array of FK constraints
      */
     public function getConstraints($schema = null)
@@ -1679,7 +1679,7 @@ class SchemaManager
     /**
      * Return table collation from the schema definition
      * @param string $table The table name
-     * @param array  $schema The schema definition (optional)
+     * @param array $schema The schema definition (optional)
      * @return string
      */
     public function getTableCollation($table, $schema = null)
@@ -1695,14 +1695,15 @@ class SchemaManager
      * Try to find columns that only changed their name, rename operations maybe cheaper than add/drop
      * however ambiguities between different possibilities should not lead to renaming at all.
      *
-     * @param string $needle    The table or field name
-     * @param array  $from      The table or field definition to check difference against $to
-     * @param array  $to        The table or field definition to check difference against $from
-     * @param string $table     The table name or null
+     * @param string $needle The table or field name
+     * @param array $from The table or field definition to check difference against $to
+     * @param array $to The table or field definition to check difference against $from
+     * @param string $table The table name or null
      *
      * @return mixed The similar name or false
      */
-    private function getSimilarity($needle, array $from, array $to, $table = null) {
+    private function getSimilarity($needle, array $from, array $to, $table = null)
+    {
         if (in_array($needle, array('options', '1:m', 'm:m', 'm:1', '1:1'))) {
             return false;
         }
@@ -1757,13 +1758,13 @@ class SchemaManager
 
             # Check similar chars
             similar_text(strtolower($needle), strtolower($name), $percent1);
-            $matchingText[$name] = (int) round($percent1);
+            $matchingText[$name] = (int)round($percent1);
 
             # Check sound
             $metaphone1 = metaphone(strtolower($needle));
             $metaphone2 = metaphone(strtolower($name));
             similar_text($metaphone1, $metaphone2, $percent2);
-            $matchingMetaphone[$name] = (int) round($percent2);
+            $matchingMetaphone[$name] = (int)round($percent2);
 
             $percentByTwo = round(($percent1 + $percent2) / 2);
             $percent1 = round($percent1);
@@ -1790,7 +1791,7 @@ class SchemaManager
 
             if (count($scores)) {
                 arsort($scores);
-                $similarity[$name] = (int) round(array_shift($scores));
+                $similarity[$name] = (int)round(array_shift($scores));
             }
         }
 
@@ -1980,7 +1981,7 @@ class SchemaManager
                         # Check if there is similar field name
                         $renamedCol = $this->getSimilarity($field, $tableDef, $schemaTo[$table], $table);
                         if ($renamedCol) {
-                            $this->columnsRenamed[$table.'.'.$field] = $renamedCol;
+                            $this->columnsRenamed[$table . '.' . $field] = $renamedCol;
                         }
                     }
                 }
@@ -2017,9 +2018,9 @@ class SchemaManager
             }
         }
 
-        $fromKeys   = array_keys($from);
-        $toKeys     = array_keys($to);
-        $diffKeys   = array_diff($toKeys, $fromKeys);
+        $fromKeys = array_keys($from);
+        $toKeys = array_keys($to);
+        $diffKeys = array_diff($toKeys, $fromKeys);
         foreach ($diffKeys as $key) {
             $diff[$key] = $to[$key];
             $changes++;
@@ -2061,7 +2062,7 @@ class SchemaManager
 
     /**
      * Get the version directory path
-     * @param  string $dbNamespace The namespace for the database
+     * @param string $dbNamespace The namespace for the database
      * @return string The full directory path
      */
     private function getVersionDir($dbNamespace = null)
@@ -2070,7 +2071,7 @@ class SchemaManager
             $dbNamespace = $this->dbNamespace;
         }
 
-        $versionDir = DB.'version'._DS_.$dbNamespace;
+        $versionDir = DB . 'version' . _DS_ . $dbNamespace;
         if (!is_dir($versionDir)) {
             mkdir($versionDir, 777, true);
         }
@@ -2080,7 +2081,7 @@ class SchemaManager
 
     /**
      * Get schema definition from the built schema file
-     * @param  string $dbNamespace The namespace for the database
+     * @param string $dbNamespace The namespace for the database
      * @return array The schema definition; NULL when there is no file
      */
     public static function getSchemaLockDefinition($dbNamespace = null)
@@ -2088,7 +2089,7 @@ class SchemaManager
         $extensions = array('lock', 'inc'); # @TODO: Remove inc for backward compatibility support
 
         foreach ($extensions as $ext) {
-            $file = DB._DS_.'build'._DS_.'schema';
+            $file = DB . _DS_ . 'build' . _DS_ . 'schema';
             if ($dbNamespace) {
                 $file .= '.' . $dbNamespace;
             }
@@ -2110,9 +2111,9 @@ class SchemaManager
 
     /**
      * Get schema lock file name
-     * @param  string $dbNamespace The namespace for the database
-     * @param  boolean $backupFileName If true, ~ will be prefixed in the file name
-     * @param  string $ext The file extension, default to .lock
+     * @param string $dbNamespace The namespace for the database
+     * @param boolean $backupFileName If true, ~ will be prefixed in the file name
+     * @param string $ext The file extension, default to .lock
      * @return string The file name with full path
      */
     public static function getSchemaLockFileName($dbNamespace = null, $backupFileName = false, $ext = 'lock')

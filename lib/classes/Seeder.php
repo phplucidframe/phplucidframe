@@ -33,7 +33,7 @@ class Seeder
     private $tables;
 
     /**
-     * Construtor
+     * Constructor
      * @param string $namespace The database namespace
      */
     public function __construct($namespace = 'default')
@@ -62,7 +62,7 @@ class Seeder
 
     /**
      * Set reference key
-     * @param  string $key The reference key
+     * @param string $key The reference key
      * @return string
      */
     public static function setReference($key)
@@ -72,7 +72,7 @@ class Seeder
 
     /**
      * Get reference field value
-     * @param  string $key The reference key
+     * @param string $key The reference key
      * @return mixed The value
      */
     public static function getReference($key)
@@ -157,7 +157,7 @@ class Seeder
 
                 $table = rtrim($fileName, '.php');
                 if (file_exists($file) && $_DB->schemaManager->hasTable($table)) {
-                    $data  = include($file);
+                    $data = include($file);
                     $order = $data['order'];
                     unset($data['order']);
 
