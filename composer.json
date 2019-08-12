@@ -15,7 +15,6 @@
     ],
     "support": {
         "issues": "https://github.com/phplucidframe/phplucidframe/issues",
-        "forum": "http://groups.google.com/group/phplucidframe",
         "source": "https://github.com/phplucidframe/phplucidframe"
     },
     "require": {
