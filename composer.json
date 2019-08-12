@@ -21,7 +21,8 @@
     "require": {
         "php": ">=5.3.0",
         "ext-mcrypt": "*",
-        "ext-mbstring": "*"
+        "ext-mbstring": "*",
+        "ext-json": "*"
     },
     "require-dev": {
         "simpletest/simpletest": "^1.1"
