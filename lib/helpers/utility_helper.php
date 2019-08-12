@@ -1830,7 +1830,7 @@ function _getTranslationStrings($data, $fields, $lang = null)
 /**
  * Detect the current page visited by a search bot or crawler
  * @return boolean `TRUE` if it is a bot's visit; otherwise `FALSE`
- * @see http://www.useragentstring.com/pages/Crawlerlist/  /
+ * @see http://www.useragentstring.com/pages/useragentstring.php?typ=Crawler
  */
 function _isBot()
 {
@@ -1880,6 +1880,7 @@ function _isBot()
         'Barkrowler',
         'panscient.com',
         'Symfony BrowserKit',
+        'Apache-HttpClient'
     );
     foreach ($bots as $bot) {
         if (false !== strpos(strtolower($userAgent), strtolower($bot))) {
