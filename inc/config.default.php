@@ -102,18 +102,7 @@ $lc_session = array(
 
 # $lc_databases: The array specifies the database connection
 # Update this in `/inc/parameter/*.php`
-$lc_databases = array(
-    'default' => array(
-        'engine'    => _p('db.default.engine'),
-        'host'      => _p('db.default.host'),
-        'port'      => _p('db.default.port'),
-        'database'  => _p('db.default.database'),
-        'username'  => _p('db.default.username'),
-        'password'  => _p('db.default.password'),
-        'prefix'    => _p('db.default.prefix'),
-        'collation' => _p('db.default.collation')
-    )
-);
+$lc_databases = _p('db');
 # $lc_defaultDbSource: The default database connection
 $lc_defaultDbSource = 'default';
 
