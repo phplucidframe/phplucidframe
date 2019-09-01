@@ -751,9 +751,15 @@ if (!function_exists('db_insert')) {
         }
 
         if (db_tableHasTimestamps($table)) {
-            $fields[] = 'created';
-            $fields[] = 'updated';
+            if (!array_key_exists('created', $data)) {
+                $fields[] = 'created';
+            }
+            if (!array_key_exists('updated', $data)) {
+                $fields[] = 'updated';
+            }
         }
+
+        $fields = array_unique($fields);
 
         $sqlFields = implode(', ', $fields);
         $values = array();
@@ -767,7 +773,7 @@ if (!function_exists('db_insert')) {
             if (is_null($val)) {
                 $values[] = 'NULL';
             } else {
-                $values[] = '"'.db_escapeString($val).'"';
+                $values[] = '"' . db_escapeString($val) . '"';
             }
             $i++;
         }
@@ -779,14 +785,19 @@ if (!function_exists('db_insert')) {
         }
 
         if (db_tableHasTimestamps($table)) {
-            $values[] = '"'.date('Y-m-d H:i:s').'"';
-            $values[] = '"'.date('Y-m-d H:i:s').'"';
+            if (!array_key_exists('created', $data)) {
+                $values[] = '"' . date('Y-m-d H:i:s') . '"';
+            }
+            if (!array_key_exists('updated', $data)) {
+                $values[] = '"' . date('Y-m-d H:i:s') . '"';
+            }
         }
 
         $sqlValues = implode(', ', $values);
 
         $sql = 'INSERT INTO '.$table.' ('.$sqlFields.')
                 VALUES ( '.$sqlValues.' )';
+
         return db_query($sql) ? db_insertId() : false;
     }
 }
