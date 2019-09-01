@@ -92,6 +92,8 @@ class Seeder
                 db_delete_multi($table);
             }
 
+            $tableDone = '';
+
             # Arrange data to insert
             foreach ($this->data as $reference => $record) {
                 if (!isset($record['__TABLE__'])) {
@@ -100,6 +102,13 @@ class Seeder
 
                 $table = $record['__TABLE__'];
                 unset($record['__TABLE__']);
+
+                if ($table != $tableDone) {
+                    if ($tableDone) {
+                        _writeln('%s is seeded.', $tableDone);
+                    }
+                    $tableDone = $table;
+                }
 
                 $slug = null;
                 $data = array();
@@ -127,6 +136,10 @@ class Seeder
                 if ($insertId = db_insert($table, $data)) {
                     self::$references[$reference] = $insertId;
                 }
+            }
+
+            if ($tableDone) {
+                _writeln('%s is seeded.', $tableDone);
             }
 
             return true;
