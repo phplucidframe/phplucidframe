@@ -1455,9 +1455,10 @@ if (!function_exists('_randomCode')) {
      * @param  int    $length   The length of required random string
      * @param  array  $letters  Array of letters from which randomized string is derived from.
      *   Default is a to z and 0 to 9.
+     * @param  string $prefix   Prefix to the generated string
      * @return string The random string of requried length
      */
-    function _randomCode($length = 5, $letters = array())
+    function _randomCode($length = 5, $letters = array(), $prefix = '')
     {
         # Letters & Numbers for default
         if (sizeof($letters) == 0) {
@@ -1467,7 +1468,7 @@ if (!function_exists('_randomCode')) {
         shuffle($letters); # Shuffle letters
         $randArr = array_splice($letters, 0, $length);
 
-        return implode('', $randArr);
+        return $prefix . implode('', $randArr);
     }
 }
 
@@ -2050,7 +2051,7 @@ function _ds()
 function _isAjax()
 {
     if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && !empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
-       strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+        strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
         return true;
     }
     return false;
