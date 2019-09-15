@@ -94,7 +94,7 @@ class Console
         _writeln('PHPLucidFrame %s by Sithu K.', _version());
         _writeln();
 
-        if ($this->command instanceof \LucidFrame\Console\Command) {
+        if ($this->command instanceof Command) {
             $this->command->run($this->argv);
         } else {
             if (!$this->command && $this->commandName && !in_array($this->commandName, array('-V', '--version'))) {

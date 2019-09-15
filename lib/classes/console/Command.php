@@ -287,7 +287,12 @@ class Command
             return;
         }
 
-        return call_user_func_array($this->definition, array($this));
+        if (is_string($this->definition)) {
+            $cmd = new $this->definition;
+            $cmd->execute($this);
+        } else {
+            return call_user_func_array($this->definition, array($this));
+        }
     }
 
     /**
