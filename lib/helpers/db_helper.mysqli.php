@@ -632,8 +632,6 @@ function db_table($table)
 
 /**
  * Check the table has slug field
- * First, check with SchemaManager
- * Second, consider $lc_useDBAutoFields and $useSlug
  *
  * @param string  $table    The table name without prefix
  * @param boolean $useSlug  True to include the slug field or False to not exclude it
@@ -642,28 +640,16 @@ function db_table($table)
 function db_tableHasSlug($table, $useSlug = true)
 {
     global $_DB;
-    global $lc_useDBAutoFields;
-    $dsm = $_DB->schemaManager;
 
     if ($useSlug == false) {
         return false;
     }
 
-    if ($_DB->schemaManager->hasSlug($table)) {
-        return true;
-    }
-
-    if ($lc_useDBAutoFields) {
-        return true;
-    }
-
-    return false;
+    return $_DB->schemaManager->hasSlug($table);
 }
 
 /**
  * Check the table has timestamp fields
- * First, check with SchemaManager
- * Second, consider $lc_useDBAutoFields
  *
  * @param string  $table    The table name without prefix
  * @return boolean true or false
@@ -671,18 +657,8 @@ function db_tableHasSlug($table, $useSlug = true)
 function db_tableHasTimestamps($table)
 {
     global $_DB;
-    global $lc_useDBAutoFields;
-    $dsm = $_DB->schemaManager;
 
-    if ($_DB->schemaManager->hasTimestamps($table)) {
-        return true;
-    }
-
-    if ($lc_useDBAutoFields) {
-        return true;
-    }
-
-    return false;
+    return $_DB->schemaManager->hasTimestamps($table);
 }
 
 if (!function_exists('db_insert')) {
@@ -693,7 +669,7 @@ if (!function_exists('db_insert')) {
      * @param array $data The array of data field names and values
      *
      *      array(
-     *          'fieldNameToSlug' => $valueToSlug, # if $lc_useDBAutoFields is enabled
+     *          'fieldNameToSlug' => $valueToSlug,
      *          'fieldName1' => $fieldValue1,
      *          'fieldName2' => $fieldValue2
      *      )
@@ -704,12 +680,10 @@ if (!function_exists('db_insert')) {
     function db_insert($table, $data = array(), $useSlug = true)
     {
         if (count($data) == 0) {
-            return;
+            return false;
         }
 
         global $_DB;
-        global $_conn;
-        global $lc_useDBAutoFields;
 
         $table = db_table($table);
 
@@ -811,8 +785,8 @@ if (!function_exists('db_update')) {
      *   The first field/value pair will be used as condition if you did not provide the fourth argument
      *
      *     array(
-     *       'conditionField'  => $conditionFieldValue, <===
-     *       'fieldNameToSlug' => $valueToSlug,  <=== if $lc_useDBAutoFields is enabled
+     *       'conditionField'  => $conditionFieldValue,
+     *       'fieldNameToSlug' => $valueToSlug,
      *       'fieldName1'      => $value1,
      *       'fieldName2'      => $value2
      *     )
@@ -841,12 +815,10 @@ if (!function_exists('db_update')) {
     function db_update($table, $data = array(), $useSlug = true, $condition = null)
     {
         if (count($data) == 0) {
-            return;
+            return false;
         }
 
         global $_DB;
-        global $_conn;
-        global $lc_useDBAutoFields;
 
         if (func_num_args() === 3 && (gettype($useSlug) === 'string' || is_array($useSlug))) {
             $condition = $useSlug;
@@ -1003,8 +975,6 @@ if (!function_exists('db_delete')) {
         if ($return) {
             # If there is FK delete RESTRICT constraint
             if (db_errorNo() == 1451) {
-                # $lc_useDBAutoFields is still used for backward compatibility
-                # TODO: $lc_useDBAutoFields to be removed in future versions
                 if (db_tableHasTimestamps($table)) {
                     $sql = 'UPDATE '. QueryBuilder::quote($table) . '
                             SET `deleted` = "'.date('Y-m-d H:i:s').'" '.$condition.'
