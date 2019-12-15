@@ -25,15 +25,13 @@ _consoleCommand('env')
         }
 
         $env = $cmd->getArgument('env');
-        if (!in_array($env, array(ENV_DEV, ENV_STAGING, ENV_PROD, 'dev', 'prod'))) {
-            _writeln('Wrong environment configuration. Use "dev", "staging", "prod", "%s" or "%s".', ENV_DEV, ENV_PROD);
+        if (!in_array($env, __envList())) {
+            _writeln('Wrong environment configuration. Use one of these: %s.', implode(', ', __envList()));
             exit;
         }
 
         if ($env == 'dev') {
             $env = ENV_DEV;
-        } elseif ($env == 'staging') {
-            $env = ENV_STAGING;
         } elseif ($env == 'prod') {
             $env = ENV_PROD;
         }
