@@ -28,7 +28,7 @@
             <div class="logo"><img src="<?php echo _img('logo.png'); ?>" /></div>
                 <div class="error-stacktrace">
                     <div class="block-exception">
-                        <p><?php echo ucfirst($message); ?></p>
+                        <p><?php echo nl2br(ucfirst($message)); ?></p>
                         <strong><?php echo $type; ?></strong>
                         <div>HTTP status code: <?php echo _g('httpStatusCode'); ?></div>
                     </div>

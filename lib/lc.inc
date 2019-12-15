@@ -389,7 +389,7 @@ function __envList()
  * @param  string  $message Error message
  * @param  string  $file    File name
  * @param  integer $line    Error line number
- * @return void
+ * @return boolean
  */
 function __kernelErrorHandler($code, $message, $file, $line)
 {
@@ -409,7 +409,9 @@ function __kernelErrorHandler($code, $message, $file, $line)
     }
 
     _header($status);
+
     include( _i('inc/tpl/exception.php') );
+    exit;
 }
 
 /**
@@ -687,7 +689,7 @@ function _p($name)
         # keep the current environment when `php lucidframe` is run
         $env = _cfg('env');
     } elseif (PHP_SAPI == 'cli' || stripos($_SERVER['REQUEST_URI'], 'tests/') !== false) {
-        # force change to "test" environment when run `php tests/test.php` from CLI
+        # force change to "test" environment when run `php tests/tests.php` from CLI
         # or when run `/tests/tests.php` from browser
         $env = 'test';
         _cfg('env', $env);
@@ -728,5 +730,4 @@ function _env($name)
 
 __prerequisite();
 
-set_error_handler('__kernelErrorHandler');
 register_shutdown_function('__kernelShutdownHandler');
