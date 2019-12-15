@@ -34,14 +34,15 @@ class LucidFrameTestCase extends \UnitTestCase
 
     protected function cleanup()
     {
-        /*
         // Data cleanup by each test run
         // This is an example for the sample database
         db_delete_multi('document');
+        db_delete_multi('post_to_tag');
         db_delete_multi('post_image');
         db_delete_multi('post');
         db_delete_multi('category');
         db_delete_multi('lc_sessions');
+        db_delete_multi('social_profile');
         db_delete_multi('user');
 
         db_insert('user', array(
@@ -53,6 +54,5 @@ class LucidFrameTestCase extends \UnitTestCase
             'role'      => 'admin',
             'isMaster'  => 1
         ));
-        */
     }
 }
