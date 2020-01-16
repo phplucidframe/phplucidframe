@@ -1,7 +1,5 @@
 # What is PHPLucidFrame?
 
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/cithukyaw/LucidFrame?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 PHPLucidFrame (a.k.a LucidFrame) is an application development framework for PHP developers. It provides logical structure and several helper utilities for web application development. It uses a functional architecture to simplify complex application development. It is especially designed for PHP, MySQL and Apache. It is simple, fast, lightweight and easy to install.
 
 Almost zero configuration - just configure your database setting and you are ready to go. No complex JSON, XML, YAML or vHost configuration.
@@ -24,7 +22,7 @@ It supports a wide range of web application development features:
 ## Prerequisites
 
 - Web Server (Apache with `mod_rewrite` enabled)
-- PHP version 5.3.0 or newer (optional `mcrypt` extension enabled, but recommended)
+- PHP version 5.3.0 or newer
 - MySQL 5.0 or newer with MySQLi enabled.
 
 ## Installation
