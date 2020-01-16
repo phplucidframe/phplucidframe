@@ -72,3 +72,9 @@ PHPLucidFrame encourages a structured page organization. You can check the recom
 - [Stackoverflow](http://stackoverflow.com/questions/tagged/phplucidframe)
 - [GitHub issues](https://github.com/phplucidframe/phplucidframe/issues)
 - [Roadmap](https://trello.com/b/zj5l6GP1/phplucidframe-development)
+
+## Run Tests
+
+    composer install
+    
+    php tests/tests.php
