@@ -107,23 +107,7 @@ _autoloadDir(CLASSES . 'console');
 _autoloadDir(LIB . 'commands');
 
 # DB configuration & DB helper (required)
-if (isset($lc_databases[$lc_defaultDbSource]) && is_array($lc_databases[$lc_defaultDbSource]) && $lc_databases[$lc_defaultDbSource]['engine']) {
-    if ($file = _i('helpers' . _DS_ . 'db_helper.php', false)) {
-        include $file;
-    }
-
-    $dbEngine = $lc_databases[$lc_defaultDbSource]['engine'];
-    if ($dbEngine === 'mysql') {
-        $dbEngine = 'mysqli';
-    }
-
-    require HELPER . 'db_helper.' . $dbEngine . '.php';
-
-    if (db_host($lc_defaultDbSource) && db_user($lc_defaultDbSource) && db_name($lc_defaultDbSource)) {
-        # Start DB connection
-        db_connect($lc_defaultDbSource);
-    }
-}
+$_DB = new \LucidFrame\Core\Database();
 
 _loader('session_helper', HELPER);
 _loader('i18n_helper', HELPER);

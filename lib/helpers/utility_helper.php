@@ -587,6 +587,25 @@ if (!function_exists('_pr')) {
     }
 }
 
+if (!function_exists('_dpr')) {
+    /**
+     * Convenience method for `print_r` + `die`.
+     * Displays information about a variable in a way that's readable by humans.
+     * If given a string, integer or float, the value itself will be printed.
+     * If given an array, values will be presented in a format that shows keys and elements.
+     *
+     * @param mixed $input The variable to debug
+     * @param boolean $pre TRUE to print using `<pre>`, otherwise FALSE
+     *
+     * @return void
+     */
+    function _dpr($input, $pre = true)
+    {
+        _pr($input);
+        exit;
+    }
+}
+
 if (!function_exists('_dump')) {
     /**
      * Convenience method for `var_dump`.
@@ -867,7 +886,10 @@ function _self($queryStr = array(), $lang = '')
 function _header($status, $message = null)
 {
     _g('httpStatusCode', $status);
-    header('HTTP/1.1 ' . $status . ($message ? ' ' . $message : ''));
+
+    if (_cfg('env') != ENV_TEST && __env() != ENV_TEST) {
+        header('HTTP/1.1 ' . $status . ($message ? ' ' . $message : ''));
+    }
 }
 /**
  * Header redirect to a specific location
@@ -1476,14 +1498,13 @@ if (!function_exists('_slug')) {
     /**
      * Generate a slug of human-readable keywords
      *
-     * @param string        $string     Text to slug
-     * @param string        $table      Table name to check in. If it is empty, no check in the table
-     * @param string|array  $condition  Condition to append table check-in, e.g,
-     *   `fieldName != value` or `array('fieldName !=' => value)`
+     * @param string $string     Text to slug
+     * @param string $table      Table name to check in. If it is empty, no check in the table
+     * @param array  $condition  Condition to append table check-in, e.g, `array('fieldName !=' => value)`
      *
      * @return string The generated slug
      */
-    function _slug($string, $table = '', $condition = null)
+    function _slug($string, $table = '', array $condition = array())
     {
         $specChars = array(
             '`','~','!','@','#','$','%','\^','&',
@@ -1497,32 +1518,33 @@ if (!function_exists('_slug')) {
         $slug   = preg_replace('/(&amp;|&quot;|&#039;|&lt;|&gt;)/i', '', $slug);
         $slug   = str_replace($specChars, '-', $slug);
         $slug   = str_replace(array(' ', '.'), '-', $slug);
+        $slug   = trim($slug, '-');
 
-        if (is_array($condition)) {
-            $condition = db_condition($condition);
+        $condition = array_merge(
+            array('slug' => $slug),
+            $condition
+        );
+
+        while (true && $table) {
+            $count = db_count($table)->where($condition)->fetch();
+            if ($count == 0) {
+                break;
+            }
+
+            $segments = explode('-', $slug);
+            if (sizeof($segments) > 1 && is_numeric($segments[sizeof($segments)-1])) {
+                $index = array_pop($segments);
+                $index++;
+            } else {
+                $index = 1;
+            }
+
+            $segments[] = $index;
+            $slug = implode('-', $segments);
         }
 
-        while (1 && $table) {
-            $sql = 'SELECT slug FROM '.$table.' WHERE slug = ":alias"';
-            if ($condition) {
-                $sql .= ' AND '.$condition;
-            }
-            if ($result = db_query($sql, array(':alias' => $slug))) {
-                if (db_numRows($result) == 0) {
-                    break;
-                }
-                $segments = explode('-', $slug);
-                if (sizeof($segments) > 1 && is_numeric($segments[sizeof($segments)-1])) {
-                    $index = array_pop($segments);
-                    $index++;
-                } else {
-                    $index = 1;
-                }
-                $segments[] = $index;
-                $slug = implode('-', $segments);
-            }
-        }
         $slug = preg_replace('/[\-]+/', '-', $slug);
+
         return trim($slug, '-');
     }
 }
@@ -1585,7 +1607,7 @@ function _decrypt($encryptedText)
 {
     $secret = _cfg('securitySecret');
     if (!$secret || !function_exists('openssl_decrypt')) {
-        return $text;
+        return $encryptedText;
     }
 
     $method  = _cipher();

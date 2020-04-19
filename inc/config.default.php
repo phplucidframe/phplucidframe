@@ -113,7 +113,7 @@ $lc_defaultDbSource = 'default';
  *      'virtual_folder_name (namespace)'  => 'path/to/physical_folder_name_directly_under_app_directory'
  *    )
  * For example, if you have the configuration `'admin' => 'admin'` here, you let LucidFrame know to include the files
- * from those directories below without specifying the directory name explicilty in every include:
+ * from those directories below without specifying the directory name explicitly in every include:
  *   /app/admin/css
  *   /app/admin/inc
  *   /app/admin/helpers
@@ -182,7 +182,7 @@ $lc_layoutName = 'layout';
  * Auth Module Configuration
  */
 # $lc_auth: configuration for the user authentication
-# This can be overidden by defining $lc_auth in /inc/site.config.php
+# This can be overridden by defining $lc_auth in /inc/site.config.php
 $lc_auth = array(
     'table' => '', // table name, for example, user
     'fields' => array(

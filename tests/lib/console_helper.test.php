@@ -27,6 +27,5 @@ class ConsoleCommandTestCase extends LucidFrameTestCase
         foreach ($list as $name) {
             $this->assertTrue(isset($commands[$name]));
         }
-
     }
 }

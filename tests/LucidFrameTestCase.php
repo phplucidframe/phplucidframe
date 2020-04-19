@@ -32,6 +32,15 @@ class LucidFrameTestCase extends \UnitTestCase
         return preg_replace('/\s{2,}/u', ' ', trim($string));
     }
 
+    public static function toSql($clause, $values = array())
+    {
+        foreach ($values as $key => $value) {
+            $clause = preg_replace('/' . $key . '\b/', $value, $clause);
+        }
+
+        return $clause;
+    }
+
     protected function cleanup()
     {
         // Data cleanup by each test run

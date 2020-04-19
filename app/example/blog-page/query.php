@@ -15,13 +15,14 @@ $blog->slug  = 'custom-routing-to-a-page-including-a-form-example';
  $blog = db_select('post')->where('id', $id)->getSingleResult();
 
  //// OR
- //// You can also use `db_fetchResult()` with SQL which returns the std object
+ //// You can also use `db_fetchResult()` with raw SQL and it will return std object
 
- $sql = 'SELECT * FROM '.db_prefix().'post WHERE id = :id'
+ $sql = 'SELECT *, postTitle title FROM ' . db_table('post') . ' WHERE postId = :id';
  $blog = db_fetchResult($sql, array(':id' => $id));
 */
 
 if ($blog) {
+    // Routing system make $slug available according to the route definition in inc/route.config.php
     if ($slug && strcasecmp($slug, $blog->slug) !== 0) {
         # 301 redirect to the correct URL
         _redirect301(_url('blog', array($id, $blog->slug)));

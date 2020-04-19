@@ -14,8 +14,8 @@
  * with this source code in the file LICENSE
  */
 
+use LucidFrame\Core\Database;
 use LucidFrame\Core\QueryBuilder;
-use LucidFrame\Core\SchemaManager;
 
 /**
  * @internal
@@ -30,16 +30,9 @@ use LucidFrame\Core\SchemaManager;
  */
 function db_namespace($namespace = null)
 {
-    if (!empty($namespace)) {
-        return $namespace;
-    }
-
-    if ($namespace === null) {
-        return _cfg('defaultDbSource');
-    }
-
-    return 'default';
+    return _g('_DB')->getNamespace($namespace);
 }
+
 /**
  * @internal
  * @ignore
@@ -50,14 +43,9 @@ function db_namespace($namespace = null)
  */
 function db_config($namespace = null)
 {
-    $namespace = db_namespace($namespace);
-
-    if (!isset($GLOBALS['lc_databases'][$namespace])) {
-        die('Database configuration error for '.$namespace.'!');
-    }
-
-    return $GLOBALS['lc_databases'][$namespace];
+    return _g('_DB')->getConfig($namespace);
 }
+
 /**
  * Return the database engine of the given namespace
  * @param string $namespace Namespace of the configuration to read from
@@ -65,14 +53,9 @@ function db_config($namespace = null)
  */
 function db_engine($namespace = null)
 {
-    $conf = db_config(db_namespace($namespace));
-
-    if ($conf['engine'] === 'mysql') {
-        $conf['engine'] = 'mysqli';
-    }
-
-    return $conf['engine'];
+    return _g('_DB')->getDriver($namespace);
 }
+
 /**
  * Return the database host name of the given namespace
  * @param string $namespace Namespace of the configuration to read from
@@ -80,10 +63,9 @@ function db_engine($namespace = null)
  */
 function db_host($namespace = null)
 {
-    $conf = db_config(db_namespace($namespace));
-
-    return $conf['host'];
+    return _g('_DB')->getHost($namespace);
 }
+
 /**
  * Return the database name of the given namespace
  * @param string $namespace Namespace of the configuration to read from
@@ -91,13 +73,9 @@ function db_host($namespace = null)
  */
 function db_name($namespace = null)
 {
-    $conf = db_config(db_namespace($namespace));
-    if (!isset($conf['database'])) {
-        die('Database name is not set.');
-    }
-
-    return $conf['database'];
+    return _g('_DB')->getName($namespace);
 }
+
 /**
  * Return the database user name of the given namespace
  * @param string $namespace Namespace of the configuration to read from
@@ -105,13 +83,9 @@ function db_name($namespace = null)
  */
 function db_user($namespace = null)
 {
-    $conf = db_config(db_namespace($namespace));
-    if (!isset($conf['username'])) {
-        die('Database username is not set.');
-    }
-
-    return $conf['username'];
+    return _g('_DB')->getUser($namespace);
 }
+
 /**
  * Return the database table prefix of the given namespace
  * @param string $namespace Namespace of the configuration to read from
@@ -119,10 +93,9 @@ function db_user($namespace = null)
  */
 function db_prefix($namespace = null)
 {
-    $conf = $GLOBALS['lc_databases'][db_namespace($namespace)];
-
-    return isset($conf['prefix']) ? $conf['prefix'] : '';
+    return _g('_DB')->getPrefix($namespace);
 }
+
 /**
  * Return the database collation of the given namespace
  * @param string $namespace Namespace of the configuration to read from
@@ -130,68 +103,29 @@ function db_prefix($namespace = null)
  */
 function db_collation($namespace = null)
 {
-    $conf = db_config(db_namespace($namespace));
-
-    return isset($conf['collation']) ? $conf['collation'] : '';
+    return _g('_DB')->getCollation($namespace);
 }
+
 /**
  * @internal
  * @ignore
  * Check and get the database configuration settings
  * @param string $namespace Namespace of the configuration to read from
+ * @return array
  */
 function db_prerequisite($namespace = null)
 {
-    $namespace = db_namespace($namespace);
+    $db = _g('_DB');
+    $namespace = $db->getNamespace($namespace);
 
-    if (db_host($namespace) && db_user($namespace) && db_name($namespace)) {
-        return db_config($namespace);
+    if ($db->getHost($namespace) && $db->getUser($namespace) && $db->getName($namespace)) {
+        return $db->getConfig($namespace);
     } else {
         _header(400);
         throw new \InvalidArgumentException('Required to configure <code class="inline">db</code> in <code class="inline">/inc/parameters/'._cfg('env').'.php</code>.');
     }
 }
-/**
- * Establish a new database connection to the MySQL server
- * @param string $namespace Namespace of the configuration.
- */
-function db_connect($namespace = null)
-{
-    global $_conn;
-    global $_DB;
 
-    $namespace = db_namespace($namespace);
-    $conf = db_config($namespace);
-
-    # Connection
-    $_conn = mysqli_connect($conf['host'], $conf['username'], $conf['password']);
-    if (!$_conn) {
-        die('Not connected mysqli!');
-    }
-    # Force MySQL to use the UTF-8 character set. Also set the collation, if a certain one has been set;
-    # otherwise, MySQL defaults to 'utf8_general_ci' # for UTF-8.
-    if (!db_setCharset('utf8')) {
-        printf("Error loading character set utf8: %s", mysqli_error($_conn));
-    }
-    if (db_collation()) {
-        db_query('SET NAMES utf8 COLLATE ' . db_collation());
-    }
-    # Select DB
-    if ($conf['database'] && !mysqli_select_db($_conn, $conf['database'])) {
-        die('Can\'t use  : ' . $conf['database'] .' - '. mysqli_error($_conn));
-    }
-
-    $_DB = new stdClass();
-    $_DB->name = $conf['database'];
-    $_DB->namespace = $namespace;
-
-    # Load the schema of the currently connected database
-    $schema = _schema($namespace, true);
-    $_DB->schemaManager = new SchemaManager($schema);
-    if (!$_DB->schemaManager->isLoaded()) {
-        $_DB->schemaManager->build($namespace);
-    }
-}
 /**
  * Switch to the given database from the currently active database
  * @param string $namespace Namespace of the configuration to read from
@@ -199,12 +133,13 @@ function db_connect($namespace = null)
  */
 function db_switch($namespace = null)
 {
-    global $_conn;
+    global $_DB;
 
-    db_close();
-    db_connect(db_namespace($namespace));
+    $_DB = new Database($namespace);
 }
+
 /**
+ * @deprecated
  * Sets the default client character set
  *
  * @param  string $charset The charset to be set as default.
@@ -212,18 +147,18 @@ function db_switch($namespace = null)
  */
 function db_setCharset($charset)
 {
-    global $_conn;
-    return mysqli_set_charset($_conn, $charset);
+    return db_query('SET NAMES "%s"', $charset);
 }
+
 /**
  * Closes a previously opened database connection
- * @return boolean Returns TRUE on success or FALSE on failure.
+ * @return void
  */
 function db_close()
 {
-    global $_conn;
-    return $_conn ? mysqli_close($_conn) : true;
+    _g('_DB')->close();
 }
+
 /**
  * Make the generated query returned from the query executing functions
  * such as db_query, db_update, db_delete, etc. without executing the query
@@ -236,6 +171,7 @@ function db_prq($enable = true)
 {
     _g('db_printQuery', $enable);
 }
+
 /**
  * Perform a query on the database
  *
@@ -251,40 +187,9 @@ function db_prq($enable = true)
  */
 function db_query($sql, $args = array())
 {
-    global $_conn;
-    global $db_builtQueries;
-
-    if (count($args)) {
-        foreach ($args as $key => $value) {
-            if (strpos($key, ':') === false) {
-                $key = ':'.$key;
-            }
-            if (is_array($value)) {
-                $value = array_map('db_escapeStringMulti', $value);
-                $value = implode(',', $value);
-                $regex = '/'.$key.'\b/i';
-                $sql = preg_replace($regex, $value, $sql);
-            } else {
-                $regex = '/'.$key.'\b/i';
-                $sql = preg_replace($regex, db_escapeString($value), $sql);
-            }
-        }
-    }
-
-    $db_builtQueries[] = $sql;
-
-    if (_g('db_printQuery')) {
-        return $sql;
-    }
-
-    if ($result = mysqli_query($_conn, $sql)) {
-        return $result;
-    } else {
-        $linefeed = php_sapi_name() == "cli" ? "\n" : '<br>';
-        echo $linefeed . 'MySQL error: Invalid query - ' . db_error() . $linefeed;
-        return false;
-    }
+    return _g('_DB')->query($sql, $args);
 }
+
 /**
  * Get the last executed SQL string or one of the executed SQL strings by prividing the index
  *
@@ -293,12 +198,11 @@ function db_query($sql, $args = array())
  */
 function db_queryStr()
 {
-    global $db_builtQueries;
-    $arg = func_get_args();
-    $index = (count($arg) == 0) ? count($db_builtQueries)-1 : 0;
-    return (isset($db_builtQueries[$index])) ? $db_builtQueries[$index] : '';
+    return _g('_DB')->getQueryStr();
 }
+
 /**
+ * @deprecated
  * Escapes special characters in a string for use in a SQL statement,
  * taking into account the current charset of the connection
  *
@@ -307,6 +211,8 @@ function db_queryStr()
  */
 function db_escapeString($str)
 {
+    return $str;
+
     global $_conn;
     if (get_magic_quotes_gpc()) {
         return mysqli_real_escape_string($_conn, stripslashes($str));
@@ -314,7 +220,9 @@ function db_escapeString($str)
         return mysqli_real_escape_string($_conn, $str);
     }
 }
+
 /**
+ * @deprecated
  * @internal
  * @ignore
  *
@@ -324,63 +232,69 @@ function db_escapeString($str)
 function db_escapeStringMulti($val)
 {
     $val = db_escapeString($val);
+
     return is_numeric($val) ? $val : '"'.$val.'"';
 }
+
 /**
  * Returns a string description of the last error
  * @return string
  */
 function db_error()
 {
-    global $_conn;
-    return mysqli_error($_conn);
+    return _g('_DB')->getError();
 }
+
 /**
  * Returns the error code for the most recent MySQLi function call
  * @return int
  */
 function db_errorNo()
 {
-    global $_conn;
-    return mysqli_errno($_conn);
+    return _g('_DB')->getErrorCode();
 }
+
 /**
  * Gets the number of rows in a result
- * @param  resource $result MySQLi result resource
+ * @param  PDOStatement $result
  * @return int Returns the number of rows in the result set.
  */
 function db_numRows($result)
 {
-    return mysqli_num_rows($result);
+    return _g('_DB')->getNumRows($result);
 }
+
 /**
  * Fetch a result row as an associative, a numeric array, or both
- * @param  resource $result MySQLi result resource
+ * @param  PDOStatement $result
  * @return array An array that corresponds to the fetched row or
- *   NULL if there are no more rows for the resultset represented by the result parameter.
+ *   NULL if there are no more rows for the result set represented by the result parameter.
  */
 function db_fetchArray($result)
 {
-    return mysqli_fetch_array($result);
+    return _g('_DB')->fetchArray($result);
 }
+
 /**
  * Fetch a result row as an associative array
- * @param  resource $result MySQLi result resource
+ * @param  PDOStatement $result
  * @return array An associative array that corresponds to the fetched row or NULL if there are no more rows.
  */
 function db_fetchAssoc($result)
 {
-    return mysqli_fetch_assoc($result);
+    return _g('_DB')->fetchAssoc($result);
 }
+
 /**
  * Returns the current row of a result set as an object
- * @param  resource $result MySQLi result resource
+ * @param  PDOStatement $result
  * @return object An object that corresponds to the fetched row or NULL if there are no more rows in resultset.
  */
 function db_fetchObject($result)
 {
-    return mysqli_fetch_object($result);
+    return _g('_DB')->fetchObject($result);
 }
+
 /**
  * Returns the auto generated id used in the last query
  * @return int The value of the `AUTO_INCREMENT` field that was updated by the previous query;
@@ -388,9 +302,9 @@ function db_fetchObject($result)
  */
 function db_insertId()
 {
-    global $_conn;
-    return mysqli_insert_id($_conn);
+    return _g('_DB')->getInsertId();
 }
+
 /**
  * Returns the generated slug used in the last query
  * @return string The last inserted slug
@@ -399,6 +313,7 @@ function db_insertSlug()
 {
     return session_get('lastInsertSlug');
 }
+
 /**
  * Initialize a query builder to perform a SELECT query on the database
  *
@@ -411,6 +326,7 @@ function db_select($table, $alias = null)
 {
     return new QueryBuilder($table, $alias);
 }
+
 /**
  * Perform a count query on the database and return the count
  *
@@ -430,34 +346,9 @@ function db_select($table, $alias = null)
  */
 function db_count($arg1, $arg2 = null, $arg3 = null)
 {
-    if ($arg1 && QueryBuilder::validateName($arg1)) {
-        $table = $arg1;
-        $alias = 'count';
-
-        $qb = new QueryBuilder($table);
-
-        if ($arg3 && QueryBuilder::validateName($arg3)) {
-            $alias = $arg3;
-        }
-
-        if ($arg2 && QueryBuilder::validateName($arg2)) {
-            $field = $arg2;
-            $qb->count($field, $alias);
-        } else {
-            $qb->count('*', 'count');
-        }
-
-        return $qb;
-    } else {
-        $sql = $arg1;
-        $args = $arg2;
-        if ($result = db_fetch($sql, $args)) {
-            return $result;
-        }
-    }
-
-    return 0;
+    return _g('_DB')->getCount($arg1, $arg2, $arg3);
 }
+
 /**
  * Initialize a query builder to perform a MAX query on the database
  *
@@ -470,8 +361,10 @@ function db_count($arg1, $arg2 = null, $arg3 = null)
 function db_max($table, $field, $alias = null)
 {
     $qb = new QueryBuilder($table);
+
     return $qb->max($field, $alias ? $alias : 'max');
 }
+
 /**
  * Initialize a query builder to perform a MIN query on the database
  *
@@ -484,8 +377,10 @@ function db_max($table, $field, $alias = null)
 function db_min($table, $field, $alias = null)
 {
     $qb = new QueryBuilder($table);
+
     return $qb->min($field, $alias ? $alias : 'min');
 }
+
 /**
  * Initialize a query builder to perform a SUM query on the database
  *
@@ -498,8 +393,10 @@ function db_min($table, $field, $alias = null)
 function db_sum($table, $field, $alias = null)
 {
     $qb = new QueryBuilder($table);
+
     return $qb->sum($field, $alias ? $alias : 'sum');
 }
+
 /**
  * Initialize a query builder to perform an AVG query on the database
  *
@@ -512,8 +409,10 @@ function db_sum($table, $field, $alias = null)
 function db_avg($table, $field, $alias = null)
 {
     $qb = new QueryBuilder($table);
+
     return $qb->avg($field, $alias ? $alias : 'avg');
 }
+
 /**
  * Perform a query on the database and return the first field value only.
  *
@@ -532,16 +431,9 @@ function db_avg($table, $field, $alias = null)
  */
 function db_fetch($sql, $args = array())
 {
-    if (! preg_match('/LIMIT\s+[0-9]{1,}\b/i', $sql)) {
-        $sql .= ' LIMIT 1';
-    }
-    if ($result = db_query($sql, $args)) {
-        if ($row = db_fetchArray($result)) {
-            return $row[0];
-        }
-    }
-    return false;
+    return _g('_DB')->fetchColumn($sql, $args);
 }
+
 /**
  * Perform a query on the database and return the first result row as object
  *
@@ -560,16 +452,9 @@ function db_fetch($sql, $args = array())
  */
 function db_fetchResult($sql, $args = array())
 {
-    if (! preg_match('/LIMIT\s+[0-9]{1,}\b/i', $sql)) {
-        $sql .= ' LIMIT 1';
-    }
-    if ($result = db_query($sql, $args)) {
-        if ($row = db_fetchObject($result)) {
-            return $row;
-        }
-    }
-    return false;
+    return _g('_DB')->fetchResult($sql, $args);
 }
+
 /**
  * Perform a query on the database and return the array of all results
  *
@@ -585,29 +470,7 @@ function db_fetchResult($sql, $args = array())
  */
 function db_extract($sql, $args = array(), $resultType = LC_FETCH_OBJECT)
 {
-    if (is_numeric($args)) {
-        if (in_array($args, array(LC_FETCH_OBJECT, LC_FETCH_ASSOC, LC_FETCH_ARRAY))) {
-            $resultType = $args;
-        }
-        $args = array();
-    }
-    $data = array();
-    if ($result = db_query($sql, $args)) {
-        while ($row = db_fetchAssoc($result)) {
-            if (count($row) == 2 && array_keys($row) === array('key', 'value')) {
-                $data[$row['key']] = $row['value'];
-            } else {
-                if ($resultType == LC_FETCH_ARRAY) {
-                    $data[] = array_values($row);
-                } elseif ($resultType == LC_FETCH_OBJECT) {
-                    $data[] = (object) $row;
-                } else {
-                    $data[] = $row;
-                }
-            }
-        }
-    }
-    return count($data) ? $data : false;
+    return _g('_DB')->fetchAll($sql, $args, $resultType);
 }
 
 /**
@@ -617,17 +480,7 @@ function db_extract($sql, $args = array(), $resultType = LC_FETCH_OBJECT)
  */
 function db_table($table)
 {
-    $prefix = db_prefix();
-
-    if (empty($prefix)) {
-        return $table;
-    }
-
-    if ($prefix == substr($table, 0, strlen($prefix))) {
-        return $table;
-    }
-
-    return $prefix.$table;
+    return _g('_DB')->getTable($table);
 }
 
 /**
@@ -639,13 +492,7 @@ function db_table($table)
  */
 function db_tableHasSlug($table, $useSlug = true)
 {
-    global $_DB;
-
-    if ($useSlug == false) {
-        return false;
-    }
-
-    return $_DB->schemaManager->hasSlug($table);
+    return _g('_DB')->hasSlug($table, $useSlug);
 }
 
 /**
@@ -656,9 +503,7 @@ function db_tableHasSlug($table, $useSlug = true)
  */
 function db_tableHasTimestamps($table)
 {
-    global $_DB;
-
-    return $_DB->schemaManager->hasTimestamps($table);
+    return _g('_DB')->hasTimestamps($table);
 }
 
 if (!function_exists('db_insert')) {
@@ -679,11 +524,13 @@ if (!function_exists('db_insert')) {
      */
     function db_insert($table, $data = array(), $useSlug = true)
     {
+        QueryBuilder::clearBindValues();
+
         if (count($data) == 0) {
             return false;
         }
 
-        global $_DB;
+        $db = _g('_DB');
 
         $table = db_table($table);
 
@@ -695,17 +542,16 @@ if (!function_exists('db_insert')) {
 
         # if slug is already provided in the data array, use it
         if (array_key_exists('slug', $data)) {
-            $slug = db_escapeString($data['slug']);
-            $slug = _slug($slug);
+            $slug = _slug($data['slug']);
             $data['slug'] = $slug;
             session_set('lastInsertSlug', $slug);
             $useSlug = false;
         }
 
-        $dsm = $_DB->schemaManager;
+        $dsm = $db->schemaManager;
         if (is_object($dsm) && $dsm->isLoaded()) {
             foreach ($data as $field => $value) {
-                $fieldType = $_DB->schemaManager->getFieldType($table, $field);
+                $fieldType = $db->schemaManager->getFieldType($table, $field);
                 if (is_array($value) && $fieldType == 'array') {
                     $data[$field] = serialize($value);
                 } elseif (is_array($value) && $fieldType == 'json') {
@@ -736,43 +582,39 @@ if (!function_exists('db_insert')) {
         $fields = array_unique($fields);
 
         $sqlFields = implode(', ', $fields);
+        $placeHolders = implode(', ', array_fill(0, count($fields), '?'));
         $values = array();
         $i = 0;
 
         # escape the data
         foreach ($dataValues as $val) {
             if ($i == 0 && $useSlug) {
-                $slug = db_escapeString($val);
+                $slug = $val;
             }
-            if (is_null($val)) {
-                $values[] = 'NULL';
-            } else {
-                $values[] = '"' . db_escapeString($val) . '"';
-            }
+
+            $values[] = is_null($val) ? null : $val;
+
             $i++;
         }
 
         if (db_tableHasSlug($table, $useSlug)) {
             $slug = _slug($slug, $table);
             session_set('lastInsertSlug', $slug);
-            $values[] = '"'.$slug.'"';
+            $values[] = $slug;
         }
 
         if (db_tableHasTimestamps($table)) {
             if (!array_key_exists('created', $data)) {
-                $values[] = '"' . date('Y-m-d H:i:s') . '"';
+                $values[] = date('Y-m-d H:i:s');
             }
             if (!array_key_exists('updated', $data)) {
-                $values[] = '"' . date('Y-m-d H:i:s') . '"';
+                $values[] = date('Y-m-d H:i:s');
             }
         }
 
-        $sqlValues = implode(', ', $values);
+        $sql = sprintf('INSERT INTO  %s (%s) VALUES (%s)', QueryBuilder::quote($table), $sqlFields, $placeHolders);
 
-        $sql = 'INSERT INTO '.$table.' ('.$sqlFields.')
-                VALUES ( '.$sqlValues.' )';
-
-        return db_query($sql) ? db_insertId() : false;
+        return db_query($sql, $values) ? db_insertId() : false;
     }
 }
 
@@ -793,7 +635,7 @@ if (!function_exists('db_update')) {
      *
      * @param boolean $useSlug TRUE to include the slug field or FALSE to not exclude it
      *   The fourth argument can be provided here if you want to omit this.
-     * @param array|string $condition The condition for the UPDATE query. If you provide this,
+     * @param array $condition The condition for the UPDATE query. If you provide this,
      *   the first field of `$data` will not be built for condition
      *
      * ### Example
@@ -803,22 +645,17 @@ if (!function_exists('db_update')) {
      *       'fieldName2' => $value2
      *     )
      *
-     * OR
-     *
-     *     db_or(array(
-     *       'fieldName1' => $value1,
-     *       'fieldName2' => $value2
-     *     ))
-     *
      * @return boolean Returns TRUE on success or FALSE on failure
      */
-    function db_update($table, $data = array(), $useSlug = true, $condition = null)
+    function db_update($table, $data = array(), $useSlug = true, array $condition = array())
     {
+        QueryBuilder::clearBindValues();
+
         if (count($data) == 0) {
             return false;
         }
 
-        global $_DB;
+        $db = _g('_DB');
 
         if (func_num_args() === 3 && (gettype($useSlug) === 'string' || is_array($useSlug))) {
             $condition = $useSlug;
@@ -835,8 +672,7 @@ if (!function_exists('db_update')) {
 
         # if slug is already provided in the data array, use it
         if (array_key_exists('slug', $data)) {
-            $slug = db_escapeString($data['slug']);
-            $slug = _slug($slug);
+            $slug = _slug($data['slug']);
             $data['slug'] = $slug;
             session_set('lastInsertSlug', $slug);
             $useSlug = false;
@@ -845,18 +681,18 @@ if (!function_exists('db_update')) {
         $fields     = array();
         $slug       = '';
         $cond       = '';
-        $notCond    = '';
         $i          = 0;
         $slugIndex  = 1;
+
         if ($condition) {
             $slugIndex = 0;
         }
 
-        $dsm = $_DB->schemaManager;
+        $dsm = $db->schemaManager;
         foreach ($data as $field => $value) {
             if ($i === 0 && !$condition) {
                 # $data[0] is for PK condition, but only if $condition is not provided
-                $cond = array($field => db_escapeString($value)); # for PK condition
+                $cond = array($field => $value); # for PK condition
                 $i++;
                 continue;
             }
@@ -873,53 +709,64 @@ if (!function_exists('db_update')) {
                 }
             }
 
-            if (is_null($value)) {
-                $fields[] = QueryBuilder::quote($field) . ' = NULL';
-            } else {
-                $fields[] = QueryBuilder::quote($field) . ' = "' . db_escapeString($value) . '"';
-            }
+            $fields[$field] = $value ?: null;
 
             if ($i === $slugIndex && $useSlug === true) {
                 # $data[1] is slug
-                $slug = db_escapeString($value);
+                $slug = $value;
             }
+
             $i++;
         }
 
         # must have condition
         # this prevents unexpected update happened to all records
         if ($cond || $condition) {
-            if ($cond && is_array($cond)) {
-                $cond = db_condition($cond);
-            } elseif ($condition && is_array($condition)) {
-                $cond = db_condition($condition);
-            } elseif ($condition && is_string($condition)) {
-                $cond = $condition;
+            $clause = '';
+            $notCond = array();
+            $values = array();
+
+            if ($cond && is_array($cond) && count($cond)) {
+                QueryBuilder::clearBindValues();
+                list($clause, $values) = db_condition($cond);
+                $notCond = array(
+                    'not' => $cond
+                );
+            } elseif ($condition && is_array($condition) && count($condition)) {
+                QueryBuilder::clearBindValues();
+                list($clause, $values) = db_condition($condition);
+                $notCond = array(
+                    'not' => $condition
+                );
             }
 
-            if (empty($cond)) {
+            if (empty($clause)) {
                 return false;
             }
-            $notCond = 'NOT ( ' . $cond . ' )';
 
             if (db_tableHasSlug($table, $useSlug)) {
                 $slug = _slug($slug, $table, $notCond);
                 session_set('lastInsertSlug', $slug);
-                $fields[] = '`slug` = "'.$slug.'"';
+                $fields['slug'] = $slug;
             }
 
             if (db_tableHasTimestamps($table)) {
-                $fields[] = '`updated` = "' . date('Y-m-d H:i:s') . '"';
+                $fields['updated'] = date('Y-m-d H:i:s');
             }
 
-            $fields = implode(', ', $fields);
+            $sql = 'UPDATE ' . QueryBuilder::quote($table) . ' SET ';
+            foreach ($fields as $key => $value) {
+                $placeholder = ':' . $key;
+                $sql .= sprintf('`%s` = %s, ', $key, $placeholder);
+                $values[$placeholder] = $value;
+            }
+            $sql = rtrim($sql, ', ');
+            $sql .= ' WHERE ' . $clause;
 
-            $sql = 'UPDATE ' . QueryBuilder::quote($table) . '
-                    SET ' . $fields . ' WHERE ' . $cond;
-            return db_query($sql);
-        } else {
-            return false;
+            return db_query($sql, $values);
         }
+
+        return false;
     }
 }
 
@@ -949,17 +796,22 @@ if (!function_exists('db_delete')) {
      */
     function db_delete($table, $condition = null)
     {
+        QueryBuilder::clearBindValues();
+
         $table = db_table($table);
 
         # Invoke the hook db_delete_[table_name] if any
         $hook = 'db_delete_' . strtolower($table);
         if (function_exists($hook)) {
-            return call_user_func_array($hook, array($table, $cond));
+            return call_user_func_array($hook, array($table, $condition));
         }
 
+        $values = array();
+
         if (is_array($condition)) {
-            $condition = db_condition($condition);
+            list($condition, $values) = db_condition($condition);
         }
+
         if ($condition) {
             $condition = ' WHERE '.$condition;
         }
@@ -970,27 +822,32 @@ if (!function_exists('db_delete')) {
         }
 
         ob_start(); # to capture error return
-        db_query($sql);
+        db_query($sql, $values);
         $return = ob_get_clean();
         if ($return) {
             # If there is FK delete RESTRICT constraint
             if (db_errorNo() == 1451) {
                 if (db_tableHasTimestamps($table)) {
                     $sql = 'UPDATE '. QueryBuilder::quote($table) . '
-                            SET `deleted` = "'.date('Y-m-d H:i:s').'" '.$condition.'
+                            SET `deleted` = :deleted ' . $condition . '
                             LIMIT 1';
-                    return db_query($sql);
-                } else {
-                    return false;
+                    $values[':deleted'] = date('Y-m-d H:i:s');
+
+                    return db_query($sql, $values);
                 }
+
+                return false;
             } else {
                 echo $return;
+
                 return false;
             }
         }
-        return (db_errorNo() == 0) ? true : false;
+
+        return db_errorNo() == 0;
     }
 }
+
 if (!function_exists('db_delete_multi')) {
     /**
      * Handy MYSQL delete operation for multiple records
@@ -1016,19 +873,23 @@ if (!function_exists('db_delete_multi')) {
      */
     function db_delete_multi($table, $condition = null)
     {
+        QueryBuilder::clearBindValues();
+
         $table = db_table($table);
 
         # Invoke the hook db_delete_[table_name] if any
         $hook = 'db_delete_multi_' . strtolower($table);
         if (function_exists($hook)) {
-            return call_user_func_array($hook, array($table, $cond));
+            return call_user_func_array($hook, array($table, $condition));
         }
 
+        $values = array();
         if (is_array($condition)) {
-            $condition = db_condition($condition);
+            list($condition, $values) = db_condition($condition);
         }
+
         if ($condition) {
-            $condition = ' WHERE '.$condition;
+            $condition = ' WHERE '. $condition;
         }
 
         $sql = 'DELETE FROM ' . QueryBuilder::quote($table) . $condition;
@@ -1037,7 +898,7 @@ if (!function_exists('db_delete_multi')) {
         }
 
         ob_start(); # to capture error return
-        db_query($sql);
+        db_query($sql, $values);
         $return = ob_get_clean();
 
         if ($return && db_errorNo() > 0) {
@@ -1047,6 +908,7 @@ if (!function_exists('db_delete_multi')) {
         return (db_errorNo() == 0) ? true : false;
     }
 }
+
 /**
  * @internal
  * @ignore
@@ -1063,7 +925,9 @@ if (!function_exists('db_delete_multi')) {
  *
  * @param string $type The condition type "AND" or "OR"; Default is "AND"
  *
- * @return string The built condition WHERE clause
+ * @return array The built condition WHERE AND/OR
+ *     [0] string The built condition WHERE AND/OR clause
+ *     [1] array The values to bind in the condition
  */
 function db_condition($cond = array(), $type = 'AND')
 {
@@ -1071,10 +935,9 @@ function db_condition($cond = array(), $type = 'AND')
 }
 
 /**
- * Build the SQL WHERE clause AND condition from the various condition arrays
- * Alias of `db_conditionAND()`
+ * Build the SQL WHERE clause AND condition from array of conditions
  *
- * @param array $cond [$cond1,$cond2,$cond3,...] The condition array(s), for example
+ * @param array $condition The condition array, for example
  *
  *     array(
  *       'fieldName1'    => $value1,
@@ -1085,23 +948,19 @@ function db_condition($cond = array(), $type = 'AND')
  * ### Operators allowed in condition array
  *     >, >=, <, <=, !=, between, nbetween, like, like%%, like%~, like~%, nlike, nlike%%, nlike%~, nlike~%
  *
- * @return string The built condition WHERE clause
+ * @return array The built condition WHERE AND
+ *     [0] string The built condition WHERE AND clause
+ *     [1] array The values to bind in the condition
  */
-function db_and($cond = array())
+function db_and($condition = array())
 {
-    $conditions = func_get_args();
-    $builtCond = array();
-    foreach ($conditions as $c) {
-        $builtCond[] = db_condition($c, 'AND');
-    }
-    return implode(' AND ', $builtCond);
+    return db_condition($condition, 'AND');
 }
 
 /**
- * Build the SQL WHERE clause OR condition from the various condition arrays
- * Alias of `db_conditionOR()`
+ * Build the SQL WHERE clause OR condition from array of conditions
  *
- * @param array $cond [,$cond2,$cond3,...] The condition array(s), for example
+ * @param array $condition The condition array, for example
  *
  *     array(
  *       'fieldName1'    => $value1,
@@ -1112,16 +971,13 @@ function db_and($cond = array())
  * ### Operators allowed in condition array
  *     >, >=, <, <=, !=, between, nbetween, like, like%%, like%~, like~%, nlike, nlike%%, nlike%~, nlike~%
  *
- * @return string The built condition WHERE clause
+ * @return array The built condition WHERE OR
+ *     [0] string The built condition WHERE OR clause
+ *     [1] array The values to bind in the condition
  */
-function db_or($cond = array())
+function db_or($condition = array())
 {
-    $conditions = func_get_args();
-    $builtCond = array();
-    foreach ($conditions as $c) {
-        $builtCond[] = db_condition($c, 'OR');
-    }
-    return implode(' OR ', $builtCond);
+    return db_condition($condition, 'OR');
 }
 
 /**
@@ -1171,14 +1027,5 @@ function db_rollback()
  */
 function db_exp($field, $value, $exp = '')
 {
-    if ($exp) {
-        $field = strtoupper($field) . '(' . $value . ')';
-    } else {
-        $field = '';
-    }
-    return array(
-        'value' => $value,
-        'exp' => $exp,
-        'field' => $field
-    );
+    return _g('_DB')->exp($field, $value, $exp);
 }

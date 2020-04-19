@@ -176,7 +176,7 @@ class UtilityHelperTestCase extends LucidFrameTestCase
         $this->assertEqual(_p('baseURL'), 'phplucidframe');
         $this->assertEqual(_p('siteDomain'), _host());
         $this->assertEqual(_p('db.default.host'), 'localhost');
-        $this->assertEqual(_p('db.default.collation'), 'utf8_general_ci');
+        $this->assertEqual(_p('db.default.collation'), 'utf8_unicode_ci');
     }
     /**
      * Test cases for _img()

@@ -12,13 +12,14 @@ return array(
     # Database connection information
     'db' => array(
         'default' => array(
-            'engine'    => 'mysql',
+            'driver'    => 'mysql',
             'host'      => 'localhost',
             'port'      => '',
             'database'  => _env('prod.db.default.database'),
             'username'  => _env('prod.db.default.username'),
             'password'  => _env('prod.db.default.password'),
             'prefix'    => _env('prod.db.default.prefix'),
+            'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
         )
     ),

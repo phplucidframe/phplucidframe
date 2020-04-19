@@ -12,13 +12,25 @@ return array(
     # Database connection information
     'db' => array(
         'default' => array(
-            'engine'    => 'mysql',
+            'driver'    => 'mysql',
             'host'      => 'localhost',
             'port'      => '',
             'database'  => '',
             'username'  => '',
             'password'  => '',
             'prefix'    => '',
+            'charset'   => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+        ),
+        'sample' => array(
+            'driver'    => 'mysql',
+            'host'      => 'localhost',
+            'port'      => '',
+            'database'  => 'lucid_blog_test',
+            'username'  => 'root',
+            'password'  => 'root',
+            'prefix'    => '',
+            'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
         )
     ),
