@@ -17,7 +17,7 @@ return array(
         'charset'       => 'utf8',
         'collate'       => _p('db.default.collation'),
     ),
-    'lc_sessions' => array(
+    'lc_sessions' => array( // only useful when you use database session
         'sid'       => array('type' => 'string', 'length' => 64, 'null' => false),
         'host'      => array('type' => 'string', 'length' => 128, 'null' => false),
         'timestamp' => array('type' => 'integer', 'unsigned' => true, 'null' => false),
