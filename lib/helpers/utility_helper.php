@@ -887,7 +887,7 @@ function _header($status, $message = null)
 {
     _g('httpStatusCode', $status);
 
-    if (_cfg('env') != ENV_TEST && __env() != ENV_TEST) {
+    if (PHP_SAPI != 'cli' && _cfg('env') != ENV_TEST && __env() != ENV_TEST) {
         header('HTTP/1.1 ' . $status . ($message ? ' ' . $message : ''));
     }
 }
