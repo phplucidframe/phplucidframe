@@ -3,21 +3,21 @@
 return array(
     'order' => 4,
     'tag-1' => array(
-        'slug'          => 'php',
-        'tagName'       => 'PHP',
-        'tagName_en'    => 'PHP',
-        'tagName_my'    => 'PHP',
+        'slug'      => 'php',
+        'name'      => 'PHP',
+        'name_en'   => 'PHP',
+        'name_my'   => 'PHP',
     ),
     'tag-2' => array(
-        'slug'          => 'mysql',
-        'tagName'       => 'MySQL',
-        'tagName_en'    => 'MySQL',
-        'tagName_my'    => 'MySQL',
+        'slug'      => 'mysql',
+        'name'      => 'MySQL',
+        'name_en'   => 'MySQL',
+        'name_my'   => 'MySQL',
     ),
     'tag-3' => array(
-        'slug'          => 'apache',
-        'tagName'       => 'Apache',
-        'tagName_en'    => 'Apache',
-        'tagName_my'    => 'Apache',
+        'slug'      => 'apache',
+        'name'      => 'Apache',
+        'name_en'   => 'Apache',
+        'name_my'   => 'Apache',
     ),
 );

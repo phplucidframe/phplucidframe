@@ -4,12 +4,12 @@ return array(
     'order' => 1,
     'user-1' => array(
         'slug'      => 'administrator',
-        'fullName'  => 'Administrator',
+        'full_name' => 'Administrator',
         'username'  => 'admin',
         'password'  => _encrypt('admin'),
         'email'     => 'admin@localhost.com',
         'role'      => 'admin',
-        'isMaster'  => 1,
+        'is_master' => true,
         'phone'     => array(
             '09123456789',
             '09987654321',
