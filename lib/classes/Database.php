@@ -60,6 +60,8 @@ class Database
             $this->namespace = _cfg('defaultDbSource');
         }
 
+        _g('_DB', $this);
+
         $this->connect();
     }
 
