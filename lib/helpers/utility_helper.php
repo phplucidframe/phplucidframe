@@ -2177,3 +2177,11 @@ function _addFormData($name, array $data)
 {
     echo '<script>LC.Form.formData["' . $name . '"] = ' . json_encode($data) . ';</script>';
 }
+
+/**
+ * Get database object
+ * @return \LucidFrame\Core\Database
+ */
+function _db() {
+    return _g('_DB');
+}
