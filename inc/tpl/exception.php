@@ -3,7 +3,7 @@
  * This file is part of the PHPLucidFrame library.
  *
  * The template file for the critical site errors display.
- * You can copy this to /app/inc/tpl/site.error.php and update it according to your need.
+ * You can copy this to /app/inc/tpl/exception.php and update it according to your need.
  *
  * @package     PHPLucidFrame\App
  * @since       PHPLucidFrame v 1.0.0
@@ -19,8 +19,14 @@
 <!DOCTYPE html>
 <html lang="<?php echo _lang(); ?>">
 <head>
-    <title><?php echo $type . ': ' . $message; ?></title>
-    <?php include( _i('inc/tpl/head.php') ); ?>
+    <title><?php echo $type; ?></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="shortcut icon" href="<?php echo _img('favicon.ico'); ?>" type="image/x-icon" />
+    <?php _css('base.css'); ?>
+    <link href="https://fonts.googleapis.com/css?family=Padauk:400,700" rel="stylesheet">
+    <?php _css('base.' . _lang() . '.css'); ?>
+    <?php _js('jquery'); ?>
 </head>
 <body class="mini-page">
     <div class="container-box exception-box">
@@ -53,5 +59,8 @@
             </div>
         </div>
     </div>
+    <script>
+        $('html font').remove();
+    </script>
 </body>
 </html>

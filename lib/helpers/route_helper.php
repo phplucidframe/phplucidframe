@@ -124,25 +124,6 @@ function route_request()
     # slash in place, hence we need to normalize $_GET[ROUTE].
     $path = trim($path, '/');
 
-    $protocol = current(explode('/', $_SERVER['SERVER_PROTOCOL']));
-    $base = strtolower($protocol) . '://' . $_SERVER['HTTP_HOST'];
-    if ($lc_baseURL) {
-        $base .= '/' . $lc_baseURL;
-    }
-
-    /**
-     * @ignore Path to the web root
-     */
-    define('WEB_ROOT', $base.'/');
-    /**
-     * @ignore
-     */
-    define('WEB_APP_ROOT', WEB_ROOT . APP_DIR . '/');
-    /**
-     * @ignore Path to the home page
-     */
-    define('HOME', WEB_ROOT);
-
     session_set('lang', $lc_lang);
 
     return $path;

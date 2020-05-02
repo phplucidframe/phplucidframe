@@ -95,6 +95,21 @@ require INC . 'config.php';
 # Load environment settings
 __envLoader();
 
+if (isset($_SERVER['SERVER_PROTOCOL'])) {
+    $protocol = current(explode('/', $_SERVER['SERVER_PROTOCOL']));
+    $base = strtolower($protocol) . '://' . $_SERVER['HTTP_HOST'];
+    if ($lc_baseURL) {
+        $base .= '/' . $lc_baseURL;
+    }
+
+    # path to the web root
+    define('WEB_ROOT', $base . '/');
+    # path to the web app root
+    define('WEB_APP_ROOT', WEB_ROOT . APP_DIR . '/');
+    # path to the home page
+    define('HOME', WEB_ROOT);
+}
+
 # Utility helpers (required)
 if ($file = _i('helpers' . _DS_ . 'utility_helper.php', false)) {
     include $file;
@@ -143,9 +158,11 @@ require HELPER . 'route_helper.php'; # WEB_ROOT and WEB_APP_ROOT is created in r
 include INC . 'route.config.php';
 __route_init();
 
-define('CSS', WEB_ROOT . 'assets/css/');
-define('JS', WEB_ROOT . 'assets/js/');
-define('WEB_VENDOR', WEB_ROOT . 'vendor/');
+if (defined('WEB_ROOT')) {
+    define('CSS', WEB_ROOT . 'assets/css/');
+    define('JS', WEB_ROOT . 'assets/js/');
+    define('WEB_VENDOR', WEB_ROOT . 'vendor/');
+}
 
 # Load translations
 if ($moduleI18n) {
