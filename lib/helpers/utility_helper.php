@@ -174,6 +174,7 @@ function _minifyHTML($html)
         # 3. shorten multiple whitespace sequences
         return preg_replace(array('/\>[^\S ]+/s', '/[^\S ]+\</s', '/(\s)+/s'), array('>', '<', '\\1'), $html);
     }
+
     return $html;
 }
 
@@ -262,6 +263,7 @@ function _readyloader($name, $path = HELPER)
     } else {
         $file = $name;
     }
+
     return (array_search($file, $lc_autoload) !== false && is_file($file) && file_exists($file)) ? $file : false;
 }
 /**
@@ -423,7 +425,7 @@ function _js($file)
  * @param string $file An absolute file path or file name only.
  *  The file name only will be prepended the folder name css/ and it will be looked in every sub-sites "css" folder
  *
- * @return void
+ * @return boolean
  */
 function _css($file)
 {
@@ -655,6 +657,7 @@ function _h($string)
 {
     $string = stripslashes($string);
     $string = htmlspecialchars_decode($string, ENT_QUOTES);
+
     return htmlspecialchars($string, ENT_QUOTES); # ENT_QUOTES will convert both double and single quotes.
 }
 /**
@@ -678,7 +681,9 @@ function _getLang()
     if (function_exists('__getLang')) {
         return __getLang(); # run the hook if any
     }
+
     $lang = (_arg('lang')) ? _arg('lang') : _defaultLang();
+
     return ($lang) ? $lang : _defaultLang();
 }
 /**
@@ -711,7 +716,8 @@ function _langs($excepts = null)
     } else {
         $langs = $lc_languages;
     }
-    return (count($langs)) ? $langs : false;
+
+    return count($langs) ? $langs : false;
 }
 /**
  * Get the current site language code by converting dash (URL-friendly) to underscore (db-friendly)
@@ -720,10 +726,10 @@ function _langs($excepts = null)
  */
 function _queryLang($lang = null)
 {
-    global $lc_lang;
     if (!$lang) {
-        $lang = $lc_lang;
+        $lang = _cfg('lang');;
     }
+
     return str_replace('-', '_', $lang);
 }
 /**
@@ -733,10 +739,10 @@ function _queryLang($lang = null)
  */
 function _urlLang($lang = null)
 {
-    global $lc_lang;
     if (!$lang) {
-        $lang = $lc_lang;
+        $lang = _cfg('lang');
     }
+
     return str_replace('_', '-', $lang);
 }
 /**
@@ -745,8 +751,7 @@ function _urlLang($lang = null)
  */
 function _defaultQueryLang()
 {
-    global $lc_defaultLang;
-    return str_replace('-', '_', $lc_defaultLang);
+    return str_replace('-', '_', _cfg('defaultLang'));
 }
 /**
  * Get the current site language name of the given language code
@@ -762,8 +767,10 @@ function _langName($lang = '')
     if (!_multilingual()) {
         return '';
     }
+
     global $lc_languages;
     $lang = str_replace('_', '-', $lang);
+
     if (isset($lc_languages[$lang])) {
         return $lc_languages[$lang];
     } else {
@@ -791,6 +798,7 @@ function _multilingual()
 function _protocol()
 {
     $protocol = current(explode('/', $_SERVER['SERVER_PROTOCOL']));
+
     return strtolower($protocol);
 }
 /**
@@ -871,7 +879,7 @@ function _url($path = null, $queryStr = array(), $lang = '')
  *
  * @param string $lang Languague code to be prepended to $path such as "en/foo/bar".
  *   It will be useful for site language switch redirect
- * @return void
+ * @return string
  */
 function _self($queryStr = array(), $lang = '')
 {
@@ -986,7 +994,7 @@ function _isRewriteRule()
 /**
  * Setter for canonical URL if the argument is given and print the canonical link tag if the argument is not given
  * @param string $url The specific URL
- * @return void
+ * @return void|string
  */
 function _canonical($url = null)
 {
@@ -1106,6 +1114,7 @@ function _getLangInURI()
     if (preg_match($regex, $_SERVER['REQUEST_URI'], $matches)) {
         return $matches[2];
     }
+
     return false;
 }
 /**
@@ -1159,6 +1168,7 @@ function _title()
         }
         return $title;
     }
+
     return $lc_siteName;
 }
 /**
@@ -1179,25 +1189,27 @@ function _filterArrayEmpty($input)
  */
 function _notEmpty($value)
 {
-    $value = trim($value);
-    return ($value !== '') ? true : false;
+    return (trim($value) !== '') ? true : false;
 }
 /**
  * Generate breadcrumb by a separator
  *
- * @param  mixed $args Array of string arguments or multiple string arguments
- * @return string The formatted breadcrumb
+ * @param mixed $args Array of string arguments or multiple string arguments
+ * @return void
  */
 function _breadcrumb()
 {
     global $lc_breadcrumbSeparator;
     $args = func_get_args();
+
     if (!$lc_breadcrumbSeparator) {
         $lc_breadcrumbSeparator = '&raquo;';
     }
+
     if (count($args) == 1 && is_array($args[0])) {
         $args = $args[0];
     }
+
     echo implode(" {$lc_breadcrumbSeparator} ", $args);
 }
 /**
@@ -1215,14 +1227,17 @@ function _shorten($str, $length = 50, $trail = '...')
     if (strlen($str) <= $length) {
         return $str;
     }
+
     $short = trim(substr($str, 0, $length));
     $lastSpacePos = strrpos($short, ' ');
     if ($lastSpacePos !== false) {
         $short = substr($short, 0, $lastSpacePos);
     }
+
     if ($trail) {
         $short = rtrim($short, '.').$trail;
     }
+
     return $short;
 }
 
@@ -1277,6 +1292,7 @@ if (!function_exists('_fnum')) {
                 return $value;
             }
         }
+
         return $value;
     }
 }
@@ -1302,6 +1318,7 @@ if (!function_exists('_fnumSmart')) {
                 $value = $v[0];
             }
         }
+
         return $value;
     }
 }
@@ -1332,6 +1349,7 @@ if (!function_exists('_fdate')) {
         if (!$format) {
             $format = _cfg('dateFormat');
         }
+
         return (is_string($date)) ? date($format, strtotime($date)) : date($format, $date);
     }
 }
@@ -1433,6 +1451,7 @@ if (!function_exists('_msg')) {
         } else {
             $html .= $msg;
         }
+
         if ($html) {
             $html .= '</div>';
         }
@@ -1442,6 +1461,8 @@ if (!function_exists('_msg')) {
         } else {
             echo $html;
         }
+
+        return '';
     }
 }
 /**
@@ -1646,8 +1667,8 @@ function _cipher()
  * Simple quick helper function for <meta> tag attribute values
  *
  * @param  string $key   The <meta> tag name
- * @param  string $value If the value is empty, this is a Getter fuction; otherwise Setter function
- * @return void
+ * @param  string $value If the value is empty, this is a Getter function; otherwise Setter function
+ * @return void|mixed
  */
 function _meta($key, $value = '')
 {
