@@ -95,15 +95,10 @@ require INC . 'config.php';
 # Load environment settings
 __envLoader();
 
-if (isset($_SERVER['SERVER_PROTOCOL'])) {
-    $protocol = current(explode('/', $_SERVER['SERVER_PROTOCOL']));
-    $base = strtolower($protocol) . '://' . $_SERVER['HTTP_HOST'];
-    if ($lc_baseURL) {
-        $base .= '/' . $lc_baseURL;
-    }
-
+$baseUrl = _baseUrlWithProtocol();
+if ($baseUrl) {
     # path to the web root
-    define('WEB_ROOT', $base . '/');
+    define('WEB_ROOT', $baseUrl . '/');
     # path to the web app root
     define('WEB_APP_ROOT', WEB_ROOT . APP_DIR . '/');
     # path to the home page

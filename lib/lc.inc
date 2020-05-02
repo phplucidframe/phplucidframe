@@ -732,4 +732,24 @@ function _env($name)
     return __dotNotationToArray($name, $lc_envParameters);
 }
 
+/**
+ * Get base URL with protocol
+ * @return bool|string
+ */
+function _baseUrlWithProtocol()
+{
+    if (isset($_SERVER['SERVER_PROTOCOL'])) {
+        $baseUrl = _cfg('baseURL');
+        $protocol = current(explode('/', $_SERVER['SERVER_PROTOCOL']));
+        $base = strtolower($protocol) . '://' . $_SERVER['HTTP_HOST'];
+        if ($baseUrl) {
+            $base .= '/' . $baseUrl;
+        }
+
+        return $base;
+    }
+
+    return false;
+}
+
 __prerequisite();
