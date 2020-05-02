@@ -132,6 +132,10 @@ function __prerequisite()
     if (!file_exists(INC . 'config.php')) {
         copy(INC . 'config.default.php', INC . 'config.php');
     }
+
+    if (PHP_SAPI !== 'cli') {
+        register_shutdown_function('__kernelShutdownHandler');
+    }
 }
 
 /**
@@ -729,5 +733,3 @@ function _env($name)
 }
 
 __prerequisite();
-
-register_shutdown_function('__kernelShutdownHandler');
