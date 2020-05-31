@@ -151,7 +151,7 @@ class Database
      * @param string $namespace The given namespace
      * @return string The database namespace
      */
-    protected function getNamespace($namespace = null)
+    public function getNamespace($namespace = null)
     {
         if (!empty($namespace)) {
             return $namespace;
@@ -165,7 +165,7 @@ class Database
      * @param string $namespace Namespace of the configuration to read from
      * @return array The array of database configuration
      */
-    protected function getConfig($namespace = null)
+    public function getConfig($namespace = null)
     {
         $namespace = $this->getNamespace($namespace);
 
