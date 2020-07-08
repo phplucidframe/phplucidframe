@@ -1077,6 +1077,14 @@ class QueryBuilder
 
     private static function getPlaceholder($key, $values = array())
     {
+        $specChars = array(
+            '`','~','!','@','#','$','%','\^','&',
+            '*','(',')','=','+','{','}','[',']',
+            ':',';',"'",'"','<','>','\\','|','?','/',','
+        );
+
+        $key = str_replace($specChars, '_', $key);
+
         $placeholders = array_filter($values, function ($placeholder) use ($key) {
             return stripos($placeholder, $key) === 1;
         }, ARRAY_FILTER_USE_KEY);

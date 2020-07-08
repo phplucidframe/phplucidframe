@@ -291,6 +291,23 @@ class QueryBuilderTestCase extends LucidFrameTestCase
 
     public function testQueryBuilderResult()
     {
+        $result = db_select('user', 'u')
+            ->where()
+            ->condition('LOWER(username)', 'admin')
+            ->getSingleResult();
+        $this->assertTrue(is_object($result));
+        $this->assertEqual($result->username, 'admin');
+
+        $userId = 1;
+        $qb = db_count('user')
+            ->where()
+            ->condition('LOWER(username)', 'admin');
+        if ($userId) {
+            $qb->condition('uid !=', $userId);
+        }
+        $count = $qb->fetch();
+        $this->assertEqual($count, 0);
+
         db_insert('category', array('catName' => 'PHP'));
         db_insert('category', array('catName' => 'MySQL'));
         db_insert('category', array('catName' => 'Framework'));
