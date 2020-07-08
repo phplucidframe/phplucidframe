@@ -16,6 +16,7 @@ function validate_emailRetyped($emailRetyped, $email = '')
     if (empty($email)) {
         return true;
     }
+
     return (strcasecmp($emailRetyped, $email) == 0) ? true : false;
 }
 /**
@@ -32,6 +33,7 @@ function validate_confirmPassword($value, $pwd)
         return true;
     }
     $confirmPwd = trim($pwd);
+
     return ($value == $pwd);
 }
 /**
@@ -49,17 +51,13 @@ function validate_checkDuplicateUsername($value, $id = 0)
         return true;
     }
 
-    $sql = 'SELECT uid FROM ' . db_prefix() . 'user WHERE LOWER(username) = ":value"';
+    $qb = db_count('user')
+        ->where()
+        ->condition('LOWER(username)', $value);
+
     if ($id) {
-        $sql .= ' AND uid <> :id';
+        $qb->condition('id !=', $id);
     }
-    $sql .= ' LIMIT 1';
-    $args = array(
-        ':value' => strtolower($value),
-        ':id' => $id
-    );
-    if ($result = db_query($sql, $args)) {
-        return (db_numRows($result)) ? false : true;
-    }
-    return false;
+
+    return $qb->fetch() ? false : true;
 }
