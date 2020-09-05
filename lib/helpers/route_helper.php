@@ -353,7 +353,8 @@ function route_url($path = null, $queryStr = array(), $lang = '')
 function route_updateQueryStr($path, &$queryStr = array())
 {
     global $lc_cleanURL;
-    if (count($queryStr)) {
+
+    if (is_array($queryStr) && count($queryStr)) {
         if ($lc_cleanURL) {
             # For clean URLs like /path/query/str/-key/value
             foreach ($queryStr as $key => $value) {
@@ -398,6 +399,7 @@ function route_updateQueryStr($path, &$queryStr = array())
             $queryStr = array_merge($serverQueryStr, $queryStr);
         }
     }
+
     return $path;
 }
 
