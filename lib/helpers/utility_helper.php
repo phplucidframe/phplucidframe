@@ -360,6 +360,8 @@ function _addvar($name, $value = '')
  */
 function _js($file)
 {
+    $version = '?v' . _cfg('asset_version');
+
     if (stripos($file, 'http') === 0) {
         echo '<script src="' . $file . '" type="text/javascript"></script>';
         return true;
@@ -400,19 +402,19 @@ function _js($file)
                 $fileWithSystemPath = ROOT . str_replace(WEB_ROOT, '', $includeFile);
             }
             if (file_exists($fileWithSystemPath)) {
-                echo '<script src="' . $includeFile . '" type="text/javascript"></script>';
+                echo '<script src="' . $includeFile . $version . '" type="text/javascript"></script>';
                 return true;
             }
         }
     }
 
     if (file_exists(ROOT . 'assets/js/' . $file)) {
-        echo '<script src="'. WEB_ROOT . 'assets/js/' . $file . '" type="text/javascript"></script>';
+        echo '<script src="'. WEB_ROOT . 'assets/js/' . $file . $version . '" type="text/javascript"></script>';
         return true;
     }
 
     if (file_exists(ROOT . 'js/' . $file)) {
-        echo '<script src="'. WEB_ROOT . 'js/' . $file . '" type="text/javascript"></script>';
+        echo '<script src="'. WEB_ROOT . 'js/' . $file . $version . '" type="text/javascript"></script>';
         return true;
     }
 
@@ -429,6 +431,8 @@ function _js($file)
  */
 function _css($file)
 {
+    $version = '?v' . _cfg('asset_version');
+
     if (stripos($file, 'http') === 0) {
         echo '<link href="' . $file . '" rel="stylesheet" type="text/css" />';
         return true;
@@ -461,19 +465,19 @@ function _css($file)
             }
 
             if (file_exists($fileWithSystemPath)) {
-                echo '<link href="' . $includeFile . '" rel="stylesheet" type="text/css" />';
+                echo '<link href="' . $includeFile . $version . '" rel="stylesheet" type="text/css" />';
                 return true;
             }
         }
     }
 
     if (file_exists(ROOT . 'assets/css/' . $file)) {
-        echo '<link href="' . WEB_ROOT . 'assets/css/' . $file . '" rel="stylesheet" type="text/css" />';
+        echo '<link href="' . WEB_ROOT . 'assets/css/' . $file . $version . '" rel="stylesheet" type="text/css" />';
         return true;
     }
 
     if (file_exists(ROOT . 'css/' . $file)) {
-        echo '<link href="' . WEB_ROOT . 'css/' . $file . '" rel="stylesheet" type="text/css" />';
+        echo '<link href="' . WEB_ROOT . 'css/' . $file . $version . '" rel="stylesheet" type="text/css" />';
         return true;
     }
 

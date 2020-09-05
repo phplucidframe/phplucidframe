@@ -31,3 +31,5 @@ $lc_pageNumLimit = 10;
 $lc_itemsPerPage = 15;
 # $lc_nullFill: Sign for the empty fields
 $lc_nullFill = '<span class="nullFill">-</span>';
+# $lc_asset_version: Versioning for css/js file includes
+$lc_asset_version = 1;
