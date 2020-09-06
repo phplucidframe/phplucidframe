@@ -154,6 +154,83 @@ code.inline {
     font-size: 1em !important;
 }
 
+.fluid {
+    width: 100%;
+}
+
+img.fluid {
+    width: auto;
+    max-width: 100%;
+}
+
+.fluid-25 {
+    width: 25%;
+}
+
+.fluid-30 {
+    width: 30%;
+}
+
+.fluid-35 {
+    width: 35%;
+}
+
+.fluid-40 {
+    width: 40%;
+}
+
+.fluid-45 {
+    width: 45%;
+}
+
+.fluid-50 {
+    width: 50%;
+}
+
+.fluid-75 {
+    width: 75%;
+}
+
+.fluid-100 {
+    width: 100%;
+}
+
+input.fluid-25,
+textarea.fluid-25 {
+    width: calc(25% - 22px);
+}
+
+input.fluid-50,
+textarea.fluid-50 {
+    width: calc(50% - 22px);
+}
+
+input.fluid-75,
+textarea.fluid-75 {
+    width: calc(75% - 22px);
+}
+
+input.fluid-100,
+textarea.fluid-100 {
+    width: calc(100% - 22px);
+}
+
+select.fluid-25 {
+    width: 25%;
+}
+
+select.fluid-50 {
+    width: 50%;
+}
+
+select.fluid-75 {
+    width: 75%;
+}
+
+select.fluid-25 {
+    width: 100%;
+}
+
 /******************/
 /* INPUT ELEMENTS */
 /******************/
@@ -206,7 +283,7 @@ textarea {
 }
 
 select {
-    height: 26px;
+    height: 36px;
     padding: 2px;
 }
 
@@ -247,7 +324,7 @@ label.radio {
     position: relative;
     display: inline-block;
     padding: 7px 12px;
-    margin-right: 5px;
+    margin: 2px 5px 2px 0;
     min-width: 65px;
     font-size: 13px;
     font-weight: bold;
@@ -392,7 +469,7 @@ ol li div, ul li div {
 }
 
 .container {
-    width: 980px;
+    max-width: 980px;
     margin: 0 auto;
     padding: 0 10px;
 }
@@ -404,7 +481,7 @@ ol li div, ul li div {
 
 #top-bar {
     color: #ffffff;
-    height: 30px;
+    min-height: 30px;
     background: #333333 url(../images/logo-22.png) 4px 4px no-repeat;
     padding-left: 34px;
     font-size: 11px;
@@ -421,7 +498,7 @@ ol li div, ul li div {
 }
 
 #top-bar ul {
-    margin: 0;
+    margin: 0 0 4px 0;
     padding: 0;
     list-style-type: none;
     float: right;
@@ -464,10 +541,7 @@ ol li div, ul li div {
 
 #logo {
     display: block;
-    text-indent: -10000px;
-    width: 320px;
-    height: 34px;
-    background: url(../images/logo.png) no-repeat;
+    width: 70%;
     margin: 0;
 }
 
@@ -1286,7 +1360,7 @@ ul.pager li {
 
 .pager .pages a,
 .pager .pages span.currentPage {
-    padding: 1px 8px;
+    padding: 4px 8px;
     background: #ccc;
     margin: 0 1px;
 }

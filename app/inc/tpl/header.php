@@ -7,7 +7,9 @@
     <div id="page-container">
         <div id="header">
             <div class="container clearfix">
-                <a href="<?php echo _url('home'); ?>" id="logo">PHPLucidFrame</a>
+                <a href="<?php echo _url('home'); ?>" id="logo">
+                    <img src="<?php echo _img('logo.png'); ?>" class="fluid" alt="<?php echo _cfg('siteName'); ?>" />
+                </a>
                 <div id="language-switcher">
                 <?php
                 $languages = _cfg('languages');

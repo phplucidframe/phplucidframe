@@ -15,23 +15,30 @@
 
 @charset "utf-8";
 
-@media screen and ( min-width : 980px ) {
+@media screen and ( min-width : 1406px ) {
+    /* Desktop extra large */
+}
+
+@media screen and ( min-width : 1216px ) {
+    /* Desktop large */
+}
+
+@media screen and ( min-width : 1024px ) {
     /* Desktop */
 }
 
-@media screen and ( max-width : 979px ) {
+@media screen and (min-width: 769px) and (max-width: 1023px) {
     /* Tablet */
+}
+
+@media screen and ( max-width : 768px ) {
+    /* Mobile */
     .container {
         width: auto;
     }
-
-    #header {
-        height: auto;
-        min-height: 81px;
-    }
 }
 
-@media screen and ( max-width : 500px ) {
+@media screen and ( max-width : 576px ) {
     /* Mobile */
     body {
         font-size: 11px;
@@ -41,11 +48,33 @@
         display: block;
     }
 
+    .fluid-25,
+    .fluid-30,
+    .fluid-35,
+    .fluid-40,
+    .fluid-45,
+    .fluid-50,
+    .fluid-75,
+    .fluid-100 {
+        width: 100%;
+    }
+
+    input.fluid-25, select.fluid-25, textarea.fluid-25,
+    input.fluid-50, select.fluid-50, textarea.fluid-50,
+    input.fluid-75, select.fluid-75, textarea.fluid-75,
+    input.fluid-100, select.fluid-100, textarea.fluid-100 {
+        width: calc(100% - 22px);
+    }
+
+    table.form {
+        width: 100%;
+    }
+
     table.form td {
         display: block;
     }
 
-    table.form td.labelSeperator, table.form td.labelSeparator {
+    table.form td.labelSeparator {
         display: none;
         border: none;
     }

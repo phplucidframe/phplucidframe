@@ -15,44 +15,46 @@
 </ul>
 <p>
     <h6><?php echo _t('Leave a Comment.'); ?></h6>
-    <form id="frmComment" method="post">
-        <div class="message"></div>
-        <table cellpadding="0" cellspacing="0" class="form">
-            <tr>
-                <td class="label"><?php echo _t('Name')._cfg('reqSign'); ?></td>
-                <td class="labelSeparator">:</td>
-                <td class="entry">
-                    <input type="text" name="txtName" size="40" value="" />
-                </td>
-            </tr>
-            <tr>
-                <td class="label"><?php echo _t('Email')._cfg('reqSign'); ?></td>
-                <td class="labelSeparator">:</td>
-                <td class="entry">
-                    <input type="text" name="txtEmail" size="50" value="" />
-                </td>
-            </tr>
-            <tr>
-                <td class="label"><?php echo _t('Re-type Email')._cfg('reqSign'); ?></td>
-                <td class="labelSeparator">:</td>
-                <td class="entry">
-                    <input type="text" name="txtConfirmEmail" size="50" value="" />
-                </td>
-            </tr>
-            <tr>
-                <td class="label"><?php echo _t('Comment')._cfg('reqSign'); ?></td>
-                <td class="labelSeparator">:</td>
-                <td class="entry">
-                    <textarea name="txaComment" rows="7" cols="60"></textarea>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2"></td>
-                <td class="entry">
-                    <input type="submit" name="btnSubmit" value="<?php echo _t('Post Comment'); ?>" class="button green" />
-                </td>
-            </tr>
-        </table>
-        <?php form_token(); ?>
-    </form>
+    <div class="fluid-50">
+        <form id="frmComment" method="post">
+            <div class="message"></div>
+            <table cellpadding="0" cellspacing="0" class="form fluid">
+                <tr>
+                    <td class="label"><?php echo _t('Name')._cfg('reqSign'); ?></td>
+                    <td class="labelSeparator">:</td>
+                    <td class="entry">
+                        <input type="text" name="txtName" class="fluid-100" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label"><?php echo _t('Email')._cfg('reqSign'); ?></td>
+                    <td class="labelSeparator">:</td>
+                    <td class="entry">
+                        <input type="text" name="txtEmail" class="fluid-100" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label"><?php echo _t('Re-type Email')._cfg('reqSign'); ?></td>
+                    <td class="labelSeparator">:</td>
+                    <td class="entry">
+                        <input type="text" name="txtConfirmEmail" class="fluid-100" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label"><?php echo _t('Comment')._cfg('reqSign'); ?></td>
+                    <td class="labelSeparator">:</td>
+                    <td class="entry">
+                        <textarea name="txaComment" rows="7" class="fluid-100"></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"></td>
+                    <td class="entry">
+                        <input type="submit" name="btnSubmit" value="<?php echo _t('Post Comment'); ?>" class="button green" />
+                    </td>
+                </tr>
+            </table>
+            <?php form_token(); ?>
+        </form>
+    </div>
 </p>
