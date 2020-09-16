@@ -67,6 +67,7 @@ class Validation
         if (!in_array($type, array('single', 'multi'))) {
             $type = 'multi';
         }
+
         self::$errors = array();
         foreach ($validations as $id => $v) {
             if (isset($v['rules']) && is_array($v['rules'])) {
@@ -116,7 +117,7 @@ class Validation
                                     case 'min':
                                         # Required property: min
                                         if (!isset($v['min'])) {
-                                            continue;
+                                            break;
                                         }
                                         $success = call_user_func_array($func, array($value, $v['min']));
                                         if (!$success) {
@@ -127,7 +128,7 @@ class Validation
                                     case 'max':
                                         # Required property: max
                                         if (!isset($v['max'])) {
-                                            continue;
+                                            break;
                                         }
                                         $success = call_user_func_array($func, array($value, $v['max']));
                                         if (!$success) {
@@ -136,31 +137,21 @@ class Validation
                                         break;
 
                                     case 'minLength':
-                                        # Required property: min
-                                        if (!isset($v['min'])) {
-                                            continue;
-                                        }
-                                        $success = call_user_func_array($func, array($value, $v['min']));
-                                        if (!$success) {
-                                            self::setError($id, $rule, $v, $v['min']);
-                                        }
-                                        break;
-
                                     case 'maxLength':
-                                        # Required property: max
-                                        if (!isset($v['max'])) {
-                                            continue;
+                                        $requiredProperty = $rule == 'minLength' ? 'min' : 'max';
+                                        if (!isset($v[$requiredProperty])) {
+                                            break;
                                         }
-                                        $success = call_user_func_array($func, array($value, $v['max']));
+                                        $success = call_user_func_array($func, array($value, $v[$requiredProperty]));
                                         if (!$success) {
-                                            self::setError($id, $rule, $v, $v['max']);
+                                            self::setError($id, $rule, $v, $v[$requiredProperty]);
                                         }
                                         break;
 
                                     case 'between':
                                         # Required property: min|max
                                         if (!isset($v['min']) || !isset($v['max'])) {
-                                            continue;
+                                            break;
                                         }
                                         $success = call_user_func_array($func, array($value, $v['min'], $v['max']));
                                         if (!$success) {
@@ -182,7 +173,7 @@ class Validation
                                     case 'custom':
                                         # Required property: pattern
                                         if (!isset($v['pattern'])) {
-                                            continue;
+                                            break;
                                         }
                                         $success = call_user_func_array($func, array($value, $v['pattern']));
                                         if (!$success) {
@@ -193,7 +184,7 @@ class Validation
                                     case 'fileMaxSize':
                                         # Required property: maxSize
                                         if (!isset($v['maxSize'])) {
-                                            continue;
+                                            break;
                                         }
                                         $success = call_user_func_array($func, array($value, $v['maxSize']));
                                         if (!$success) {
@@ -204,7 +195,7 @@ class Validation
                                     case 'fileMaxWidth':
                                         # Required property: maxWidth
                                         if (!isset($v['maxWidth'])) {
-                                            continue;
+                                            break;
                                         }
                                         $success = call_user_func_array($func, array($value, $v['maxWidth']));
                                         if (!$success) {
@@ -215,7 +206,7 @@ class Validation
                                     case 'fileMaxHeight':
                                         # Required property: maxHeight
                                         if (!isset($v['maxHeight'])) {
-                                            continue;
+                                            break;
                                         }
                                         $success = call_user_func_array($func, array($value, $v['maxHeight']));
                                         if (!$success) {
@@ -226,7 +217,7 @@ class Validation
                                     case 'fileMaxDimension':
                                         # Required property: maxWidth, maxHeight
                                         if (!isset($v['maxWidth']) || !isset($v['maxHeight'])) {
-                                            continue;
+                                            break;
                                         }
                                         $success = call_user_func_array($func, array($value, $v['maxWidth'], $v['maxHeight']));
                                         if (!$success) {
@@ -237,7 +228,7 @@ class Validation
                                     case 'fileExactDimension':
                                         # Required property: width, height
                                         if (!isset($v['width']) || !isset($v['height'])) {
-                                            continue;
+                                            break;
                                         }
                                         $success = call_user_func_array($func, array($value, $v['width'], $v['height']));
                                         if (!$success) {
@@ -248,7 +239,7 @@ class Validation
                                     case 'fileExtension':
                                         # Required property: extensions
                                         if (!isset($v['extensions'])) {
-                                            continue;
+                                            break;
                                         }
                                         $success = call_user_func_array($func, array($value, $v['extensions']));
                                         if (!$success) {
