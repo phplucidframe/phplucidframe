@@ -63,19 +63,19 @@ if (sizeof($_POST)) {
         ### The following commented section works with the sample database ###
 
         /*
-        if (isset($post['photo-postId']) && $post['photo-postId']) {
+        if (isset($post['photo-id']) && $post['photo-id']) {
             # Save file name in db
             # This is only needed when `onUpload` callback is not provided in view.php
             db_insert('post_image', array(
-                'pimgFileName' => $post['photo'],
-                'postId' => $post['photo-postId']
+                'file_name' => $post['photo'],
+                'post_id' => $post['photo-id']
             ), $useSlug=false);
         }
 
         # Save file name in db
         # This is only needed when `onUpload` callback is not provided in view.php
         db_insert('document', array(
-            'docFileName' => $post['doc'],
+            'file_name' => $post['doc'],
         ), $useSlug=false);
         */
 

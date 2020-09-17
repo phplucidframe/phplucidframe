@@ -14,12 +14,12 @@
 /*
 if ($id && is_numeric($id)) {
     $image = db_select('post_image', 'pi')
-        ->fields('pi', array('pimgId', 'pimgFileName'))
+        ->fields('pi', array('id', 'file_name'))
         ->where('pi.postId', $id)
         ->getSingleResult();
 }
 
 $doc = db_select('document', 'd')
-    ->fields('d', array('docId', 'docFileName'))
+    ->fields('d', array('id', 'file_name'))
     ->getSingleResult();
 */
