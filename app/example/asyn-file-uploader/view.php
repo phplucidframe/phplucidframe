@@ -30,6 +30,7 @@
                     # this should be defined in site.config.php, for example, $lc_imageDimensions = array('400x300', '200x150');
                     $file->setDimensions(array('400x300', '200x150'));
                     $file->setExtensions(array('jpg', 'jpeg', 'png', 'gif')); # default to any file
+                    $file->setUploadAsOriginalFileName(true); // the original file name will be used for uploaded file
                     // $file->setUploadDir('path/to/upload/dir'); # default to /files/tmp
                     // $file->setButtons('btnSubmit'); # The button #btnSubmit will be disabled while file upload is in progress
                     // $file->isFileNameDisplayed(false);

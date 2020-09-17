@@ -787,7 +787,7 @@
             // Get id, value (file name) and dimensions
             // id to delete from db
             // value to unlink the file
-            // dimension to unline the thumbnails related to the file
+            // dimension to unlink the thumbnails related to the file
             $('#asynfileuploader-value-' + name + ' input[name^="' + name + '"]').each(function(i, elem) {
                 if ($(elem).attr('name').indexOf('-id') !== -1) {
                     id = $(elem).val();

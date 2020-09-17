@@ -39,8 +39,8 @@ class AsynFileUploader
     private $extensions;
     /** @var int The maximum file size allowed to upload in MB */
     private $maxSize;
-    /** @var int The maximum file dimension */
-    private $dimension;
+    /** @var array Image dimensions */
+    private $dimensions;
     /** @var string URL that handles the file uploading process */
     private $uploadHandler;
     /** @var array Array of HTML ID of the buttons to be disabled while uploading */
@@ -49,6 +49,8 @@ class AsynFileUploader
     private $isDeletable;
     /** @var boolean The uploaded file name is displayed or not */
     private $fileNameIsDisplayed;
+    /** @var bool  Flag to save the uploaded file with original file name */
+    private $uploadAsOriginalFileName = false;
     /** @var string The hook name that handles file upload process interacting the database layer */
     private $onUpload;
     /** @var string The hook name that handles file deletion process interacting the database layer */
@@ -221,6 +223,15 @@ class AsynFileUploader
     {
         $this->fileNameIsDisplayed = $value;
     }
+
+    /**
+     * Setter for the property `uploadAsOriginalFileName`
+     * @param boolean $value Use original file name on upload or not
+     */
+    public function setUploadAsOriginalFileName($value)
+    {
+        $this->uploadAsOriginalFileName = $value;
+    }
     /**
      * Setter for the `onUpload` hook
      * @param string $callable The callback PHP function name
@@ -295,6 +306,7 @@ class AsynFileUploader
         $args[] = 'phpCallback=' . $this->onUpload;
         $args[] = 'exts=' . implode(',', $this->extensions);
         $args[] = 'maxSize=' . $maxSize;
+        $args[] = 'uploadAsOriginalFileName=' . (int) $this->uploadAsOriginalFileName;
         if ($this->dimensions) {
             $args[] = 'dimensions=' . implode(',', $this->dimensions);
         }
@@ -341,7 +353,7 @@ class AsynFileUploader
             }
         }
 
-        $preview = ($currentFile) ? true : false;
+        $preview = $currentFile ? true : false;
         ?>
         <div class="asynfileuploader" id="asynfileuploader-<?php echo $name; ?>">
             <div id="asynfileuploader-value-<?php echo $name; ?>">

@@ -110,6 +110,7 @@ if (count($_FILES)) {
         $file = _fileHelper();
         $uniqueId = $file->get('uniqueId');
         $file->set('uploadDir', $uploadDir);
+        $file->set('useOriginalFileName', $get['uploadAsOriginalFileName']);
         if (is_array($dimensions) && $dimensions) {
             $file->set('dimensions', $dimensions);
         }
@@ -186,13 +187,18 @@ if (count($_FILES)) {
             if (interval) clearTimeout(interval);
             interval = setTimeout( function() {
                 $(data.id).hide();
+
+                var $error = $('#asynfileuploader-error-' + data.name);
+                var $name = $('#asynfileuploader-name-' + data.name);
+                var $value = $('#asynfileuploader-value-' + data.name);
+
                 $('#asynfileuploader-progress-' + data.name).show();
                 $('#asynfileuploader-button-' + data.name).hide();
                 $('#asynfileuploader-delete-' + data.name).hide();
-                $('#asynfileuploader-error-' + data.name).html('');
-                $('#asynfileuploader-error-' + data.name).hide();
-                if ($('#asynfileuploader-name-' + data.name).size()) {
-                    $('#asynfileuploader-name-' + data.name).hide();
+                $error.html('');
+                $error.hide();
+                if ($name.size()) {
+                    $name.hide();
                 }
                 if (data.disabledButtons.length) {
                     for (var i=0; i<data.disabledButtons.length; i++) {
@@ -203,7 +209,7 @@ if (count($_FILES)) {
                     }
                 }
                 // post the existing files if any
-                $('#asynfileuploader-value-' + data.name).html($('#asynfileuploader-value-' + data.name).html());
+                $value.html($value.html());
                 // submit the upload form
                 document.fileupload.submit();
             }, 1000 );
@@ -228,10 +234,12 @@ if (count($_FILES)) {
     $('#'+data.id).css('display', 'inline-block');
     $('#asynfileuploader-progress-' + data.name).hide();
     $('#asynfileuploader-button-' + data.name).show();
+
+    var $name = $('#asynfileuploader-name-' + data.name);
     if (data.success) {
-        if ($('#asynfileuploader-name-' + data.name)) {
-            $('#asynfileuploader-name-' + data.name).html('<a href="' + data.displayFileLink + '" target="_blank">' + data.displayFileName + '</a>');
-            $('#asynfileuploader-name-' + data.name).css('display', 'inline-block');
+        if ($name.size()) {
+            $name.html('<a href="' + data.displayFileLink + '" target="_blank">' + data.displayFileName + '</a>');
+            $name.css('display', 'inline-block');
         }
         // POSTed values
         $('#asynfileuploader-fileName-' + data.name).val(data.displayFileName);
@@ -265,8 +273,8 @@ if (count($_FILES)) {
         if (data.value) {
             // if there is any file uploaded previously
             $('#asynfileuploader-delete-' + data.name).css('display', 'inline-block');
-            if ($('#asynfileuploader-name-' + data.name).size()) {
-                $('#asynfileuploader-name-' + data.name).css('display', 'inline-block');
+            if ($name.size()) {
+                $name.css('display', 'inline-block');
             }
         }
     }

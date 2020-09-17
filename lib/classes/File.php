@@ -22,16 +22,14 @@ namespace LucidFrame\File;
  */
 class File extends \SplFileInfo
 {
-    /** @var string The uniqued name string for this instance */
+    /** @var string The unique name string for this instance */
     private $name;
-    /** @var string The uniqued string ID to append to the file name */
+    /** @var string The unique string ID to append to the file name */
     private $uniqueId;
     /** @var array The dimension to be created for image upload */
     private $dimensions;
     /** @var string The upload directory path */
     private $uploadPath;
-    /** @var const Type of file resize */
-    private $resize;
     /** @var string The original uploaded file name */
     private $originalFileName;
     /** @var string The file name generated */
@@ -42,6 +40,8 @@ class File extends \SplFileInfo
     private $error;
     /** @var array The image filter setting */
     private $imageFilterSet;
+    /** @var bool Flag to save the uploaded file with original file name */
+    private $useOriginalFileName = false;
 
     /**
      * Constructor
@@ -111,7 +111,7 @@ class File extends \SplFileInfo
             return $this;
         }
 
-        # if $uniqueId is explicitly given and $name was not explicity given
+        # if $uniqueId is explicitly given and $name was not explicitly given
         # make $name and $uniqueId same
         if ($key === 'uniqueId' && $value & $this->name === $this->uniqueId) {
             $this->name = $value;
@@ -123,6 +123,7 @@ class File extends \SplFileInfo
         }
 
         $this->{$key} = $value;
+
         return $this;
     }
 
@@ -311,6 +312,10 @@ class File extends \SplFileInfo
     {
         $this->fileName = $this->getUniqueId() . '.' . $this->guessExtension();
 
+        if ($this->useOriginalFileName) {
+            $this->fileName = $this->originalFileName;
+        }
+
         return $this->fileName;
     }
 
@@ -320,7 +325,7 @@ class File extends \SplFileInfo
      */
     private function getUniqueId()
     {
-        return ($this->uniqueId) ? $this->uniqueId : uniqid();
+        return $this->uniqueId ?: uniqid();
     }
 
     /**
