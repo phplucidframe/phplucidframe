@@ -22,8 +22,8 @@ It supports a wide range of web application development features:
 ## Prerequisites
 
 - Web Server (Apache with `mod_rewrite` enabled)
-- PHP version 5.3.0 or newer
-- MySQL 5.0 or newer with MySQLi enabled.
+- PHP version 5.6 or newer is recommended. It should work on 5.3 as well, but we strongly advise you NOT to run such old versions of PHP.
+- MySQL 5.0 or newer
 
 ## Installation
 
@@ -76,5 +76,5 @@ PHPLucidFrame encourages a structured page organization. You can check the recom
 ## Run Tests
 
     composer install
-    
+
     php tests/tests.php
