@@ -151,6 +151,9 @@ _unloader('i18n_helper', HELPER);
 require HELPER . 'route_helper.php'; # WEB_ROOT and WEB_APP_ROOT is created in route_helper
 # Routing configuration
 include INC . 'route.config.php';
+if ($file = _i('inc' . _DS_ . 'route.config.php', false)) {
+    require $file;
+}
 __route_init();
 
 if (defined('WEB_ROOT')) {

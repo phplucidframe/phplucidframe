@@ -229,7 +229,7 @@ function route_path()
  *
  * Alias `_url()`
  *
- * @param string $path Routing path such as "foo/bar"; Named route such as "fool_bar"; NULL for the current path
+ * @param string $path Routing path such as "foo/bar"; Named route such as "foo_bar"; null for the current path
  * @param array $queryStr Query string as
  *
  *     array(

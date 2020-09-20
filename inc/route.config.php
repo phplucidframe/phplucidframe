@@ -1,6 +1,7 @@
 <?php
 /**
  * This file is used to define any custom named routes
+ * This is a recommended place to define routes if necessary
  * Here you can define named routes instead of writing RewriteRule in .htaccess
  *
  * Syntax:
@@ -16,12 +17,9 @@
 
 /**
  * The named route example `lc_home`
- * This will be overridden to `$lc_homeRouting` in /inc/config.php
- * If this is not defined here, `$lc_homeRouting` will be used
- * However, `$lc_homeRouting` is deprecated in 1.10 and it will be removed in 2.0
- * This is a recommended place to define routings if necessary
  */
 route('lc_home')->map('/', '/home');
+
 /**
  * The named route example `lc_blog_show`
  * This is an example routed to the directory `/app/example/blog-page` that was formerly configured
@@ -38,4 +36,3 @@ route_group('/api/posts', function () {
     route('lc_post_update')->map('/{id}', '/example/api/post/update', 'PUT', array('id' => '\d+'));
     route('lc_post_delete')->map('/{id}', '/example/api/post/delete', 'DELETE', array('id' => '\d+'));
 });
-
