@@ -54,6 +54,11 @@ function __route_init()
     # e.g. "&" or "%" that have special meanings in URLs and must be encoded.
     $_GET[ROUTE] = route_request();
     _cfg('cleanRoute', $_GET[ROUTE]);
+
+    # Disable translation if not multilingual site
+    if (!_multilingual()) {
+        _cfg('translationEnabled', false);
+    }
 }
 
 /**
