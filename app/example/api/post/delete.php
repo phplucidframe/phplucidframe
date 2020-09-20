@@ -8,7 +8,7 @@ $id = _arg('id');
 # Validation example here
 //$post = db_select('post', 'p')
 //    ->where()
-//    ->condition('postId', $id)
+//    ->condition('id', $id)
 //    ->getSingleResult();
 //if (!$post) {
 //    _json(array(
@@ -17,7 +17,7 @@ $id = _arg('id');
 //}
 
 # Database operations here for delete
-//db_delete('post', array('postId' => $id));
+//db_delete('post', array('id' => $id));
 
 _json(array(
     'id' => $id

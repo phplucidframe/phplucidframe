@@ -40,15 +40,10 @@ if (!validation_check($validations)) {
 }
 
 # Database operations here for update
-//$postData = array(
-//    'postTitle' => $data['title'],
-//    'postBody' => $data['body']
-//);
-//
 //db_update('post', [
-//    'postId'    => $id,
-//    'postTitle' => $data['title'],
-//    'postBody'  => $data['body']
+//    'id'    => $id,
+//    'title' => $data['title'],
+//    'body'  => $data['body']
 //]);
 
 _json(array(

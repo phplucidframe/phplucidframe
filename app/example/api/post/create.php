@@ -26,14 +26,9 @@ if (!validation_check($validations)) {
 }
 
 # Database operations here for insert
-//$postData = array(
-//    'postTitle' => $data['title'],
-//    'postBody' => $data['body']
-//);
-//
 //db_insert('post', [
-//    'postTitle' => $data['title'],
-//    'postBody'  => $data['body']
+//    'title' => $data['title'],
+//    'body'  => $data['body']
 //]);
 
 _json(array(

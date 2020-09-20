@@ -14,7 +14,7 @@ function auth_isMaster()
         return false;
     }
 
-    if ($_auth & $_auth->isMaster) {
+    if (is_object($_auth) & $_auth->is_master) {
         return true;
     }
 
