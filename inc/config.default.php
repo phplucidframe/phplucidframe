@@ -32,15 +32,6 @@ ini_set('max_execution_time', 36000);
  * Default Time Zone
  */
 date_default_timezone_set('Asia/Rangoon');
-/**
- * Routing query name
- */
-define('ROUTE', 'route');
-/**
- * Session prefix
- * All session variable names will be prefixed with this
- */
-define('S_PREFIX', '__LucidFrame__');
 
 # $lc_env: The setting for running environment: `development` or `production`
 $lc_env = _p('env');

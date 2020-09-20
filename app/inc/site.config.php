@@ -5,8 +5,6 @@
  * you can also create additional configuration for your site.
  */
 
-define('MAX_FILE_UPLOAD_SIZE', 20); # in MB
-
 # The site meta description for search engines
 $lc_metaDescription = 'PHPLucidFrame (a.k.a LucidFrame) is a PHP application development framework that is simple, easy, lightweight and yet powerful.';
 # The site meta keywords for search engines

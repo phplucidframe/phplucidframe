@@ -90,6 +90,8 @@ define('CACHE', FILE . 'cache' . _DS_);
 
 # System prerequisites
 require LIB . 'lc.inc';
+# System constants
+require INC . 'constants.php';
 # System configuration variables
 require INC . 'config.php';
 # Load environment settings
