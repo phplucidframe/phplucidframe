@@ -913,6 +913,10 @@ body.mini-page {
     background-color: #fcf9bf;
 }
 
+.message.display {
+    display: block;
+}
+
 .message ul {
     margin-bottom: 0;
     padding: 0;
