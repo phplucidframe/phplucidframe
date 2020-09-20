@@ -854,7 +854,7 @@ function _cr()
 }
 /**
  * Get the absolute URL path
- * @param string $path     Routing path such as "foo/bar"; null for the current path
+ * @param string $path     $path Routing path such as "foo/bar"; Named route such as "foo_bar"; null for the current path
  * @param array  $queryStr Query string as
  *
  *     array(
