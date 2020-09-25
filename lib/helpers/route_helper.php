@@ -326,6 +326,7 @@ function route_url($path = null, $queryStr = array(), $lang = '')
 
     if (strtolower($path) == 'home') {
         $path = '';
+        $q = ltrim($q, '/');
     }
 
     if ($lc_cleanURL) {
