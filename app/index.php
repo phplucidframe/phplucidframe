@@ -29,7 +29,7 @@ if (in_array(rtrim(substr($_page, -7), '.php'), array('401', '403', '404'))) {
 }
 
 if (_cfg('layoutMode') && _isAjax() === false) {
-    $query = _ds(APP_ROOT, _r(), 'query.php');
+    $query = _ds(APP_ROOT, _cr(), 'query.php');
 
     if (is_file($query) && file_exists($query)) {
         require_once $query;
