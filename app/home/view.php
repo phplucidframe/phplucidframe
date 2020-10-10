@@ -11,8 +11,8 @@
 <h3><?php echo _t('Prerequisites'); ?></h3>
 <ul>
     <li>Web Server (For example, Apache with <code class="inline">mod_rewrite</code> enabled)</li>
-    <li>PHP version 5.3.0 or newer.</li>
-    <li>MySQL 5.0+ with MySQLi enabled.</li>
+    <li>PHP version 5.6 or newer is recommended. It should work on 5.3 as well, but we strongly advise you NOT to run such old versions of PHP.</li>
+    <li>MySQL 5.0+ or newer</li>
 </ul>
 <p>
     <a href="http://phplucidframe.com" class="button large green"><?php echo _t('Download PHPLucidFrame'); ?></a>
