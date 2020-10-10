@@ -13,7 +13,7 @@
  * with this source code in the file LICENSE
  */
 
- use LucidFrame\Core\SchemaManager;
+use LucidFrame\Core\SchemaManager;
 
 /**
  * @ignore Flag for image resize to the fitted dimension to the given dimension

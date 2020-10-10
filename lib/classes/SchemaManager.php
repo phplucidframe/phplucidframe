@@ -571,13 +571,14 @@ class SchemaManager
             # Migrate to the latest version
             $version = $this->migrate($versions, $schemaFrom, $schemaTo);
 
-            # Update build version
-            $this->schema['_options']['version'] = $version;
-            $this->build($dbNamespace);
+            if ($version) {
+                # Update build version
+                $this->schema['_options']['version'] = $version;
+                $this->build($dbNamespace);
 
-            _writeln();
-            //_writeln('%d queries executed.', $noOfQueries);
-            _writeln('Your schema has been updated.');
+                _writeln();
+                _writeln('Your schema has been updated.');
+            }
 
             return true;
         }
@@ -983,15 +984,36 @@ class SchemaManager
 
             $sql = file_get_contents(DB . 'version' . _DS_ . $this->dbNamespace . _DS_ . $verFile);
             if (empty($sql)) {
+                if ($verbose) {
+                    _writeln('No sql statements executed.');
+                }
+
                 return false;
             }
 
-            $executed = $this->executeQueries($this->dbNamespace, explode(PHP_EOL . PHP_EOL, $sql));
+            $sqls = explode(PHP_EOL, $sql);
+            $sql = array_filter($sqls, function($line) {
+                $line = trim($line);
+                return !empty($line) && strpos($line, '--') === false;
+            });
+
+            if (empty($sql)) {
+                if ($verbose) {
+                    _writeln('No sql statements executed.');
+                }
+
+                return false;
+            }
+
+            $executed = $this->executeQueries($this->dbNamespace, $sql);
             if (!$executed) {
                 return false;
             }
 
             $noOfQueries += $executed;
+            if ($verbose) {
+                _writeln();
+            }
         }
 
         # Re-create all foreign key constraints from the new schema
