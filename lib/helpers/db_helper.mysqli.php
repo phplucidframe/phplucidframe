@@ -506,6 +506,43 @@ function db_tableHasTimestamps($table)
     return _g('_DB')->hasTimestamps($table);
 }
 
+/**
+ * Handy db insert/update operation
+ * @param string $table The table name without prefix
+ * @param array $data The array of data field names and values
+ *
+ *      array(
+ *          'fieldNameToSlug' => $valueToSlug,
+ *          'fieldName1' => $fieldValue1,
+ *          'fieldName2' => $fieldValue2
+ *      )
+ *
+ * @param int $id The value for ID field to update
+ * @param boolean $useSlug TRUE to include the slug field or FALSE to not exclude it
+ *   The fourth argument can be provided here if you want to omit this.
+ * @param array $condition The condition for the UPDATE query. If you provide this,
+ *   the first field of `$data` will not be built for condition
+ *
+ * ### Example
+ *
+ *     array(
+ *       'fieldName1' => $value1,
+ *       'fieldName2' => $value2
+ *     )
+ *
+ * @return bool|int|mixed For insert, returns inserted id on success or FALSE on failure; For update, returns TRUE on success or FALSE on failure
+ */
+function db_save($table, $data = array(), $id = 0, $useSlug = true, array $condition = array())
+{
+    if ($id) {
+        $data = array_merge(array('id' => $id), $data);
+
+        return db_update($table, $data, $useSlug, $condition);
+    } else {
+        return db_insert($table, $data, $useSlug);
+    }
+}
+
 if (!function_exists('db_insert')) {
     /**
      * Handy MYSQL insert operation
@@ -1028,4 +1065,34 @@ function db_rollback()
 function db_exp($field, $value, $exp = '')
 {
     return _g('_DB')->exp($field, $value, $exp);
+}
+
+/**
+ * Find a single entity result by id
+ * @param string $table
+ * @param int $id
+ * @return mixed
+ */
+function db_find($table, $id)
+{
+    return db_select($table)
+        ->where()->condition('id', $id)
+        ->getSingleResult();
+}
+
+/**
+ * Find a single entity result by id or show 404 if not found
+ * @param string $table
+ * @param int $id
+ * @return mixed
+ */
+function db_findOrFail($table, $id)
+{
+    $result = db_find($table, $id);
+
+    if (!$result) {
+        _page404();
+    }
+
+    return $result;
 }
