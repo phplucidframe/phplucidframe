@@ -1379,6 +1379,10 @@ if (!function_exists('_ftimeAgo')) {
      */
     function _ftimeAgo($time, $format = 'M j Y')
     {
+        if (empty($time)) {
+            return _cfg('nullFill');
+        }
+
         $now = time();
         if (!is_numeric($time)) {
             $time = strtotime($time);
