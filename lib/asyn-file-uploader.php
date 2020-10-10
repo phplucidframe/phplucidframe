@@ -177,7 +177,7 @@ if (count($_FILES)) {
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>AsyncFileUploader</title>
-    <script language="javascript">
+    <script>
         var parent = window.top;
         var $ = window.top.jQuery;
         var interval = null;
@@ -188,6 +188,7 @@ if (count($_FILES)) {
             interval = setTimeout( function() {
                 $(data.id).hide();
 
+                // Get the elements from the parent
                 var $error = $('#asynfileuploader-error-' + data.name);
                 var $name = $('#asynfileuploader-name-' + data.name);
                 var $value = $('#asynfileuploader-value-' + data.name);
@@ -204,15 +205,16 @@ if (count($_FILES)) {
                     for (var i=0; i<data.disabledButtons.length; i++) {
                         var $button = $('#'+data.disabledButtons[i]);
                         if ($button.size()) {
-                            $button.attr('disabled', 'disabled');
+                            $button.prop('disabled', true);
                         }
                     }
                 }
                 // post the existing files if any
-                $value.html($value.html());
+                // Set the parent values to this values
+                document.getElementById('asynfileuploader-value-' + data.name).innerHTML = $value.html();
                 // submit the upload form
                 document.fileupload.submit();
-            }, 1000 );
+            }, 500 );
         }
     </script>
 </head>
@@ -283,7 +285,7 @@ if (count($_FILES)) {
         for (var i=0; i<data.disabledButtons.length; i++) {
             var $button = $('#'+data.disabledButtons[i]);
             if ($button.size()) {
-                $button.attr('disabled', 'disabled');
+                $button.prop('disabled', false);
             }
         }
     }

@@ -40,7 +40,7 @@
                     $file->setHidden('postId', $id); # FK
                     if (isset($image) && $image) {
                         # $image is retrieved in query.php
-                        $file->setValue($image->pimgFileName, $image->pimgId);
+                        $file->setValue($image->file_name, $image->id);
                     }
                     $file->html();
                 ?>
@@ -67,7 +67,7 @@
                     // $file->setOnDelete('example_docDelete'); # Uncomment this if db is connected. This hook is defined in /app/helpers/file_helper.php
                     if (isset($doc) && $doc) {
                         # $doc is retrieved in query.php
-                        $file->setValue($doc->docFileName, $doc->docId);
+                        $file->setValue($doc->file_name, $doc->id);
                     }
                     $file->html(array(
                         'id' => 'document'
