@@ -835,29 +835,29 @@ body.mini-page {
 .thumbnail.thumbnail-100,
 .thumbnail.thumbnail-100 a,
 .thumbnail.thumbnail-100 .img {
-    height: 85px;
     width: 100px;
+    height: 92px;
 }
 
 .thumbnail.thumbnail-200,
 .thumbnail.thumbnail-200 a,
 .thumbnail.thumbnail-200 .img {
     width: 200px;
-    height: 165px;
+    height: 194px;
 }
 
 .thumbnail.thumbnail-300,
 .thumbnail.thumbnail-300 a,
 .thumbnail.thumbnail-300 .img {
-    height: 265px;
     width: 300px;
+    height: 294px;
 }
 
 .thumbnail.thumbnail-400,
 .thumbnail.thumbnail-400 a,
 .thumbnail.thumbnail-400 .img {
-    height: 365px;
     width: 400px;
+    height: 394px;
 }
 
 .thumbnail-preview-ext {
