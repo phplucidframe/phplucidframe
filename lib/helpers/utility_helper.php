@@ -848,7 +848,7 @@ function _cr()
 }
 /**
  * Get the absolute URL path
- * @param string $path     $path Routing path such as "foo/bar"; Named route such as "foo_bar"; null for the current path
+ * @param string $path     Routing path such as "foo/bar"; null for the current path
  * @param array  $queryStr Query string as
  *
  *     array(
@@ -1092,7 +1092,6 @@ function _arg($index = null, $path = null)
  */
 function _getLangInURI()
 {
-    global $lc_baseURL;
     global $lc_languages;
 
     if (!isset($_SERVER['REQUEST_URI'])) {
@@ -1652,7 +1651,7 @@ function _decrypt($encryptedText)
 }
 
 /**
- * Get current using cipher method
+ * Get current cipher method
  * @return string
  */
 function _cipher()
@@ -1807,7 +1806,6 @@ function _mail($from, $to, $subject = '', $message = '', $cc = '', $bcc = '')
  */
 function _postTranslationStrings($post, $fields, $lang = null)
 {
-    global $lc_defaultLang;
     global $lc_languages;
     $data = array();
     foreach ($fields as $key => $name) {
@@ -1828,6 +1826,7 @@ function _postTranslationStrings($post, $fields, $lang = null)
             }
         }
     }
+
     return $data;
 }
 /**
@@ -1843,14 +1842,14 @@ function _postTranslationStrings($post, $fields, $lang = null)
  */
 function _getTranslationStrings($data, $fields, $lang = null)
 {
-    global $lc_defaultLang;
     global $lc_languages;
     $isObject = is_object($data);
     $data = (array) $data;
-    $i18n = array();
+
     if (is_string($fields)) {
         $fields = array($fields);
     }
+
     foreach ($fields as $name) {
         if ($lang) {
             $lcode = _queryLang($lang);
@@ -1868,9 +1867,11 @@ function _getTranslationStrings($data, $fields, $lang = null)
             }
         }
     }
+
     if ($isObject) {
         $data = (object) $data;
     }
+
     return $data;
 }
 /**
@@ -1983,7 +1984,7 @@ function _indent($width = 2)
 /**
  * Simple helper to create an instance of LucidFrame\Console\Command
  * @since  PHPLucidFrame v 1.11.0
- * @param  string $command The commmand name
+ * @param  string $command The command name
  * @return object LucidFrame\Console\Command
  */
 function _consoleCommand($command)

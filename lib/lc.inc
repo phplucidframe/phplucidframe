@@ -557,17 +557,14 @@ function _i($file, $recursive = true)
     global $lc_baseURL;
     global $lc_sites;
     global $lc_languages;
-    global $lc_namespace;
 
     $ext = strtolower(substr($file, strrpos($file, '.')+1)); # get the file extension
     if (in_array($ext, array('js', 'css'))) {
         $appRoot = WEB_APP_ROOT;
         $root = WEB_ROOT;
-        $clientFile = true;
     } else {
         $appRoot = APP_ROOT;
         $root = ROOT;
-        $clientFile = false;
     }
 
     if (!is_array($lc_languages)) {

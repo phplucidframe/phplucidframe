@@ -17,7 +17,7 @@ function validate_emailRetyped($emailRetyped, $email = '')
         return true;
     }
 
-    return (strcasecmp($emailRetyped, $email) == 0) ? true : false;
+    return strcasecmp($emailRetyped, $email) == 0 ? true : false;
 }
 /**
  * Custom validation function for password confirmation
@@ -32,9 +32,10 @@ function validate_confirmPassword($value, $pwd)
     if (empty($value)) {
         return true;
     }
+
     $confirmPwd = trim($pwd);
 
-    return ($value == $pwd);
+    return $value == $pwd;
 }
 /**
  * Custom validation function to check user name duplicate

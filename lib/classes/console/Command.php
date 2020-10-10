@@ -35,7 +35,7 @@ class Command
     protected $arguments = array();
     /** @var array Array of the argument names */
     protected $argumentNames = array();
-    /** @var closure Anonymous function that performs the job of the command */
+    /** @var closure|string Anonymous function or class name that performs the job of the command */
     protected $definition;
     /** @var array Array of arguments passed to script */
     private $argv;
@@ -200,7 +200,7 @@ class Command
 
     /**
      * Setter for $definition
-     * @param closure $function Anonymous function that performs the job of the command
+     * @param closure|string $function Anonymous function or class name that performs the job of the command
      * @return object LucidFrame\Console\Command`
      */
     public function setDefinition($function)

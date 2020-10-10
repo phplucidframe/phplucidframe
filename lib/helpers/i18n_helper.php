@@ -91,7 +91,6 @@ function _tc($fileName, $args = array())
  * @ignore
  *
  * Loads the text .po file and returns array of translations
- * @param string $filename Text .po file to load
  * @return mixed Array of translations on success or FALSE on failure
  */
 function __i18n_load()
