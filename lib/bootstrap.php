@@ -90,8 +90,6 @@ define('CACHE', FILE . 'cache' . _DS_);
 
 # System prerequisites
 require LIB . 'lc.inc';
-# System constants
-require INC . 'constants.php';
 # System configuration variables
 require INC . 'config.php';
 # Load environment settings
@@ -105,7 +103,18 @@ if ($baseUrl) {
     define('WEB_APP_ROOT', WEB_ROOT . APP_DIR . '/');
     # path to the home page
     define('HOME', WEB_ROOT);
+} else {
+    # accessing from command line
+    # path to the web root
+    define('WEB_ROOT', '/');
+    # path to the web app root
+    define('WEB_APP_ROOT', 'app/');
+    # path to the home page
+    define('HOME', '/');
 }
+
+# System constants
+require INC . 'constants.php';
 
 # Utility helpers (required)
 if ($file = _i('helpers' . _DS_ . 'utility_helper.php', false)) {
@@ -131,6 +140,12 @@ _loader('file_helper', HELPER);
 
 if (file_exists(INC . 'autoload.php')) {
     require INC . 'autoload.php';
+}
+
+# Site-specific configuration variables
+require_once APP_ROOT . 'inc' . _DS_ . 'site.config.php';
+if ($file = _i('inc' . _DS_ . 'site.config.php', false)) {
+    require_once $file;
 }
 
 # Session helper (unloadable from /inc/autoload.php)
@@ -164,12 +179,6 @@ if (defined('WEB_ROOT')) {
 # Load translations
 if ($moduleI18n) {
     __i18n_load();
-}
-
-# Site-specific configuration variables
-require_once APP_ROOT . 'inc' . _DS_ . 'site.config.php';
-if ($file = _i('inc' . _DS_ . 'site.config.php', false)) {
-    require_once $file;
 }
 
 # Validation helper (unloadable from /inc/autoload.php)
