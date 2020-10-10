@@ -721,9 +721,9 @@ function _env($name)
     global $lc_envParameters;
 
     if ($lc_envParameters === null) {
-        $file = INC . 'parameter/parameter.inc';
+        $file = INC . 'parameter/parameter.env.inc';
         if (is_file($file) && file_exists($file)) {
-            $lc_envParameters = include(INC.'parameter/parameter.inc');
+            $lc_envParameters = include(INC . 'parameter/parameter.env.inc');
         } else {
             return null;
         }
