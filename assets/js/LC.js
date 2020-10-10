@@ -140,9 +140,6 @@
          */
         submitForm : function(formId) {
             var $form = $('#'+formId);
-            var $message = $form.find('.message').filter(':first');
-            $message.html('').hide();
-            $form.find('.message.success').filter(':first').removeClass('success').addClass('error');
             $form.find('.invalid').removeClass('invalid');
 
             var $action = $form.attr('action');
@@ -178,7 +175,7 @@
                 var $form  = $('#'+response.formId);
                 var $message = $form.find('.message').filter(':first');
                 if (response.error && response.error.length > 0) {
-                    var errHtml = '<ul>';
+                    var errHtml = '<div class="message-error"><ul>';
                     $.each( response.error, function(i, err) {
                         if (err.htmlID) {
                             if (err.htmlID.indexOf('[]') !== -1) {
@@ -194,12 +191,13 @@
                         }
                         errHtml += '<li>' + err.msg + '</li>';
                     } );
-                    errHtml += '</ul>';
+                    errHtml += '</ul></div>';
                     $message.html(errHtml).show();
-                    $message.removeClass('error').addClass('error');
+
                     if ( $message.find('ul').html() === '' ) {
                         $('#form_error ul').remove();
                     }
+
                     window.location = '#' + response.formId;
                 } else {
                     if (response.success) {
@@ -208,8 +206,7 @@
                         } else {
                             LC.Form.clear(response.formId);
                             if (response.msg) {
-                                $message.removeClass('error').addClass('success');
-                                $message.html('<ul><li>'+response.msg+'</li></ul>').show();
+                                $message.html('<div class="message-success"><ul><li>'+response.msg+'</li></ul></div>').show();
                             }
                             window.location = '#' + response.formId;
                         }
@@ -359,16 +356,20 @@
                 if (typeof(LC.sitewideWarnings) === 'string') {
                     LC.sitewideWarnings = [LC.sitewideWarnings];
                 }
+
                 $.each(LC.sitewideWarnings, function(i, msg) {
-                    html = '<div class="message sitewide-message warning" title="Click to dismiss">';
+                    html = '<div class="message" title="Click to dismiss" style="display:none">';
+                    html += '<div class="message-sitewide message-warning">';
                     html += '<ul>';
                     html += '<li>' + msg + '</li>';
                     html += '</ul>';
                     html += '</div>';
+                    html += '</div>';
                     $('body').prepend(html);
                 });
-                $('.message.sitewide-message.warning').slideDown().click(function() {
-                    $(this).hide();
+
+                $('.message-sitewide').parent('.message').slideDown().click(function() {
+                    $(this).slideUp();
                 });
             }
         },

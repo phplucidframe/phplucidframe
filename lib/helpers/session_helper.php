@@ -282,7 +282,8 @@ if (!function_exists('flash_set')) {
      */
     function flash_set($msg, $name = '', $class = 'success')
     {
-        $msgHTML  = '<div class="message '.$class.'" style="display:block;">';
+        $msgHTML  = '<div class="message">';
+        $msgHTML .= '<div class="message-' . $class . '">';
         $msgHTML .= '<ul>';
         if (is_array($msg)) {
             foreach ($msg as $m) {
@@ -292,6 +293,7 @@ if (!function_exists('flash_set')) {
             $msgHTML .= '<li><span class="'.$class.'">'.$msg.'</span></li>';
         }
         $msgHTML .= '</ul>';
+        $msgHTML .= '</div>';
         $msgHTML .= '</div>';
 
         if ($name) {

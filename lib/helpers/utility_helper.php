@@ -1417,24 +1417,22 @@ if (!function_exists('_msg')) {
      * @param mixed  $return  What is expected to return from this function.
      *  `null` (default) no return and just print it.
      *  `html` return HTML.
-     * @param string $display  Display the message on the spot or not
+     * @param string $display  CSs display property value - block, none, inline-block, etc.
      *
      * @return string The formatted date
      */
-    function _msg($msg, $class = 'error', $return = null, $display = 'display:block')
+    function _msg($msg, $class = 'error', $return = null, $display = null)
     {
-        if (empty($msg)) {
-            $html = '';
-        }
-        if (empty($class)) {
-            $class = 'error';
-        }
+        $class = $class ?: 'error';
         $return = strtolower($return);
-        $html = '<div class="message';
-        if ($class) {
-            $html .= ' '.$class.'"';
+
+        $html = '';
+        $html .= '<div class="message"';
+        if ($display) {
+            $html .= ' style="display:' . $display . '"';
         }
-        $html .= ' style="'.$display.'">';
+        $html .= '>';
+        $html .= '<div class="message-'. $class . '">';
         if (is_array($msg)) {
             if (count($msg) > 0) {
                 $html .= '<ul>';
@@ -1453,8 +1451,10 @@ if (!function_exists('_msg')) {
             $html .= $msg;
         }
 
-        if ($html) {
-            $html .= '</div>';
+        $html .= '</div></div>';
+
+        if (is_array($msg) && count($msg) == 0) {
+            $html = '';
         }
 
         if ($return == 'html' || $return === true) {
