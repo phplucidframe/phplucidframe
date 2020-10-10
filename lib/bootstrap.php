@@ -45,7 +45,7 @@ if (!defined('ROOT')) {
 }
 
 if (strcasecmp(APP_ROOT, ROOT) === 0) {
-    die('Enable mod_rewrite in your server and "AllowOverride All" from .htaccess');
+    die('Enable module rewrite in your server and add AllowOverride All.');
 }
 
 # Constants for environment
