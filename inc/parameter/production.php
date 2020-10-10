@@ -9,6 +9,8 @@ return array(
     'baseURL' => '',
     # Site Domain Name
     'siteDomain' => _host(),
+    # SSL enabled or not
+    'ssl' => true,
     # Database connection information
     'db' => array(
         'default' => array(

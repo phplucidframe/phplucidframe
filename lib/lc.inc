@@ -740,7 +740,7 @@ function _baseUrlWithProtocol()
 {
     if (isset($_SERVER['SERVER_PROTOCOL'])) {
         $baseUrl = _cfg('baseURL');
-        $protocol = current(explode('/', $_SERVER['SERVER_PROTOCOL']));
+        $protocol = _cfg('ssl') ? 'https' : 'http';
         $base = strtolower($protocol) . '://' . $_SERVER['HTTP_HOST'];
         if ($baseUrl) {
             $base .= '/' . $baseUrl;

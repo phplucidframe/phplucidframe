@@ -52,6 +52,8 @@ $lc_baseURL = _p('baseURL');
 # $lc_siteDomain: Site Domain Name
 # Update this in `/inc/parameter/*.php`
 $lc_siteDomain = _p('siteDomain');
+# $lc_ssl: SSL enabled or not
+$lc_ssl = _p('ssl');
 
 /**
  * Session configuration.

@@ -812,8 +812,7 @@ function _protocol()
  */
 function _ssl()
 {
-    $protocol = _protocol();
-    return ($protocol == 'https') ? true : false;
+    return _cfg('ssl');
 }
 /**
  * Get the current routing path

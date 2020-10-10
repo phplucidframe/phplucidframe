@@ -9,6 +9,8 @@ return array(
     'baseURL' => 'phplucidframe',
     # Site Domain Name
     'siteDomain' => _host(),
+    # SSL enabled or not
+    'ssl' => false,
     # Database connection information
     'db' => array(
         'default' => array(
