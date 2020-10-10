@@ -234,6 +234,12 @@
             var $inputs = $form.find('input').filter('input:not([name^=lc_formToken])');
             $inputs.val('');
             $form.find('.message').filter(':first').html('').hide();
+
+            $inputs.each(function(i, input) {
+               if ($(input).data('default')) {
+                   $(input).val($(input).data('default'));
+               }
+            });
         },
         /**
          * @deprecated Use getFormData() instead
