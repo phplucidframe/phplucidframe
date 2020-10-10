@@ -1573,8 +1573,8 @@ table.formView.tableView tr.toggle td {
 #overlay #processing,
 #page-loading #processing {
     position: absolute;
-    top: 30%;
-    left: 40%;
+    top: 0;
+    left: 0;
     z-index: 5000;
     background: #ffffff;
     border: 1px #aaaaaa solid;

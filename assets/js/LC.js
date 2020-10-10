@@ -292,14 +292,20 @@
         /* Throbber when doing AJAX requests */
         progress : {
             start : function(id) {
+                var $loading = $('#page-loading');
+                var $loadingMsg = $loading.find('#processing');
                 if (id) {
                     if (typeof Page.throbber[id] !== 'undefined' && typeof Page.throbber[id].start === 'function') {
                         Page.throbber[id].start();
                     } else {
-                        $('#page-loading').show();
+                        $loading.show();
+                        $loadingMsg.css('top', ($loading.height() - $loadingMsg.height()) / 2);
+                        $loadingMsg.css('left', ($loading.width() - $loadingMsg.width()) / 2);
                     }
                 } else {
-                    $('#page-loading').show();
+                    $loading.show();
+                    $loadingMsg.css('top', ($loading.height() - $loadingMsg.height()) / 2);
+                    $loadingMsg.css('left', ($loading.width() - $loadingMsg.width()) / 2);
                 }
             },
             stop : function(id) {
