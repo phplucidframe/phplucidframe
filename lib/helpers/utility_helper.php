@@ -492,6 +492,7 @@ function _css($file)
 function _img($file)
 {
     $files = array(
+        LC_NAMESPACE . '/assets/images/' => APP_ROOT . LC_NAMESPACE . _DS_ . 'assets' . _DS_ . 'images' . _DS_ . $file,
         'app/assets/images/' => APP_ROOT . 'assets' . _DS_ . 'images' . _DS_ . $file,
         'assets/images/' => ROOT . 'assets' . _DS_ . 'images' . _DS_ . $file,
         'images/' => ROOT . 'images' . _DS_ . $file
@@ -522,7 +523,7 @@ if (!function_exists('_image')) {
      *
      * @return void
      */
-    function _image($file, $caption = '', $dimension = '0x0', $attributes = '')
+    function _image($file, $caption = '', $dimension = '0x0', array $attributes = array())
     {
         $directory = array(
             'images' => IMAGE,
@@ -542,13 +543,7 @@ if (!function_exists('_image')) {
         if (isset($width) && isset($height)) {
             # if the image is found
             $image = WEB_ROOT . $dir . '/' . $file;
-            if (class_exists('File')) {
-                echo File::img($image, $caption, $width.'x'.$height, $dimension, $attributes);
-            } else {
-                echo '<img src="'.$image.'"';
-                echo ' alt="'.$caption.'" title="'.$caption.'"';
-                echo ' width="'.$width.'" height"'.$height.'" />';
-            }
+            echo File::img($image, $caption, $width.'x'.$height, $dimension, $attributes);
         } else {
             # if the image is not found
             echo '<div class="image404" align="center">';

@@ -553,7 +553,7 @@ class File extends \SplFileInfo
      *
      * @return string The <img> tag
      */
-    public static function img($fileName, $caption, $dimension, $desiredDimension = '0x0', $attributes = array())
+    public static function img($fileName, $caption, $dimension, $desiredDimension = '0x0', array $attributes = array())
     {
         $regex = '/^[0-9]+x[0-9]+$/i'; # check the format of "99x99" for the dimensions
         if (!preg_match($regex, $dimension)) {
@@ -583,7 +583,7 @@ class File extends \SplFileInfo
                 $scale = min($desiredWidth/$imgWidth, $desiredHeight/$imgHeight);
                 # new width for the image
                 $imgWidth  = floor($scale * $imgWidth);
-                # new heigth for the image
+                # new height for the image
                 $imgHeight = floor($scale * $imgHeight);
                 if ($imgWidth < $desiredWidth || $imgHeight < $desiredHeight) {
                     $wDiff = $desiredWidth - $imgWidth;
