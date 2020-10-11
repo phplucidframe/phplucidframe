@@ -64,10 +64,10 @@ $label        = $get['label'];
 $uploadDir    = base64_decode($get['dir']);
 $webDir       = str_replace('\\', '/', str_replace(ROOT, WEB_ROOT, $uploadDir));
 $maxSize      = $get['maxSize'];
-$fileTypes    = ($get['exts']) ? explode(',', $get['exts']) : '';
-$phpCallback  = (isset($get['phpCallback'])) ? $get['phpCallback'] : '';
-$buttons      = (isset($get['buttons'])) ? explode(',', $get['buttons']) : array();
-$dimensions   = (isset($get['dimensions'])) ? explode(',', $get['dimensions']) : array();
+$fileTypes    = $get['exts'] ? explode(',', $get['exts']) : '';
+$phpCallback  = !empty($get['phpCallback']) ? $get['phpCallback'] : '';
+$buttons      = !empty($get['buttons']) ? explode(',', $get['buttons']) : array();
+$dimensions   = !empty($get['dimensions']) ? explode(',', $get['dimensions']) : array();
 
 $data = array(
     'success'          => false,
@@ -198,13 +198,13 @@ if (count($_FILES)) {
                 $('#asynfileuploader-delete-' + data.name).hide();
                 $error.html('');
                 $error.hide();
-                if ($name.size()) {
+                if ($name.length) {
                     $name.hide();
                 }
                 if (data.disabledButtons.length) {
                     for (var i=0; i<data.disabledButtons.length; i++) {
                         var $button = $('#'+data.disabledButtons[i]);
-                        if ($button.size()) {
+                        if ($button.length) {
                             $button.prop('disabled', true);
                         }
                     }
@@ -239,7 +239,7 @@ if (count($_FILES)) {
 
     var $name = $('#asynfileuploader-name-' + data.name);
     if (data.success) {
-        if ($name.size()) {
+        if ($name.length) {
             $name.html('<a href="' + data.displayFileLink + '" target="_blank">' + data.displayFileName + '</a>');
             $name.css('display', 'inline-block');
         }
@@ -275,16 +275,16 @@ if (count($_FILES)) {
         if (data.value) {
             // if there is any file uploaded previously
             $('#asynfileuploader-delete-' + data.name).css('display', 'inline-block');
-            if ($name.size()) {
+            if ($name.length) {
                 $name.css('display', 'inline-block');
             }
         }
     }
     // re-enable buttons
     if (data.disabledButtons.length) {
-        for (var i=0; i<data.disabledButtons.length; i++) {
+        for (var i=0; i < data.disabledButtons.length; i++) {
             var $button = $('#'+data.disabledButtons[i]);
-            if ($button.size()) {
+            if ($button.length) {
                 $button.prop('disabled', false);
             }
         }

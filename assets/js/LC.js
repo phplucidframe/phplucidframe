@@ -41,9 +41,9 @@
                 $form.append('<input type="reset" class="reset" style="display:none;width:0;height:0" />');
                 // submit buttons: class="submit"
                 var btns = $form.find('.submit');
-                if (btns.size()) {
+                if (btns.length) {
                     // if the form has no type=submit button and the form has a class "default-submit", make form submit when pressing "Enter" in any textbox
-                    if ( $form.find('[type=submit]').size() === 0 && $form.hasClass('default-submit') ) {
+                    if ( $form.find('[type=submit]').length === 0 && $form.hasClass('default-submit') ) {
                         $form.find('input[type=text],input[type=password]').keyup(function(e) {
                             if (e.keyCode === 13) {
                                 $form.submit();
@@ -75,9 +75,9 @@
 
                 if ( !$form.hasClass('no-focus') ) { // sometimes a page is long and the form is at the bottom of the page, no need to focus it.
                     // focus on the first input
-                    if ($form.find('input[type=text]').size()) {
+                    if ($form.find('input[type=text]').length) {
                         $form.find('input[type=text]').filter(':first').focus();
-                    } else if ($form.find('textarea').size()) {
+                    } else if ($form.find('textarea').length) {
                         $form.find('textarea').filter(':first').focus();
                     }
                 }
@@ -147,7 +147,7 @@
                 $form.attr('action', Page.url(LC.cleanRoute) + 'action.php');
             }
 
-            if ( $form.find('input[type=file]').size() ) {
+            if ( $form.find('input[type=file]').length ) {
                 Page.progress.start();
                 $form.submit();
                 return true;
@@ -182,7 +182,7 @@
                                 err.htmlID = err.htmlID.replace(/\[\]/, '');
                                 $form.find('#'+err.htmlID).find('input,select,textarea').addClass('invalid');
                             } else {
-                                if ($('#'+err.htmlID).size()) {
+                                if ($('#'+err.htmlID).length) {
                                     $form.find('#' + err.htmlID).addClass('invalid');
                                 } else {
                                     $form.find('input[name='+err.htmlID+'],textarea[name='+err.htmlID+'],select[name='+err.htmlID+']').addClass('invalid');
@@ -245,7 +245,7 @@
          */
         data : function( id ) {
             var $data = $( '#row-'+id ).find('.row-data');
-            if ($data.size()) {
+            if ($data.length) {
                 var $row = {};
                 if ($('html').hasClass('ie7')) {
                     eval('$row = ' + $data.text() ); // jshint ignore:line
@@ -423,7 +423,7 @@
          * Performs a smooth page scroll to an anchor on the same page.
          */
         scroller : function() {
-            $('a[href*=#]:not([href=#])').click(function() {
+            $('a[href*="#"]:not([href="#"])').click(function() {
                 if (window.location.pathname.replace(/^\//,'') === this.pathname.replace(/^\//,'') && window.location.hostname === this.hostname) {
                     var target = $(this.hash);
                     target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
@@ -523,7 +523,7 @@
         */
         pager : function(id) {
             var $pager = $('#'+id).find('.pager a');
-            if ($pager.size()) {
+            if ($pager.length) {
                 $.each($pager, function(i, a) {
                     if ($(a).attr('rel')) { // ajax pager
                         var $url = $(a).attr('href');
@@ -693,13 +693,13 @@
          * @param string file The file input name
          */
         preview: function(file) {
-            var $preview = null;
-            var $hyperLink = null;
+            var $preview;
+            var $hyperLink;
             if (typeof(file) === 'object') {
                 $preview   = $('#' + file.name + '-preview');
                 $hyperLink = $preview.parent();
                 var $content   = '<div class="thumbnail-preview-ext">' + file.extension + '</div>';
-                if ($preview.size()) {
+                if ($preview.length) {
                     if (LC.AsynFileUploader.originalPreview.content === null) {
                         LC.AsynFileUploader.originalPreview.content = $preview.html();
                         LC.AsynFileUploader.originalPreview.width = $preview.width();
@@ -726,19 +726,20 @@
                     $preview.html($content);
 
                     var $img = $preview.find('img');
-                    if ($img.size()) {
-                        $img.load(function() {
+                    if ($img.length) {
+                        $img.one('load', function() {
                             if ($img.width() > LC.AsynFileUploader.originalPreview.width) {
                                 $img.css('margin-left', Math.floor(($img.width() - LC.AsynFileUploader.originalPreview.width) / 2) * -1);
                             }
                         });
                     }
                 }
+
                 $('#asynfileuploader-delete-' + file.name).show();
             } else {
                 $preview = $('#' + file + '-preview');
                 $hyperLink = $preview.parent();
-                if ($preview.size()) {
+                if ($preview.length) {
                     $preview.html(LC.AsynFileUploader.originalPreview.content);
                     if ($hyperLink.is('a')) {
                         $hyperLink.attr('href', '#');
