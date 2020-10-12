@@ -283,6 +283,20 @@ class Validation
                                         }
                                         break;
 
+                                    case 'unique':
+                                        # Required property: table, field
+                                        if (!isset($v['table']) || !isset($v['field'])) {
+                                            break;
+                                        }
+
+                                        $v['id'] = isset($v['id']) ? $v['id'] : 0;
+
+                                        $success = call_user_func_array($func, array($value, $v['table'], $v['field'], $v['id']));
+                                        if (!$success) {
+                                            self::setError($id, $rule, $v, $v['table'], $v['field'], $v['id']);
+                                        }
+                                        break;
+
                                     default:
                                         $success = call_user_func_array($func, array($value));
                                         if (!$success) {
@@ -314,8 +328,8 @@ class Validation
     private static function setError($id, $rule, $element)
     {
         $caption    = $element['caption'];
-        $msg        = ( isset(self::$messages[$rule]) ) ? self::$messages[$rule] : self::$messages['default'];
-        $msg        = ( isset($element['messages'][$rule]) ) ? $element['messages'][$rule] : $msg;
+        $msg        = isset(self::$messages[$rule]) ? self::$messages[$rule] : self::$messages['default'];
+        $msg        = isset($element['messages'][$rule]) ? $element['messages'][$rule] : $msg;
         $args       = func_get_args();
 
         if (count($args) > 3) {

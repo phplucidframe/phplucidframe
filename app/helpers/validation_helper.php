@@ -37,28 +37,3 @@ function validate_confirmPassword($value, $pwd)
 
     return $value == $pwd;
 }
-/**
- * Custom validation function to check user name duplicate
- * This is just for the example admin panel
- *
- * @param $value    (string) Name to check
- * @param $id       (string) uid if any
- * @return boolean  TRUE for no duplicate; FALSE for duplicate
- */
-function validate_checkDuplicateUsername($value, $id = 0)
-{
-    $value = strtolower($value);
-    if (empty($value)) {
-        return true;
-    }
-
-    $qb = db_count('user')
-        ->where()
-        ->condition('LOWER(username)', $value);
-
-    if ($id) {
-        $qb->condition('id !=', $id);
-    }
-
-    return $qb->fetch() ? false : true;
-}

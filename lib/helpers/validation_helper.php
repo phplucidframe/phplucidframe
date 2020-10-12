@@ -51,6 +51,7 @@ $lc_validationMessages = array(
     'date'                   => "'%s' should be valid for the date format '%s'.",
     'time'                   => "'%s' should be valid for the time format '%s'.",
     'datetime'               => "'%s' should be valid for the date/time format '%s %s'.",
+    'unique'                 => "'%s' already exists. Try another one",
     'custom'                 => "'%s' should be a valid format."
 );
 
@@ -739,4 +740,30 @@ function validate_datetime($value, $dateFormat = 'y-m-d', $timeFormat = 'both')
     } else {
         return false;
     }
+}
+/**
+ * Validation of a record uniqueness
+ *
+ * @param mixed $value  The value to check for uniqueness
+ * @param string $table The table name without prefix
+ * @param string $field The field name in the table to check
+ * @param int $id       The optional ID field to be excluded
+ * @return boolean TRUE if the value already exists in the table; otherwise FALSE
+ */
+function validate_unique($value, $table, $field, $id = 0)
+{
+    $value = strtolower($value);
+    if (empty($value)) {
+        return true;
+    }
+
+    $qb = db_count($table)
+        ->where()
+        ->condition($field, $value);
+
+    if ($id) {
+        $qb->condition('id !=', $id);
+    }
+
+    return $qb->fetch() ? false : true;
 }
