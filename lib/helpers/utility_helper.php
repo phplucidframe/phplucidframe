@@ -2188,3 +2188,17 @@ function _addFormData($name, array $data)
 function _db() {
     return _g('_DB');
 }
+
+/**
+ * Return a
+ * Hook to implement `__nullFill()` at app/helpers/utility_helper.php
+ * @return string
+ */
+function _nullFill($value)
+{
+    if (function_exists('__nullFill')) {
+        return __nullFill($value);
+    }
+
+    return $value ?: '<span class="nullFill">-</span>';
+}
