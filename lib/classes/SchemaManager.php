@@ -483,7 +483,7 @@ class SchemaManager
             }
 
             # Delete the deprecated built files with extension .inc
-            $deprecatedFileName = self::getSchemaLockFileName($dbNamespace, false, 'inc');
+            $deprecatedFileName = self::getSchemaLockFileName($dbNamespace);
             if (is_file($deprecatedFileName) && file_exists($deprecatedFileName)) {
                 unlink($deprecatedFileName);
             }
@@ -2106,43 +2106,27 @@ class SchemaManager
      */
     public static function getSchemaLockDefinition($dbNamespace = null)
     {
-        $extensions = array('lock', 'inc'); # @TODO: Remove inc for backward compatibility support
+        $file = DB . _DS_ . 'build' . _DS_ . 'schema';
+        if ($dbNamespace) {
+            $file .= '.' . $dbNamespace;
+        }
+        $file .= '.lock';
 
-        foreach ($extensions as $ext) {
-            $file = DB . _DS_ . 'build' . _DS_ . 'schema';
-            if ($dbNamespace) {
-                $file .= '.' . $dbNamespace;
-            }
-            $file .= '.' . $ext;
-
-            if (!(is_file($file) && file_exists($file))) {
-                continue;
-            }
-
-            if ($ext === 'lock') {
-                return unserialize(file_get_contents($file));
-            } else {
-                return include $file;
-            }
+        if (!(is_file($file) && file_exists($file))) {
+            return null;
         }
 
-        return null;
+        return unserialize(file_get_contents($file));
     }
 
     /**
      * Get schema lock file name
      * @param string $dbNamespace The namespace for the database
      * @param boolean $backupFileName If true, ~ will be prefixed in the file name
-     * @param string $ext The file extension, default to .lock
      * @return string The file name with full path
      */
-    public static function getSchemaLockFileName($dbNamespace = null, $backupFileName = false, $ext = 'lock')
+    public static function getSchemaLockFileName($dbNamespace = null, $backupFileName = false)
     {
-        if (!in_array($ext, array('lock', 'inc'))) {
-            # @TODO: Remove inc for backward compatibility support
-            $ext = 'lock';
-        }
-
         $file = DB . _DS_ . 'build' . _DS_;
 
         if ($backupFileName) {
@@ -2155,7 +2139,7 @@ class SchemaManager
             $file .= '.' . $dbNamespace;
         }
 
-        $file .= '.' . $ext;
+        $file .= '.lock';
 
         return $file;
     }

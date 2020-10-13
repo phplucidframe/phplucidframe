@@ -519,9 +519,6 @@ function _schema($dbNamespace = 'default', $cache = false)
     if ($cache) {
         $files[] = SchemaManager::getSchemaLockFileName($dbNamespace);
         $files[] = SchemaManager::getSchemaLockFileName();
-        # @TODO: Remove inc for backward compatibility support
-        $files[] = SchemaManager::getSchemaLockFileName($dbNamespace, false, 'inc');
-        $files[] = SchemaManager::getSchemaLockFileName(null, false, 'inc');
     }
 
     $files[] = DB."schema.{$dbNamespace}.php";
