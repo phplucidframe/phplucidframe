@@ -60,7 +60,7 @@ class SchemaManager
         ),
     );
     /** @var array The relational database relationships */
-    private static $relationships = array('1:m', 'm:1', 'm:m', '1:1');
+    public static $relationships = array('1:m', 'm:1', 'm:m', '1:1');
     /** @var string The namespace for the database */
     private $dbNamespace = 'default';
     /** @var array The array of generated SQL statements */
@@ -404,8 +404,6 @@ class SchemaManager
      */
     private function load()
     {
-        $options = $this->getOptions();
-
         $schema = $this->schema;
         unset($schema['_options']);
 
@@ -803,7 +801,7 @@ class SchemaManager
                         $diff = $fieldDef !== $schemaTo[$table][$field];
                         if ($diff) {
                             # Change field
-                            if (in_array($field, array('m:m', '1:m', '1:1', 'm:1'))) {
+                            if (in_array($field, self::$relationships)) {
                                 continue;
                             }
 
@@ -932,7 +930,7 @@ class SchemaManager
 
             # Add new fields for existing table
             foreach ($tableDef as $field => $fieldDef) {
-                if (in_array($field, array('options', 'm:m', '1:m', '1:1', 'm:1'))) {
+                if (in_array($field, array_merge(SchemaManager::$relationships, array('options')))) {
                     continue;
                 }
 
@@ -1381,7 +1379,7 @@ class SchemaManager
         $pkFields = $this->getPrimaryKeys();
 
         $manyToMany = array_filter($schema, function ($def) {
-            return isset($def['m:m']) ? true : false;
+            return isset($def['m:m']);
         });
 
         foreach ($manyToMany as $table => $def) {
@@ -1726,7 +1724,7 @@ class SchemaManager
      */
     private function getSimilarity($needle, array $from, array $to, $table = null)
     {
-        if (in_array($needle, array('options', '1:m', 'm:m', 'm:1', '1:1'))) {
+        if (in_array($needle, array_merge(SchemaManager::$relationships, array('options')))) {
             return false;
         }
 
@@ -1897,7 +1895,7 @@ class SchemaManager
 
             # Add new fields for existing table
             foreach ($tableDef as $field => $fieldDef) {
-                if (in_array($field, array('options', 'm:m', '1:m', '1:1', 'm:1'))) {
+                if (in_array($field, array_merge(SchemaManager::$relationships, array('options')))) {
                     continue;
                 }
 
@@ -1911,8 +1909,8 @@ class SchemaManager
 
     /**
      * Try to find out possible new columns
-     * @param array $schemaFrom The schema definion from
-     * @param array $schemaTo The schema definion to
+     * @param array $schemaFrom The schema definition from
+     * @param array $schemaTo The schema definition to
      * @return void
      */
     private function detectAddedColumns(array $schemaFrom, array $schemaTo)
@@ -1925,7 +1923,7 @@ class SchemaManager
 
             # Add new fields for existing table
             foreach ($tableDef as $field => $fieldDef) {
-                if (in_array($field, array('options', 'm:m', '1:m', '1:1', 'm:1'))) {
+                if (in_array($field, array_merge(SchemaManager::$relationships, array('options')))) {
                     continue;
                 }
 
@@ -1942,8 +1940,8 @@ class SchemaManager
      * Try to find tables and columns that only changed their name, rename operations maybe cheaper than add/drop
      * however ambiguities between different possibilities should not lead to renaming at all.
      *
-     * @param array $schemaFrom The schema definion from
-     * @param array $schemaTo The schema definion to
+     * @param array $schemaFrom The schema definition from
+     * @param array $schemaTo The schema definition to
      * @return void
      */
     private function detectTableRenamings(array $schemaFrom, array $schemaTo)
@@ -1995,7 +1993,7 @@ class SchemaManager
                 }
 
                 foreach ($tableDef as $field => $fieldDef) {
-                    if (in_array($field, array('options', 'm:m', '1:m', '1:1', 'm:1'))) {
+                    if (in_array($field, array_merge(SchemaManager::$relationships, array('options')))) {
                         continue;
                     }
 
@@ -2012,15 +2010,15 @@ class SchemaManager
     }
 
     /**
-     * Computes the difference of two arrays similar to the native funtion `array_diff`
-     * which can't be used for multi-dimentional arrays
+     * Computes the difference of two arrays similar to the native function `array_diff`
+     * which can't be used for multi-dimensional arrays
      *
      * @param array $from The array to compare from
      * @param array $to An array to compare against
      *
      * @return array The array with two keys:
      *  `diff` - an array containing all the entries from $from that are not present in the other array $to.
-     *  `changes` - number of changes; the more diferences, the higher numbers; 0 means the two arrays are identical
+     *  `changes` - number of changes; the more differences, the higher numbers; 0 means the two arrays are identical
      */
     private function diffColumns(array $from, array $to)
     {
@@ -2055,15 +2053,15 @@ class SchemaManager
     }
 
     /**
-     * Computes the difference of two arrays similar to the native funtion `array_diff`
-     * which can't be used for multi-dimentional arrays
+     * Computes the difference of two arrays similar to the native function `array_diff`
+     * which can't be used for multi-dimensional arrays
      *
      * @param array $from The array to compare from
      * @param array $to An array to compare against
      *
      * @return array The array with two keys:
      *  `diff` - an array containing all the entries from $from that are not present in the other array $to.
-     *  `changes` - number of changes; the more diferences, the higher numbers; 0 means the two arrays are identical
+     *  `changes` - number of changes; the more differences, the higher numbers; 0 means the two arrays are identical
      */
     private function diffTables(array $from, array $to)
     {

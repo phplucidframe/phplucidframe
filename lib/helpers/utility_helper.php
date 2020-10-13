@@ -21,6 +21,7 @@ use LucidFrame\Core\Middleware;
 use LucidFrame\Core\Pager;
 use LucidFrame\File\AsynFileUploader;
 use LucidFrame\File\File;
+use LucidFrame\Core\SchemaManager;
 
 /**
  * Returns the current PHPLucidFrame version
@@ -2190,8 +2191,9 @@ function _db() {
 }
 
 /**
- * Return a
+ * Return a value or empty sign
  * Hook to implement `__nullFill()` at app/helpers/utility_helper.php
+ * @param mixed $value The value to check and show
  * @return string
  */
 function _nullFill($value)
@@ -2201,4 +2203,46 @@ function _nullFill($value)
     }
 
     return $value ?: '<span class="nullFill">-</span>';
+}
+
+/**
+ * Get default entity object from the schema
+ * @param string $table The mapped table name without prefix
+ * @param string|null $dbNamespace The current db namespace
+ * @return object The empty stdClass object with field names  as properties
+ */
+function _entity($table, $dbNamespace = null)
+{
+    if (!$dbNamespace) {
+        $dbNamespace = _cfg('defaultDbSource');
+    }
+
+    $schema = _schema($dbNamespace, true);
+
+    $entity = array();
+    if ($schema && isset($schema[$table])) {
+        $options = array_merge(SchemaManager::$relationships, array('options'));
+        foreach ($schema[$table] as $field => $def) {
+            if (in_array($field, $options)) {
+                continue;
+            }
+
+            if (isset($def['autoinc'])) {
+                $value = 0;
+            } else {
+                $value = isset($def['null']) ? null : '';
+                if (isset($def['default'])) {
+                    $value = $def['default'];
+                }
+            }
+
+            if ($field == 'created' || $field == 'updated') {
+                $value = date('Y-m-i H:i:s');
+            }
+
+            $entity[$field] = $value;
+        }
+    }
+
+    return (object) $entity;
 }
