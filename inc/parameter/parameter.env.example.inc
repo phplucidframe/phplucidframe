@@ -9,10 +9,10 @@ return array(
     'prod' => array( # either prod or production as you like
         'db' => array(
             'default' => array(
-                'database'  => '', // _env('prod.db.default.database')
-                'username'  => '', // _env('prod.db.default.username')
-                'password'  => '', // _env('prod.db.default.password')
-                'prefix'    => '', // _env('prod.db.default.prefix')
+                'database'  => '', // accessible by _env('prod.db.default.database')
+                'username'  => '', // accessible by _env('prod.db.default.username')
+                'password'  => '', // accessible by _env('prod.db.default.password')
+                'prefix'    => '', // accessible by _env('prod.db.default.prefix')
             )
         )
     )

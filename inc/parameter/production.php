@@ -21,8 +21,9 @@ return array(
             'username'  => _env('prod.db.default.username'),
             'password'  => _env('prod.db.default.password'),
             'prefix'    => _env('prod.db.default.prefix'),
-            'charset'   => 'utf8',
-            'collation' => 'utf8_unicode_ci',
+            'charset'   => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'engine'    => 'InnoDB',
         )
     ),
     # The site contact email address - This address used as "To" for all incoming mails

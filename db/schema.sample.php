@@ -13,9 +13,9 @@ return array(
         // defaults for all tables; this can be overridden by each table
         'timestamps'    => true, // all tables will have 3 datetime fields - `created`, `updated`, `deleted`
         'constraints'   => true, // all FK constraints to all tables
-        'engine'        => 'InnoDB',
-        'charset'       => 'utf8',
-        'collate'       => _p('db.default.collation'),
+        'engine'        => _p('db.sample.engine'),
+        'charset'       => _p('db.sample.charset'),
+        'collate'       => _p('db.sample.collation'),
     ),
     'lc_sessions' => array( // only useful when you use database session
         'sid'       => array('type' => 'string', 'length' => 64, 'null' => false),
@@ -26,8 +26,8 @@ return array(
         'options'   => array(
             'pk' => array('sid'), // type: integer, autoinc: true, null: false, unsigned: true; if this is not provided, default field name to `id`
             'timestamps' => false, // created, updated, deleted; override to _options.timestamps
-            'charset' => 'utf8', // override to _options.charset
-            'collate' => 'utf8_unicode_ci', // override to _options.collate
+            'charset' => 'utf8mb4', // override to _options.charset
+            'collate' => 'utf8mb4_unicode_ci', // override to _options.collate
             'engine' => 'InnoDB', // override to _options.engine
         ),
     ),

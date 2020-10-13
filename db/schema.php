@@ -13,8 +13,8 @@ return array(
         // defaults for all tables; this can be overridden by each table
         'timestamps'    => true, // all tables will have 3 datetime fields - `created`, `updated`, `deleted`
         'constraints'   => true, // all FK constraints to all tables
-        'engine'        => 'InnoDB',
-        'charset'       => 'utf8',
+        'engine'        => _p('db.default.engine'),
+        'charset'       => _p('db.default.charset'),
         'collate'       => _p('db.default.collation'),
     ),
     /*
