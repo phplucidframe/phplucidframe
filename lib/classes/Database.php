@@ -184,10 +184,8 @@ class Database
     public function getDriver($namespace = null)
     {
         $conf = $this->getConfig($this->getNamespace($namespace));
-        // @TODO: to remove backward compatible "engine"
-        $driver = isset($conf['driver']) ? $conf['driver'] : $conf['engine'];
 
-        return $driver;
+        return $conf['driver'];
     }
 
     /**
