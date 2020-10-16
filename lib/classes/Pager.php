@@ -51,6 +51,8 @@ class Pager
     private $childTag;
     /** @var array The array of calculated result pages and offset */
     private $result;
+    /** @var string The session name for the last page number */
+    private $name = 'lc_last_page';
 
     /**
      * Constructor
@@ -62,7 +64,7 @@ class Pager
             $this->pageQueryStr = $pageQueryStr;
         }
         $page = _arg($this->pageQueryStr);
-        $this->page = ($page) ? $page : 1;
+        $this->page = $page ?: 1;
     }
 
     /**
@@ -264,7 +266,9 @@ class Pager
      */
     public function display()
     {
-        $url = ($this->url) ? $this->url : null;
+        session_set($this->name, $this->page);
+
+        $url = $this->url ?: null;
         $ajax = $this->ajax;
         $imagePath = isset($this->imagePath) ? $this->imagePath : '';
 
