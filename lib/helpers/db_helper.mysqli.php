@@ -1096,3 +1096,56 @@ function db_findOrFail($table, $id)
 
     return $result;
 }
+
+/**
+ * Get data with pagination
+ * @param string $table The table name to fetch data from
+ * @param array $condition The condition array for query
+ *
+ *     array(
+ *       'value'  => $value,
+ *       'exp >=' => $exp,
+ *       'field   => $field
+ *     )
+ *
+ * @param array $orderBy The order by clause for query
+ *
+ *     array(
+ *       'field'  => 'asc|desc'
+ *     )
+ *
+ * @param array $pagerOptions Array of key/value pairs to Pager options
+ * @return array [QueryBuilder, Pager, total]
+ */
+function db_findWithPager($table, array $condition = array(), array $orderBy = array(), array $pagerOptions = array())
+{
+    # Count query for the pager
+    $rowCount = db_count($table)
+        ->where($condition)
+        ->fetch();
+
+    # Prerequisite for the Pager
+    $pagerOptions = array_merge(array(
+        'itemsPerPage' => _cfg('itemsPerPage'),
+        'pageNumLimit' => _cfg('pageNumLimit'),
+        'ajax' => true
+    ), $pagerOptions);
+
+    $pager = _pager();
+    $pager->set('total', $rowCount);
+    foreach ($pagerOptions as $name => $value) {
+        $pager->set($name, $value);
+    }
+    $pager->calculate();
+
+    # Simple list query
+    $qb = db_select($table)
+        ->where($condition)
+        ->limit($pager->get('offset'), $pager->get('itemsPerPage'));
+
+    foreach ($orderBy as $field => $sort) {
+        $qb->orderBy($field, $sort);
+    }
+
+    return array($qb, $pager, $rowCount);
+}
