@@ -128,7 +128,7 @@ _autoloadDir(CLASSES . 'console');
 _autoloadDir(LIB . 'commands');
 
 # DB configuration & DB helper (required)
-$_DB = new \LucidFrame\Core\Database();
+_app('db', new \LucidFrame\Core\Database());
 
 _loader('session_helper', HELPER);
 _loader('i18n_helper', HELPER);

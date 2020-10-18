@@ -154,7 +154,7 @@ class Seeder
      */
     private function load()
     {
-        global $_DB;
+        $_DB = _app('db');
 
         $dir = $this->path . $this->dbNamespace;
         if (is_dir($dir) && is_object($_DB)) {

@@ -30,7 +30,7 @@ use LucidFrame\Core\QueryBuilder;
  */
 function db_namespace($namespace = null)
 {
-    return _g('_DB')->getNamespace($namespace);
+    return _app('db')->getNamespace($namespace);
 }
 
 /**
@@ -43,7 +43,7 @@ function db_namespace($namespace = null)
  */
 function db_config($namespace = null)
 {
-    return _g('_DB')->getConfig($namespace);
+    return _app('db')->getConfig($namespace);
 }
 
 /**
@@ -53,7 +53,7 @@ function db_config($namespace = null)
  */
 function db_engine($namespace = null)
 {
-    return _g('_DB')->getDriver($namespace);
+    return _app('db')->getDriver($namespace);
 }
 
 /**
@@ -63,7 +63,7 @@ function db_engine($namespace = null)
  */
 function db_host($namespace = null)
 {
-    return _g('_DB')->getHost($namespace);
+    return _app('db')->getHost($namespace);
 }
 
 /**
@@ -73,7 +73,7 @@ function db_host($namespace = null)
  */
 function db_name($namespace = null)
 {
-    return _g('_DB')->getName($namespace);
+    return _app('db')->getName($namespace);
 }
 
 /**
@@ -83,7 +83,7 @@ function db_name($namespace = null)
  */
 function db_user($namespace = null)
 {
-    return _g('_DB')->getUser($namespace);
+    return _app('db')->getUser($namespace);
 }
 
 /**
@@ -93,7 +93,7 @@ function db_user($namespace = null)
  */
 function db_prefix($namespace = null)
 {
-    return _g('_DB')->getPrefix($namespace);
+    return _app('db')->getPrefix($namespace);
 }
 
 /**
@@ -103,7 +103,7 @@ function db_prefix($namespace = null)
  */
 function db_collation($namespace = null)
 {
-    return _g('_DB')->getCollation($namespace);
+    return _app('db')->getCollation($namespace);
 }
 
 /**
@@ -115,7 +115,7 @@ function db_collation($namespace = null)
  */
 function db_prerequisite($namespace = null)
 {
-    $db = _g('_DB');
+    $db = _app('db');
     $namespace = $db->getNamespace($namespace);
 
     if ($db->getHost($namespace) && $db->getUser($namespace) && $db->getName($namespace)) {
@@ -133,9 +133,7 @@ function db_prerequisite($namespace = null)
  */
 function db_switch($namespace = null)
 {
-    global $_DB;
-
-    $_DB = new Database($namespace);
+    _app('db', new Database($namespace));
 }
 
 /**
@@ -156,7 +154,7 @@ function db_setCharset($charset)
  */
 function db_close()
 {
-    _g('_DB')->close();
+    _app('db')->close();
 }
 
 /**
@@ -187,7 +185,7 @@ function db_prq($enable = true)
  */
 function db_query($sql, $args = array())
 {
-    return _g('_DB')->query($sql, $args);
+    return _app('db')->query($sql, $args);
 }
 
 /**
@@ -198,7 +196,7 @@ function db_query($sql, $args = array())
  */
 function db_queryStr()
 {
-    return _g('_DB')->getQueryStr();
+    return _app('db')->getQueryStr();
 }
 
 /**
@@ -242,7 +240,7 @@ function db_escapeStringMulti($val)
  */
 function db_error()
 {
-    return _g('_DB')->getError();
+    return _app('db')->getError();
 }
 
 /**
@@ -251,7 +249,7 @@ function db_error()
  */
 function db_errorNo()
 {
-    return _g('_DB')->getErrorCode();
+    return _app('db')->getErrorCode();
 }
 
 /**
@@ -261,7 +259,7 @@ function db_errorNo()
  */
 function db_numRows($result)
 {
-    return _g('_DB')->getNumRows($result);
+    return _app('db')->getNumRows($result);
 }
 
 /**
@@ -272,7 +270,7 @@ function db_numRows($result)
  */
 function db_fetchArray($result)
 {
-    return _g('_DB')->fetchArray($result);
+    return _app('db')->fetchArray($result);
 }
 
 /**
@@ -282,7 +280,7 @@ function db_fetchArray($result)
  */
 function db_fetchAssoc($result)
 {
-    return _g('_DB')->fetchAssoc($result);
+    return _app('db')->fetchAssoc($result);
 }
 
 /**
@@ -292,7 +290,7 @@ function db_fetchAssoc($result)
  */
 function db_fetchObject($result)
 {
-    return _g('_DB')->fetchObject($result);
+    return _app('db')->fetchObject($result);
 }
 
 /**
@@ -302,7 +300,7 @@ function db_fetchObject($result)
  */
 function db_insertId()
 {
-    return _g('_DB')->getInsertId();
+    return _app('db')->getInsertId();
 }
 
 /**
@@ -346,7 +344,7 @@ function db_select($table, $alias = null)
  */
 function db_count($arg1, $arg2 = null, $arg3 = null)
 {
-    return _g('_DB')->getCount($arg1, $arg2, $arg3);
+    return _app('db')->getCount($arg1, $arg2, $arg3);
 }
 
 /**
@@ -431,7 +429,7 @@ function db_avg($table, $field, $alias = null)
  */
 function db_fetch($sql, $args = array())
 {
-    return _g('_DB')->fetchColumn($sql, $args);
+    return _app('db')->fetchColumn($sql, $args);
 }
 
 /**
@@ -452,7 +450,7 @@ function db_fetch($sql, $args = array())
  */
 function db_fetchResult($sql, $args = array())
 {
-    return _g('_DB')->fetchResult($sql, $args);
+    return _app('db')->fetchResult($sql, $args);
 }
 
 /**
@@ -470,7 +468,7 @@ function db_fetchResult($sql, $args = array())
  */
 function db_extract($sql, $args = array(), $resultType = LC_FETCH_OBJECT)
 {
-    return _g('_DB')->fetchAll($sql, $args, $resultType);
+    return _app('db')->fetchAll($sql, $args, $resultType);
 }
 
 /**
@@ -480,7 +478,7 @@ function db_extract($sql, $args = array(), $resultType = LC_FETCH_OBJECT)
  */
 function db_table($table)
 {
-    return _g('_DB')->getTable($table);
+    return _app('db')->getTable($table);
 }
 
 /**
@@ -492,7 +490,7 @@ function db_table($table)
  */
 function db_tableHasSlug($table, $useSlug = true)
 {
-    return _g('_DB')->hasSlug($table, $useSlug);
+    return _app('db')->hasSlug($table, $useSlug);
 }
 
 /**
@@ -503,7 +501,7 @@ function db_tableHasSlug($table, $useSlug = true)
  */
 function db_tableHasTimestamps($table)
 {
-    return _g('_DB')->hasTimestamps($table);
+    return _app('db')->hasTimestamps($table);
 }
 
 /**
@@ -567,7 +565,7 @@ if (!function_exists('db_insert')) {
             return false;
         }
 
-        $db = _g('_DB');
+        $db = _app('db');
 
         $table = db_table($table);
 
@@ -692,7 +690,7 @@ if (!function_exists('db_update')) {
             return false;
         }
 
-        $db = _g('_DB');
+        $db = _app('db');
 
         if (func_num_args() === 3 && (gettype($useSlug) === 'string' || is_array($useSlug))) {
             $condition = $useSlug;
@@ -1064,7 +1062,7 @@ function db_rollback()
  */
 function db_exp($field, $value, $exp = '')
 {
-    return _g('_DB')->exp($field, $value, $exp);
+    return _app('db')->exp($field, $value, $exp);
 }
 
 /**

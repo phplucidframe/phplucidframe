@@ -2203,14 +2203,6 @@ function _addFormData($name, array $data)
 }
 
 /**
- * Get database object
- * @return \LucidFrame\Core\Database
- */
-function _db() {
-    return _g('_DB');
-}
-
-/**
  * Return a value or empty sign
  * Hook to implement `__nullFill()` at app/helpers/utility_helper.php
  * @param mixed $value The value to check and show
