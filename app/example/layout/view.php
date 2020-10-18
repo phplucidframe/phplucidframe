@@ -4,10 +4,10 @@
  * It generally should contain HTML between <body> and </body>.
  */
 ?>
-<h3><?php echo _t('This is layout mode example'); ?></h3>
+<h3><?php echo _t($title); ?></h3>
 <p>Some developers may not want to have header and footer templates separately and they may not want to include the files in all views. They just want a layout file. This example shows how you can easily enable and use a layout file in PHPLucidFrame.</p>
 <ul>
-    <li>This page is located in <code class="inline">/app/example/layout/</code>.</li>
+    <li>This page is located in <code class="inline"><?php echo $path ?></code>.</li>
     <li>This view is called by <code class="inline">/app/inc/tpl/layout.php</code>.</li>
     <li>If there is <code class="inline">/app/example/layout/query.php</code>, it is automatically included or all data retrieval process can also be written in <code class="inline">/app/example/layout/index.php</code> without <code class="inline">query.php</code>.</li>
     <li>Layout mode can be enabled by <code class="inline">_cfg('layoutMode', true)</code> for a particular page or by setting <code class="inline">$lc_layoutMode = true</code> in <code class="inline">/inc/config.php</code> for all pages.</li>
@@ -18,7 +18,7 @@
     <div class="fluid-50">
         <form id="frmComment" method="post">
             <div class="message"></div>
-            <table cellpadding="0" cellspacing="0" class="form fluid">
+            <table cellspacing="0" class="form fluid">
                 <tr>
                     <td class="label"><?php echo _t('Name')._cfg('reqSign'); ?></td>
                     <td class="labelSeparator">:</td>
