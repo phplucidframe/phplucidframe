@@ -22,6 +22,26 @@ use LucidFrame\Core\Pager;
 use LucidFrame\File\AsynFileUploader;
 use LucidFrame\File\File;
 use LucidFrame\Core\SchemaManager;
+use LucidFrame\Core\App;
+
+/**
+ * Set/Get a global variable/object
+ * @param string $name The name of the variable/object
+ * @param mixed $value The value or the variable or object
+ * @return mixed
+ */
+function _app($name, $value = null)
+{
+    if (empty($name)) {
+        return null;
+    }
+
+    if (count(func_get_args()) == 2) {
+        return App::$$name = $value;
+    } else {
+        return App::$$name;
+    }
+}
 
 /**
  * Returns the current PHPLucidFrame version

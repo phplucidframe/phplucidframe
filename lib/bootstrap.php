@@ -274,4 +274,4 @@ _autoloadDir(APP_ROOT . 'entity');
 _autoloadDir(APP_ROOT . 'middleware');
 
 # Initialize view
-$_view = new \LucidFrame\Core\View();
+_app('view', new \LucidFrame\Core\View());

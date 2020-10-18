@@ -35,12 +35,12 @@ if (_cfg('layoutMode') && _isAjax() === false) {
         require_once $query;
     }
 
-    $layout = _i(_ds('inc', 'tpl', $_view->layout . '.php'));
+    $layout = _i(_ds('inc', 'tpl', _app('view')->layout . '.php'));
     if (is_file($layout) && file_exists($layout)) {
         require_once $layout;
     } else {
         _header(500);
-        throw new \RuntimeException(sprintf('Layout file is missing: %s', $_view->layout . '.php'));
+        throw new \RuntimeException(sprintf('Layout file is missing: %s', _app('view')->layout . '.php'));
     }
 }
 

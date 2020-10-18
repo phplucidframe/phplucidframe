@@ -32,6 +32,7 @@ class View
 
     /**
      * Setter
+     *
      * @param string $name The property name
      * @param mixed $value The property value
      */
@@ -42,6 +43,7 @@ class View
 
     /**
      * Getter
+     *
      * @param string $name The property name
      * @return mixed
      */
@@ -52,6 +54,7 @@ class View
 
     /**
      * Add data into view
+     *
      * @param string $key The variable name to be accessible in view
      * @param mixed $value The value of the variable
      */
@@ -63,7 +66,9 @@ class View
 
     /**
      * Display view
+     *
      * @param string $name Optional view name to append to the file name such as view_{$name}.php
+     * @return void
      */
     public function load($name = '')
     {

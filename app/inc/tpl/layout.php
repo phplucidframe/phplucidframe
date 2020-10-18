@@ -6,7 +6,7 @@
 </head>
 <body>
     <?php include _i('inc/tpl/header.php'); ?>
-    <?php $_view->load() ?>
+    <?php _app('view')->load() ?>
     <?php include _i('inc/tpl/footer.php'); ?>
 </body>
 </html>
