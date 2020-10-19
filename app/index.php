@@ -22,9 +22,9 @@ Middleware::runBefore();
 
 ob_start('_flush');
 
-require $_page;
+require _app('page');
 
-if (in_array(rtrim(substr($_page, -7), '.php'), array('401', '403', '404'))) {
+if (in_array(rtrim(substr(_app('page'), -7), '.php'), array('401', '403', '404'))) {
     _cfg('layoutMode', false);
 }
 

@@ -265,7 +265,7 @@ if (is_file($composerAutoloader) && file_exists($composerAutoloader)) {
 }
 
 # Handling request to a route and map to a page
-$_page = router();
+_app('page', router());
 
 # Autoload all app files by directory
 _autoloadDir(APP_ROOT . 'cmd');

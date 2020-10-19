@@ -25,4 +25,8 @@ final class App
      * @var View
      */
     public static $view;
+    /**
+     * @var string
+     */
+    public static $page;
 }
