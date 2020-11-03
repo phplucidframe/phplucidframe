@@ -59,14 +59,14 @@
         width: 100%;
     }
 
-    .lc-input-form.fluid-25,
-    .lc-input-form.fluid-30,
-    .lc-input-form.fluid-35,
-    .lc-input-form.fluid-40,
-    .lc-input-form.fluid-45,
-    .lc-input-form.fluid-50,
-    .lc-input-form.fluid-75,
-    .lc-input-form.fluid-100 {
+    .lc-form-input.fluid-25,
+    .lc-form-input.fluid-30,
+    .lc-form-input.fluid-35,
+    .lc-form-input.fluid-40,
+    .lc-form-input.fluid-45,
+    .lc-form-input.fluid-50,
+    .lc-form-input.fluid-75,
+    .lc-form-input.fluid-100 {
         width: calc(100% - 22px);
     }
 
