@@ -241,8 +241,8 @@ if ($moduleFile = _readyloader('file_helper')) {
 }
 _unloader('file_helper', HELPER);
 
-# Global Authentication Object
-$_auth = ($moduleAuth) ? auth_get() : null;
+# Initialize global authentication object
+_app('auth', $moduleAuth ? auth_get() : null);
 
 # Check security prerequisite
 security_prerequisite();
@@ -273,5 +273,5 @@ _autoloadDir(APP_ROOT . 'cmd' . _DS_ . 'classes');
 _autoloadDir(APP_ROOT . 'entity');
 _autoloadDir(APP_ROOT . 'middleware');
 
-# Initialize view
+# Initialize view object
 _app('view', new \LucidFrame\Core\View());

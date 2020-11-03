@@ -32,10 +32,6 @@ use LucidFrame\Core\App;
  */
 function _app($name, $value = null)
 {
-    if (empty($name)) {
-        return null;
-    }
-
     if (count(func_get_args()) == 2) {
         return App::$$name = $value;
     } else {

@@ -8,17 +8,13 @@
  */
 function auth_isMaster()
 {
-    global $_auth;
-
     if (auth_isAnonymous()) {
         return false;
     }
 
-    if (is_object($_auth) & $_auth->is_master) {
-        return true;
-    }
+    $auth = _app('auth');
 
-    return false;
+    return is_object($auth) & $auth->is_master;
 }
 
 /**

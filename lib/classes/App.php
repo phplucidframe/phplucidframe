@@ -29,4 +29,8 @@ final class App
      * @var string
      */
     public static $page;
+    /**
+     * @var object
+     */
+    public static $auth;
 }
