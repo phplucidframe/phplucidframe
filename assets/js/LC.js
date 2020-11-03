@@ -175,7 +175,7 @@
                 var $form  = $('#'+response.formId);
                 var $message = $form.find('.message').filter(':first');
                 if (response.error && response.error.length > 0) {
-                    var errHtml = '<div class="message-error"><ul>';
+                    var errHtml = '<div class="message-error alert alert-danger"><ul>';
                     $.each( response.error, function(i, err) {
                         if (err.htmlID) {
                             if (err.htmlID.indexOf('[]') !== -1) {
@@ -206,7 +206,10 @@
                         } else {
                             LC.Form.clear(response.formId);
                             if (response.msg) {
-                                $message.html('<div class="message-success"><ul><li>'+response.msg+'</li></ul></div>').show();
+                                $message.html('<div class="message-success alert alert-danger">' +
+                                    '<ul><li>'+response.msg+'</li></ul>' +
+                                    '</div>')
+                                    .show();
                             }
                             window.location = '#' + response.formId;
                         }

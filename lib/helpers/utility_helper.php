@@ -1453,7 +1453,7 @@ if (!function_exists('_msg')) {
             $html .= ' style="display:' . $display . '"';
         }
         $html .= '>';
-        $html .= '<div class="message-'. $class . '">';
+        $html .= '<div class="message-'. $class . ' alert alert-' . ($class == 'error' ? 'danger' : $class) . '">';
         if (is_array($msg)) {
             if (count($msg) > 0) {
                 $html .= '<ul>';

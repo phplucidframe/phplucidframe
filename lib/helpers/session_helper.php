@@ -236,7 +236,7 @@ function session_get($name, $unserialize = false)
  * Delete a message or value of the given name from Session
  *
  * @param string $name The session variable name to delete its value
- * @return void
+ * @return boolean
  */
 function session_delete($name)
 {
@@ -245,6 +245,7 @@ function session_delete($name)
         unset($_SESSION[$name]);
         return true;
     }
+
     $keys = explode('.', $name);
     $firstKey = array_shift($keys);
     if (count($keys)) {
@@ -253,7 +254,6 @@ function session_delete($name)
         }
         $array = &$_SESSION[$firstKey];
         $parent = &$_SESSION[$firstKey];
-        $found = true;
         foreach ($keys as $k) {
             if (isset($array[$k])) {
                 $parent = &$array;
@@ -266,13 +266,14 @@ function session_delete($name)
         unset($array);
         unset($parent[$k]);
     }
+
     return true;
 }
 
 if (!function_exists('flash_set')) {
     /**
      * Set the flash message in session
-     * This function is overwritable from the custom helpers/session_helper.php
+     * This function is overridable from the custom helpers/session_helper.php
      *
      * @param mixed  $msg   The message or array of messages to be shown
      * @param string $name  The optional session name to store the message
@@ -282,24 +283,11 @@ if (!function_exists('flash_set')) {
      */
     function flash_set($msg, $name = '', $class = 'success')
     {
-        $msgHTML  = '<div class="message">';
-        $msgHTML .= '<div class="message-' . $class . '">';
-        $msgHTML .= '<ul>';
-        if (is_array($msg)) {
-            foreach ($msg as $m) {
-                $msgHTML .= '<li><span class="'.$class.'">'.$m.'</span></li>';
-            }
-        } else {
-            $msgHTML .= '<li><span class="'.$class.'">'.$msg.'</span></li>';
-        }
-        $msgHTML .= '</ul>';
-        $msgHTML .= '</div>';
-        $msgHTML .= '</div>';
-
+        $msgHTML = _msg($msg, $class, 'html');
         if ($name) {
-            $_SESSION[S_PREFIX.'flashMessage'][$name] = $msgHTML;
+            $_SESSION[S_PREFIX . 'flashMessage'][$name] = $msgHTML;
         } else {
-            $_SESSION[S_PREFIX.'flashMessage'] = $msgHTML;
+            $_SESSION[S_PREFIX . 'flashMessage'] = $msgHTML;
         }
     }
 }
@@ -307,7 +295,7 @@ if (!function_exists('flash_set')) {
 if (!function_exists('flash_get')) {
     /**
      * Get the flash message from session and then delete it
-     * This function is overwritable from the custom helpers/session_helper.php
+     * This function is overridable from the custom helpers/session_helper.php
      *
      * @param string $name The optional session name to retrieve the message from
      * @param string $class The HTML class name; default is success
@@ -379,6 +367,7 @@ function cookie_get($name = '')
     }
     $name = preg_replace('/^('.S_PREFIX.')/', '', $name);
     $name = S_PREFIX . $name;
+
     return (isset($_COOKIE[$name])) ? $_COOKIE[$name] : null;
 }
 /**
@@ -388,13 +377,14 @@ function cookie_get($name = '')
  * @param string $path The path on the server in which the cookie will be available on.
  *  This would be the same value used for cookie_set().
  *
- * @return bool TRUE for the successful delete; FALSE for no delete.
+ * @return bool|array TRUE for the successful delete; FALSE for no delete.
  */
 function cookie_delete($name, $path = '/')
 {
     if (empty($name)) {
         return $_COOKIE;
     }
+
     $name = preg_replace('/^('.S_PREFIX.')/', '', $name);
     $name = S_PREFIX . $name;
     if (isset($_COOKIE[$name])) {
@@ -402,5 +392,6 @@ function cookie_delete($name, $path = '/')
         setcookie($name, null, -1, $path);
         return true;
     }
-    return (!isset($_COOKIE[$name])) ? true : false;
+
+    return !isset($_COOKIE[$name]);
 }
