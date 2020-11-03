@@ -341,6 +341,7 @@ function _script()
     # user defined variables
     $jsVars = _cfg('jsVars');
     $script .= 'LC.vars = {};';
+    $script .= 'LC.vars.baseDir = "' . _cfg('baseDir') . '";';
     if (count($jsVars)) {
         foreach ($jsVars as $name => $val) {
             if (is_array($val)) {
