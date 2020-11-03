@@ -60,7 +60,7 @@ class Database
             $this->namespace = _cfg('defaultDbSource');
         }
 
-        _g('_DB', $this);
+        _app('db', $this);
 
         $this->connect();
     }
@@ -332,7 +332,6 @@ class Database
                 self::$queries[] = $sql;
             } else {
                 $stmt = $this->connection->prepare($sql);
-                // _pr($params);
                 $stmt->execute($params);
                 self::$queries[] = $sql;
                 self::$bindParams = $params;
