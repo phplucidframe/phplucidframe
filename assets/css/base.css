@@ -235,11 +235,11 @@ select.fluid-25 {
 /* INPUT ELEMENTS */
 /******************/
 
-input[type=text], input[type=password] {
+.lc-form-input {
     height: 18px;
 }
 
-input[type=text], input[type=password], textarea, select {
+.lc-form-input {
     border: 1px #b8b8b8 solid;
     padding: 8px 10px;
     background: #ffffff;
@@ -248,65 +248,52 @@ input[type=text], input[type=password], textarea, select {
     border-radius: 3px;
 }
 
-input[type=text], input[type=password], textarea, select, .dialog .ui-widget-content {
+.lc-form-input, .dialog .ui-widget-content {
     border-top: 1px #888888 solid;
     border-left: 1px #888888 solid;
     background: #fff;
     color: #333333;
 }
 
-input[type=text].soft, input[type=password].soft, textarea.soft, select.soft {
+.lc-form-input.soft {
     border: 1px #b2b2b2 solid;
 }
 
-input[type=text].large, input[type=password].large {
+.lc-form-input.large {
     padding: 3px 10px;
     height: 26px;
     font-size: 14px;
 }
 
-input[type=text].large.full-width, input[type=password].large.full-width {
+.lc-form-input.large.full-width {
     width: 93.55%;
 }
 
-select.large {
+select.lc-form-input.large {
     padding: 5px;
     height: 34px;
     font-size: 14px;
 }
 
-select.large.full-width {
+select.lc-form-input.large.full-width {
     width: 100%;
 }
 
-textarea {
-}
-
-select {
+select.lc-form-input {
     height: 36px;
     padding: 2px;
 }
 
-.input.disabled {
+.lc-form-input.disabled {
     color: #333333;
     background: #efede0;
 }
 
-input.radio {
-}
-
-input.datepicker {
+.lc-form-input.datepicker {
     background: url(../images/calendar.png) top right no-repeat;
 }
 
-#ui-datepicker-div {
-    -moz-box-shadow: 0 2px 4px 0 rgba(0,0,0,0.3);
-    -webkit-box-shadow: 0 2px 4px 0 rgba(0,0,0,0.3);
-    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.3);
-    border: 1px #666666 solid;
-}
-
-input[type=radio],input[type=checkbox] {
+input[type=radio], input[type=checkbox] {
     margin-right: 0;
     margin-top: 2px;
 }
@@ -316,6 +303,13 @@ label.radio {
     padding-right: 5px;
 }
 
+#ui-datepicker-div {
+    -moz-box-shadow: 0 2px 4px 0 rgba(0,0,0,0.3);
+    -webkit-box-shadow: 0 2px 4px 0 rgba(0,0,0,0.3);
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.3);
+    border: 1px #666666 solid;
+}
+
 /**********/
 /* BUTTON */
 /**********/
@@ -323,8 +317,8 @@ label.radio {
 .button, a.button {
     position: relative;
     display: inline-block;
-    padding: 7px 12px;
-    margin: 2px 5px 2px 0;
+    padding: 9px 15px;
+    margin: 0 5px 2px 0;
     min-width: 65px;
     font-size: 13px;
     font-weight: bold;
@@ -359,7 +353,7 @@ label.radio {
 }
 
 .button.large {
-    padding: 10px 20px;
+    padding: 12px 20px;
     font-size: 15px;
 }
 

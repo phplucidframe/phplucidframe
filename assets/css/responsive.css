@@ -59,10 +59,14 @@
         width: 100%;
     }
 
-    input.fluid-25, select.fluid-25, textarea.fluid-25,
-    input.fluid-50, select.fluid-50, textarea.fluid-50,
-    input.fluid-75, select.fluid-75, textarea.fluid-75,
-    input.fluid-100, select.fluid-100, textarea.fluid-100 {
+    .lc-input-form.fluid-25,
+    .lc-input-form.fluid-30,
+    .lc-input-form.fluid-35,
+    .lc-input-form.fluid-40,
+    .lc-input-form.fluid-45,
+    .lc-input-form.fluid-50,
+    .lc-input-form.fluid-75,
+    .lc-input-form.fluid-100 {
         width: calc(100% - 22px);
     }
 
