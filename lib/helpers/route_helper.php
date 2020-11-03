@@ -557,10 +557,19 @@ function route_equal($uri)
 /**
  * Check if the current route uri is started with the given uri
  * @param  string $uri URI string
+ * @param  array $except Array of URI string to be excluded in check
  * @return boolean true/false
  */
-function route_start($uri)
+function route_start($uri, array $except = array())
 {
+    if (count($except)) {
+        foreach ($except as $string) {
+            if (stripos(_rr(), trim($string, '/')) === 0) {
+                return false;
+            }
+        }
+    }
+
     return stripos(_rr(), trim($uri, '/')) === 0;
 }
 
