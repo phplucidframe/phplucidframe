@@ -130,12 +130,15 @@ function validate_mandatory($value)
     if (is_array($value) && empty($value['name'])) {
         return false; # file upload
     }
+
     if (is_array($value) && count($value) == 0) {
         return false; # other grouped inputs
     }
+
     if (empty($value) && $value != '0') {
         return false;
     }
+
     return (is_array($value)) ? true : preg_match('/[^\s]+/', $value);
 }
 /**
@@ -187,6 +190,7 @@ function validate_mandatoryAll($value)
 function validate_notAllowZero($value)
 {
     $value = trim($value);
+
     return ($value == '0' || $value == 0) ? false : true;
 }
 /**
@@ -196,9 +200,12 @@ function validate_notAllowZero($value)
  */
 function validate_alphaNumeric($value)
 {
-    if (empty($value)) {
+    $value = trim($value);
+    if ($value == '') {
         return true;
     }
+
+
     return preg_match('/^[A-Za-z0-9]+$/', $value);
 }
 /**
@@ -208,9 +215,12 @@ function validate_alphaNumeric($value)
  */
 function validate_alphaNumericSpace($value)
 {
-    if (empty($value)) {
+    $value = trim($value);
+    if ($value == '') {
         return true;
     }
+
+
     return preg_match('/^[A-Za-z0-9 ]+$/', $value);
 }
 /**
@@ -220,9 +230,12 @@ function validate_alphaNumericSpace($value)
  */
 function validate_alphaNumericDash($value)
 {
-    if (empty($value)) {
+    $value = trim($value);
+    if ($value == '') {
         return true;
     }
+
+
     return preg_match('/^[A-Za-z0-9\-]+$/', $value);
 }
 /**
@@ -232,6 +245,12 @@ function validate_alphaNumericDash($value)
  */
 function validate_numeric($value)
 {
+    $value = trim($value);
+    if ($value == '') {
+        return true;
+    }
+
+
     return is_numeric($value);
 }
 /**
@@ -244,9 +263,11 @@ function validate_numericDash($value)
     if (is_numeric($value) && strlen($value) == 1) {
         return true;
     }
+
     if (empty($value)) {
         return true;
     }
+
     return preg_match('/^([0-9])+([0-9\-])*([0-9])+$/', $value);
 }
 /**
@@ -259,9 +280,11 @@ function validate_numericSpace($value)
     if (is_numeric($value) && strlen($value) == 1) {
         return true;
     }
+
     if (empty($value)) {
         return true;
     }
+
     return preg_match('/^[0-9 ]+$/', $value);
 }
 /**
@@ -271,9 +294,12 @@ function validate_numericSpace($value)
  */
 function validate_username($value)
 {
-    if (empty($value)) {
+    $value = trim($value);
+    if ($value == '') {
         return true;
     }
+
+
     return preg_match('/^([A-Za-z])+([A-Za-z0-9_\-\.])*([A-Za-z0-9])+$/', $value);
 }
 /**
@@ -289,6 +315,7 @@ function validate_naturalNumber($value)
     if ($value == '') {
         return true;
     }
+
     return preg_match('/^[1-9][0-9]*$/', $value);
 }
 /**
@@ -303,6 +330,7 @@ function validate_wholeNumber($value)
     if ($value == '') {
         return true;
     }
+
     return preg_match('/^(?:0|[1-9][0-9]*)$/', $value);
 }
 /**
@@ -317,6 +345,7 @@ function validate_integer($value)
     if ($value == '') {
         return true;
     }
+
     return preg_match('/^[-]?(?:0|[1-9][0-9]*)$/', $value);
 }
 /**
@@ -331,6 +360,7 @@ function validate_rationalNumber($value)
     if ($value == '') {
         return true;
     }
+
     return preg_match('/^[-]?[0-9]*[\.]?[0-9]+$/', $value);
 }
 /**
@@ -345,6 +375,7 @@ function validate_positiveRationalNumber($value)
     if ($value == '') {
         return true;
     }
+
     return preg_match('/^[0-9]*[\.]?[0-9]+$/', $value);
 }
 /**
@@ -358,6 +389,7 @@ function validate_email($value)
     if ($value == '') {
         return true;
     }
+
     return preg_match('/^[A-Za-z0-9]([A-Za-z0-9]|_|\.|\-)*@([a-z0-9]|\.|\-)+\.[a-z]{2,4}$/', $value);
 }
 /**
@@ -370,6 +402,7 @@ function validate_domain($value)
     if (empty($value)) {
         return true;
     }
+
     return preg_match('/^([a-z])+([a-z0-9\-])*([a-z0-9])+$/i', $value);
 }
 /**
@@ -392,7 +425,7 @@ function validate_url($value)
     # Checking host name
     if (!strstr($host, "@")) {
         if (preg_match($regExp, $value)) {
-        # Ok with general regular expression
+            # Ok with general regular expression
             # Analyze host segment of URL
             $hostParts = explode(".", $host);
 
@@ -406,7 +439,7 @@ function validate_url($value)
                 return true;
             }
         } else {
-        # IF not OK with general regular expression
+            # IF not OK with general regular expression
             # Regular Expression for URL
             $urlExp = "/^(([a-z0-9]|_|\-)+\.)+[a-z]{2,4}$/";
 
@@ -427,8 +460,7 @@ function validate_url($value)
  */
 function validate_minLength($value, $min)
 {
-    $length = mb_strlen($value);
-    return ($length >= $min);
+    return mb_strlen($value) >= $min;
 }
 /**
  * Checks that a string length is  less than the specific length.
@@ -449,7 +481,7 @@ function validate_maxLength($value, $max)
  */
 function validate_min($value, $min)
 {
-    return ($value >= $min);
+    return $value >= $min;
 }
 /**
  * Checks that a number is less than the specific number.
@@ -459,7 +491,7 @@ function validate_min($value, $min)
  */
 function validate_max($value, $max)
 {
-    return ($value <= $max);
+    return $value <= $max;
 }
 /**
  * Checks that a number is within a specified range.
@@ -470,7 +502,7 @@ function validate_max($value, $max)
  */
 function validate_between($value, $min, $max)
 {
-    return ($value >= $min && $value <= $max);
+    return $value >= $min && $value <= $max;
 }
 /**
  * Used when a custom regular expression is needed.
@@ -485,6 +517,7 @@ function validate_custom($value, $pattern)
     if (empty($value) && $value != '0') {
         return true;
     }
+
     return preg_match($pattern, $value);
 }
 /**
@@ -498,15 +531,19 @@ function validate_fileExtension($value, $extensions = array('jpg', 'jpeg', 'png'
     if (!is_array($value)) {
         return true;
     }
+
     if (!file_exists($value['tmp_name'])) {
         return true;
     }
+
     if (empty($value['name'])) {
         return true;
     }
+
     $ext = explode('.', $value['name']);
     $ext = strtolower(end($ext));
-    return (in_array($ext, $extensions)) ? true : false;
+
+    return in_array($ext, $extensions);
 }
 /**
  * Validation of maximum file upload size
@@ -519,12 +556,15 @@ function validate_fileMaxSize($value, $maxSize = null)
     if (!is_array($value)) {
         return true;
     }
+
     if (is_null($maxSize)) {
         return true;
     }
+
     $fileSize = $value['size'];
     $maxSize = $maxSize * 1024 * 1024; # in bytes
-    return ($fileSize <= $maxSize);
+
+    return $fileSize <= $maxSize;
 }
 /**
  * Validation of image file upload for max width and max height
@@ -540,11 +580,13 @@ function validate_fileMaxDimension($value, $maxWidth, $maxHeight)
     if (!is_array($value)) {
         return true;
     }
+
     if (!file_exists($value['tmp_name'])) {
         return true;
     }
+
     list($width, $height) = getimagesize($value['tmp_name']);
-    return ($width <= $maxWidth && $height <= $maxHeight) ? true : false;
+    return $width <= $maxWidth && $height <= $maxHeight;
 }
 /**
  * Validation of image file upload for exact width and height
@@ -560,11 +602,14 @@ function validate_fileExactDimension($value, $width, $height)
     if (!is_array($value)) {
         return true;
     }
+
     if (!file_exists($value['tmp_name'])) {
         return true;
     }
+
     list($w, $h) = getimagesize($value['tmp_name']);
-    return ($w == $width && $h == $height) ? true : false;
+
+    return $w == $width && $h == $height;
 }
 /**
  * Validation of image file upload for max width only
@@ -579,11 +624,14 @@ function validate_fileMaxWidth($value, $maxWidth)
     if (!is_array($value)) {
         return true;
     }
+
     if (!file_exists($value['tmp_name'])) {
         return true;
     }
+
     list($width, $height) = getimagesize($value['tmp_name']);
-    return ($width <= $maxWidth);
+
+    return $width <= $maxWidth;
 }
 /**
  * Validation of image file upload for max height only
@@ -598,11 +646,14 @@ function validate_fileMaxHeight($value, $maxHeight)
     if (!is_array($value)) {
         return true;
     }
+
     if (!file_exists($value['tmp_name'])) {
         return true;
     }
+
     list($width, $height) = getimagesize($value['tmp_name']);
-    return ($height <= $maxHeight);
+
+    return $height <= $maxHeight;
 }
 /**
  * Validation of an IP address.
@@ -617,9 +668,11 @@ function validate_ip($value, $type = 'both')
     if ($type === 'v4' || $type === 'ipv4') {
         $flags = FILTER_FLAG_IPV4;
     }
+
     if ($type === 'v6' || $type === 'ipv6') {
         $flags = FILTER_FLAG_IPV6;
     }
+
     return (boolean)filter_var($value, FILTER_VALIDATE_IP, array('flags' => $flags));
 }
 /**
@@ -640,6 +693,7 @@ function validate_date($value, $format = 'y-m-d')
     if (empty($value)) {
         return true;
     }
+
     $value = trim($value);
     $format = strtolower($format);
     $separators = array('/', '-', '.');
@@ -652,6 +706,7 @@ function validate_date($value, $format = 'y-m-d')
     } else {
         $pattern = '/^([\d]{4})'.$sepGroup.'([\d]{1,2})'.$sepGroup.'([\d]{1,2})$/'; // ymd
     }
+
     if ($pattern && preg_match_all($pattern, $value, $matches)) {
         if ($matches[2][0] != $matches[4][0]) {
             return false; // inconsisitent separators
@@ -667,6 +722,7 @@ function validate_date($value, $format = 'y-m-d')
         $d = $dt[$ft['d']];
         return checkdate($m, $d, $y);
     }
+
     return false;
 }
 /**
@@ -690,6 +746,7 @@ function validate_time($value, $timeFormat = 'both')
     if (empty($value)) {
         return true;
     }
+
     $value = trim($value);
     $regex = array(
         '24' => '/^([01]?[0-9]|2[0-3]):([0-5][0-9])(:[0-5][0-9])?$/', // 24-hour format
@@ -699,6 +756,7 @@ function validate_time($value, $timeFormat = 'both')
     if (!in_array($timeFormat, array('both', '12', '24'))) {
         $timeFormat = 'both';
     }
+
     if ($timeFormat === 'both') {
         $test = $regex;
     } else {
@@ -710,6 +768,7 @@ function validate_time($value, $timeFormat = 'both')
             return true;
         }
     }
+
     return false;
 }
 /**
@@ -731,6 +790,7 @@ function validate_datetime($value, $dateFormat = 'y-m-d', $timeFormat = 'both')
     if (empty($value)) {
         return true;
     }
+
     $value = trim($value);
     $generalPattern = '/^([\d]{1,4}[-\/.][\d]{1,2}[-\/.][\d]{1,4})(\s+.{4,}\s*(am|pm)?)$/i';
     if (preg_match_all($generalPattern, $value, $matches)) {

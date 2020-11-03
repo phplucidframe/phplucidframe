@@ -1360,8 +1360,8 @@ if (!function_exists('_ftimeAgo')) {
     /**
      * Display elapsed time in wording, e.g., 2 hours ago, 1 year ago, etc.
      *
-     * @param timestamp|string $time   The elapsed time in unix timestamp or date/time string
-     * @param string           $format The date/time format to show when 4 days passed
+     * @param string|int $time The elapsed time in unix timestamp or date/time string
+     * @param string $format The date/time format to show when 4 days passed
      * @return string
      */
     function _ftimeAgo($time, $format = 'M j Y')
@@ -2074,8 +2074,7 @@ function _view()
  */
 function _ds()
 {
-    $args = func_get_args();
-    return implode(_DS_, $args);
+    return implode(_DS_, func_get_args());
 }
 
 /**

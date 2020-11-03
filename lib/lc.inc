@@ -105,7 +105,7 @@ $_meta = array();
 /**
  * @internal
  * @ignore
- * @type array It contains the built and executed queries through out the script execuation
+ * @type array It contains the built and executed queries through out the script execution
  */
 global $db_builtQueries;
 $db_builtQueries = array();
@@ -145,7 +145,7 @@ function __prerequisite()
  * Get the values by providing dot notation string key
  * Set the values by providing dot notation string key
  *
- * @param string  $key       The string separated by dot (peroid)
+ * @param string  $key       The string separated by dot (period)
  * @param string  $scope     What scope in which the values will be stored - global or session
  * @param mixed   $value     The optional value to set or updated
  * @param boolean $serialize The value is to be serialized or not
@@ -157,14 +157,16 @@ function __dotNotationToArray($key, $scope = 'global', $value = '', $serialize =
     if (empty($key)) {
         return null;
     }
+
     if (!in_array($scope, array('global', 'session')) && !is_array($scope)) {
         return null;
     }
+
     if (is_array($scope)) {
         $input = &$scope;
     }
 
-    $type = (count(func_get_args()) > 2) ? 'setter' : 'getter';
+    $type = count(func_get_args()) > 2 ? 'setter' : 'getter';
     $keys = explode(".", $key);
     # extract the first key
     $firstKey = array_shift($keys);
@@ -172,7 +174,7 @@ function __dotNotationToArray($key, $scope = 'global', $value = '', $serialize =
     $lastKey = end($keys);
     # No. of keys exclusive of the first key
     $count = count($keys); # more than 0 if there is at least one dot
-    $justOneLevelKey = ($count === 0) ? true : false;
+    $justOneLevelKey = ($count === 0);
 
     if ($type == 'getter' && $justOneLevelKey) {
         # just one-level key
@@ -186,6 +188,7 @@ function __dotNotationToArray($key, $scope = 'global', $value = '', $serialize =
         }
     }
 
+    $current = null;
     if ($scope == 'session') {
         $firstKey = S_PREFIX . $firstKey;
         if (!array_key_exists($firstKey, $_SESSION)) {
@@ -237,7 +240,7 @@ function __dotNotationToArray($key, $scope = 'global', $value = '', $serialize =
         return $current;
     } elseif ($type == 'getter') {
         # Get the values if it is getter
-        return ($count) ? (isset($current[$lastKey]) ? $current[$lastKey] : null)  : $current;
+        return $count ? (isset($current[$lastKey]) ? $current[$lastKey] : null)  : $current;
     }
     return null;
 }
@@ -246,7 +249,7 @@ function __dotNotationToArray($key, $scope = 'global', $value = '', $serialize =
  * @internal
  * @ignore
  * Load running environment settings
- * Initalize the site language(s), error reporting
+ * Initialize the site language(s), error reporting
  * Define two constants - REQUEST_URI and LC_NAMESPACE
  *
  * @return void
@@ -293,13 +296,12 @@ function __envLoader()
         }
     }
 
-    if (!isset($lc_languages) || (isset($lc_languages) && !is_array($lc_languages))) {
+    if (empty($lc_languages) || !is_array($lc_languages)) {
         $lc_languages = array('en' => 'English');
     }
 
     $REQUEST_URI = $_SERVER['REQUEST_URI'];
 
-    $requestURI = trim(ltrim($REQUEST_URI, '/'.$lc_baseURL)); # /base-dir/path/to/sub/dir to path/to/sub/dir
     $requestURI = substr($REQUEST_URI, strpos($REQUEST_URI, '/'.$lc_baseURL) + strlen($lc_baseURL) + 1);
     $requestURI = ltrim($requestURI, '/');
     $request    = explode('/', $requestURI);
@@ -509,8 +511,8 @@ function __kernelErrorTypes($code)
  *      2. /db/schema.php (only for default)
  *
  * @return mixed
- *  array   The schema defination
- *  null    Incorrect schema defination
+ *  array   The schema definition
+ *  null    Incorrect schema definition
  *  boolean False when the file doesn't exist
  */
 function _schema($dbNamespace = 'default', $cache = false)
@@ -524,7 +526,6 @@ function _schema($dbNamespace = 'default', $cache = false)
     $files[] = DB."schema.{$dbNamespace}.php";
     $files[] = DB."schema.php";
 
-    $file = false;
     foreach ($files as $f) {
         if (is_file($f) && file_exists($f)) {
             $file = $f;
@@ -577,11 +578,11 @@ function _i($file, $recursive = true)
     # Clean lang code in URL
     if (array_key_exists($needle, $lc_languages)) {
         array_shift($request);
-        $needle = count($request) ? $request[0] : '';
     }
 
+    $folders = array();
     if (LC_NAMESPACE == '') {
-    # Find in APP_ROOT -> ROOT
+        # Find in APP_ROOT -> ROOT
         $folders = array(
             APP_ROOT => $appRoot,
             ROOT => $root
@@ -663,11 +664,13 @@ function _cfg($key = '', $value = '')
     if (empty($key)) {
         return null;
     }
+
     if (strrpos($key, 'lc_') === 0) {
         $key = substr($key, 3);
     }
     $key = 'lc_' . $key;
-    return (count(func_get_args()) == 2) ? __dotNotationToArray($key, 'global', $value) : __dotNotationToArray($key, 'global');
+
+    return count(func_get_args()) == 2 ? __dotNotationToArray($key, 'global', $value) : __dotNotationToArray($key, 'global');
 }
 
 /**
@@ -700,7 +703,7 @@ function _p($name)
         die(sprintf('Wrong environment configuration. Use "%s" or "%s" or "%s" or "%s".', ENV_DEV, ENV_STAGING, ENV_PROD, ENV_TEST));
     }
 
-    $param = include(INC.'parameter/'.$env.'.php');
+    $param = include(INC . 'parameter/' . $env . '.php');
 
     return __dotNotationToArray($name, $param);
 }
@@ -717,7 +720,7 @@ function _env($name)
     if ($lc_envParameters === null) {
         $file = INC . 'parameter/parameter.env.inc';
         if (is_file($file) && file_exists($file)) {
-            $lc_envParameters = include(INC . 'parameter/parameter.env.inc');
+            $lc_envParameters = include($file);
         } else {
             return null;
         }
