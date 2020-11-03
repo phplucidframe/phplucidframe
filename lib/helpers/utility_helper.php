@@ -2095,6 +2095,15 @@ function _isAjax()
 }
 
 /**
+ * Check if HTTP request has POST values
+ * @return bool
+ */
+function _isHttpPost()
+{
+    return sizeof($_POST) ? true : false;
+}
+
+/**
  * Header sent as text/json
  * @param array $data Array of data to be encoded as JSON
  * @param int $status HTTP status code, default to 200
