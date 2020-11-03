@@ -168,7 +168,7 @@ class Seeder
                     continue;
                 }
 
-                $table = rtrim($fileName, '.php');
+                $table = substr($fileName, 0, -4);
                 if (file_exists($file) && $_DB->schemaManager->hasTable($table)) {
                     $data = include($file);
                     $order = $data['order'];
