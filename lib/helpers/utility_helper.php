@@ -376,42 +376,36 @@ function _addvar($name, $value = '')
  *
  * @param string $file An absolute file path or just file name.
  *  The file name only will be prepended the folder name js/ and it will be looked in every sub-sites "js" folder
- *
- * @return boolean True
+ * @param string $subDir The sub-directory under assets directory, where the file exists
+ * @return boolean Return true if the file found and included, otherwise false
  */
-function _js($file)
+function _js($file, $subDir = '')
 {
     $version = '?v' . _cfg('asset_version');
 
-    if (stripos($file, 'http') === 0) {
+    if (stripos($file, 'http') === 0 || stripos($file, '//') === 0) {
         echo '<script src="' . $file . '" type="text/javascript"></script>';
         return true;
     }
 
-    $includeFiles = array();
-    if (stripos($file, 'jquery-ui') === 0) {
-        $file = (stripos($file, '.js') !== false) ? $file : 'jquery-ui.min.js';
-        if (LC_NAMESPACE) {
-            # for backward compatibility; will be removed in the furture version
-            $includeFiles[] = LC_NAMESPACE . '/js/vendor/jquery-ui/' . $file;
-        }
-        $includeFiles[] = 'assets/js/vendor/jquery-ui/' . $file;
-        $includeFiles[] = 'js/vendor/jquery-ui/' . $file;
-    } elseif (stripos($file, 'jquery') === 0) {
-        $file = (stripos($file, '.js') !== false) ? $file : 'jquery.min.js';
-        if (LC_NAMESPACE) {
-            # for backward compatibility; will be removed in the furture version
-            $includeFiles[] = LC_NAMESPACE . '/js/vendor/jquery/' . $file;
-        }
-        $includeFiles[] = 'assets/js/vendor/jquery/' . $file;
-        $includeFiles[] = 'js/vendor/jquery/' . $file;
+    if ($subDir) {
+        $subDir = trim('assets/' . $subDir, '/') . '/';
     } else {
-        if (LC_NAMESPACE) {
-            # for backward compatibility; will be removed in the furture version
-            $includeFiles[] = LC_NAMESPACE . '/js/' . $file;
-        }
-        $includeFiles[] = 'assets/js/' . $file;
-        $includeFiles[] = 'js/' . $file;
+        $subDir = 'assets/js/';
+    }
+
+    $includeFiles = array();
+    if ($file == 'jquery.ui' || $file == 'jquery-ui') {
+        # jQuery UI
+        $file = (stripos($file, '.js') !== false) ? $file : 'jquery-ui.min.js';
+        $includeFiles[] = $subDir . 'vendor/jquery-ui/' . $file;
+    } elseif ($file == 'jquery') {
+        # jQuery
+        $file = (stripos($file, '.js') !== false) ? $file : 'jquery.min.js';
+        $includeFiles[] = $subDir . 'vendor/jquery/' . $file;
+    } else {
+        # Other files
+        $includeFiles[] = $subDir . $file;
     }
 
     foreach ($includeFiles as $includeFile) {
@@ -429,16 +423,6 @@ function _js($file)
         }
     }
 
-    if (file_exists(ROOT . 'assets/js/' . $file)) {
-        echo '<script src="'. WEB_ROOT . 'assets/js/' . $file . $version . '" type="text/javascript"></script>';
-        return true;
-    }
-
-    if (file_exists(ROOT . 'js/' . $file)) {
-        echo '<script src="'. WEB_ROOT . 'js/' . $file . $version . '" type="text/javascript"></script>';
-        return true;
-    }
-
     return false;
 }
 
@@ -447,33 +431,31 @@ function _js($file)
  *
  * @param string $file An absolute file path or file name only.
  *  The file name only will be prepended the folder name css/ and it will be looked in every sub-sites "css" folder
- *
- * @return boolean
+ * @param string $subDir The sub-directory under assets directory, where the file exists
+ * @return boolean Return true if the file found and included, otherwise false
  */
-function _css($file)
+function _css($file, $subDir = '')
 {
     $version = '?v' . _cfg('asset_version');
 
-    if (stripos($file, 'http') === 0) {
+    if (stripos($file, 'http') === 0 || stripos($file, '//') === 0) {
         echo '<link href="' . $file . '" rel="stylesheet" type="text/css" />';
         return true;
     }
 
-    $includeFiles = array();
-    if (stripos($file, 'jquery-ui') === 0) {
-        if (LC_NAMESPACE) {
-            # for backward compatibility; will be removed in the furture version
-            $includeFiles[] = LC_NAMESPACE . '/js/vendor/jquery-ui/jquery-ui.min.css';
-        }
-        $includeFiles[] = 'assets/js/vendor/jquery-ui/jquery-ui.min.css';
-        $includeFiles[] = 'js/vendor/jquery-ui/jquery-ui.min.css';
+    if ($subDir) {
+        $subDir = trim('assets/' . $subDir, '/') . '/';
     } else {
-        if (LC_NAMESPACE) {
-            # for backward compatibility; will be removed in the furture version
-            $includeFiles[] = LC_NAMESPACE . '/css/' . $file;
-        }
-        $includeFiles[] = 'assets/css/' . $file;
-        $includeFiles[] = 'css/' . $file;
+        $subDir = 'assets/css/';
+    }
+
+    $includeFiles = array();
+    if ($file == 'jquery.ui' || $file == 'jquery-ui') {
+        # jQuery UI
+        $includeFiles[] = 'assets/js/vendor/jquery-ui/jquery-ui.min.css';
+    } else {
+        # Other files
+        $includeFiles[] = $subDir . $file;
     }
 
     foreach ($includeFiles as $includeFile) {
@@ -492,40 +474,28 @@ function _css($file)
         }
     }
 
-    if (file_exists(ROOT . 'assets/css/' . $file)) {
-        echo '<link href="' . WEB_ROOT . 'assets/css/' . $file . $version . '" rel="stylesheet" type="text/css" />';
-        return true;
-    }
-
-    if (file_exists(ROOT . 'css/' . $file)) {
-        echo '<link href="' . WEB_ROOT . 'css/' . $file . $version . '" rel="stylesheet" type="text/css" />';
-        return true;
-    }
-
     return false;
 }
 /**
- * Get the absolute image file name
+ * Get the image file name with absolute web path
  *
  * @param string $file An image file name only (no need directory path)
- * @return string The absolute image URL
+ * @return string The absolute image URL if the file found or empty string if it is not found
  */
 function _img($file)
 {
-    $files = array(
-        LC_NAMESPACE . '/assets/images/' => APP_ROOT . LC_NAMESPACE . _DS_ . 'assets' . _DS_ . 'images' . _DS_ . $file,
-        'app/assets/images/' => APP_ROOT . 'assets' . _DS_ . 'images' . _DS_ . $file,
-        'assets/images/' => ROOT . 'assets' . _DS_ . 'images' . _DS_ . $file,
-        'images/' => ROOT . 'images' . _DS_ . $file
-    );
+    $fileWithPath = 'assets/images/' . $file;
+    $fileWithPath = _i($fileWithPath);
 
-    foreach ($files as $path => $f) {
-        if (is_file($f) && file_exists($f)) {
-            return WEB_ROOT . $path . $file;
-        }
+    if (empty($fileWithPath)) {
+        return '';
     }
 
-    return WEB_ROOT . 'images/' . $file;
+    if (stripos($fileWithPath, APP_ROOT) === 0) {
+        return WEB_APP_ROOT . str_replace(APP_ROOT, '', $fileWithPath);
+    } else {
+        return WEB_ROOT . str_replace(ROOT, '', $fileWithPath);
+    }
 }
 
 if (!function_exists('_image')) {

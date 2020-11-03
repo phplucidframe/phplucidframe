@@ -8,9 +8,9 @@
 <link href="https://fonts.googleapis.com/css?family=Padauk:400,700" rel="stylesheet">
 <?php _css('base.'._lang().'.css'); ?>
 <?php _css('responsive.css'); ?>
-<?php _css('jquery-ui'); ?>
+<?php _css('jquery.ui'); ?>
 <?php _js('jquery'); ?>
-<?php _js('jquery-ui'); ?>
+<?php _js('jquery.ui'); ?>
 <?php _script(); ?>
 <?php _js('LC.js'); ?>
 <?php _js('app.js'); ?>
