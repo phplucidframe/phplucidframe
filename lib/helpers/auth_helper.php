@@ -43,6 +43,7 @@ if (!function_exists('auth_create')) {
             if (isset($session)) {
                 $session->sessId        = session_id();
                 $session->timestamp     = time();
+                $session->token         = strtoupper(_randomCode(20));
                 $session->permissions   = auth_permissions($session->$fieldRole);
                 $session->blocks        = auth_blocks($session->$fieldRole);
 
