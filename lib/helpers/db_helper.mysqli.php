@@ -827,9 +827,10 @@ if (!function_exists('db_delete')) {
      *       'fieldName3     => NULL
      *     ))
      *
+     * @param boolean $softDelete Soft delete or not
      * @return boolean Returns TRUE on success or FALSE on failure
      */
-    function db_delete($table, $condition = null)
+    function db_delete($table, $condition = null, $softDelete = false)
     {
         QueryBuilder::clearBindValues();
 
@@ -851,6 +852,18 @@ if (!function_exists('db_delete')) {
             $condition = ' WHERE '.$condition;
         }
 
+        if ($softDelete) {
+            $sql = 'UPDATE '. QueryBuilder::quote($table) . '
+                    SET `deleted` = :deleted ' . $condition . '
+                    LIMIT 1';
+            $values[':deleted'] = date('Y-m-d H:i:s');
+            if (_g('db_printQuery')) {
+                return $sql;
+            }
+
+            return db_query($sql, $values);
+        }
+
         $sql = 'DELETE FROM ' . QueryBuilder::quote($table) . $condition . ' LIMIT 1';
         if (_g('db_printQuery')) {
             return $sql;
@@ -860,7 +873,7 @@ if (!function_exists('db_delete')) {
         db_query($sql, $values);
         $return = ob_get_clean();
         if ($return) {
-            # If there is FK delete RESTRICT constraint
+            # If there is FK delete RESTRICT constraint, make soft delete
             if (db_errorNo() == 1451) {
                 if (db_tableHasTimestamps($table)) {
                     $sql = 'UPDATE '. QueryBuilder::quote($table) . '
@@ -904,9 +917,10 @@ if (!function_exists('db_delete_multi')) {
      *      'fieldName3     => NULL
      *    ))
      *
+     * @param boolean $softDelete Soft delete or not
      * @return boolean Returns TRUE on success or FALSE on failure
      */
-    function db_delete_multi($table, $condition = null)
+    function db_delete_multi($table, $condition = null, $softDelete = false)
     {
         QueryBuilder::clearBindValues();
 
@@ -927,6 +941,17 @@ if (!function_exists('db_delete_multi')) {
             $condition = ' WHERE '. $condition;
         }
 
+        if ($softDelete) {
+            $sql = 'UPDATE '. QueryBuilder::quote($table) . '
+                    SET `deleted` = :deleted ' . $condition;
+            $values[':deleted'] = date('Y-m-d H:i:s');
+            if (_g('db_printQuery')) {
+                return $sql;
+            }
+
+            return db_query($sql, $values);
+        }
+
         $sql = 'DELETE FROM ' . QueryBuilder::quote($table) . $condition;
         if (_g('db_printQuery')) {
             return $sql;
@@ -940,7 +965,8 @@ if (!function_exists('db_delete_multi')) {
             # if there is any error
             return false;
         }
-        return (db_errorNo() == 0) ? true : false;
+
+        return db_errorNo() == 0;
     }
 }
 
