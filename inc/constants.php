@@ -22,8 +22,12 @@ define('ROUTE', 'route');
  * Session prefix
  * All session variable names will be prefixed with this
  */
-define('S_PREFIX', '__LucidFrame__');
+define('S_PREFIX', '__LC__');
 /**
  * Maximum file upload zie in MB
  */
 define('MAX_FILE_UPLOAD_SIZE', 20);
+
+#######################################
+# CUSTOM CONSTANTS STARTING FROM HERE #
+#######################################
