@@ -1144,9 +1144,11 @@ function db_findOrFail($table, $id)
 function db_findWithPager($table, array $condition = array(), array $orderBy = array(), array $pagerOptions = array())
 {
     # Count query for the pager
-    $rowCount = db_count($table)
-        ->where($condition)
-        ->fetch();
+    $countQuery = db_count($table);
+    if (!empty($condition)) {
+        $countQuery->where($condition);
+    }
+    $rowCount = $countQuery->fetch();
 
     # Prerequisite for the Pager
     $pagerOptions = array_merge(array(
@@ -1163,9 +1165,11 @@ function db_findWithPager($table, array $condition = array(), array $orderBy = a
     $pager->calculate();
 
     # Simple list query
-    $qb = db_select($table)
-        ->where($condition)
-        ->limit($pager->get('offset'), $pager->get('itemsPerPage'));
+    $qb = db_select($table);
+    if (!empty($condition)) {
+        $qb->where($condition);
+    }
+    $qb->limit($pager->get('offset'), $pager->get('itemsPerPage'));
 
     foreach ($orderBy as $field => $sort) {
         $qb->orderBy($field, $sort);
