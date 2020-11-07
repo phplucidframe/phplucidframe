@@ -229,16 +229,20 @@
          */
         clear : function( formId ) {
             var $form = $('#'+formId);
-            $form.find('.invalid').removeClass('invalid');
-            $form.find('select,textarea').val('');
-            var $inputs = $form.find('input').filter('input:not([name^=lc_formToken])');
-            $inputs.val('');
-            $form.find('.message').filter(':first').html('').hide();
 
-            $inputs.each(function(i, input) {
-               if ($(input).data('default')) {
-                   $(input).val($(input).data('default'));
-               }
+            $form.find('.message').filter(':first').html('').hide();
+            $form.find('.invalid').removeClass('invalid');
+
+            $form.find('input, select, textarea').each(function (i, elem) {
+                var $input = $(elem);
+                if (($input.attr('name') && !$input.attr('name').includes('lc_formToken')) &&
+                    $input.attr('type') !== 'checkbox' &&
+                    $input.attr('type') !== 'radio') {
+                    $input.val();
+                    if ($input.data('default')) {
+                        $input.val($input.data('default'));
+                    }
+                }
             });
         },
         /**
@@ -472,10 +476,8 @@
         */
         request : function(id, url, params, callback) {
             Page.progress.start(id);
-            var p = {};
-            if (typeof params !== 'undefined') {
-                p = params;
-            }
+
+            params = params || {};
 
             var $type = 'GET';
             var $html = true;
@@ -483,13 +485,13 @@
                 $type = id;
                 $html = false;
             } else {
-                Page.queryStr['_'+id] = p;
+                Page.queryStr['_'+id] = params;
             }
 
             $.ajax({
                 type: $type,
                 url: url,
-                data: p,
+                data: params,
                 cache: false,
                 success: function(response) {
                     if (typeof callback !== 'undefined') {
@@ -525,18 +527,16 @@
          * @param string id HTML container ID for the list to be paginated
         */
         pager : function(id) {
-            var $pager = $('#'+id).find('.pager a');
+            var $pager = $('#'+id).find('.pager a[rel]');
             if ($pager.length) {
                 $.each($pager, function(i, a) {
-                    if ($(a).attr('rel')) { // ajax pager
-                        var $url = $(a).attr('href');
-                        var $page = $(a).attr('rel');
-                        $(a).attr('href', '#').click(function() {
-                            // attach with the existing query string
-                            Page.queryStr['_'+id].page = $page;
-                            Page.request(id, $url, Page.queryStr['_'+id]);
-                        });
-                    }
+                    var $link = $(a);
+                    var url = $link.attr('href');
+                    $link.attr('href', '#').click(function() {
+                        // attach with the existing query string
+                        Page.queryStr['_' + id].page = $link.attr('rel');
+                        Page.request(id, url, Page.queryStr['_' + id]);
+                    });
                 });
             }
         },
@@ -573,6 +573,109 @@
 
     // Add under the namespace "LC"
     LC.Page = Page;
+
+    LC.List = {
+        url : LC.Page.url(LC.vars.baseDir), /* mapping directory */
+        /* Initialize the ItemBrand page */
+        init : function(url, opt) {
+            LC.List.url = url;
+
+            /* delete confirmation */
+            $('#dialog-confirm').dialog({
+                modal: true,
+                autoOpen: false,
+                resizable: false,
+                minHeight: 120,
+                buttons: [
+                    {
+                        text: 'Yes',
+                        class: 'btn btn-danger btn-flat btn-sm',
+                        click: function() {
+                            $(this).dialog('close');
+                            LC.Page.ItemBrand.doDelete();
+                        }
+                    },
+                    {
+                        text: 'No',
+                        class: 'btn btn-warning btn-flat btn-sm',
+                        click: function() {
+                            $(this).dialog('close');
+                        }
+                    }
+                ],
+            });
+            /* Add/Edit area */
+            $('#dialog-brand').dialog({
+                modal: true,
+                autoOpen: false,
+                resizable: false,
+                width: 320,
+                minHeight: 120
+            });
+
+            $('#btn-new').click(function(e) {
+                e.preventDefault();
+                LC.Page.ItemBrand.create();
+            });
+
+            /* Load list */
+            LC.Page.ItemBrand.list();
+        },
+        /* Load the list */
+        list : function(param) {
+            $('#dialog-brand').dialog( 'close' );
+
+            LC.Page.request( 'list', LC.Page.ItemBrand.url + 'list.php', param );
+
+            LC.Page.afterRequest = function () {
+                $('.table .actions .edit').on('click', function (e) {
+                    e.preventDefault();
+                    LC.Page.ItemBrand.edit($(this).attr('rel'));
+                });
+
+                $('.table .actions .delete').on('click', function (e) {
+                    e.preventDefault();
+                    LC.Page.ItemBrand.remove($(this).attr('rel'));
+                });
+
+                $('[data-toggle="tooltip"]').tooltip();
+            };
+        },
+        /* Launch the dialog to create a new entry */
+        create : function() {
+            LC.Form.clear('form-brand');
+            $('#dialog-brand').dialog('open');
+        },
+        /* Launch the dialog to edit an existing entry */
+        edit : function(id) {
+            LC.Form.clear('form-brand');
+            var $data = LC.Form.getFormData('form-brand', id);
+            if ($data) {
+                var $form = $('#form-brand');
+                $form.find('#id').val( id );
+                $form.find('input[name="name"]').val($data.name);
+                $('#dialog-brand').dialog('open');
+            }
+        },
+        /* Launch the dialog to confirm an entry delete */
+        remove : function( id ) {
+            $('#delete-id').val(id);
+            $('#dialog-confirm').dialog('open');
+        },
+        /* Do delete action upon confirm OK */
+        doDelete : function() {
+            LC.Page.request('POST', // type
+                LC.Page.ItemBrand.url + 'action.php', // page to post
+                { // data to post
+                    id: $('#delete-id').val(),
+                    action: 'delete'
+                },
+                function() { // callback
+                    LC.Page.ItemBrand.list();
+                }
+            );
+        }
+    };
 
     LC.AsynFileUploader = {
         /** @var object Available hooks */

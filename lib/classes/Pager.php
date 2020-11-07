@@ -53,6 +53,8 @@ class Pager
     private $result;
     /** @var string The session name for the last page number */
     private $name = 'lc_last_page';
+    /** @var callable The callback function for customized display */
+    private $displayCallback;
 
     /**
      * Constructor
@@ -262,10 +264,15 @@ class Pager
 
     /**
      * Display the pagination
+     * @param callable $callback The callback function for customized display
      * @return void
      */
-    public function display()
+    public function display($callback = null)
     {
+        if ($callback) {
+            $this->displayCallback = $callback;
+        }
+
         session_set($this->name, $this->page);
 
         $url = $this->url ?: null;
@@ -275,6 +282,13 @@ class Pager
         $this->setHtmlTag($this->htmlTag);
 
         if ($this->enabled && $this->result) {
+            if ($this->displayCallback) {
+                $this->result['url'] = $url;
+                $this->result['ajax'] = $ajax;
+                call_user_func($this->displayCallback, $this->result);
+                return;
+            }
+
             extract($this->result);
 
             echo $this->parentOpenTag;

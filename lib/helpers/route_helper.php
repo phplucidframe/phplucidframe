@@ -337,6 +337,8 @@ function route_url($path = null, $queryStr = array(), $lang = '')
     }
 
     $url = preg_replace('/(\s) {1,}/', '+', $url); # replace the space with "+"
+    $url = preg_replace('/\?&/', '?', $url);
+    $url = preg_replace('/&&/', '&', $url);
     $url = rtrim($url, '/');
 
     return $url;
