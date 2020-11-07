@@ -238,7 +238,7 @@
                 if (($input.attr('name') && !$input.attr('name').includes('lc_formToken')) &&
                     $input.attr('type') !== 'checkbox' &&
                     $input.attr('type') !== 'radio') {
-                    $input.val();
+                    $input.val('');
                     if ($input.data('default')) {
                         $input.val($input.data('default'));
                     }
