@@ -172,7 +172,7 @@ function route_search()
         return $path;
     }
 
-    $append = array('/index.php', '.php');
+    $append = array('/index.php', '/view.php', '.php');
     for ($i=$count; $i>0; $i--) {
         # try to look for
         # ~/path/to/the-given-name/index.php

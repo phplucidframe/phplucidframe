@@ -22,7 +22,9 @@ Middleware::runBefore();
 
 ob_start('_flush');
 
-require _app('page');
+if (substr(_app('page'), -8) != 'view.php') {
+    require _app('page');
+}
 
 if (in_array(rtrim(substr(_app('page'), -7), '.php'), array('401', '403', '404'))) {
     _cfg('layoutMode', false);
@@ -32,7 +34,7 @@ if (_cfg('layoutMode') && _isAjax() === false) {
     $query = _ds(APP_ROOT, _cr(), 'query.php');
 
     if (is_file($query) && file_exists($query)) {
-        require_once $query;
+        require_once $query; // TODO: deprecated query.php; write business logic in index.php instead
     }
 
     $layout = _i(_ds('inc', 'tpl', _app('view')->layout . '.php'));
