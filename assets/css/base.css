@@ -1547,7 +1547,7 @@ table.formView.tableView tr.toggle td {
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 4999;
+    z-index: 9999;
     background: #ffffff;
     /* The fallback */
     background: rgba(255,255,255,0.5);
@@ -1604,11 +1604,16 @@ table.formView.tableView tr.toggle td {
 /* JQUERY DIALOG */
 /*****************/
 
+.ui-widget-overlay {
+    z-index: 9997;
+}
+
 .ui-widget {
     font-family: Arial, Helvetica, sans-serif;
 }
 
 .ui-dialog {
+    z-index: 9998;
     -moz-box-shadow: 0 2px 4px 0 rgba(0,0,0,0.3);
     -webkit-box-shadow: 0 2px 4px 0 rgba(0,0,0,0.3);
     box-shadow: 0 2px 4px 0 rgba(0,0,0,0.3);
@@ -1626,9 +1631,6 @@ table.formView.tableView tr.toggle td {
 .dialog {
     display: none;
     text-align: left;
-}
-
-.dialog label, .dialog input {
 }
 
 .dialog input.text,.dialog textarea {
