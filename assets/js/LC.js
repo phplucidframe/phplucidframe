@@ -575,13 +575,62 @@
     LC.Page = Page;
 
     LC.List = {
-        url : LC.Page.url(LC.vars.baseDir), /* mapping directory */
-        /* Initialize the ItemBrand page */
-        init : function(url, opt) {
-            LC.List.url = url;
+        options: {
+            id: 'list',
+            formModal: '#dialog-item',
+            formModalCancelButton: '#btn-cancel',
+            confirmModal: '#dialog-confirm',
+            confirmModalTitle: 'Confirm Delete',
+            confirmModalMessage: 'Are you sure you want to delete?',
+            formId: 'dialog-form',
+            createButton: '#btn-new',
+            editButton: '.table .actions .edit',
+            deleteButton: '.table .actions .delete',
+            editCallback: null,
+            url : LC.Page.url(LC.vars.baseDir), /* mapping directory */
+        },
 
-            /* delete confirmation */
-            $('#dialog-confirm').dialog({
+        /* Constructor */
+        init : function(options) {
+            $.extend(LC.List.options, options);
+
+            var opt = LC.List.options;
+
+            /* Add/Edit Dialog */
+            $(opt.formModal).dialog({
+                modal: true,
+                autoOpen: false,
+                resizable: false,
+                width: 340,
+                minHeight: 120
+            });
+
+            $(opt.formModalCancelButton).click(function() {
+                $(opt.formModal).dialog('close');
+            });
+
+            $(opt.createButton).click(function(e) {
+                e.preventDefault();
+                LC.List.create();
+            });
+
+            /* Delete Confirmation Dialog */
+            LC.List.createConfirmDialog();
+
+            /* Load list */
+            LC.List.list();
+        },
+        /* Create confirm dialog */
+        createConfirmDialog : function() {
+            var opt = LC.List.options;
+
+            $('body').append('' +
+                '<div id="' + opt.confirmModal.replace(/#/, '') + '" class="dialog" title="' + opt.confirmModalTitle + '">' +
+                '    <div class="msg-body">' + opt.confirmModalMessage + '</div>' +
+                '    <input type="hidden" id="delete-id" />' +
+                '</div>');
+
+            $(opt.confirmModal).dialog({
                 modal: true,
                 autoOpen: false,
                 resizable: false,
@@ -592,7 +641,7 @@
                         class: 'btn btn-danger btn-flat btn-sm',
                         click: function() {
                             $(this).dialog('close');
-                            LC.Page.ItemBrand.doDelete();
+                            LC.List.doDelete();
                         }
                     },
                     {
@@ -604,38 +653,24 @@
                     }
                 ],
             });
-            /* Add/Edit area */
-            $('#dialog-brand').dialog({
-                modal: true,
-                autoOpen: false,
-                resizable: false,
-                width: 320,
-                minHeight: 120
-            });
-
-            $('#btn-new').click(function(e) {
-                e.preventDefault();
-                LC.Page.ItemBrand.create();
-            });
-
-            /* Load list */
-            LC.Page.ItemBrand.list();
         },
         /* Load the list */
         list : function(param) {
-            $('#dialog-brand').dialog( 'close' );
+            var opt = LC.List.options;
 
-            LC.Page.request( 'list', LC.Page.ItemBrand.url + 'list.php', param );
+            $(opt.formModal).dialog('close');
+
+            LC.Page.request(opt.id, opt.url + 'list.php', param);
 
             LC.Page.afterRequest = function () {
-                $('.table .actions .edit').on('click', function (e) {
+                $(opt.editButton).on('click', function (e) {
                     e.preventDefault();
-                    LC.Page.ItemBrand.edit($(this).attr('rel'));
+                    LC.List.edit($(this).attr('rel'));
                 });
 
-                $('.table .actions .delete').on('click', function (e) {
+                $(opt.deleteButton).on('click', function (e) {
                     e.preventDefault();
-                    LC.Page.ItemBrand.remove($(this).attr('rel'));
+                    LC.List.remove($(this).attr('rel'));
                 });
 
                 $('[data-toggle="tooltip"]').tooltip();
@@ -643,35 +678,43 @@
         },
         /* Launch the dialog to create a new entry */
         create : function() {
-            LC.Form.clear('form-brand');
-            $('#dialog-brand').dialog('open');
+            var opt = LC.List.options;
+
+            LC.Form.clear(opt.formId);
+            $(opt.formModal).dialog('open');
         },
         /* Launch the dialog to edit an existing entry */
         edit : function(id) {
-            LC.Form.clear('form-brand');
-            var $data = LC.Form.getFormData('form-brand', id);
+            var opt = LC.List.options;
+
+            LC.Form.clear(opt.formId);
+            var $data = LC.Form.getFormData(opt.formId, id);
             if ($data) {
-                var $form = $('#form-brand');
-                $form.find('#id').val( id );
-                $form.find('input[name="name"]').val($data.name);
-                $('#dialog-brand').dialog('open');
+                var $form = $('#' + opt.formId);
+                $form.find('#id').val(id);
+
+                if (opt.editCallback) {
+                    opt.editCallback($form, $data);
+                }
+
+                $(opt.formModal).dialog('open');
             }
         },
         /* Launch the dialog to confirm an entry delete */
         remove : function( id ) {
             $('#delete-id').val(id);
-            $('#dialog-confirm').dialog('open');
+            $(LC.List.options.confirmModal).dialog('open');
         },
         /* Do delete action upon confirm OK */
         doDelete : function() {
             LC.Page.request('POST', // type
-                LC.Page.ItemBrand.url + 'action.php', // page to post
+                LC.List.options.url + 'action.php', // page to post
                 { // data to post
                     id: $('#delete-id').val(),
                     action: 'delete'
                 },
                 function() { // callback
-                    LC.Page.ItemBrand.list();
+                    LC.List.list();
                 }
             );
         }
