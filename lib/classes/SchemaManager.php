@@ -482,16 +482,10 @@ class SchemaManager
                 copy($fileName, self::getSchemaLockFileName($dbNamespace, true));
             }
 
-            # Delete the deprecated built files with extension .inc
-            $deprecatedFileName = self::getSchemaLockFileName($dbNamespace);
-            if (is_file($deprecatedFileName) && file_exists($deprecatedFileName)) {
-                unlink($deprecatedFileName);
-            }
-
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
