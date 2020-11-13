@@ -657,7 +657,7 @@
 
             $(opt.formModal).dialog('close');
 
-            LC.Page.request(opt.id, opt.url + 'list.php', param);
+            LC.Page.request(opt.id, opt.url + 'list', param);
 
             LC.Page.afterRequest = function () {
                 $(opt.editButton).on('click', function (e) {
