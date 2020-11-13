@@ -319,16 +319,20 @@ class QueryBuilder
      *      'fieldName1'    => $value1,
      *      'fieldName2 >=' => $value2,
      *      'fieldName3     => NULL,
-     *      db_or(array(
+     *      'or' => array(
      *          'fieldName4'    => array(1, 2, 3)
      *          'fieldName4 <'  => 10
-     *      ))
+     *      )
      *    )
      *
      * @return object QueryBuilder
      */
     public function andWhere($condition = null)
     {
+        if (is_array($condition) && count($condition) == 0) {
+            return $this;
+        }
+
         if ($condition === null) {
             $this->where['AND'] = array();
         } else {
@@ -356,16 +360,20 @@ class QueryBuilder
      *      'fieldName1'    => $value1,
      *      'fieldName2 >=' => $value2,
      *      'fieldName3     => NULL,
-     *      db_and(array(
+     *      'and' => array(
      *          'fieldName4'    => array(1, 2, 3)
      *          'fieldName4 <'  => 10
-     *      ))
+     *      )
      *    )
      *
      * @return object QueryBuilder
      */
     public function orWhere($condition = null)
     {
+        if (is_array($condition) && count($condition) == 0) {
+            return $this;
+        }
+
         if ($condition === null) {
             $this->where['OR'] = array();
         } else {
@@ -450,10 +458,10 @@ class QueryBuilder
      *      'fieldName1'    => $value1,
      *      'fieldName2 >=' => $value2,
      *      'fieldName3     => NULL,
-     *      db_or(array(
+     *      'or' => array(
      *          'fieldName4'    => array(1, 2, 3)
      *          'fieldName4 <'  => 10
-     *      ))
+     *      )
      *    )
      *
      * @return object QueryBuilder
