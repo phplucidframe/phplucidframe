@@ -14,7 +14,8 @@
  */
 (function(win, $) {
     var LC = win.LC;
-    var Form = {
+
+    LC.Form = {
         formData: {},
         /**
          * @internal
@@ -22,7 +23,8 @@
          * Initialize the forms for Ajax
          */
         init: function() {
-            Form.placeholderIE();
+            LC.Form.placeholderIE();
+
             var $forms = $('form');
             $.each( $forms, function() {
                 var $form = $(this);
@@ -69,7 +71,7 @@
 
                 // form submit handler init
                 $form.submit( function(e) {
-                    Form.submitForm($form.attr('id'), e);
+                    LC.Form.submitForm($form.attr('id'), e);
                     return false;
                 } );
 
@@ -144,11 +146,11 @@
 
             var $action = $form.attr('action');
             if (!$action) {
-                $form.attr('action', Page.url(LC.cleanRoute) + 'action.php');
+                $form.attr('action', LC.Page.url(LC.cleanRoute) + 'action.php');
             }
 
             if ( $form.find('input[type=file]').length ) {
-                Page.progress.start();
+                LC.Page.progress.start();
                 $form.submit();
                 return true;
             }
@@ -161,9 +163,9 @@
                 url: url,
                 dataType: 'json',
                 data: values,
-                success: Form.submitHandler
+                success: LC.Form.submitHandler
             });
-            Page.progress.start(formId);
+            LC.Page.progress.start(formId);
         },
         /**
          * @internal
@@ -218,9 +220,9 @@
                 if (response.callback) {
                     eval(response.callback); // jshint ignore:line
                 }
-                Page.progress.stop(response.formId);
+                LC.Page.progress.stop(response.formId);
             } else {
-                Page.progress.stop();
+                LC.Page.progress.stop();
             }
         },
         /**
@@ -287,10 +289,8 @@
             return str;
         }
     };
-    // Add under the namespace "LC"
-    LC.Form = Form;
 
-    var Page = {
+    LC.Page = {
         /* Path to the site root including the language code (if multi-langual site) */
         root : (LC.lang) ? LC.root + LC.lang + '/' : LC.root,
         /* Throbber when doing AJAX requests */
@@ -299,8 +299,8 @@
                 var $loading = $('#page-loading');
                 var $loadingMsg = $loading.find('#processing');
                 if (id) {
-                    if (typeof Page.throbber[id] !== 'undefined' && typeof Page.throbber[id].start === 'function') {
-                        Page.throbber[id].start();
+                    if (typeof LC.Page.throbber[id] !== 'undefined' && typeof LC.Page.throbber[id].start === 'function') {
+                        LC.Page.throbber[id].start();
                     } else {
                         $loading.show();
                         $loadingMsg.css('top', ($loading.height() - $loadingMsg.height()) / 2);
@@ -314,8 +314,8 @@
             },
             stop : function(id) {
                 if (id) {
-                    if (typeof Page.throbber[id] !== 'undefined' && typeof Page.throbber[id].stop === 'function') {
-                        Page.throbber[id].stop();
+                    if (typeof LC.Page.throbber[id] !== 'undefined' && typeof LC.Page.throbber[id].stop === 'function') {
+                        LC.Page.throbber[id].stop();
                     } else {
                         $('#page-loading').hide();
                     }
@@ -331,7 +331,7 @@
              * @param object callback The callback must be a functional object like { start: function() {}, stop: function() {} }
             */
             register : function(id, callback) {
-                Page.throbber[id] = callback;
+                LC.Page.throbber[id] = callback;
             }
         },
         queryStr : {},
@@ -350,9 +350,9 @@
             $overlay.width($(window).width());
             $overlay.height($(window).height());
 
-            Page.scroller();
-            Form.init();
-            Page.showGlobalMessage();
+            LC.Page.scroller();
+            LC.Form.init();
+            LC.Page.showGlobalMessage();
         },
         /*
          * Display side-wide global message (if any)
@@ -391,7 +391,7 @@
                 $seg[0] = LC.namespace;
                 path = $seg.join('/');
             }
-            return Page.root + path + '/';
+            return LC.Page.root + path + '/';
         },
         /*
          * Language switcher callback
@@ -450,8 +450,8 @@
          * @param mixed value The value for the query string
          */
         setQueryStr : function(id, key, value) {
-            if (typeof Page.queryStr['_'+id] !== 'undefined' && key && value) {
-                Page.queryStr['_'+id][key] = value;
+            if (typeof LC.Page.queryStr['_'+id] !== 'undefined' && key && value) {
+                LC.Page.queryStr['_'+id][key] = value;
             }
             return null;
         },
@@ -462,8 +462,8 @@
          * @return mixed
          */
         getQueryStr : function(id, key) {
-            if (typeof Page.queryStr['_'+id] !== 'undefined' && key) {
-                return Page.queryStr['_'+id];
+            if (typeof LC.Page.queryStr['_'+id] !== 'undefined' && key) {
+                return LC.Page.queryStr['_'+id];
             }
             return null;
         },
@@ -475,7 +475,7 @@
          * @param function callback Callback function to execute (optional)
         */
         request : function(id, url, params, callback) {
-            Page.progress.start(id);
+            LC.Page.progress.start(id);
 
             params = params || {};
 
@@ -485,7 +485,7 @@
                 $type = id;
                 $html = false;
             } else {
-                Page.queryStr['_'+id] = params;
+                LC.Page.queryStr['_'+id] = params;
             }
 
             $.ajax({
@@ -508,17 +508,17 @@
                                 eval($js); // jshint ignore:line
                             }
                             // pager init
-                            Page.pager(id);
+                            LC.Page.pager(id);
                         } else { // The response contains only script
                             eval(response); // jshint ignore:line
                         }
                         // afterRequest callback
-                        if (Page.afterRequest) {
-                            Page.afterRequest();
+                        if (LC.Page.afterRequest) {
+                            LC.Page.afterRequest();
                         }
                     }
                     // hide overlay
-                    Page.progress.stop(id);
+                    LC.Page.progress.stop(id);
                 }
             });
         },
@@ -534,8 +534,8 @@
                     var url = $link.attr('href');
                     $link.attr('href', '#').click(function() {
                         // attach with the existing query string
-                        Page.queryStr['_' + id].page = $link.attr('rel');
-                        Page.request(id, url, Page.queryStr['_' + id]);
+                        LC.Page.queryStr['_' + id].page = $link.attr('rel');
+                        LC.Page.request(id, url, LC.Page.queryStr['_' + id]);
                     });
                 });
             }
@@ -570,9 +570,6 @@
             return feature;
         }
     };
-
-    // Add under the namespace "LC"
-    LC.Page = Page;
 
     LC.List = {
         options: {
@@ -1008,6 +1005,7 @@
             }
         }
     };
+
     win.LC = LC;
 
     $(document).ready( function() {
