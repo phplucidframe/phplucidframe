@@ -146,7 +146,7 @@
 
             var $action = $form.attr('action');
             if (!$action) {
-                $form.attr('action', LC.Page.url(LC.cleanRoute) + 'action.php');
+                $form.attr('action', LC.Page.url(LC.cleanRoute) + 'action');
             }
 
             if ( $form.find('input[type=file]').length ) {
@@ -706,7 +706,7 @@
         /* Do delete action upon confirm OK */
         doDelete : function() {
             LC.Page.request('POST', // type
-                LC.List.options.url + 'action.php', // page to post
+                LC.List.options.url + 'action', // page to post
                 { // data to post
                     id: $('#delete-id').val(),
                     action: 'delete'
