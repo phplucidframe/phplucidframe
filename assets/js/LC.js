@@ -673,7 +673,7 @@
                     LC.List.remove($(this).attr('rel'));
                 });
 
-                $('[data-toggle="tooltip"]').tooltip();
+                $('#' + opt.id).find('[data-toggle="tooltip"]').tooltip();
             };
         },
         /* Launch the dialog to create a new entry */
