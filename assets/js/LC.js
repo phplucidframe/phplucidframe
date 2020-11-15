@@ -46,7 +46,7 @@
                 if (btns.length) {
                     // if the form has no type=submit button and the form has a class "default-submit", make form submit when pressing "Enter" in any textbox
                     if ( $form.find('[type=submit]').length === 0 && $form.hasClass('default-submit') ) {
-                        $form.find('input[type=text],input[type=password]').keyup(function(e) {
+                        $form.find('input[type=text],input[type=password],input[type=number],input[type=email],input[type=tel],input[type=url]').keyup(function(e) {
                             if (e.keyCode === 13) {
                                 $form.submit();
                             }
