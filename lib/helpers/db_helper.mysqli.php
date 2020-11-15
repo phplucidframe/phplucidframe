@@ -1099,9 +1099,41 @@ function db_exp($field, $value, $exp = '')
  */
 function db_find($table, $id)
 {
-    return db_select($table)
+    $entity = db_select($table)
         ->where()->condition('id', $id)
         ->getSingleResult();
+
+    if ($entity) {
+        $schema = _schema(_cfg('defaultDbSource'), true);
+        $entity = (array) $entity;
+        if ($schema && isset($schema[$table])) {
+            foreach ($entity as $field => $value) {
+                switch ($schema[$table][$field]['type']) {
+                    case 'int':
+                    case 'integer':
+                    case 'smallint':
+                    case 'mediumint':
+                    case 'bigint':
+                        $entity[$field] = is_numeric($value) ? (int) $value : $value;
+                        break;
+
+                    case 'boolean':
+                        $entity[$field] = (bool) $value;
+                        break;
+
+                    case 'array':
+                        $entity[$field] = $value ? unserialize($value) : array();
+                        break;
+
+                    case 'json':
+                        $entity[$field] = $value ? json_decode($value, true) : array();
+                        break;
+                }
+            }
+        }
+    }
+
+    return (object) $entity;
 }
 
 /**
