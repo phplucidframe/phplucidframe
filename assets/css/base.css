@@ -82,9 +82,6 @@ img {
     border: none;
 }
 
-label {
-}
-
 a label {
     cursor: pointer;
 }
@@ -234,6 +231,16 @@ select.fluid-25 {
 /******************/
 /* INPUT ELEMENTS */
 /******************/
+
+input.hide-spinner::-webkit-outer-spin-button,
+input.hide-spinner::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number].hide-spinner {
+    -moz-appearance:textfield; /* Firefox */
+}
 
 .lc-form-input {
     height: 18px;
