@@ -2227,6 +2227,10 @@ function _entity($table, $dbNamespace = null)
                 $value = date('Y-m-i H:i:s');
             }
 
+            if ($def['type'] == 'array' || $def['type'] == 'json') {
+                $value = array();
+            }
+
             $entity[$field] = $value;
         }
     }
