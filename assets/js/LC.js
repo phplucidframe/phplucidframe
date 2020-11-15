@@ -585,7 +585,8 @@
             editButton: '.table .actions .edit',
             deleteButton: '.table .actions .delete',
             editCallback: null,
-            url : LC.Page.url(LC.vars.baseDir), /* mapping directory */
+            deleteCallback: null,
+            url: LC.Page.url(LC.vars.baseDir), /* mapping directory */
             params: {},
         },
 
@@ -713,7 +714,11 @@
                     action: 'delete'
                 },
                 function() { // callback
-                    LC.List.list();
+                    if (LC.List.options.deleteCallback) {
+                        LC.List.options.deleteCallback();
+                    } else {
+                        LC.List.list();
+                    }
                 }
             );
         }
