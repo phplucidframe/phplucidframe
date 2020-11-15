@@ -586,6 +586,7 @@
             deleteButton: '.table .actions .delete',
             editCallback: null,
             url : LC.Page.url(LC.vars.baseDir), /* mapping directory */
+            params: {},
         },
 
         /* Constructor */
@@ -616,7 +617,7 @@
             LC.List.createConfirmDialog();
 
             /* Load list */
-            LC.List.list();
+            LC.List.list(opt.params);
         },
         /* Create confirm dialog */
         createConfirmDialog : function() {
