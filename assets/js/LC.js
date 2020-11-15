@@ -353,6 +353,7 @@
             LC.Page.scroller();
             LC.Form.init();
             LC.Page.showGlobalMessage();
+            LC.DependentUpdater();
         },
         /*
          * Display side-wide global message (if any)
@@ -1004,6 +1005,43 @@
                 LC.AsynFileUploader.hooks[name][hook] = func;
             }
         }
+    };
+    /**
+     * Change another select dropdown upon one select dropdown change
+     */
+    LC.DependentUpdater = function() {
+        $('[data-dependency]').change(function() {
+            var $parent     = $(this);
+            var $child      = $($parent.data('dependency'));
+            var url         = $parent.data('url');
+            var callback    = $parent.data('callback');
+
+            if (url && $parent.val()) {
+                $child.prop('disabled', true);
+
+                LC.Page.request('GET', url, { parentId: $parent.val() }, function(response) {
+                    var $option = $child.find('option[value=""]');
+                    $child.empty();
+                    $child.append($option);
+
+                    $.each(response, function(key, value) {
+                        $child.append($('<option />', { value : key, text : value}));
+                    });
+
+                    $child.prop('disabled', false);
+                    $child.show();
+                    $child.val('');
+
+                    if ($child.data('value') && $child.find('option[value="' + $child.data('value') + '"]').length){
+                        $child.val($child.data('value'));
+                    }
+
+                    if (callback) {
+                        callback();
+                    }
+                });
+            }
+        });
     };
 
     win.LC = LC;
