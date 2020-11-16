@@ -733,6 +733,8 @@ class SchemaManager
             'down'  => array(),
         );
 
+        $sql['up'][] = 'SET FOREIGN_KEY_CHECKS=0;';
+
         # Detect table renaming
         $this->detectTableRenamings($schemaFrom, $schemaTo);
         if (count($this->tablesRenamed)) {
@@ -942,6 +944,8 @@ class SchemaManager
                 $fieldBefore = $field;
             }
         }
+
+        $sql['up'][] = 'SET FOREIGN_KEY_CHECKS=1;';
 
         return $sql;
     }
