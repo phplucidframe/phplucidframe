@@ -1295,7 +1295,6 @@ if (!function_exists('_fnumSmart')) {
      */
     function _fnumSmart($value, $decimals = 2, $unit = '')
     {
-        global $lc_nullFill;
         $value = _fnum($value, $decimals, $unit);
         $v = explode('.', $value);
         if ($decimals > 0 && isset($v[1])) {
@@ -1331,11 +1330,15 @@ if (!function_exists('_fdate')) {
      */
     function _fdate($date, $format = '')
     {
+        if (empty($date)) {
+            return '';
+        }
+
         if (!$format) {
             $format = _cfg('dateFormat');
         }
 
-        return (is_string($date)) ? date($format, strtotime($date)) : date($format, $date);
+        return is_string($date) ? date($format, strtotime($date)) : date($format, $date);
     }
 }
 
@@ -1349,9 +1352,14 @@ if (!function_exists('_fdatetime')) {
      */
     function _fdatetime($dateTime, $format = '')
     {
+        if (empty($dateTime)) {
+            return '';
+        }
+
         if (!$format) {
             $format = _cfg('dateTimeFormat');
         }
+
         return date($format, strtotime($dateTime));
     }
 }
@@ -1367,7 +1375,7 @@ if (!function_exists('_ftimeAgo')) {
     function _ftimeAgo($time, $format = 'M j Y')
     {
         if (empty($time)) {
-            return _cfg('nullFill');
+            return '';
         }
 
         $now = time();
@@ -1565,10 +1573,14 @@ if (!function_exists('_slug')) {
  * @param string $givenFormat Format for the given date
  * @param string $separator   Separator in the date. Default is dash "-"
  *
- * @return string the SQL date string if the given date is valid, otherwise null
+ * @return string|null the SQL date string if the given date is valid, otherwise null
  */
 function _sqlDate($date, $givenFormat = 'dmy', $separator = '-')
 {
+    if (empty($date)) {
+        return null;
+    }
+
     $dt      = explode($separator, $date);
     $format  = str_split($givenFormat);
     $ft      = array_flip($format);
@@ -1577,11 +1589,7 @@ function _sqlDate($date, $givenFormat = 'dmy', $separator = '-')
     $m = $dt[$ft['m']];
     $d = $dt[$ft['d']];
 
-    if (checkdate($m, $d, $y)) {
-        return $y.'-'.$m.'-'.$d;
-    } else {
-        return null;
-    }
+    return checkdate($m, $d, $y) ? $y . '-' . $m .'-'. $d : null;
 }
 /**
  * Encrypts the given text using security salt if mcrypt extension is enabled, otherwise using md5()
