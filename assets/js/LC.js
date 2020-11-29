@@ -544,7 +544,7 @@
         /**
          * Check to see if CSS support is available in the browser
          * Inspired by https://developer.mozilla.org/en-US/docs/CSS/Tutorials/Using_CSS_animations/Detecting_CSS_animation_support
-         * @param string feature The CSS feature/property name in camel case
+         * @param string featureName The CSS feature/property name in camel case
          * @return boolean
         */
         detectCSSFeature : function(featureName) {
@@ -569,7 +569,34 @@
                 }
             }
             return feature;
-        }
+        },
+        /**
+         * Add dynamic elements
+         */
+        addMoreElement : function($btn) {
+            var $container = $($btn.data('target'));
+            var $row = $container.children(':last').clone();
+
+            $row.find('input, select, textarea').val('');
+
+            $row.unbind('click');
+            $row.find('.btn-remove').click(function(e) {
+                e.preventDefault();
+                $row.closest('.element-group').remove();
+            });
+
+            $container.append($row);
+            $container.find('[data-toggle="tooltip"]').tooltip();
+
+            var index = $container.find('.element-group').length - 1;
+            $row = $container.children(':last');
+            $row.find('input, select, textarea').each(function(i, elem) {
+                var id = $(elem).attr('id');
+                var name = $(elem).attr('name');
+                $(elem).attr('id', id.replace(/(\d+)/, index));
+                $(elem).attr('name', name.replace(/(\d+)/, index));
+            });
+        },
     };
 
     LC.List = {
@@ -1043,7 +1070,7 @@
                     }
 
                     if (callback) {
-                        callback();
+                        Function('"use strict";' + callback + '()')();
                     }
                 });
             }
