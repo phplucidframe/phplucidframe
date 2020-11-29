@@ -577,10 +577,17 @@ function route_start($uri, array $except = array())
 
 /**
  * Check if the current route uri contains the given uri
- * @param  string $uri URI string
+ * @param  string $args Variable list of URI strings
  * @return boolean true/false
  */
-function route_contain($uri)
+function route_contain()
 {
-    return stristr(_rr(), trim($uri, '/')) ? true : false;
+    $args = func_get_args();
+    foreach ($args as $uri) {
+        if (stristr(_rr(), trim($uri, '/'))) {
+            return true;
+        }
+    }
+
+    return false;
 }
