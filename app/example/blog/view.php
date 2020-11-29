@@ -4,9 +4,12 @@
  * It generally should contain HTML between <body> and </body>.
  */
 ?>
-<?php include( _i('inc/tpl/header.php') ); ?>
-
 <h3><?php echo $pageTitle; ?></h3>
+
 <div id="list"></div>
 
-<?php include( _i('inc/tpl/footer.php') ); ?>
+<script type="text/javascript">
+    $(function() {
+        LC.Page.Blog.init();
+    });
+</script>

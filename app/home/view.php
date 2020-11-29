@@ -4,8 +4,6 @@
  * It generally should contain HTML between <body> and </body>.
  */
 ?>
-<?php include( _i('inc/tpl/header.php') ); ?>
-
 <h1><?php echo _t('Welcome to PHPLucidFrame'); ?></h1>
 <?php echo _tc('about'); ?>
 <h3><?php echo _t('Prerequisites'); ?></h3>
@@ -25,4 +23,6 @@
     <a href="<?php echo _url('example/asyn-file-uploader'); ?>" class="button black">AsynFileUploader <?php echo _t('Example'); ?></a>
 </p>
 
-<?php include( _i('inc/tpl/footer.php') ); ?>
+<script type="text/javascript">
+    LC.Page.Home.init();
+</script>

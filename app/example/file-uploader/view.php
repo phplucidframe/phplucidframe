@@ -4,8 +4,6 @@
  * It generally should contain HTML between <body> and </body>.
  */
 ?>
-<?php include( _i('inc/tpl/header.php') ); ?>
-
 <h3><?php echo $pageTitle; ?></h3>
 <p>This is an example page which shows generic file upload handling.</p>
 <div>
@@ -24,5 +22,3 @@
     </form>
     <?php form_respond('frmUpload', validation_get('errors')); ?>
 </div>
-
-<?php include( _i('inc/tpl/footer.php') ); ?>

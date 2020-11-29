@@ -4,58 +4,30 @@
  * initializing the base resources needed to run the page
  */
 $pageTitle = _t('AsynFileUploader Example');
+$view = _app('view');
 $id = _arg(2);
 
-include('query.php');
-?>
-<!DOCTYPE html>
-<html>
-<head>
-    <title><?php echo _title($pageTitle); ?></title>
-    <?php include( _i('inc/tpl/head.php') ); ?>
-    <style type="text/css">
-        .asynfileuploader-button {
-            width: 106px;
-        }
-        .table .col {
-            margin-right: 20px;
-        }
-        .thumbnail a {
-            color: #8c8c8c;
-        }
-    </style>
-</head>
-<body>
-    <?php include('view.php'); ?>
-</body>
-</html>
-<script type="application/javascript">
-    // This function shows the PHP POSTed data array in JSON format
-    // when clicked the Submit button
-    function postOutput($post) {
-        console.log($post);
-        alert(JSON.stringify($post));
-        alert('Check your developer console');
-    }
+/**
+ * The following commented section works with the sample database
+ * You may uncomment it to test
+ * ~/example/asyn-file-uploader/1
+ * ~/example/asyn-file-uploader/2
+ */
 
-    // The following are example hooks defined for the last AsynFileUploader named "sheet"
-    LC.AsynFileUploader.addHook('sheet', 'afterUpload', function(name, data) {
-        console.log('afterUpload');
-        console.log(name);
-        console.log(data);
-    });
+/*
+if ($id && is_numeric($id)) {
+    $image = db_select('post_image', 'pi')
+        ->fields('pi', array('id', 'file_name'))
+        ->where('pi.postId', $id)
+        ->getSingleResult();
+}
 
-    LC.AsynFileUploader.addHook('sheet', 'afterDelete', function(name, data) {
-        console.log('afterDelete');
-        console.log(name);
-        console.log(data);
-    });
+$doc = db_select('document', 'd')
+    ->fields('d', array('id', 'file_name'))
+    ->getSingleResult();
+*/
 
-    LC.AsynFileUploader.addHook('sheet', 'onError', function(name, error) {
-        console.log('onError');
-        console.log(name);
-        console.log(error);
-        alert(error.plain);
-    });
-
-</script>
+$view->data = array(
+    'pageTitle' => $pageTitle,
+    'id' => $id,
+);

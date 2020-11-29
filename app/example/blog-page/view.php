@@ -4,8 +4,6 @@
  * It generally should contain HTML between <body> and </body>.
  */
 ?>
-<?php include( _i('inc/tpl/header.php') ); ?>
-
 <h3><?php echo $blog->title; ?></h3>
 <p>
     If you need your own custom routes, you can easily define them in <code class="inline">/inc/route.config.php</code>. The following example shows the route key <code class="inline">lc_blog_show</code> of the route path <code class="inline">/blog/{id}/{slug}</code> mapping to <code class="inline">/app/example/blog-page/index.php</code> by passing two arguments <code class="inline">id</code> and <code class="inline">slug</code> with the requirements of 'id' to be digits and 'slug' to be alphabets/dashes/underscores.
@@ -71,5 +69,3 @@
         </form>
     </div>
 </p>
-
-<?php include( _i('inc/tpl/footer.php') ); ?>

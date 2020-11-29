@@ -168,7 +168,7 @@ $lc_imageFilterSet = array(
     'jpgQuality'   => 75
 );
 # $lc_layoutMode: Enable layout mode or not
-$lc_layoutMode = false;
+$lc_layoutMode = true;
 # $lc_layoutMode: Default layout file name
 $lc_layoutName = 'layout';
 /**

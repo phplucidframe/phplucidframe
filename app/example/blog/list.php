@@ -65,8 +65,8 @@ $totalRecords = count($blog);
 
 # Prerequisite for the Pager
 $pager = _pager()
-    ->set('itemsPerPage', $lc_itemsPerPage = 2)
-    ->set('pageNumLimit', $lc_pageNumLimit)
+    ->set('itemsPerPage', _cfg('itemsPerPage', 2))
+    ->set('pageNumLimit', _cfg('pageNumLimit'))
     ->set('total', $totalRecords)
     ->set('ajax', true)
     ->calculate();

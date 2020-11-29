@@ -4,9 +4,7 @@
  * It generally should contain HTML between <body> and </body>.
  */
 ?>
-<?php include( _i('inc/tpl/header.php') ); ?>
-
-<h3><?php echo $pageTitle; ?></h3>
+<h3><?php echo $pageTitle ?></h3>
 <p>This is an example page which shows generic form handling without AJAX.</p>
 <div>
     <form id="frmComment" method="post" class="no-ajax">
@@ -33,5 +31,3 @@
     </form>
     <?php form_respond('frmComment', validation_get('errors')); ?>
 </div>
-
-<?php include( _i('inc/tpl/footer.php') ); ?>
