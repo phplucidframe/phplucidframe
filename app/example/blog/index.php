@@ -8,4 +8,5 @@ $pageTitle = _t('Blog') . ' ('. _t('AJAX List & Pagination') . ')';
 
 _meta('description', $pageTitle . ': ' . _cfg('metaDescription'));
 
+_app('title', $pageTitle);
 _app('view')->addData('pageTitle', $pageTitle);

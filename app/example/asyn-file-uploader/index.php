@@ -27,6 +27,7 @@ $doc = db_select('document', 'd')
     ->getSingleResult();
 */
 
+_app('title', $pageTitle);
 $view->data = array(
     'pageTitle' => $pageTitle,
     'id' => $id,

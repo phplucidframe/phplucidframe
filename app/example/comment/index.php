@@ -8,4 +8,5 @@ $pageTitle = _t('Generic Form Example');
 
 include('action.php');
 
+_app('title', $pageTitle);
 _app('view')->addData('pageTitle', $pageTitle);

@@ -89,8 +89,10 @@ $pager = _pager()
 
 $articles = array_slice($articles, $pager->get('offset'), $pager->get('itemsPerPage'));
 
+_app('title', _t('Articles') . ' ('. _t('Normal Pagination Example') . ')');
+
 $view->data = array(
-    'pageTitle'     => _t('Articles') . ' ('. _t('Normal Pagination Example') . ')',
+    'pageTitle'     => _app('title'),
     'totalRecords'  => count($articles),
     'articles'      => $articles,
     'pager'         => $pager,

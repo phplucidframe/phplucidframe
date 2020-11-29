@@ -33,4 +33,8 @@ final class App
      * @var object
      */
     public static $auth;
+    /**
+     * @var string|array
+     */
+    public static $title;
 }

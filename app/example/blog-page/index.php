@@ -35,6 +35,7 @@ if ($blog) {
 }
 
 $pageTitle = $blog->title;
+_app('title', $pageTitle);
 
 $view->data = array(
     'pageTitle' => $blog->title,

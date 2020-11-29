@@ -7,4 +7,5 @@ $pageTitle = _t('Generic Form Upload');
 
 include('action.php');
 
+_app('title', $pageTitle);
 _app('view')->addData('pageTitle', $pageTitle);

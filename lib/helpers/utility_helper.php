@@ -1122,11 +1122,24 @@ function _title()
 {
     global $lc_siteName;
     global $lc_titleSeparator;
+
     $args = func_get_args();
+
+    if (count($args) == 0) {
+        $title = _app('title');
+        if (is_array($title)) {
+            $args = $title;
+        }
+
+        if (is_string($title)) {
+            $args = array($title);
+        }
+    }
 
     if (count($args) == 0) {
         return $lc_siteName;
     }
+
     if (count($args) == 1) {
         if (is_array($args[0])) {
             $args = _filterArrayEmpty($args[0]);
