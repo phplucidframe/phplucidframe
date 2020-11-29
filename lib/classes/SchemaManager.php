@@ -608,9 +608,7 @@ class SchemaManager
         # Confirm before executing the queries
         $statements = array();
         if ($cmd->confirm('Type "y" to execute or type "n" to abort:')) {
-            $statements[] = 'SET FOREIGN_KEY_CHECKS = 0;';
             $statements = array_merge($statements, $dropConstraintSql, $sql['up'], $createConstraintSql);
-            $statements[] = 'SET FOREIGN_KEY_CHECKS = 1;';
 
             $noOfQueries = $this->executeQueries($dbNamespace, $statements);
             if (!$noOfQueries) {
@@ -631,7 +629,7 @@ class SchemaManager
         }
 
         _writeln('--------------------');
-        //_writeln('%d queries executed.', $noOfQueries);
+        _writeln('%d queries executed.', $noOfQueries);
 
         return true;
     }
@@ -732,8 +730,6 @@ class SchemaManager
             'up'    => array(),
             'down'  => array(),
         );
-
-        $sql['up'][] = 'SET FOREIGN_KEY_CHECKS=0;';
 
         # Detect table renaming
         $this->detectTableRenamings($schemaFrom, $schemaTo);
@@ -945,8 +941,6 @@ class SchemaManager
             }
         }
 
-        $sql['up'][] = 'SET FOREIGN_KEY_CHECKS=1;';
-
         return $sql;
     }
 
@@ -1038,6 +1032,9 @@ class SchemaManager
         }
 
         db_transaction();
+
+        array_unshift($queries, 'SET FOREIGN_KEY_CHECKS = 0;');
+        array_push($queries, 'SET FOREIGN_KEY_CHECKS = 1;');
 
         $count = 0;
         $error = false;
