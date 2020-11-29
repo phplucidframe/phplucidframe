@@ -8,10 +8,7 @@ $view   = _app('view');
 $id     = $get['id'];
 $slug   = $get['slug'];
 
-$blog = new stdClass();
-$blog->title = 'Custom Routing to a Page Including a Form Example';
-$blog->body  = 'This would be from the database.';
-$blog->slug  = 'custom-routing-to-a-page-including-a-form-example';
+$blog = post_getMock($id);
 
 /*
  //// You can retrieve a single blog post here in 3 ways:
