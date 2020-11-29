@@ -181,7 +181,7 @@ function db_prq($enable = true)
  *     )
  * The prefix colon ":" for placeholder is optional
  *
- * @return boolean Returns TRUE on success or FALSE on failure
+ * @return mixed PDOStatement|boolean|string Returns PDOStatement on success or FALSE on failure
  */
 function db_query($sql, $args = array())
 {
@@ -528,14 +528,19 @@ function db_tableHasTimestamps($table)
  *       'fieldName2' => $value2
  *     )
  *
- * @return bool|int|mixed For insert, returns inserted id on success or FALSE on failure; For update, returns TRUE on success or FALSE on failure
+ * @return bool|int|mixed For insert, returns inserted id on success or FALSE on failure;
+ *    For update, returns updated id on success or FALSE on failure
  */
 function db_save($table, $data = array(), $id = 0, $useSlug = true, array $condition = array())
 {
     if ($id) {
         $data = array_merge(array('id' => $id), $data);
 
-        return db_update($table, $data, $useSlug, $condition);
+        if (db_update($table, $data, $useSlug, $condition)) {
+            return $id;
+        }
+
+        return false;
     } else {
         return db_insert($table, $data, $useSlug);
     }
@@ -798,7 +803,7 @@ if (!function_exists('db_update')) {
             $sql = rtrim($sql, ', ');
             $sql .= ' WHERE ' . $clause;
 
-            return db_query($sql, $values);
+            return db_query($sql, $values) ? true : false;
         }
 
         return false;
@@ -861,7 +866,7 @@ if (!function_exists('db_delete')) {
                 return $sql;
             }
 
-            return db_query($sql, $values);
+            return db_query($sql, $values) ? true : false;
         }
 
         $sql = 'DELETE FROM ' . QueryBuilder::quote($table) . $condition . ' LIMIT 1';

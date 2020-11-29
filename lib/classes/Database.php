@@ -304,7 +304,7 @@ class Database
      *     )
      * The prefix colon ":" for placeholder is optional
      *
-     * @return mixed PDOStatement|boolean
+     * @return mixed PDOStatement|boolean|string
      */
     public function query($sql, $args = array())
     {
