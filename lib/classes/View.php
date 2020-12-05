@@ -88,4 +88,24 @@ class View
             throw new \RuntimeException('View file is missing.');
         }
     }
+
+    /**
+     * Display block view
+     *
+     * @param string $name Block view name to the file name such as block_{$name}.php
+     * @param array $data
+     */
+    public function block($name, array $data = array())
+    {
+        $blockName = 'block_' . $name;
+        $this->data = array_merge($this->data, $data);
+
+        $block = _i(_ds(_cr(), $blockName . '.php'));
+        if ($block) {
+            extract($this->data);
+            include $block;
+        } else {
+            throw new \RuntimeException('Block view file is missing.');
+        }
+    }
 }
