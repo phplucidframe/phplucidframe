@@ -74,15 +74,6 @@
                     LC.Form.submitForm($form.attr('id'), e);
                     return false;
                 } );
-
-                if ( !$form.hasClass('no-focus') ) { // sometimes a page is long and the form is at the bottom of the page, no need to focus it.
-                    // focus on the first input
-                    if ($form.find('input[type=text]').length) {
-                        $form.find('input[type=text]').filter(':first').focus();
-                    } else if ($form.find('textarea').length) {
-                        $form.find('textarea').filter(':first').focus();
-                    }
-                }
             });
             // jquery ui button theme
             if (typeof $('.jqbutton').button !== 'undefined') {
