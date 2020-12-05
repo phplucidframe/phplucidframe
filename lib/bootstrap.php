@@ -117,10 +117,13 @@ if ($baseUrl) {
 require INC . 'constants.php';
 
 # Utility helpers (required)
-if ($file = _i('helpers' . _DS_ . 'utility_helper.php', false)) {
-    include $file;
-}
 require HELPER . 'utility_helper.php';
+
+if ($utilityHelper = _i('helpers' . _DS_ . 'utility_helper.php', true)) {
+    if ($utilityHelper != HELPER . 'utility_helper.php') {
+        include $utilityHelper;
+    }
+}
 
 # Autoload all system files by directory
 _autoloadDir(CLASSES);
@@ -198,6 +201,7 @@ _unloader('validation_helper', HELPER);
 if ($file = _i('helpers' . _DS_ . 'auth_helper.php')) {
     include $file;
 }
+
 if ($moduleAuth = _readyloader('auth_helper')) {
     if ($moduleAuth != $file) {
         require $moduleAuth;
