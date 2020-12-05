@@ -228,6 +228,19 @@ select.fluid-25 {
     width: 100%;
 }
 
+.num-spinner input[type=number]::-webkit-outer-spin-button,
+.num-spinner input[type=number]::-webkit-inner-spin-button,
+input.hide-spinner::-webkit-outer-spin-button,
+input.hide-spinner::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.num-spinner input[type=number],
+input[type=number].hide-spinner {
+    -moz-appearance:textfield; /* Firefox */
+}
+
 .spinner {
     -webkit-animation: spin 1s linear infinite;
     -moz-animation: spin 1s linear infinite;
