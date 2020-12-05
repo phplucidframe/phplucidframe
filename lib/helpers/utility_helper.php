@@ -1341,14 +1341,14 @@ if (!function_exists('_fdate')) {
      * @param  string $format The date format; The config variable will be used if it is not passed
      * @return string The formatted date
      */
-    function _fdate($date, $format = '')
+    function _fdate($date = '', $format = '')
     {
-        if (empty($date)) {
-            return '';
-        }
-
         if (!$format) {
             $format = _cfg('dateFormat');
+        }
+
+        if (empty($date)) {
+            return date($format);
         }
 
         return is_string($date) ? date($format, strtotime($date)) : date($format, $date);
@@ -1363,14 +1363,14 @@ if (!function_exists('_fdatetime')) {
      * @param  string $format    The date/time format; The config variable will be used if it is not passed
      * @return string The formatted date/time
      */
-    function _fdatetime($dateTime, $format = '')
+    function _fdatetime($dateTime = '', $format = '')
     {
-        if (empty($dateTime)) {
-            return '';
-        }
-
         if (!$format) {
             $format = _cfg('dateTimeFormat');
+        }
+
+        if (empty($dateTime)) {
+            return date($format);
         }
 
         return date($format, strtotime($dateTime));
