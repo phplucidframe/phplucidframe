@@ -42,7 +42,7 @@ class Pager
     /** @var boolean The page is enabled or not */
     private $enabled = true;
     /** @var string HTML tag for the pagination display; default is <table>. <ul> and <div> are also allowed. */
-    private $htmlTag = '<table>';
+    private $htmlTag = 'table';
     /** @var string HTML tag for internal use */
     private $parentOpenTag;
     /** @var string HTML tag for internal use */
@@ -55,6 +55,8 @@ class Pager
     private $name = 'lc_last_page';
     /** @var callable The callback function for customized display */
     private $displayCallback;
+    /** @var string CSS class name for pagination container */
+    private $className = 'pager';
 
     /**
      * Constructor
@@ -94,35 +96,38 @@ class Pager
      */
     public function get($key)
     {
-        return (isset($this->$key)) ? $this->$key : '';
+        return isset($this->$key) ? $this->$key : '';
     }
 
     /**
      * Setter functions for the property "htmlTag"
      *
-     * @param string $tag The HTML tag - <table>, <ul> or <div>
+     * @param string $tag The HTML tag - table, ul or div
      * @return object Pager
      * @internal
      * @ignore
      */
-    private function setHtmlTag($tag = '<table>')
+    private function setHtmlTag($tag = 'table')
     {
-        if (!in_array($tag, array('<table>', '<ul>', '<div>'))) {
-            $this->htmlTag = '<table>';
+        if (!in_array($tag, array('table', 'ul', 'div'))) {
+            $this->htmlTag = 'table';
         }
+
         switch ($this->htmlTag) {
-            case '<table>':
-                $this->parentOpenTag = '<table class="pager" border="0" cellpadding="0" cellspacing="0"><tr>';
+            case 'table':
+                $this->parentOpenTag = '<table class="' . $this->className . '" border="0" cellpadding="0" cellspacing="0"><tr>';
                 $this->parentCloseTag = '</tr></table>';
                 $this->childTag = 'td';
                 break;
-            case '<ul>':
-                $this->parentOpenTag = '<ul class="pager">';
+
+            case 'ul':
+                $this->parentOpenTag = '<ul class="' . $this->className . '">';
                 $this->parentCloseTag = '</ul>';
                 $this->childTag = 'li';
                 break;
-            case '<div>':
-                $this->parentOpenTag = '<div class="pager">';
+
+            case 'div':
+                $this->parentOpenTag = '<div class="' . $this->className . '">';
                 $this->parentCloseTag = '</div>';
                 $this->childTag = 'div';
                 break;
