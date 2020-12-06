@@ -41,7 +41,7 @@ class Pager
     private $offset = 0;
     /** @var boolean The page is enabled or not */
     private $enabled = true;
-    /** @var string HTML tag for the pagination display; default is <table>. <ul> and <div> are also allowed. */
+    /** @var string HTML tag for the pagination display; default is table. ul and div are also allowed. */
     private $htmlTag = 'table';
     /** @var string HTML tag for internal use */
     private $parentOpenTag;
