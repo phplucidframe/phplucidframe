@@ -56,7 +56,7 @@ class Pager
     /** @var callable The callback function for customized display */
     private $displayCallback;
     /** @var string CSS class name for pagination container */
-    private $className = 'pager';
+    private $className = 'lc-pager';
 
     /**
      * Constructor

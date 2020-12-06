@@ -519,7 +519,7 @@
          * @param string id HTML container ID for the list to be paginated
         */
         pager : function(id) {
-            var $pager = $('#'+id).find('.pager a[rel]');
+            var $pager = $('#'+id).find('.lc-pager a[rel]');
             if ($pager.length) {
                 $.each($pager, function(i, a) {
                     var $link = $(a);

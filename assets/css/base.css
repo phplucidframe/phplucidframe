@@ -1342,7 +1342,7 @@ table.list tr td.indent.second,
     margin-bottom: 5px;
 }
 
-.pager-container .pager {
+.pager-container .lc-pager {
     float: left;
 }
 
@@ -1350,37 +1350,37 @@ table.list tr td.indent.second,
     float: right;
 }
 
-.pager {
+.lc-pager {
     padding: 0;
     margin: 0;
 }
 
-table.pager tr td {
+table.lc-pager tr td {
     padding: 2px 3px;
 }
 
-div.pager div {
+div.lc-pager div {
     display: inline-block;
     padding: 2px 2px;
 }
 
-ul.pager {
+ul.lc-pager {
     list-style-type: none;
 }
 
-ul.pager li {
+ul.lc-pager li {
     display: inline-block;
     padding: 2px 2px;
 }
 
-.pager .pages a,
-.pager .pages span.currentPage {
+.lc-pager .pages a,
+.lc-pager .pages span.currentPage {
     padding: 4px 8px;
     background: #ccc;
     margin: 0 1px;
 }
 
-.pager .pages a {
+.lc-pager .pages a {
     background: #f3f3f3;
     border-color: #aaaaaa;
     border-style: solid;
@@ -1392,8 +1392,8 @@ ul.pager li {
     border-radius: 4px;
 }
 
-.pager .pages span.currentPage,
-.pager .pages a:hover {
+.lc-pager .pages span.currentPage,
+.lc-pager .pages a:hover {
     background: #777777;
     border: 1px #555555 solid;
     color: #ffffff;
@@ -1402,45 +1402,44 @@ ul.pager li {
     border-radius: 4px;
 }
 
-.pager label {
+.lc-pager label {
     display: inline-block;
     width: 10px;
     height: 17px;
     text-indent: -1000px;
 }
 
-.pager .first-enabled label {
+.lc-pager .first-enabled label {
     background: url(../images/pager/start.png) 0 3px no-repeat;
 }
 
-.pager .first-disabled label {
+.lc-pager .first-disabled label {
     background: url(../images/pager/start_disabled.png) 0 3px no-repeat;
 }
 
-.pager .prev-enabled label {
+.lc-pager .prev-enabled label {
     background: url(../images/pager/previous.png) 0 3px no-repeat;
 }
 
-.pager .prev-disabled label {
+.lc-pager .prev-disabled label {
     background: url(../images/pager/previous_disabled.png) 0 3px no-repeat;
 }
 
-.pager .next-enabled label {
+.lc-pager .next-enabled label {
     background: url(../images/pager/next.png) 0 3px no-repeat;
 }
 
-.pager .next-disabled label {
+.lc-pager .next-disabled label {
     background: url(../images/pager/next_disabled.png) 0 3px no-repeat;
 }
 
-.pager .last-enabled label {
+.lc-pager .last-enabled label {
     background: url(../images/pager/end.png) 0 3px no-repeat;
 }
 
-.pager .last-disabled label {
+.lc-pager .last-disabled label {
     background: url(../images/pager/end_disabled.png) 0 3px no-repeat;
 }
-
 
 /**************/
 /* TABLE VIEW */
