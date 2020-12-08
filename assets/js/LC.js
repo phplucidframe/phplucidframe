@@ -128,7 +128,7 @@
         },
         /**
          * @internal
-         * LC.Form.submitform()
+         * LC.Form.submitForm()
          * Ajax form submission
          */
         submitForm : function(formId) {
@@ -465,9 +465,16 @@
          * @param string url URL to request
          * @param object param Query string to URL (optional)
          * @param function callback Callback function to execute (optional)
+         * @param bool throbber Display throbber or not (optional, default: true)
         */
-        request : function(id, url, params, callback) {
-            LC.Page.progress.start(id);
+        request : function(id, url, params, callback, throbber) {
+            if (typeof throbber === 'undefined') {
+                throbber = true;
+            }
+
+            if (throbber) {
+                LC.Page.progress.start(id);
+            }
 
             params = params || {};
 
@@ -509,8 +516,11 @@
                             LC.Page.afterRequest();
                         }
                     }
-                    // hide overlay
-                    LC.Page.progress.stop(id);
+
+                    if (throbber) {
+                        // hide overlay
+                        LC.Page.progress.stop(id);
+                    }
                 }
             });
         },
