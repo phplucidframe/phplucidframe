@@ -22,12 +22,14 @@ Middleware::runBefore();
 
 ob_start('_flush');
 
-if (substr(_app('page'), -8) != 'view.php') {
-    require _app('page');
+$basename = basename(_app('page'), '.php');
+
+if (in_array($basename, array('401', '403', '404'))) {
+    _cfg('layoutMode', false);
 }
 
-if (in_array(rtrim(substr(_app('page'), -7), '.php'), array('401', '403', '404'))) {
-    _cfg('layoutMode', false);
+if ($basename != 'view') {
+    require _app('page');
 }
 
 if (_cfg('layoutMode') && _isAjax() === false) {
