@@ -699,7 +699,6 @@ function validate_date($value, $format = 'y-m-d')
     $separators = array('/', '-', '.');
     $sepGroup = '([-\/.])';
     $cleanFormat = preg_replace('/'.$sepGroup.'/', '', $format); // remove the separators from the format
-    $pattern = '';
 
     if (in_array($cleanFormat, array('dmy', 'mdy'))) {
         $pattern = '/^([\d]{1,2})'.$sepGroup.'([\d]{1,2})'.$sepGroup.'([\d]{4})$/'; // dmy or mdy
@@ -709,10 +708,13 @@ function validate_date($value, $format = 'y-m-d')
 
     if ($pattern && preg_match_all($pattern, $value, $matches)) {
         if ($matches[2][0] != $matches[4][0]) {
-            return false; // inconsisitent separators
-        } elseif (!in_array($matches[2][0], $separators)) {
+            return false; // inconsistent separators
+        }
+
+        if (!in_array($matches[2][0], $separators)) {
             return false; // invalid separator
         }
+
         $sep    = $matches[2][0]; // the separator using
         $dt     = explode($sep, $value);
         $format = str_split($cleanFormat);
@@ -720,6 +722,7 @@ function validate_date($value, $format = 'y-m-d')
         $y = $dt[$ft['y']];
         $m = $dt[$ft['m']];
         $d = $dt[$ft['d']];
+
         return checkdate($m, $d, $y);
     }
 
