@@ -285,8 +285,8 @@ class QueryBuilderTestCase extends LucidFrameTestCase
         $this->assertEqual($qb->getSQL(), 'SELECT COUNT(*) count, NOW() now FROM `post` `p`');
 
         $qb = db_select('user', 'u')
-            ->field('CONTACT(u.fullName, "-", u.username)', 'name');
-        $this->assertEqual($qb->getSQL(), 'SELECT CONTACT(u.fullName, "-", u.username) name FROM `user` `u`');
+            ->field('CONCAT(u.fullName, "-", u.username)', 'name');
+        $this->assertEqual($qb->getSQL(), 'SELECT CONCAT(u.fullName, "-", u.username) name FROM `user` `u`');
     }
 
     public function testQueryBuilderResult()
