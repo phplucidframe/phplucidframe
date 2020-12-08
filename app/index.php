@@ -41,6 +41,8 @@ if (_cfg('layoutMode') && _isAjax() === false) {
 
     $layout = _i(_ds('inc', 'tpl', _app('view')->layout . '.php'));
     if (is_file($layout) && file_exists($layout)) {
+        $viewData = _app('view')->data;
+        extract($viewData);
         require_once $layout;
     } else {
         _header(500);
