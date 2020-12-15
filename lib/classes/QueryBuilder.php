@@ -710,15 +710,6 @@ class QueryBuilder
             }
         }
 
-        # ORDER BY clause
-        if ($this->orderBy) {
-            $orderBy = array();
-            foreach ($this->orderBy as $field => $sort) {
-                $orderBy[] = self::quote($field) . ' ' . $sort;
-            }
-            $sql .= ' ORDER BY ' . implode(', ', $orderBy);
-        }
-
         # GROUP BY clause
         if ($this->groupBy) {
             $groupBy = array();
@@ -731,6 +722,15 @@ class QueryBuilder
         # HAVING clause
         if ($this->having) {
             $sql .= ' HAVING ' . $this->having;
+        }
+
+        # ORDER BY clause
+        if ($this->orderBy) {
+            $orderBy = array();
+            foreach ($this->orderBy as $field => $sort) {
+                $orderBy[] = self::quote($field) . ' ' . $sort;
+            }
+            $sql .= ' ORDER BY ' . implode(', ', $orderBy);
         }
 
         # LIMIT clause
