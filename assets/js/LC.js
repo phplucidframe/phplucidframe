@@ -320,7 +320,7 @@
              * Register a custom throbber
              * @param string id    HTML container ID for the request
              * @param object callback The callback must be a functional object like { start: function() {}, stop: function() {} }
-            */
+             */
             register : function(id, callback) {
                 LC.Page.throbber[id] = callback;
             }
@@ -428,7 +428,7 @@
                     target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
                     if (target.length) {
                         $('html,body').animate({
-                          scrollTop: target.offset().top
+                            scrollTop: target.offset().top
                         }, 1000);
                         return false;
                     }
@@ -466,7 +466,7 @@
          * @param object param Query string to URL (optional)
          * @param function callback Callback function to execute (optional)
          * @param bool throbber Display throbber or not (optional, default: true)
-        */
+         */
         request : function(id, url, params, callback, throbber) {
             if (typeof throbber === 'undefined') {
                 throbber = true;
@@ -527,7 +527,7 @@
         /**
          * Pager helper
          * @param string id HTML container ID for the list to be paginated
-        */
+         */
         pager : function(id) {
             var $pager = $('#'+id).find('.lc-pager a[rel]');
             if ($pager.length) {
@@ -547,12 +547,12 @@
          * Inspired by https://developer.mozilla.org/en-US/docs/CSS/Tutorials/Using_CSS_animations/Detecting_CSS_animation_support
          * @param string featureName The CSS feature/property name in camel case
          * @return boolean
-        */
+         */
         detectCSSFeature : function(featureName) {
             var feature = false,
-            domPrefixes = 'Webkit Moz ms O'.split(' '),
-            elm = document.createElement('div'),
-            featurenameCapital = null;
+                domPrefixes = 'Webkit Moz ms O'.split(' '),
+                elm = document.createElement('div'),
+                featurenameCapital = null;
 
             featureName = featureName.toLowerCase();
 
@@ -564,8 +564,8 @@
                 featurenameCapital = featureName.charAt(0).toUpperCase() + featureName.substr(1);
                 for ( var i = 0; i < domPrefixes.length; i++ ) {
                     if ( elm.style[domPrefixes[i] + featurenameCapital ] !== undefined ) {
-                      feature = true;
-                      break;
+                        feature = true;
+                        break;
                     }
                 }
             }
@@ -574,29 +574,44 @@
         /**
          * Add dynamic elements
          */
-        addMoreElement : function($btn) {
-            var $container = $($btn.data('target'));
-            var $row = $container.children(':last').clone();
+        elementGroup : {
+            add: function($btn) {
+                var $container = $($btn.data('target'));
+                var $row = $container.children(':last').clone();
 
-            $row.find('input, select, textarea').val('');
+                $row.find('input, select, textarea').val('');
 
-            $row.unbind('click');
-            $row.find('.btn-remove').click(function(e) {
-                e.preventDefault();
-                $row.closest('.element-group').remove();
-            });
+                $container.append($row);
+                $container.find('[data-toggle="tooltip"]').tooltip();
 
-            $container.append($row);
-            $container.find('[data-toggle="tooltip"]').tooltip();
+                var index = $container.find('.element-group').length - 1;
+                $row = $container.children(':last');
+                $row.find('input, select, textarea').each(function(i, elem) {
+                    var id = $(elem).attr('id');
+                    var name = $(elem).attr('name');
+                    $(elem).attr('id', id.replace(/(\d+)/, index));
+                    $(elem).attr('name', name.replace(/(\d+)/, index));
+                });
 
-            var index = $container.find('.element-group').length - 1;
-            $row = $container.children(':last');
-            $row.find('input, select, textarea').each(function(i, elem) {
-                var id = $(elem).attr('id');
-                var name = $(elem).attr('name');
-                $(elem).attr('id', id.replace(/(\d+)/, index));
-                $(elem).attr('name', name.replace(/(\d+)/, index));
-            });
+                $container.find('.element-group .btn-remove').each(function(i, btn) {
+                    $(btn).unbind('click').on('click', function (e) {
+                        e.preventDefault();
+                        $(this).closest('.element-group').remove();
+                        LC.Page.elementGroup.toggleRemoveButtons($container);
+                    });
+                });
+
+                LC.Page.elementGroup.toggleRemoveButtons($container);
+            },
+            toggleRemoveButtons: function ($container) {
+                var $allRemoveBtns = $container.find('.element-group .btn-remove');
+                var $firstRemoveBtn = $container.find('.element-group:first-child .btn-remove');
+                if ($allRemoveBtns.length > 1) {
+                    $allRemoveBtns.show();
+                } else {
+                    $firstRemoveBtn.hide();
+                }
+            }
         },
     };
 
