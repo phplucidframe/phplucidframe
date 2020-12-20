@@ -358,11 +358,23 @@ function _script()
 }
 
 /**
+ * @ignore
+ * @deprecated Use _addJsVar() instead
  * Passing values from PHP to Javascript with `LC.vars`
  * @param string $name The JS variable name
  * @param mixed $value The value for the JS variable
  */
 function _addvar($name, $value = '')
+{
+    _addJsVar($name, $value);;
+}
+
+/**
+ * Passing values from PHP to Javascript with `LC.vars`
+ * @param string $name The JS variable name
+ * @param mixed $value The value for the JS variable
+ */
+function _addJsVar($name, $value = '')
 {
     global $lc_jsVars;
     $lc_jsVars[$name] = $value;
