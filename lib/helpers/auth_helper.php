@@ -104,6 +104,7 @@ function auth_get()
  */
 function auth_set($sess)
 {
+    _app('auth', $sess);
     session_set(auth_namespace(), $sess, true);
 }
 
