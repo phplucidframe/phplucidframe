@@ -13,10 +13,12 @@
     <?php _css('base.'._lang().'.css'); ?>
     <?php _css('responsive.css'); ?>
     <?php _css('jquery.ui'); ?>
+    <?php _app('view')->headStyle() ?>
     <?php _js('jquery'); ?>
     <?php _js('jquery.ui'); ?>
     <?php _script(); ?>
     <?php _js('LC.js'); ?>
+    <?php _app('view')->headScript() ?>
     <?php _js('app.js'); ?>
 </head>
 <body>

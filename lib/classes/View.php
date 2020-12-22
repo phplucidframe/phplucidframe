@@ -29,6 +29,14 @@ class View
      * @var array Array of data passed into view
      */
     private $data = array();
+    /**
+     * @var array Array of css file names
+     */
+    private $headStyles = array();
+    /**
+     * @var array Array of js file names
+     */
+    private $headScripts = array();
 
     /**
      * Setter
@@ -62,6 +70,28 @@ class View
     public function addData($key, $value)
     {
         $this->data[$key] = $value;
+    }
+
+    /**
+     * Add CSS file to be included in head section
+     * @param string $file An absolute file path or file name only.
+     *  The file name only will be prepended the folder name css/ and it will be looked in every sub-sites "css" folder
+     */
+    public function addHeadStyle($file)
+    {
+        $this->headStyles[] = $file;
+        $this->headStyles = array_unique($this->headStyles);
+    }
+
+    /**
+     * Add JS file to be included in head section
+     * @param string $file An absolute file path or file name only.
+     *  The file name only will be prepended the folder name js/ and it will be looked in every sub-sites "js" folder
+     */
+    public function addHeadScript($file)
+    {
+        $this->headScripts[] = $file;
+        $this->headScripts = array_unique($this->headScripts);
     }
 
     /**
@@ -106,6 +136,26 @@ class View
             include $block;
         } else {
             throw new \RuntimeException('Block view file is missing.');
+        }
+    }
+
+    /**
+     * Include CSS files in head section. Make sure calling this method in head
+     */
+    public function headStyle()
+    {
+        foreach ($this->headStyles as $file) {
+            _css($file);
+        }
+    }
+
+    /**
+     * Include JS files in head section. Make sure calling this method in head
+     */
+    public function headScript()
+    {
+        foreach ($this->headScripts as $file) {
+            _js($file);
         }
     }
 }

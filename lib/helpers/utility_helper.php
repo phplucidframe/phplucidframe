@@ -386,14 +386,21 @@ function _addJsVar($name, $value = '')
  * @param string $file An absolute file path or just file name.
  *  The file name only will be prepended the folder name js/ and it will be looked in every sub-sites "js" folder
  * @param string $subDir The sub-directory under assets directory, where the file exists
+ * @param bool $return [optional] If you would like to capture the output of _js, use the return parameter.
+ *  If this parameter is set to true, _js will return its output, instead of printing it (which it does by default).
  * @return boolean Return true if the file found and included, otherwise false
  */
-function _js($file, $subDir = '')
+function _js($file, $subDir = '', $return = false)
 {
     $version = '?v' . _cfg('asset_version');
 
     if (stripos($file, 'http') === 0 || stripos($file, '//') === 0) {
-        echo '<script src="' . $file . '" type="text/javascript"></script>';
+        $html = '<script src="' . $file . '" type="text/javascript"></script>';
+        if ($return) {
+            return $html;
+        }
+
+        echo $html;
         return true;
     }
 
@@ -426,7 +433,12 @@ function _js($file, $subDir = '')
                 $fileWithSystemPath = ROOT . str_replace(WEB_ROOT, '', $includeFile);
             }
             if (file_exists($fileWithSystemPath)) {
-                echo '<script src="' . $includeFile . $version . '" type="text/javascript"></script>';
+                $html = '<script src="' . $includeFile . $version . '" type="text/javascript"></script>';
+                if ($return) {
+                    return $html;
+                }
+
+                echo $html;
                 return true;
             }
         }
@@ -441,14 +453,21 @@ function _js($file, $subDir = '')
  * @param string $file An absolute file path or file name only.
  *  The file name only will be prepended the folder name css/ and it will be looked in every sub-sites "css" folder
  * @param string $subDir The sub-directory under assets directory, where the file exists
+ * @param bool $return [optional] If you would like to capture the output of _js, use the return parameter.
+ *  If this parameter is set to true, _js will return its output, instead of printing it (which it does by default).
  * @return boolean Return true if the file found and included, otherwise false
  */
-function _css($file, $subDir = '')
+function _css($file, $subDir = '', $return = false)
 {
     $version = '?v' . _cfg('asset_version');
 
     if (stripos($file, 'http') === 0 || stripos($file, '//') === 0) {
-        echo '<link href="' . $file . '" rel="stylesheet" type="text/css" />';
+        $html = '<link href="' . $file . '" rel="stylesheet" type="text/css" />';
+        if ($return) {
+            return $html;
+        }
+
+        echo $html;
         return true;
     }
 
@@ -477,7 +496,12 @@ function _css($file, $subDir = '')
             }
 
             if (file_exists($fileWithSystemPath)) {
-                echo '<link href="' . $includeFile . $version . '" rel="stylesheet" type="text/css" />';
+                $html = '<link href="' . $includeFile . $version . '" rel="stylesheet" type="text/css" />';
+                if ($return) {
+                    return $html;
+                }
+
+                echo $html;
                 return true;
             }
         }
@@ -2269,4 +2293,26 @@ function _entity($table, $dbNamespace = null)
     }
 
     return (object) $entity;
+}
+
+/**
+ * Add CSS file to be included in head section
+ * @param string $file An absolute file path or file name only.
+ *  The file name only will be prepended the folder name css/ and it will be looked in every sub-sites "css" folder
+ */
+function _addHeadStyle($file)
+{
+    $view = _app('view');
+    $view->addHeadStyle($file);
+}
+
+/**
+ * Add JS file to be included in head section
+ * @param string $file An absolute file path or file name only.
+ *  The file name only will be prepended the folder name js/ and it will be looked in every sub-sites "js" folder
+ */
+function _addHeadScript($file)
+{
+    $view = _app('view');
+    $view->addHeadScript($file);
 }
