@@ -113,6 +113,10 @@ class Router
      */
     public static function match()
     {
+        if (PHP_SAPI === 'cli') {
+            return false;
+        }
+
         $realPath = explode('/', route_path());
         $routes   = self::$routes;
 

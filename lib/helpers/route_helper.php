@@ -467,12 +467,16 @@ function route_match()
  * @ignore
  *
  * Route to a page according to request
- * interally called by /app/index.php
+ * internally called by /app/index.php
  *
  * @return string
  */
 function router()
 {
+    if (PHP_SAPI === 'cli') {
+        return '';
+    }
+
     # Get a route from the defined custom routes (if any)
     $_page = route_match();
     if ($_page) {
