@@ -588,9 +588,14 @@
                 $row = $container.children(':last');
                 $row.find('input, select, textarea').each(function(i, elem) {
                     var id = $(elem).attr('id');
+                    if (id) {
+                        $(elem).attr('id', id.replace(/(\d+)/, index));
+                    }
+
                     var name = $(elem).attr('name');
-                    $(elem).attr('id', id.replace(/(\d+)/, index));
-                    $(elem).attr('name', name.replace(/(\d+)/, index));
+                    if (name) {
+                        $(elem).attr('name', name.replace(/(\d+)/, index));
+                    }
                 });
 
                 $container.find('.element-group .btn-remove').each(function(i, btn) {
