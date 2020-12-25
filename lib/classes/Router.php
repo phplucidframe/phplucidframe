@@ -77,15 +77,19 @@ class Router
     {
         $this->name = $name;
 
-        $method = strtoupper($method);
-        if (!in_array($method, array('GET', 'POST', 'PUT', 'PATCH', 'DELETE'))) {
-            $method = 'GET';
+        $method = explode('|', strtoupper($method));
+        $methods = array_filter($method, function($value) {
+            return in_array($value, array('GET', 'POST', 'PUT', 'PATCH', 'DELETE'));
+        });
+
+        if (count($methods) == 0) {
+            $methods = array('GET');
         }
 
         self::$routes[$this->name] = array(
             'path'      => $path,
             'to'        => $to,
-            'method'    => explode('|', $method),
+            'method'    => $methods,
             'patterns'  => $patterns
         );
 
