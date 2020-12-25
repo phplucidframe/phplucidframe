@@ -124,6 +124,21 @@ class Router
             return false;
         }
 
+        $matchedRoute = array_filter($routes, function ($array) use ($realPath) {
+            $last = array_pop($realPath);
+            $path = '/' . implode('/', $realPath);
+            if ($array['path'] == $path && in_array($_SERVER['REQUEST_METHOD'], $array['method'])
+                && file_exists(APP_ROOT . $array['to'] . _DS_ . $last . '.php')) {
+                return true;
+            }
+
+            return false;
+        });
+
+        if (count($matchedRoute)) {
+            return false;
+        }
+
         $found = false;
         foreach ($routes as $key => $value) {
             $patternPath = explode('/', trim($value['path'], '/'));
@@ -154,7 +169,7 @@ class Router
                             $regex = $value['patterns'][$name];
                             if (!preg_match('/^' . $regex . '$/', $var)) {
                                 _header(400);
-                                throw new \InvalidArgumentException(sprintf('The Router does not satify the argument value "%s" for "%s".', $var, $regex));
+                                throw new \InvalidArgumentException(sprintf('The Router does not satisfy the argument value "%s" for "%s".', $var, $regex));
                             }
                         }
 
