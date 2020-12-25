@@ -25,6 +25,7 @@ use LucidFrame\Core\Seeder;
 _consoleCommand('db:seed')
     ->setDescription('Initial seeding of your database with default data or sample data')
     ->addArgument('db', 'The database namespace defined in $lc_databases of config.php; if not provided $lc_defaultDbSource will be used.')
+    ->addOption('entity', null, 'Optional comma-separated list of entity names to be executed', null, LC_CONSOLE_OPTION_OPTIONAL)
     ->setDefinition(function (\LucidFrame\Console\Command $cmd) {
         $db = $cmd->getArgument('db');
         if (empty($db)) {
@@ -32,8 +33,11 @@ _consoleCommand('db:seed')
         }
 
         if ($cmd->confirm('The seeding tables will be purged. Type "y" or "yes" to continue:')) {
+            $names = $cmd->getOption('entity');
+            $entities = $names ? explode(',', $names) : array();
+
             $seeder = new Seeder($db);
-            if ($seeder->run()) {
+            if ($seeder->run($entities)) {
                 _writeln('Seeded for "%s".', $db);
             } else {
                 _writeln('Not seeded.');

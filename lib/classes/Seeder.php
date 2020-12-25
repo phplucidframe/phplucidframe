@@ -82,12 +82,20 @@ class Seeder
 
     /**
      * Run seeding
+     * @param array $entities The array of entity names to be executed only
      * @return boolean TRUE if seeded; otherwise FALSE
      */
-    public function run()
+    public function run(array $entities = array())
     {
-        if ($this->load()) {
+        if ($this->load($entities)) {
             # Purge before insert
+
+            if (count($entities)) {
+                $this->tables = array_filter($entities, function($table) {
+                    return in_array($table, $this->tables);
+                });
+            }
+
             foreach ($this->tables as $table) {
                 db_delete_multi($table);
             }
@@ -150,17 +158,27 @@ class Seeder
 
     /**
      * Load seeding data
+     * @param array $entities The array of entity names to be executed only
      * @return boolean TRUE if it is load; FALSE if nothing loaded
      */
-    private function load()
+    private function load(array $entities = array())
     {
         $_DB = _app('db');
+
+        $entities = array_map(function($entity) {
+            $entity .= '.php';
+            return $entity;
+        }, $entities);
 
         $dir = $this->path . $this->dbNamespace;
         if (is_dir($dir) && is_object($_DB)) {
             $seeding = array();
             $files = scandir($dir);
             foreach ($files as $fileName) {
+                if (count($entities) && !in_array($fileName, $entities)) {
+                    continue;
+                }
+
                 $dir = rtrim(rtrim($dir, '/'), '\\');
                 $file = $dir . _DS_ . $fileName;
 
