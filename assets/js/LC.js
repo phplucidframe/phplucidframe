@@ -698,8 +698,20 @@
             });
         },
         /* Load the list */
-        list : function(param) {
+        list : function() {
             var opt = LC.List.options;
+
+            var param = {};
+            if (arguments.length === 2) {
+                opt.url = arguments[0];
+                param = arguments[1];
+            } else if (arguments.length === 1) {
+                if (typeof arguments[0] === 'string') {
+                    opt.url = arguments[0];
+                } else if (typeof arguments[0] === 'object') {
+                    param = arguments[0];
+                }
+            }
 
             $(opt.formModal).dialog('close');
 
