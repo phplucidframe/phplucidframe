@@ -1068,7 +1068,15 @@
             if (url && $parent.val()) {
                 $child.prop('disabled', true);
 
-                LC.Page.request('GET', url, { parentId: $parent.val() }, function(response) {
+                var params = {
+                    parentId: $parent.val()
+                };
+
+                if ($parent.data('param')) {
+                    params = $.extend({}, $parent.data('param'), params);
+                }
+
+                LC.Page.request('GET', url, params, function(response) {
                     var $option = $child.find('option[value=""]');
                     $child.empty();
                     $child.append($option);
