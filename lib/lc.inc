@@ -711,9 +711,10 @@ function _p($name)
 /**
  * Get the parameter value by name defined in parameter.env.inc
  * @param  string $name The parameter name in dot annotation format such as prod.db.default.username
+ * @param  string $default The default value if the parameter name doesn't exist
  * @return mixed
  */
-function _env($name)
+function _env($name, $default = '')
 {
     global $lc_envParameters;
 
@@ -722,11 +723,13 @@ function _env($name)
         if (is_file($file) && file_exists($file)) {
             $lc_envParameters = include($file);
         } else {
-            return null;
+            return $default;
         }
     }
 
-    return __dotNotationToArray($name, $lc_envParameters);
+    $value = __dotNotationToArray($name, $lc_envParameters);
+
+    return $value ?: $default;
 }
 
 /**
