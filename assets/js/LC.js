@@ -632,6 +632,7 @@
             createButton: '#btn-new',
             editButton: '.table .actions .edit',
             deleteButton: '.table .actions .delete',
+            createCallback: null,
             editCallback: null,
             deleteCallback: null,
             url: LC.Page.url(LC.vars.baseDir), /* mapping directory */
@@ -741,6 +742,11 @@
             var opt = LC.List.options;
 
             LC.Form.clear(opt.formId);
+
+            if (opt.createCallback) {
+                opt.createCallback($('#' + opt.formId));
+            }
+
             $(opt.formModal).dialog('open');
         },
         /* Launch the dialog to edit an existing entry */
