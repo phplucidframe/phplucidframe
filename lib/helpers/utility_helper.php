@@ -1383,8 +1383,12 @@ if (!function_exists('_fdate')) {
             $format = _cfg('dateFormat');
         }
 
-        if (empty($date)) {
+        if (func_num_args() === 0) {
             return date($format);
+        }
+
+        if (empty($date)) {
+            return '';
         }
 
         return is_string($date) ? date($format, strtotime($date)) : date($format, $date);
@@ -1405,8 +1409,12 @@ if (!function_exists('_fdatetime')) {
             $format = _cfg('dateTimeFormat');
         }
 
-        if (empty($dateTime)) {
+        if (func_num_args() == 0) {
             return date($format);
+        }
+
+        if (empty($dateTime)) {
+            return '';
         }
 
         return date($format, strtotime($dateTime));
