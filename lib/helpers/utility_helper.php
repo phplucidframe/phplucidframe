@@ -853,13 +853,23 @@ function _r()
  *
  * - example.com/foo/bar would return foo/bar
  * - example.com/en/foo/bar would also return foo/bar
+ * - example.com/foo/bar?id=1 would also return foo/bar
  * - example.com/1/this-is-slug would return 1/this-is-slug
  *
  * @return string The route path starting from the site root
  */
 function _rr()
 {
-    return (_isRewriteRule()) ? REQUEST_URI : _r();
+    if (!_isRewriteRule()) {
+        return _r();
+    }
+
+    $uri = REQUEST_URI;
+    if (strpos($uri, '?') !== false) { // exclude query string
+        $uri = substr($uri, 0, strpos($uri, '?'));
+    }
+
+    return $uri;
 }
 /**
  * Get the clean routing path without the query string
