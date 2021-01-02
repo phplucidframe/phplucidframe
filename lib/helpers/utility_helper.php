@@ -344,6 +344,10 @@ function _script()
     $script .= 'LC.vars.baseDir = "' . _cfg('baseDir') . '";';
     if (count($jsVars)) {
         foreach ($jsVars as $name => $val) {
+            if (is_object($val)) {
+                $val = (array) $val;
+            }
+
             if (is_array($val)) {
                 $script .= 'LC.vars.'.$name.' = '.json_encode($val).';';
             } elseif (is_numeric($val)) {
