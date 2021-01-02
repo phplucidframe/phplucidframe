@@ -340,7 +340,7 @@ function db_select($table, $alias = null)
  * @param string|null   $arg3 The field alias if the first argument is table name
  *   or the second argument is field name
  *
- * @return int|object The result count or QueryBuilder
+ * @return int|QueryBuilder The result count or QueryBuilder
  */
 function db_count($arg1, $arg2 = null, $arg3 = null)
 {
@@ -749,7 +749,7 @@ if (!function_exists('db_update')) {
                 }
             }
 
-            $fields[$field] = $value ?: null;
+            $fields[$field] = is_null($value) ? null : $value;
 
             if ($i === $slugIndex && $useSlug === true) {
                 # $data[1] is slug
