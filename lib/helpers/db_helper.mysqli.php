@@ -796,7 +796,7 @@ if (!function_exists('db_update')) {
 
             $sql = 'UPDATE ' . QueryBuilder::quote($table) . ' SET ';
             foreach ($fields as $key => $value) {
-                $placeholder = ':' . $key;
+                $placeholder = ':upd_' . $key;
                 $sql .= sprintf('`%s` = %s, ', $key, $placeholder);
                 $values[$placeholder] = $value;
             }
