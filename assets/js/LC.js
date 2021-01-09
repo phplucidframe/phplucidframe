@@ -497,19 +497,24 @@
                         callback(response);
                     } else {
                         if ($html === true) { // the response may contain both HTML and script
-                            var $rsp = response.split('[script]');
-                            var html = $rsp[0];
+                            var res = response.split('[script]');
+                            var html = res[0];
                             if (html) {
                                 $('#'+id).html(html);
                             }
-                            if ( $rsp.length > 1 ) {
-                                var $js = $rsp[1];
-                                eval($js); // jshint ignore:line
+                            if (res.length > 1) {
+                                LC.eval(res[1]);
                             }
                             // pager init
                             LC.Page.pager(id);
-                        } else { // The response contains only script
-                            eval(response); // jshint ignore:line
+                        } else {
+                            if (typeof response === 'string') {
+                                // The response contains only script
+                                LC.eval(response);
+                            } else if (typeof response === 'object' && typeof response.callback !== 'undefined') {
+                                // The response contains only json
+                                LC.eval(response.callback);
+                            }
                         }
                         // afterRequest callback
                         if (LC.Page.afterRequest) {
@@ -1117,11 +1122,15 @@
                     }
 
                     if (callback) {
-                        Function('"use strict";' + callback + '()')();
+                        LC.eval(callback + '()');
                     }
                 });
             }
         });
+    };
+
+    LC.eval = function(statement) {
+        Function('"use strict";' + statement)();
     };
 
     win.LC = LC;
