@@ -91,12 +91,13 @@ function form_validate($validations = null)
  * AJAX form responder
  * @param string $formId The HTML form ID
  * @param array $errors The array of the errors (it is used only for generic form processing)
+ * @param bool $forceJson Send json header
  * @return void
  */
-function form_respond($formId, $errors = null)
+function form_respond($formId, $errors = null, $forceJson = false)
 {
     Form::set('id', $formId);
-    $ajaxResponse = $errors === null ? true : false;
+    $ajaxResponse = $errors === null;
 
     form_set('error', validation_get('errors'));
     if (is_array($errors) && count($errors)) {
@@ -119,7 +120,11 @@ function form_respond($formId, $errors = null)
     );
 
     if ($ajaxResponse) {
-        echo json_encode($response);
+        if ($forceJson) {
+            _json($response);
+        } else {
+            echo json_encode($response);
+        }
     } else {
         echo '<script type="text/javascript">';
         echo 'LC.Form.submitHandler(' . json_encode($response) . ')';
