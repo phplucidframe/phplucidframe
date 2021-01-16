@@ -1053,7 +1053,7 @@ class QueryBuilder
                     } else {
                         $inPlaceholders = array();
                         foreach ($value as $i => $val) {
-                            $placeholder = ':' . $key . $i;
+                            $placeholder = $placeholder . $i;
                             $inPlaceholders[] = $placeholder;
                             self::setBindValue($placeholder, $val);
                         }
