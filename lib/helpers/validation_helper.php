@@ -127,12 +127,12 @@ function validation_addError($id, $msg)
  */
 function validate_mandatory($value)
 {
-    if (is_array($value) && empty($value['name'])) {
-        return false; # file upload
-    }
-
     if (is_array($value) && count($value) == 0) {
         return false; # other grouped inputs
+    }
+
+    if (is_array($value) && isset($value['name']) && empty($value['name'])) {
+        return false; # file upload
     }
 
     if (empty($value) && $value != '0') {

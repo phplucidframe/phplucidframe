@@ -26,7 +26,7 @@ class Validation
     /** @var array The array of default error messages */
     private static $messages;
     /** @var array The array of the rules for group of inputs validation */
-    private static $batchRules = array('mandatoryOne', 'mandatoryAll');
+    private static $batchRules = array('mandatory', 'mandatoryOne', 'mandatoryAll');
 
     /**
      * Setter
