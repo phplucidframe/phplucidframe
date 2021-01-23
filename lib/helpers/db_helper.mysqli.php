@@ -770,13 +770,13 @@ if (!function_exists('db_update')) {
                 QueryBuilder::clearBindValues();
                 list($clause, $values) = db_condition($cond);
                 $notCond = array(
-                    'not' => $cond
+                    '$not' => $cond
                 );
             } elseif ($condition && is_array($condition) && count($condition)) {
                 QueryBuilder::clearBindValues();
                 list($clause, $values) = db_condition($condition);
                 $notCond = array(
-                    'not' => $condition
+                    '$not' => $condition
                 );
             }
 

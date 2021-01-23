@@ -319,7 +319,7 @@ class QueryBuilder
      *      'fieldName1'    => $value1,
      *      'fieldName2 >=' => $value2,
      *      'fieldName3     => NULL,
-     *      'or' => array(
+     *      '$or' => array(
      *          'fieldName4'    => array(1, 2, 3)
      *          'fieldName4 <'  => 10
      *      )
@@ -360,7 +360,7 @@ class QueryBuilder
      *      'fieldName1'    => $value1,
      *      'fieldName2 >=' => $value2,
      *      'fieldName3     => NULL,
-     *      'and' => array(
+     *      '$and' => array(
      *          'fieldName4'    => array(1, 2, 3)
      *          'fieldName4 <'  => 10
      *      )
@@ -458,7 +458,7 @@ class QueryBuilder
      *      'fieldName1'    => $value1,
      *      'fieldName2 >=' => $value2,
      *      'fieldName3     => NULL,
-     *      'or' => array(
+     *      '$or' => array(
      *          'fieldName4'    => array(1, 2, 3)
      *          'fieldName4 <'  => 10
      *      )
@@ -979,7 +979,8 @@ class QueryBuilder
         foreach ($cond as $field => $value) {
             $field = trim($field);
 
-            if (in_array(strtoupper($field), array('AND', 'OR', 'NOT'))) {
+            if (in_array(strtolower($field), array('$and', '$or', '$not'))) {
+                $field = substr($field, 1);
                 if (strtoupper($field) == 'NOT') {
                     list($nestedClause, $values) = self::buildCondition($value, 'AND');
                     $condition[] = 'NOT (' . $nestedClause . ')';

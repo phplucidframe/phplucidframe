@@ -89,7 +89,7 @@ class DBHelperTestCase extends LucidFrameTestCase
         list($clause, $values) = db_and(array(
             'title' => 'a project',
             'type' => 'software',
-            'or' => array(
+            '$or' => array(
                 'id' => array(1, 2, 3),
                 'id >=' => 10
             )
@@ -107,7 +107,7 @@ class DBHelperTestCase extends LucidFrameTestCase
         list($clause, $values) = db_or(array(
             'title' => 'a project',
             'type' => 'software',
-            'and' => array(
+            '$and' => array(
                 'id' => array(1, 2, 3),
                 'id >=' => 10
             )
@@ -125,10 +125,10 @@ class DBHelperTestCase extends LucidFrameTestCase
         list($clause, $values) = db_and(array(
             'title' => 'a project',
             'type' => 'software',
-            'or' => array(
+            '$or' => array(
                 'id' => array(1, 2, 3),
                 'id >=' => 10,
-                'and' => array(
+                '$and' => array(
                     'created >' => '2014-12-31',
                     'deleted' => null
                 ),
@@ -151,10 +151,10 @@ class DBHelperTestCase extends LucidFrameTestCase
         list($clause, $values) = db_or(array(
             'title' => 'a project',
             'type' => 'software',
-            'and' => array(
+            '$and' => array(
                 'id' => array(1, 2, 3),
                 'id >=' => 10,
-                'or' => array(
+                '$or' => array(
                     'created >' => '2014-12-31',
                     'deleted' => null
                 ),
@@ -177,7 +177,7 @@ class DBHelperTestCase extends LucidFrameTestCase
         list($clause, $values) = db_and(array(
             'title' => 'a project',
             'type' => 'software',
-            'or' => array(
+            '$or' => array(
                 'id' => array(1, 2, 3),
                 'id >=' => 10,
             ),
@@ -201,11 +201,11 @@ class DBHelperTestCase extends LucidFrameTestCase
         list($clause, $values) = db_or(array(
             'title' => 'a project',
             'type' => 'software',
-            'and' => array(
+            '$and' => array(
                 'id' => array(1, 2, 3),
                 'id >=' => 10,
             ),
-            'or' => array(
+            '$or' => array(
                 'created >' => '2014-12-31',
                 'deleted' => null
             )
@@ -379,7 +379,7 @@ class DBHelperTestCase extends LucidFrameTestCase
             'post',
             array('postTitle' => 'Hello World updated with string OR condition!'),
             array(
-                'or' => array(
+                '$or' => array(
                     'postId' => 1,
                     'uid' => 1
                 )
@@ -388,7 +388,7 @@ class DBHelperTestCase extends LucidFrameTestCase
 
         $post = db_select('post')
             ->where(array(
-                'or' => array(
+                '$or' => array(
                     'postId' => 1,
                     'uid' => 1
                 )
@@ -418,7 +418,7 @@ class DBHelperTestCase extends LucidFrameTestCase
         $this->assertEqual(self::oneline(db_queryStr()), 'DELETE FROM `post` WHERE `uid` = 1 AND `postId` IN (9, 10)');
 
         db_delete_multi('post', array(
-            'postId' => array(1, 9, 10))
+                'postId' => array(1, 9, 10))
         );
         $this->assertEqual(self::oneline(db_queryStr()), 'DELETE FROM `post` WHERE `postId` IN (1, 9, 10)');
     }
