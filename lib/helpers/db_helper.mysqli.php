@@ -975,6 +975,44 @@ if (!function_exists('db_delete_multi')) {
     }
 }
 
+if (!function_exists('db_truncate')) {
+    /**
+     * Truncate the table
+     * @param string $table Table name without prefix
+     */
+    function db_truncate($table)
+    {
+        $table = db_table($table);
+
+        db_query('TRUNCATE ' . QueryBuilder::quote($table));
+    }
+}
+
+/**
+ * Set foreign key check
+ * @param int $flag 0 or 1
+ */
+function db_setForeignKeyCheck($flag)
+{
+    db_query('SET FOREIGN_KEY_CHECKS =' . $flag);
+}
+
+/**
+ * Enable foreign key check
+ */
+function db_enableForeignKeyCheck()
+{
+    db_setForeignKeyCheck(1);
+}
+
+/**
+ * Disable foreign key check
+ */
+function db_disableForeignKeyCheck()
+{
+    db_setForeignKeyCheck(0);
+}
+
 /**
  * @internal
  * @ignore

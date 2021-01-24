@@ -89,6 +89,7 @@ class Seeder
     {
         if ($this->load($entities)) {
             # Purge before insert
+            db_disableForeignKeyCheck();
 
             if (count($entities)) {
                 $this->tables = array_filter($entities, function($table) {
@@ -97,7 +98,7 @@ class Seeder
             }
 
             foreach ($this->tables as $table) {
-                db_delete_multi($table);
+                db_truncate($table);
             }
 
             $tableDone = '';
@@ -149,6 +150,8 @@ class Seeder
             if ($tableDone) {
                 _writeln('%s is seeded.', $tableDone);
             }
+
+            db_enableForeignKeyCheck();
 
             return true;
         } else {
