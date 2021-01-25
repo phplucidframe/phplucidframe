@@ -160,6 +160,28 @@ if (!function_exists('auth_role')) {
     }
 }
 
+if (!function_exists('auth_roles')) {
+    /**
+     * Check if the authenticate user has the specific user role(s)
+     * This function is overridable from the custom helpers/auth_helper.php
+     * @param  string $roles The user role names
+     * @return boolean
+     */
+    function auth_roles()
+    {
+        if (auth_isAnonymous()) {
+            return false;
+        }
+
+        $auth       = auth_prerequisite();
+        $field      = $auth['fields']['role'];
+        $session    = auth_get();
+        $roles      = func_get_args();
+
+        return in_array($session->$field, $roles);
+    }
+}
+
 if (!function_exists('auth_permissions')) {
     /**
      * Get the permissions of a particular role
