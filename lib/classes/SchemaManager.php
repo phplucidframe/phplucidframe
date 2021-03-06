@@ -1480,7 +1480,14 @@ class SchemaManager
         # OneToOne
         if (isset($def['1:1']) && is_array($def['1:1'])) {
             foreach ($def['1:1'] as $fkTable => $fk) {
-                $relation = $this->getRelationOptions($fk, $fkTable);
+                $relationOptions = array();
+                if (is_numeric($fkTable)) {
+                    $fkTable = $fk;
+                } else {
+                    $relationOptions = $fk;
+                }
+
+                $relation = $this->getRelationOptions($relationOptions, $fkTable);
                 $field = $relation['name'];
                 # Get FK field definition
                 $fkFields[$field] = $this->getFKField($fkTable, $relation);
