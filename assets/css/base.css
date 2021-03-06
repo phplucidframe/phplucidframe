@@ -13,7 +13,7 @@
  * with this source code in the file LICENSE
  */
 
-body {
+ body {
     font-size: 12px;
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
@@ -770,9 +770,6 @@ body.mini-page {
     text-align: center;
 }
 
-.container-box .box .form {
-}
-
 .container-box .box .form .row {
     padding-top: 15px;
 }
@@ -1020,6 +1017,16 @@ span.invalid {
     margin: 5px 0;
 }
 
+.table .row:before,
+.table .row:after {
+    content: "";
+    display: table;
+}
+
+.table .row:after {
+    clear: both;
+}
+
 .table .title .col,
 .table .row .col {
     float: left;
@@ -1043,6 +1050,11 @@ span.invalid {
     display: inline-block;
     font-weight: bold;
     padding-bottom: 2px;
+}
+
+.table .row .label {
+    margin: 2px 0;
+    font-weight: bold;
 }
 
 .table .col.col-50 {
@@ -1100,9 +1112,6 @@ span.invalid {
 /********/
 /* FORM */
 /********/
-
-table.form {
-}
 
 table.form td {
     vertical-align: top;
