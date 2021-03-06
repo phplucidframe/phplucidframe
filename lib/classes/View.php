@@ -122,21 +122,33 @@ class View
     /**
      * Display block view
      *
-     * @param string $name Block view name to the file name such as block_{$name}.php
+     * @param string $name Block view name to the file name with or without extension php
      * @param array $data
      */
     public function block($name, array $data = array())
     {
-        $blockName = 'block_' . $name;
+        $name = basename($name, '.php') . '.php';
+
+        $paths = array();
+        if (strrpos($name, '/') !== false) {
+            $paths[] = $name; // in the given directory path
+        } else {
+            $paths[] = _ds(_cr(), $name); // in the current directory
+            $paths[] = _ds('inc', 'tpl', $name); // in app/inc/tpl or /inc/tpl
+        }
+
         $this->data = array_merge($this->data, $data);
 
-        $block = _i(_ds(_cr(), $blockName . '.php'));
-        if ($block) {
-            extract($this->data);
-            include $block;
-        } else {
-            throw new \RuntimeException('Block view file is missing.');
+        foreach ($paths as $file) {
+            $block = _i($file);
+            if ($block) {
+                extract($this->data);
+                include $block;
+                return;
+            }
         }
+
+        throw new \RuntimeException('Block view file "' . $name . '" is missing.');
     }
 
     /**
