@@ -21,6 +21,9 @@ namespace LucidFrame\Core;
  */
 class QueryBuilder
 {
+    const EXP_CONDITION = '__QueryBuilder::condition__';
+    const EXP_RAW = '__QueryBuilder::raw__';
+
     /** @var string The table name */
     protected $table;
     /** @var string The alias for the table */
@@ -714,6 +717,11 @@ class QueryBuilder
         if ($this->groupBy) {
             $groupBy = array();
             foreach ($this->groupBy as $field) {
+                if (self::isRawExp($field)) {
+                    $groupBy[] = self::parseFieldFromRawExp($field);
+                    continue;
+                }
+
                 $groupBy[] = self::quote($field);
             }
             $sql .= ' GROUP BY ' . implode(', ', $groupBy);
@@ -728,6 +736,11 @@ class QueryBuilder
         if ($this->orderBy) {
             $orderBy = array();
             foreach ($this->orderBy as $field => $sort) {
+                if (self::isRawExp($field)) {
+                    $orderBy[] = self::parseFieldFromRawExp($field);
+                    continue;
+                }
+
                 $orderBy[] = self::quote($field) . ' ' . $sort;
             }
             $sql .= ' ORDER BY ' . implode(', ', $orderBy);
@@ -947,6 +960,40 @@ class QueryBuilder
     }
 
     /**
+     * Create raw expression string
+     * @param string $expression
+     * @return string
+     */
+    public static function raw($expression)
+    {
+        return self::EXP_RAW . $expression;
+    }
+
+    /**
+     * Check if field is raw expression
+     * @param string $field
+     * @return bool
+     */
+    private static function isRawExp($field)
+    {
+        return strpos($field, self::EXP_RAW) !== false;
+    }
+
+    /**
+     * Parse field from raw expression
+     * @param string $field
+     * @return false|string
+     */
+    private static function parseFieldFromRawExp($field)
+    {
+        if (self::isRawExp($field)) {
+            return substr($field, strlen(self::EXP_RAW));
+        }
+
+        return $field;
+    }
+
+    /**
      * Build the SQL WHERE clause from the various condition arrays
      *
      * @param array $cond The condition array, for example
@@ -995,8 +1042,8 @@ class QueryBuilder
             $fieldOpr = explode(' ', $field);
             $field = trim($fieldOpr[0]);
 
-            if (strpos($field, '__QueryBuilder::condition__') !== false) {
-                $field = substr($field, 0, strpos($field, '__QueryBuilder::condition__'));
+            if (strpos($field, self::EXP_CONDITION) !== false) {
+                $field = substr($field, 0, strpos($field, self::EXP_CONDITION));
             }
 
             $opr = count($fieldOpr) === 2 ? trim($fieldOpr[1]) : '=';

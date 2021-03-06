@@ -1112,6 +1112,16 @@ function db_rollback()
 }
 
 /**
+ * Get raw expression string
+ * @param string $exp Expression
+ * @return string
+ */
+function db_raw($exp)
+{
+    return QueryBuilder::raw($exp);
+}
+
+/**
  * @internal
  * @ignore
  *
