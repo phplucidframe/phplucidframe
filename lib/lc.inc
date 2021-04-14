@@ -674,6 +674,20 @@ function _cfg($key = '', $value = '')
 }
 
 /**
+ * Convenience method to get the value of the array config variable by its key
+ *
+ * @param string $name The config array variable name without prefix
+ * @param string $key The key of the config array of which value to be retrieved
+ * @return mixed|string|null
+ */
+function _cfgOption($name, $key)
+{
+    $config = _cfg($name);
+
+    return isset($config[$key]) ? $config[$key] : null;
+}
+
+/**
  * Get the parameter value by name defined in /inc/parameter/*
  * @param  string $name The parameter name; if $name == 'env', it returns the current environment setting from .lcenv
  * @return mixed
