@@ -273,7 +273,7 @@ input[type=number].hide-spinner {
 }
 
 .lc-form-input.large.full-width {
-    width: 93.55%;
+    width: 93.5%;
 }
 
 select.lc-form-input.large {
@@ -584,29 +584,36 @@ ol li div, ul li div {
 }
 
 #footer #copyright {
-    background: url(../images/black-green-box.png) no-repeat;
-    width: 138px;
-    height: 21px;
+    display: inline-block;
     font-size: 11px;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px;
+    background: #444;
 }
 
 #footer #copyright span {
     display: inline-block;
     color: #ffffff;
-    margin-top: 1px;
     text-align: center;
-    padding-top: 3px;
+    padding-top: 6px;
+    height: 18px;
 }
 
 #footer #copyright #left {
-    width: 48px;
+    background: #006600;
+    padding-left: 10px;
+    padding-right: 8px;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
 }
 
 #footer #copyright #right {
-    width: 80px;
+    padding-left: 5px;
+    padding-right: 10px;
+    background: #444;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
 }
 
 #footer #slogan {
@@ -678,7 +685,6 @@ ul#menu li a:hover, ul#menu li a.active {
 ul.social-icons {
     float: right;
     margin: 0;
-    margin-top: -26px;
 }
 
 ul.social-icons {
