@@ -1101,9 +1101,10 @@ class QueryBuilder
                     } else {
                         $inPlaceholders = array();
                         foreach ($value as $i => $val) {
-                            $placeholder = $placeholder . $i;
-                            $inPlaceholders[] = $placeholder;
-                            self::setBindValue($placeholder, $val);
+                            $holder = preg_replace('/(\d)*/', '', $placeholder);
+                            $holder = $holder . $i;
+                            $inPlaceholders[] = $holder;
+                            self::setBindValue($holder, $val);
                         }
 
                         $condition[] = sprintf(
