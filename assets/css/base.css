@@ -246,6 +246,10 @@ input[type=number].hide-spinner {
     height: 18px;
 }
 
+textarea.lc-form-input {
+    height: 100px;
+}
+
 .lc-form-input {
     border: 1px #b8b8b8 solid;
     padding: 8px 10px;
