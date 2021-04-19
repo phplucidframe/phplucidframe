@@ -117,7 +117,7 @@ class Router
      */
     public static function match()
     {
-        if (PHP_SAPI === 'cli') {
+        if (PHP_SAPI === 'cli' && _cfg('env') != ENV_TEST) {
             return false;
         }
 
