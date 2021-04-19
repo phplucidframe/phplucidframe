@@ -53,13 +53,13 @@ class QueryBuilderTestCase extends LucidFrameTestCase
         $qb = db_select('post', 'p')
             ->where()
             ->condition('p.postId', 1);
-        $this->assertEqual($qb->getSQL(), 'SELECT `p`.* FROM `post` `p` WHERE `p`.`postId` = :p.postId');
+        $this->assertEqual($qb->getSQL(), 'SELECT `p`.* FROM `post` `p` WHERE `p`.`postId` = :p_postId');
         $this->assertEqual($qb->getReadySQL(), 'SELECT `p`.* FROM `post` `p` WHERE `p`.`postId` = 1');
 
         $qb = db_select('post', 'p')
             ->where()
             ->condition('p.created >', '2015-11-08');
-        $this->assertEqual($qb->getSQL(), 'SELECT `p`.* FROM `post` `p` WHERE `p`.`created` > :p.created');
+        $this->assertEqual($qb->getSQL(), 'SELECT `p`.* FROM `post` `p` WHERE `p`.`created` > :p_created');
         $this->assertEqual($qb->getReadySQL(), 'SELECT `p`.* FROM `post` `p` WHERE `p`.`created` > 2015-11-08');
 
         $qb = db_select('post', 'p')
@@ -211,7 +211,7 @@ class QueryBuilderTestCase extends LucidFrameTestCase
         $qb = db_select('post', 'p')
             ->groupBy('p.catId')
             ->having(array('p.catId >' => 10));
-        $this->assertEqual($qb->getSQL(), 'SELECT `p`.* FROM `post` `p` GROUP BY `p`.`catId` HAVING `p`.`catId` > :p.catId');
+        $this->assertEqual($qb->getSQL(), 'SELECT `p`.* FROM `post` `p` GROUP BY `p`.`catId` HAVING `p`.`catId` > :p_catId');
         $this->assertEqual($qb->getReadySQL(), 'SELECT `p`.* FROM `post` `p` GROUP BY `p`.`catId` HAVING `p`.`catId` > 10');
 
         $qb = db_select('post', 'p')
@@ -219,7 +219,7 @@ class QueryBuilderTestCase extends LucidFrameTestCase
             ->having(array(
                 'p.catId >' => 10
             ));
-        $this->assertEqual($qb->getSQL(), 'SELECT `p`.* FROM `post` `p` GROUP BY `p`.`catId` HAVING `p`.`catId` > :p.catId');
+        $this->assertEqual($qb->getSQL(), 'SELECT `p`.* FROM `post` `p` GROUP BY `p`.`catId` HAVING `p`.`catId` > :p_catId');
         $this->assertEqual($qb->getReadySQL(), 'SELECT `p`.* FROM `post` `p` GROUP BY `p`.`catId` HAVING `p`.`catId` > 10');
     }
 

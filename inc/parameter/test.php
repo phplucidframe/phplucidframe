@@ -21,8 +21,8 @@ return array(
             'username'  => '',
             'password'  => '',
             'prefix'    => '',
-            'charset'   => 'utf8',
-            'collation' => 'utf8_unicode_ci',
+            'charset'   => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
         ),
         'sample' => array(
             'driver'    => 'mysql',
@@ -32,8 +32,8 @@ return array(
             'username'  => 'root',
             'password'  => 'root',
             'prefix'    => '',
-            'charset'   => 'utf8',
-            'collation' => 'utf8_unicode_ci',
+            'charset'   => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
         )
     ),
     # The site contact email address - This address used as "To" for all incoming mails

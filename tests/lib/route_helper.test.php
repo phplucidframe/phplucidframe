@@ -81,7 +81,7 @@ class RouteHelperTestCase extends LucidFrameTestCase
             route_match();
         } catch (\Exception $e) {
             $this->assertEqual(get_class($e), 'InvalidArgumentException');
-            $this->assertEqual($e->getMessage(), 'The Router does not satify the argument value "1a" for "\d+".');
+            $this->assertEqual($e->getMessage(), 'The Router does not satisfy the argument value "1a" for "\d+".');
         }
 
         try {
@@ -89,7 +89,7 @@ class RouteHelperTestCase extends LucidFrameTestCase
             route_match();
         } catch (\Exception $e) {
             $this->assertEqual(get_class($e), 'InvalidArgumentException');
-            $this->assertEqual($e->getMessage(), 'The Router does not satify the argument value "yangon." for "[a-zA-Z\-_]+".');
+            $this->assertEqual($e->getMessage(), 'The Router does not satisfy the argument value "yangon." for "[a-zA-Z\-_]+".');
         }
 
         try {
@@ -97,7 +97,7 @@ class RouteHelperTestCase extends LucidFrameTestCase
             route_match();
         } catch (\Exception $e) {
             $this->assertEqual(get_class($e), 'InvalidArgumentException');
-            $this->assertEqual($e->getMessage(), 'The Router does not satify the argument value "poah" for "list|(poah|prin)\d+".');
+            $this->assertEqual($e->getMessage(), 'The Router does not satisfy the argument value "poah" for "list|(poah|prin)\d+".');
         }
     }
 

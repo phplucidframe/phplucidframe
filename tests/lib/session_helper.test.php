@@ -143,15 +143,13 @@ class SessionHelperTestCase extends LucidFrameTestCase
         // 1.
         $msg = 'This is success flash message.';
         flash_set($msg);
-        $msg = '<span class="success">'.$msg.'</span>';
-        $expectedOutput = '<div class="message success" style="display:block;"><ul><li>'.$msg.'</li></ul></div>';
+        $expectedOutput = '<div class="message"><div class="message-success alert alert-success">' . $msg . '</div></div>';
         $this->assertEqual(flash_get(), $expectedOutput);
 
         // 2.
         $msg = 'This is error flash message.';
         flash_set($msg, null, 'error');
-        $msg = '<span class="error">'.$msg.'</span>';
-        $expectedOutput = '<div class="message error" style="display:block;"><ul><li>'.$msg.'</li></ul></div>';
+        $expectedOutput = '<div class="message"><div class="message-error alert alert-danger">' . $msg . '</div></div>';
         $this->assertEqual(flash_get(), $expectedOutput);
 
         // 3.
@@ -160,10 +158,10 @@ class SessionHelperTestCase extends LucidFrameTestCase
             '(2) This is array of flash messages.'
         );
         flash_set($msg, null, 'error');
-        $expectedOutput  = '<div class="message error" style="display:block;"><ul>';
-        $expectedOutput .= '<li><span class="error">(1) This is array of flash messages.</span></li>';
-        $expectedOutput .= '<li><span class="error">(2) This is array of flash messages.</span></li>';
-        $expectedOutput .= '</ul></div>';
+        $expectedOutput  = '<div class="message"><div class="message-error alert alert-danger"><ul>';
+        $expectedOutput .= '<li>(1) This is array of flash messages.</li>';
+        $expectedOutput .= '<li>(2) This is array of flash messages.</li>';
+        $expectedOutput .= '</ul></div></div>';
         $this->assertEqual(flash_get(), $expectedOutput);
     }
 }
