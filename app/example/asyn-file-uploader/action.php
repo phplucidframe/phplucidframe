@@ -6,8 +6,8 @@
  */
 $success = false;
 
-if (sizeof($_POST)) {
-    $post = _post($_POST);
+if (_isHttpPost()) {
+    $post = _post();
 
     $validations = array(
         'photo' => array(
