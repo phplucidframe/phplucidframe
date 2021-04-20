@@ -25,6 +25,7 @@
         "ext-gd": "*"
     },
     "require-dev": {
-        "simpletest/simpletest": "^1.1"
+        "simpletest/simpletest": "^1.1",
+        "apigen/apigen": "^4.1"
     }
 }
