@@ -89,7 +89,7 @@ define('TEST_DIR', ROOT . 'tests' . _DS_);
 define('CACHE', FILE . 'cache' . _DS_);
 
 # System prerequisites
-require LIB . 'lc.inc';
+require LIB . 'lc.php';
 # System configuration variables
 require INC . 'config.php';
 # Load environment settings
