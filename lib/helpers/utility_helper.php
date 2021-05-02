@@ -174,10 +174,10 @@ function _flush($buffer, $phase)
     $buffer = _minifyHTML($buffer);
 
     $posDoc = stripos($buffer, '<!DOCTYPE');
-    $buffer = substr($buffer, $posDoc);
 
-    return $buffer;
+    return substr($buffer, $posDoc);
 }
+
 /**
  * Minify and compress the given HTML according to the configuration `$lc_minifyHTML`
  * @param  string $html HTML to be compressed or minified
@@ -243,10 +243,12 @@ function _dir($name)
 function _loader($name, $path = HELPER)
 {
     global $lc_autoload;
+
     $name = rtrim($name, '.php');
     $lc_autoload[] = $path . $name . '.php';
     $lc_autoload = array_unique($lc_autoload);
 }
+
 /**
  * Removing a library, script or file from auto-load
  * @param string $name The file name without extension
@@ -256,6 +258,7 @@ function _loader($name, $path = HELPER)
 function _unloader($name, $path = HELPER)
 {
     global $lc_autoload;
+
     $file = $path . $name . '.php';
     $key = array_search($file, $lc_autoload);
     if ($key !== false) {
@@ -263,6 +266,7 @@ function _unloader($name, $path = HELPER)
         $lc_autoload = array_values($lc_autoload);
     }
 }
+
 /**
  * @internal
  * @ignore
@@ -275,6 +279,7 @@ function _unloader($name, $path = HELPER)
 function _readyloader($name, $path = HELPER)
 {
     global $lc_autoload;
+
     if (stripos($name, '.php') === false) {
         $file = $path . $name . '.php';
     } else {
@@ -283,6 +288,7 @@ function _readyloader($name, $path = HELPER)
 
     return (array_search($file, $lc_autoload) !== false && is_file($file) && file_exists($file)) ? $file : false;
 }
+
 /**
  * Autoload classes from directory
  * @param  string $dir Directory path from which all files to be included
@@ -306,6 +312,7 @@ function _autoloadDir($dir)
         }
     }
 }
+
 /**
  * Declare global JS variables
  * Hook to implement `__script()` at app/helpers/utility_helper.php
@@ -338,6 +345,7 @@ function _script()
     if (function_exists('__script')) {
         __script();
     }
+
     # user defined variables
     $jsVars = _cfg('jsVars');
     $script .= 'LC.vars = {};';
@@ -513,6 +521,7 @@ function _css($file, $subDir = '', $return = false)
 
     return false;
 }
+
 /**
  * Get the image file name with absolute web path
  *
@@ -656,6 +665,7 @@ if (!function_exists('_dump')) {
         }
     }
 }
+
 /**
  * Convenience method to get/set a global variable
  *
@@ -674,6 +684,7 @@ function _g($key, $value = '')
         return __dotNotationToArray($key, 'global');
     }
 }
+
 /**
  * Convenience method for htmlspecialchars.
  *
@@ -687,6 +698,7 @@ function _h($string)
 
     return htmlspecialchars($string, ENT_QUOTES); # ENT_QUOTES will convert both double and single quotes.
 }
+
 /**
  * Get the current site language code
  * @return string The language code
@@ -695,6 +707,7 @@ function _lang()
 {
     return _cfg('lang');
 }
+
 /**
  * Get the language to process
  * Read "lang" from query string; if it is not found, get the default language code
@@ -713,6 +726,7 @@ function _getLang()
 
     return ($lang) ? $lang : _defaultLang();
 }
+
 /**
  * Get the default site language code
  * @return string The default site language code
@@ -721,6 +735,7 @@ function _defaultLang()
 {
     return _cfg('defaultLang');
 }
+
 /**
  * Get array of the defined languages
  * @param string|array $excepts The exceptional langauges to exclude
@@ -729,6 +744,7 @@ function _defaultLang()
 function _langs($excepts = null)
 {
     global $lc_languages;
+
     $langs = array();
     if ($excepts) {
         foreach ($lc_languages as $lcode => $lname) {
@@ -746,6 +762,7 @@ function _langs($excepts = null)
 
     return count($langs) ? $langs : false;
 }
+
 /**
  * Get the current site language code by converting dash (URL-friendly) to underscore (db-friendly)
  * @param string $lang The language code (optional - if not provided, the current language code will be used)
@@ -759,6 +776,7 @@ function _queryLang($lang = null)
 
     return str_replace('-', '_', $lang);
 }
+
 /**
  * Get the current site language code by converting underscore (db-friendly) to dash (URL-friendly)
  * @param string $lang The language code (optional - if not provided, the current language code will be used)
@@ -772,6 +790,7 @@ function _urlLang($lang = null)
 
     return str_replace('_', '-', $lang);
 }
+
 /**
  * Get the default site language code by converting dash to underscore
  * @return string The language code
@@ -780,6 +799,7 @@ function _defaultQueryLang()
 {
     return str_replace('-', '_', _cfg('defaultLang'));
 }
+
 /**
  * Get the current site language name of the given language code
  * If the site is multilingual, return empty
@@ -804,6 +824,7 @@ function _langName($lang = '')
         return $lc_languages[_cfg('defaultLang')];
     }
 }
+
 /**
  * Get the current site is multi-lingual or not
  * @return boolean
@@ -816,6 +837,7 @@ function _multilingual()
         return false;
     }
 }
+
 /**
  * Get the server protocol
  * For example, http, https, ftp, etc.
@@ -828,6 +850,7 @@ function _protocol()
 
     return strtolower($protocol);
 }
+
 /**
  * Check SSL or not
  *
@@ -837,6 +860,7 @@ function _ssl()
 {
     return _cfg('ssl');
 }
+
 /**
  * Get the current routing path
  * For example,
@@ -851,6 +875,7 @@ function _r()
 {
     return route_path();
 }
+
 /**
  * The more realistic function to get the current routing path on the address bar regardless of RewriteRule behind
  * For example,
@@ -875,6 +900,7 @@ function _rr()
 
     return $uri;
 }
+
 /**
  * Get the clean routing path without the query string
  * For example, `example.com/post/1/edit` would return `post`
@@ -884,6 +910,7 @@ function _cr()
 {
     return _cfg('cleanRoute');
 }
+
 /**
  * Get the absolute URL path
  * @param string $path     Routing path such as "foo/bar"; null for the current path
@@ -903,6 +930,7 @@ function _url($path = null, $queryStr = array(), $lang = '')
 {
     return route_url($path, $queryStr, $lang);
 }
+
 /**
  * Get the absolute URL path
  * @param array $queryStr Query string as
@@ -921,6 +949,7 @@ function _self($queryStr = array(), $lang = '')
 {
     return route_url(null, $queryStr, $lang);
 }
+
 /**
  * Send HTTP header
  * @param int $status The HTTP status code
@@ -935,6 +964,7 @@ function _header($status, $message = null)
         header('HTTP/1.1 ' . $status . ($message ? ' ' . $message : ''));
     }
 }
+
 /**
  * Header redirect to a specific location
  * @param string $path Routing path such as "foo/bar"; null for the current path
@@ -975,6 +1005,7 @@ function _redirect($path = null, $queryStr = array(), $lang = '', $status = null
     header('Location: ' . $url);
     exit;
 }
+
 /**
  * Header redirect to a specific location by sending 301 status code
  * @param string $path     Routing path such as "foo/bar"; null for the current path
@@ -994,6 +1025,7 @@ function _redirect301($path = null, $queryStr = array(), $lang = '')
 {
     _redirect($path, $queryStr, $lang, 301);
 }
+
 /**
  * Redirect to 401 page
  * @return void
@@ -1002,6 +1034,7 @@ function _page401()
 {
     _redirect('401');
 }
+
 /**
  * Redirect to 403 page
  * @return void
@@ -1010,6 +1043,7 @@ function _page403()
 {
     _redirect('403');
 }
+
 /**
  * Redirect to 404 page
  * @return void
@@ -1018,6 +1052,7 @@ function _page404()
 {
     _redirect('404');
 }
+
 /**
  * Check if the current routing is a particular URL RewriteRule processing or not
  * @return boolean
@@ -1041,6 +1076,7 @@ function _canonical($url = null)
         return (_cfg('canonical')) ? _cfg('canonical') : _url();
     }
 }
+
 /**
  * Print hreflang for language and regional URLs
  * @return void
@@ -1062,6 +1098,7 @@ function _hreflang()
         echo '<link rel="alternate" hreflang="x-default" href="'.$xdefault.'" />'."\n";
     }
 }
+
 /**
  * Return a component of the current path.
  * When viewing a page http://www.example.com/foo/bar and its path would be "foo/bar",
@@ -1117,6 +1154,7 @@ function _arg($index = null, $path = null)
 
     return '';
 }
+
 /**
  * Check if the URI has a language code and return it when it matches
  * For example,
@@ -1152,6 +1190,7 @@ function _getLangInURI()
 
     return false;
 }
+
 /**
  * Validate that a hostname (for example $_SERVER['HTTP_HOST']) is safe.
  *
@@ -1162,6 +1201,7 @@ function _validHost($host)
 {
     return preg_match('/^\[?(?:[a-zA-Z0-9-:\]_]+\.?)+$/', $host);
 }
+
 /**
  * Get the page title glued by a separator
  *
@@ -1219,6 +1259,7 @@ function _title()
 
     return $lc_siteName;
 }
+
 /**
  * Filters elements of an array which have empty values
  *
@@ -1229,6 +1270,7 @@ function _filterArrayEmpty($input)
 {
     return array_filter($input, '_notEmpty');
 }
+
 /**
  * Check the given value is not empty
  *
@@ -1237,8 +1279,9 @@ function _filterArrayEmpty($input)
  */
 function _notEmpty($value)
 {
-    return (trim($value) !== '') ? true : false;
+    return trim($value) !== '';
 }
+
 /**
  * Generate breadcrumb by a separator
  *
@@ -1248,6 +1291,7 @@ function _notEmpty($value)
 function _breadcrumb()
 {
     global $lc_breadcrumbSeparator;
+
     $args = func_get_args();
 
     if (!$lc_breadcrumbSeparator) {
@@ -1260,6 +1304,7 @@ function _breadcrumb()
 
     echo implode(" {$lc_breadcrumbSeparator} ", $args);
 }
+
 /**
  * Shorten a string for the given length
  *
@@ -1533,6 +1578,7 @@ if (!function_exists('_msg')) {
         return '';
     }
 }
+
 /**
  * Find the size of the given file.
  *
@@ -1549,14 +1595,15 @@ function _filesize($file, $digits = 2, $sizes = array("MB","KB","B"))
         if (!realpath($filePath)) {
             $filePath = $_SERVER["DOCUMENT_ROOT"].$filePath;
         }
-        $filePath = $file;
         $fileSize = filesize($filePath);
         $total = count($sizes);
         while ($total-- && $fileSize > 1024) {
             $fileSize /= 1024;
         }
+
         return round($fileSize, $digits)." ".$sizes[$total];
     }
+
     return false;
 }
 
@@ -1637,6 +1684,7 @@ if (!function_exists('_slug')) {
         return trim($slug, '-');
     }
 }
+
 /**
  * Return the SQL date (Y-m-d) from the given date and format
  *
@@ -1662,6 +1710,7 @@ function _sqlDate($date, $givenFormat = 'dmy', $separator = '-')
 
     return checkdate($m, $d, $y) ? $y . '-' . $m .'-'. $d : null;
 }
+
 /**
  * Encrypts the given text using security salt if mcrypt extension is enabled, otherwise using md5()
  *
@@ -1874,6 +1923,7 @@ function _mail($from, $to, $subject = '', $message = '', $cc = '', $bcc = '')
 function _postTranslationStrings($post, $fields, $lang = null)
 {
     global $lc_languages;
+
     $data = array();
     foreach ($fields as $key => $name) {
         if ($lang) {
@@ -1896,6 +1946,7 @@ function _postTranslationStrings($post, $fields, $lang = null)
 
     return $data;
 }
+
 /**
  * Get translation strings from the query result
  * and return the array of `$i18n[fieldName][lang] = $value`
@@ -1910,6 +1961,7 @@ function _postTranslationStrings($post, $fields, $lang = null)
 function _getTranslationStrings($data, $fields, $lang = null)
 {
     global $lc_languages;
+
     $isObject = is_object($data);
     $data = (array) $data;
 
@@ -1941,6 +1993,7 @@ function _getTranslationStrings($data, $fields, $lang = null)
 
     return $data;
 }
+
 /**
  * Detect the current page visited by a search bot or crawler
  * @return boolean `TRUE` if it is a bot's visit; otherwise `FALSE`
@@ -1951,10 +2004,12 @@ function _isBot()
     if (!isset($_SERVER['HTTP_USER_AGENT'])) {
         return false;
     }
+
     $userAgent = $_SERVER['HTTP_USER_AGENT'];
     if (empty($userAgent)) {
         return false;
     }
+
     $bots = array(
         'Googlebot',
         'Slurp',
@@ -2001,6 +2056,7 @@ function _isBot()
             return true;
         }
     }
+
     return false;
 }
 
@@ -2034,6 +2090,7 @@ function _writeln($text = '')
     if ($text) {
         echo vsprintf($text, $args);
     }
+
     echo "\n";
 }
 
@@ -2166,6 +2223,7 @@ function _isAjax()
         strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
         return true;
     }
+
     return false;
 }
 
@@ -2175,7 +2233,7 @@ function _isAjax()
  */
 function _isHttpPost()
 {
-    return sizeof($_POST) ? true : false;
+    return count($_POST) ? true : false;
 }
 
 /**
