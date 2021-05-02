@@ -798,7 +798,6 @@ body.mini-page {
     height: 25px;
     font-size: 15px;
     padding-top: 7px;
-    background: #cccccc;
     text-align: center;
     border-left: 1px #b8b8b8 solid;
     position: absolute;
@@ -1023,7 +1022,9 @@ span.invalid {
 /* TABLE DIV */
 /*************/
 
-.table {
+table,
+.table,
+table.list {
     margin: 5px 0;
 }
 
@@ -1190,6 +1191,10 @@ div#list {
     margin-top: 5px;
 }
 
+table {
+    border-collapse: collapse;
+}
+
 table.list {
     width: 100%;
     border-right: 1px #999999 solid;
@@ -1320,24 +1325,24 @@ div.table .row .actions a span {
     display: none;
 }
 
-table.list tr td.colAction a.edit,
-div.table .row .actions a.edit {
+table.list tr td.colAction .edit-ico,
+div.table .row .actions .edit-ico {
     background: url(../images/ico-edit.png) no-repeat;
 }
 
-table.list tr td.colAction a.delete,
-div.table .row .actions a.delete {
+table.list tr td.colAction .delete-ico,
+div.table .row .actions .delete-ico {
     background: url(../images/ico-delete.png) no-repeat;
 }
 
-table.list tr td.colAction span.edit.disabled,
-div.table .row .actions span.edit.disabled {
+table.list tr td.colAction .edit-ico.disabled,
+div.table .row .actions .edit-ico.disabled {
     background: url(../images/ico-edit-disable.png) no-repeat;
     display: block;
 }
 
-table.list tr td.colAction span.delete.disabled,
-div.table .row .actions span.delete.disabled {
+table.list tr td.colAction .delete-ico.disabled,
+div.table .row .actions .delete-ico.disabled {
     background: url(../images/ico-delete-disable.png) no-repeat;
     display: block;
 }
@@ -1660,6 +1665,7 @@ table.formView.tableView tr.toggle td {
 /*****************/
 
 .ui-widget-overlay {
+    opacity: 0.3 !important;
     z-index: 9997;
 }
 
