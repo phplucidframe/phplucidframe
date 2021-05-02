@@ -669,13 +669,13 @@
             });
 
             /* Delete Confirmation Dialog */
-            LC.List.createConfirmDialog();
+            LC.List.createDeleteConfirmDialog();
 
             /* Load list */
             LC.List.list(opt.params);
         },
         /* Create confirm dialog */
-        createConfirmDialog : function() {
+        createDeleteConfirmDialog : function() {
             var opt = LC.List.options;
 
             $('body').append('' +
