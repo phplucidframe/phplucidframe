@@ -58,7 +58,7 @@ PHPLucidFrame encourages a structured page organization. You can check the recom
 
 **Additional Site Settings** : You can also configure the other settings in `/inc/config.php` and `/app/inc/site.config.php` according to your requirement.
 
-**CSS Template** : PHPLucidFrame provides you a default site CSS template `/assets/css/base.css`. To make your site easily upgradable in the future, create your own file in `/assets/css` or `/app/assets/css` with whatever name you like and update your `/inc/tpl/head.php` or `/app/inc/tpl/head.php` by including `<?php _css('yourfilename.css'); ?>`. Then you can override the rules of `/assets/css/base.css` in your CSS file.
+**CSS Template** : PHPLucidFrame provides you a default site CSS template `/assets/css/base.css`. To make your site easily upgradable in the future, create your own file in `/assets/css` or `/app/assets/css` with whatever name you like and update your `/app/inc/tpl/layout.php` by including `<?php _css('yourfilename.css'); ?>`. Then you can override the rules of `/assets/css/base.css` in your CSS file.
 
 ## Documentation
 
@@ -77,4 +77,10 @@ PHPLucidFrame encourages a structured page organization. You can check the recom
 
     composer install
 
+From command line,
+
     php tests/tests.php
+
+From browser,
+
+    http://[site_url]/tests/tests.php
