@@ -20,7 +20,7 @@ class View
     /**
      * @var string Layout file name
      */
-    private $layout = 'layout';
+    private $layout;
     /**
      * @var string View name to append to the file name such as view_{$name}.php
      */
@@ -37,6 +37,14 @@ class View
      * @var array Array of js file names
      */
     private $headScripts = array();
+
+    /**
+     * View constructor.
+     */
+    public function __construct()
+    {
+        $this->layout = _cfg('layoutName');
+    }
 
     /**
      * Setter
