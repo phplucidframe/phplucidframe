@@ -595,3 +595,23 @@ function route_contain()
 
     return false;
 }
+
+/**
+ * Check if the current route uri is in th exception list
+ * @since   PHPLucidFrame v 3.0.0
+ * @param  string $args Variable list of URI strings
+ * @return boolean true/false
+ */
+function route_except()
+{
+    $except = func_get_args();
+    if (count($except)) {
+        foreach ($except as $string) {
+            if (stripos(_rr(), trim($string, '/')) === 0) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
