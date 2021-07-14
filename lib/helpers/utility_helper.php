@@ -2139,7 +2139,7 @@ function _consoleCommands()
 /**
  * Simple helper to create Pager object
  * @since   PHPLucidFrame v 1.11.0
- * @param   string $pageQueryStr The customized page query string name
+ * @param   string $pageQueryStr The customized page query string name, default is page
  * @return  object LucidFrame\Core\Pager
  */
 function _pager($pageQueryStr = '')

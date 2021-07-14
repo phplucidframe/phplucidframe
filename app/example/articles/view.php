@@ -14,9 +14,13 @@ if (count($articles)) {
         $a = (object) $a;
     ?>
         <p class="article">
-            <h5><a href="<?php echo _url('blog', array($id, $a->slug)); ?>"><?php echo $a->title; ?></a></h5>
+            <h5>
+                <a href="<?php echo _url('blog', array($id, $a->slug)); ?>"><?php echo $a->title; ?></a>
+            </h5>
             <p><?php echo $a->body; ?></p>
-            <p><a href="<?php echo _url('blog', array($id, $a->slug)); ?>" class="button mini green"><?php echo _t('Read More'); ?></a></p>
+            <p>
+                <a href="<?php echo _url('blog', array($id, $a->slug)); ?>" class="button mini green"><?php echo _t('Read More'); ?></a>
+            </p>
         </p>
     <?php
     }
@@ -28,7 +32,7 @@ if (count($articles)) {
     <?php
 } else {
     ?>
-    <div class="noRecord"><?php echo _t('There is no record.'); ?></div>
+    <div class="no-record"><?php echo _t('There is no record.'); ?></div>
     <?php
 }
 ?>

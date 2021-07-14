@@ -12,11 +12,9 @@ $totalRecords = db_count('post')
     ->fetch();
 
 # Prerequisite for the Pager
-$page = _arg('page');
-$page = ($page) ? $page : 1;
-
+$pager = pager_ordinary();
+//// OR
 $pager = _pager()
-    ->set('page', $page)
     ->set('itemsPerPage', _cfg('itemsPerPage'))
     ->set('pageNumLimit', _cfg('pageNumLimit'))
     ->set('total', $totalRecords)
@@ -84,8 +82,9 @@ $pager = _pager()
     ->set('itemsPerPage', _cfg('itemsPerPage', 2))
     ->set('pageNumLimit', _cfg('pageNumLimit'))
     ->set('total', $totalRecords)
-    ->set('ajax', false)
     ->calculate();
+// OR just one-line
+// $pager = pager_ordinary($totalRecords);
 
 $articles = array_slice($articles, $pager->get('offset'), $pager->get('itemsPerPage'));
 

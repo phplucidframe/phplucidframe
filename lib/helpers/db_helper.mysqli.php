@@ -664,25 +664,36 @@ if (!function_exists('db_update')) {
      *
      * @param string $table The table name without prefix
      * @param array $data The array of data field names and values
-     *   The first field/value pair will be used as condition if you did not provide the fourth argument
+     *   The first field/value pair will be used as condition when you do not provide the fourth argument
      *
      *     array(
-     *       'conditionField'  => $conditionFieldValue,
-     *       'fieldNameToSlug' => $valueToSlug,
-     *       'fieldName1'      => $value1,
-     *       'fieldName2'      => $value2
+     *       'condition_field'      => $conditionFieldValue,
+     *       'field_name_to_slug'   => $valueToSlug,
+     *       'field_name_1'         => $value1,
+     *       'field_name_2'         => $value2
      *     )
      *
      * @param boolean $useSlug TRUE to include the slug field or FALSE to not exclude it
      *   The fourth argument can be provided here if you want to omit this.
      * @param array $condition The condition for the UPDATE query. If you provide this,
-     *   the first field of `$data` will not be built for condition
+     *   the first field of `$data` will not be built for condition but used to be updated
      *
      * ### Example
      *
      *     array(
-     *       'fieldName1' => $value1,
-     *       'fieldName2' => $value2
+     *       'field_name_1'    => $value1,
+     *       'field_name_2 >=' => $value2,
+     *       'field_name_3'    => NULL
+     *     )
+     *
+     *   array of OR condition syntax,
+     *
+     *     array(
+     *       '$or' => array(
+     *         'field_name_1'    => $value1,
+     *         'field_name_2 >=' => $value2,
+     *         'field_name_3'    => NULL
+     *       )
      *     )
      *
      * @return boolean Returns TRUE on success or FALSE on failure
@@ -816,26 +827,30 @@ if (!function_exists('db_delete')) {
      * It checks FK delete RESTRICT constraint, then SET deleted if it cannot be deleted
      *
      * @param string $table Table name without prefix
-     * @param string|array $condition The array of condition for delete - field names and values, for example
+     * @param array $condition The array of condition for delete - field names and values, for example
+     *
+     *   array of AND condition syntax,
      *
      *     array(
-     *       'fieldName1'    => $value1,
-     *       'fieldName2 >=' => $value2,
-     *       'fieldName3     => NULL
+     *       'field_name_1'    => $value1,
+     *       'field_name_2 >=' => $value2,
+     *       'field_name_3'    => NULL
      *     )
      *
-     *   The built condition string, for example,
+     *   array of OR condition syntax,
      *
-     *     db_or(array(
-     *       'fieldName1'    => $value1,
-     *       'fieldName2 >=' => $value2,
-     *       'fieldName3     => NULL
-     *     ))
+     *     array(
+     *       '$or' => array(
+     *         'field_name_1'    => $value1,
+     *         'field_name_2 >=' => $value2,
+     *         'field_name_3'    => NULL
+     *       )
+     *     )
      *
      * @param boolean $softDelete Soft delete or not
      * @return boolean Returns TRUE on success or FALSE on failure
      */
-    function db_delete($table, $condition = null, $softDelete = false)
+    function db_delete($table, array $condition = array(), $softDelete = false)
     {
         QueryBuilder::clearBindValues();
 
@@ -906,21 +921,25 @@ if (!function_exists('db_delete_multi')) {
      * Handy MYSQL delete operation for multiple records
      *
      * @param string $table Table name without prefix
-     * @param string|array $condition The array of condition for delete - field names and values, for example
+     * @param array $condition The array of condition for delete - field names and values, for example
      *
-     *    array(
-     *      'fieldName1'    => $value1,
-     *      'fieldName2 >=' => $value2,
-     *      'fieldName3     => NULL
-     *    )
+     *   array of AND condition syntax,
      *
-     *   The built condition string, for example,
+     *     array(
+     *       'field_name_1'    => $value1,
+     *       'field_name_2 >=' => $value2,
+     *       'field_name_3'    => NULL
+     *     )
      *
-     *    db_or(array(
-     *      'fieldName1'    => $value1,
-     *      'fieldName2 >=' => $value2,
-     *      'fieldName3     => NULL
-     *    ))
+     *   array of OR condition syntax,
+     *
+     *     array(
+     *       '$or' => array(
+     *         'field_name_1'    => $value1,
+     *         'field_name_2 >=' => $value2,
+     *         'field_name_3'    => NULL
+     *       )
+     *     )
      *
      * @param boolean $softDelete Soft delete or not
      * @return boolean Returns TRUE on success or FALSE on failure
