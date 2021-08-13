@@ -659,15 +659,12 @@ function _host()
  * @param mixed $value The value to set to the config variable; if it is omitted, it is Getter method.
  * @return mixed The value of the config variable
  */
-function _cfg($key = '', $value = '')
+function _cfg($key, $value = '')
 {
-    if (empty($key)) {
-        return null;
-    }
-
     if (strrpos($key, 'lc_') === 0) {
         $key = substr($key, 3);
     }
+
     $key = 'lc_' . $key;
 
     return count(func_get_args()) == 2 ? __dotNotationToArray($key, 'global', $value) : __dotNotationToArray($key, 'global');
