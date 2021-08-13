@@ -1,9 +1,10 @@
 <?php
 /**
- * This file is used to load vendor files and to unload library files globally
- * It is useful when you don't use composer and install third-party packages in the vendor folder manually
+ * This file is used to load third-party packages/libraries globally
+ * It is useful when you don't use composer and install third-party packages in the /third-party directory manually
  * You may not use this configuration if you use composer
+ * @see https://phplucidframe.readthedocs.io/en/latest/auto-loading-libraries.html#custom-autoloader
  */
-// For example,
-// _unloader('file_helper', HELPER);
-// _loader('vendor_file', '\path\to\vendor_file');
+
+// Syntax
+// _loader('library_file_name_without_extension',  THIRD_PARTY . 'library_folder_to_library_name');

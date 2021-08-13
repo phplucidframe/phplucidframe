@@ -244,6 +244,8 @@ function _loader($name, $path = HELPER)
 {
     global $lc_autoload;
 
+    $path = rtrim($path, _DS_) . _DS_;
+
     $name = rtrim($name, '.php');
     $lc_autoload[] = $path . $name . '.php';
     $lc_autoload = array_unique($lc_autoload);

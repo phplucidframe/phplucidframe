@@ -68,6 +68,8 @@ define('HELPER', LIB . 'helpers' . _DS_);
 define('CLASSES', LIB . 'classes' . _DS_);
 # path to i18n/ folder
 define('I18N', ROOT . 'i18n' . _DS_);
+# path to thirdparty/ folder
+define('THIRD_PARTY', ROOT . 'third-party' . _DS_);
 # path to vendor/ folder
 define('VENDOR', ROOT . 'vendor' . _DS_);
 # path to business/ folder
