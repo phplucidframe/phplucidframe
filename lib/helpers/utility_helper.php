@@ -680,10 +680,11 @@ function _g($key, $value = '')
     if (empty($key)) {
         return null;
     }
+
     if (count(func_get_args()) == 2) {
         return __dotNotationToArray($key, 'global', $value);
     } else {
-        return __dotNotationToArray($key, 'global');
+        return __dotNotationToArray($key);
     }
 }
 
