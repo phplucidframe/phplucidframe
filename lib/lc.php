@@ -685,11 +685,13 @@ function _cfgOption($name, $key)
 }
 
 /**
- * Get the parameter value by name defined in /inc/parameter/*
- * @param  string $name The parameter name; if $name == 'env', it returns the current environment setting from .lcenv
- * @return mixed
+ * Get the parameter value by name defined in `/inc/parameter/(development|production|staging|test).php`
+ * @param  string $name The parameter name defined as key in `/inc/parameter/(development|production|staging|test).php`.
+ *  The file development, production, staging or test will be determined according to the value from `.lcenv`.
+ *  If `$name` is `env` (by default), it returns the current environment setting from `.lcenv`.
+ * @return mixed The value defined `/inc/parameter/(development|production|staging|test).php`
  */
-function _p($name)
+function _p($name = 'env')
 {
     if ($name == 'env') {
         return __env();
