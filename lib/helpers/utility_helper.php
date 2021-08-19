@@ -1103,62 +1103,6 @@ function _hreflang()
 }
 
 /**
- * Return a component of the current path.
- * When viewing a page http://www.example.com/foo/bar and its path would be "foo/bar",
- * for example, _arg(0) returns "foo" and _arg(1) returns "bar"
- *
- * @param mixed $index
- *  The index of the component, where each component is separated by a '/' (forward-slash),
- *  and where the first component has an index of 0 (zero).
- * @param string $path
- *  A path to break into components. Defaults to the path of the current page.
- *
- * @return mixed
- *  The component specified by `$index`, or `null` if the specified component was not found.
- *  If called without arguments, it returns an array containing all the components of the current path.
- */
-function _arg($index = null, $path = null)
-{
-    if (isset($_GET[$index])) {
-        return _get($_GET[$index]);
-    }
-
-    if (is_null($path)) {
-        $path = route_path();
-    }
-    $arguments = explode('/', $path);
-
-    if (is_numeric($index)) {
-        if (!isset($index)) {
-            return $arguments;
-        }
-        if (isset($arguments[$index])) {
-            return strip_tags(trim($arguments[$index]));
-        }
-    } elseif (is_string($index)) {
-        $query = '-' . $index . '/';
-        $pos = strpos($path, $query);
-        if ($pos !== false) {
-            $start  = $pos + strlen($query);
-            $path  = substr($path, $start);
-            $end   = strpos($path, '/-');
-            if ($end) {
-                $path = substr($path, 0, $end);
-            }
-            if (substr_count($path, '/')) {
-                return explode('/', $path);
-            } else {
-                return $path;
-            }
-        }
-    } elseif (is_null($index)) {
-        return explode('/', str_replace('/-', '/', $path));
-    }
-
-    return '';
-}
-
-/**
  * Check if the URI has a language code and return it when it matches
  * For example,
  *
