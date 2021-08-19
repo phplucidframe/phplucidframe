@@ -77,7 +77,7 @@ function db_name($namespace = null)
 }
 
 /**
- * Return the database user name of the given namespace
+ * Return the database username of the given namespace
  * @param string $namespace Namespace of the configuration to read from
  * @return string Database username
  */
@@ -189,7 +189,7 @@ function db_query($sql, $args = array())
 }
 
 /**
- * Get the last executed SQL string or one of the executed SQL strings by prividing the index
+ * Get the last executed SQL string or one of the executed SQL strings by providing the index
  *
  * @param  int The index number of the query returned; if not given, the last query is returned
  * @return string Return the built and executed SQL string
@@ -210,13 +210,6 @@ function db_queryStr()
 function db_escapeString($str)
 {
     return $str;
-
-    global $_conn;
-    if (get_magic_quotes_gpc()) {
-        return mysqli_real_escape_string($_conn, stripslashes($str));
-    } else {
-        return mysqli_real_escape_string($_conn, $str);
-    }
 }
 
 /**
@@ -1041,9 +1034,9 @@ function db_disableForeignKeyCheck()
  * @param array $cond The condition array, for example
  *
  *    array(
- *      'fieldName1'    => $value1,
- *      'fieldName2 >=' => $value2,
- *      'fieldName3     => NULL
+ *       'field_name_1'    => $value1,
+ *       'field_name_2 >=' => $value2,
+ *       'field_name_3     => NULL
  *    )
  *
  * @param string $type The condition type "AND" or "OR"; Default is "AND"
@@ -1063,9 +1056,9 @@ function db_condition($cond = array(), $type = 'AND')
  * @param array $condition The condition array, for example
  *
  *     array(
- *       'fieldName1'    => $value1,
- *       'fieldName2 >=' => $value2,
- *       'fieldName3     => NULL
+ *       'field_name_1'    => $value1,
+ *       'field_name_2 >=' => $value2,
+ *       'field_name_3     => NULL
  *     )
  *
  * ### Operators allowed in condition array
@@ -1086,9 +1079,9 @@ function db_and($condition = array())
  * @param array $condition The condition array, for example
  *
  *     array(
- *       'fieldName1'    => $value1,
- *       'fieldName2 >=' => $value2,
- *       'fieldName3     => NULL
+ *       'field_name_1'    => $value1,
+ *       'field_name_2 >=' => $value2,
+ *       'field_name_3     => NULL
  *     )
  *
  * ### Operators allowed in condition array

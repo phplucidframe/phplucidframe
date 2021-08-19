@@ -59,6 +59,7 @@ function form_validate($validations = null)
         Validation::addError('', _t('Invalid form token.'));
         return false;
     }
+
     $token        = _decrypt(session_get(_cfg('formTokenName')));
     $postedToken  = _decrypt(_post($_POST['lc_formToken_'._cfg('formTokenName')]));
     $result       = false;
@@ -75,6 +76,7 @@ function form_validate($validations = null)
             }
         }
     }
+
     if ($result == false) {
         Validation::addError('', _t('Error occured during form submission. Please refresh the page to try again.'));
         return false;

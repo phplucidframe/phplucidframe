@@ -28,7 +28,7 @@ use LucidFrame\Core\App;
  * Set/Get a global variable/object
  * @param string $name The name of the variable/object
  * @param mixed $value The value or the variable or object
- * @return mixed
+ * @return mixed The value stored globally
  */
 function _app($name, $value = null)
 {
@@ -384,7 +384,7 @@ function _addvar($name, $value = '')
 }
 
 /**
- * Passing values from PHP to Javascript with `LC.vars`
+ * Passing values from PHP to Javascript making available to `LC.vars`
  * @param string $name The JS variable name
  * @param mixed $value The value for the JS variable
  */
@@ -979,7 +979,7 @@ function _header($status, $message = null)
  *       'key3' => $value3 or array($value3, $value4)
  *     )
  *
- * @param string $lang The Languague code to be prepended to $path such as "en/foo/bar".
+ * @param string $lang The Language code to be prepended to $path such as "en/foo/bar".
  *   It will be useful for site language switch redirect
  * @param int $status The HTTP status code
  *   use `_redirect301()` instead; do not provide this for default 302 redirect.
@@ -1105,11 +1105,11 @@ function _hreflang()
 /**
  * Return a component of the current path.
  * When viewing a page http://www.example.com/foo/bar and its path would be "foo/bar",
- * for example, arg(0) returns "foo" and arg(1) returns "bar"
+ * for example, _arg(0) returns "foo" and _arg(1) returns "bar"
  *
  * @param mixed $index
- *  The index of the component, where each component is separated by a '/'
- *  (forward-slash), and where the first component has an index of 0 (zero).
+ *  The index of the component, where each component is separated by a '/' (forward-slash),
+ *  and where the first component has an index of 0 (zero).
  * @param string $path
  *  A path to break into components. Defaults to the path of the current page.
  *
@@ -1311,11 +1311,11 @@ function _breadcrumb()
 /**
  * Shorten a string for the given length
  *
- * @param string  $str    A plain text string to be shorten
+ * @param string  $str    A plain text string to be shortened
  * @param integer $length The character count
- * @param boolean $trail  To append `...` or not. `null` to not show
+ * @param string $trail  To append `...` or not. `null` to not show
  *
- * @return string The shortent text string
+ * @return string The shorten text string
  */
 function _shorten($str, $length = 50, $trail = '...')
 {
@@ -1331,7 +1331,7 @@ function _shorten($str, $length = 50, $trail = '...')
     }
 
     if ($trail) {
-        $short = rtrim($short, '.').$trail;
+        $short = rtrim($short, '.') . $trail;
     }
 
     return $short;
@@ -1617,7 +1617,7 @@ if (!function_exists('_randomCode')) {
      * @param  array  $letters  Array of letters from which randomized string is derived from.
      *   Default is a to z and 0 to 9.
      * @param  string $prefix   Prefix to the generated string
-     * @return string The random string of requried length
+     * @return string The random string of required length
      */
     function _randomCode($length = 5, $letters = array(), $prefix = '')
     {
@@ -2236,7 +2236,7 @@ function _isAjax()
  */
 function _isHttpPost()
 {
-    return count($_POST) ? true : false;
+    return (bool) count($_POST);
 }
 
 /**
@@ -2336,7 +2336,7 @@ function _nullFill($value)
  * Get default entity object from the schema
  * @param string $table The mapped table name without prefix
  * @param string|null $dbNamespace The current db namespace
- * @return object The empty stdClass object with field names  as properties
+ * @return object The empty stdClass object with field names as properties
  */
 function _entity($table, $dbNamespace = null)
 {

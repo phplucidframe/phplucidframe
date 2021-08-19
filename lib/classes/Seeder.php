@@ -22,7 +22,7 @@ namespace LucidFrame\Core;
 class Seeder
 {
     /** @var string The namespace for the database */
-    private $dbNamespace = 'default';
+    private $dbNamespace;
     /** @var string Directory path to the files of seeding definition */
     private $path;
     /** @var array Seeding data */
@@ -57,7 +57,7 @@ class Seeder
      */
     public function getDbNamespace()
     {
-        return $this->dbNamespame;
+        return $this->dbNamespace;
     }
 
     /**
@@ -212,6 +212,6 @@ class Seeder
             }
         }
 
-        return count($this->data) ? true : false;
+        return (bool) count($this->data);
     }
 }

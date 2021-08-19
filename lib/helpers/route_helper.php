@@ -125,7 +125,7 @@ function route_request()
     }
 
     # Under certain conditions Apache's RewriteRule directive prepends the value
-    # assigned to $_GET[ROUTE] with a slash. Moreover we can always have a trailing
+    # assigned to $_GET[ROUTE] with a slash. Moreover, we can always have a trailing
     # slash in place, hence we need to normalize $_GET[ROUTE].
     $path = trim($path, '/');
 
@@ -218,9 +218,11 @@ function route_search()
 function route_path()
 {
     $path = '';
+
     if (isset($_GET[ROUTE])) {
         $path = urldecode($_GET[ROUTE]);
     }
+
     return $path;
 }
 
@@ -251,7 +253,7 @@ function route_url($path = null, $queryStr = array(), $lang = '')
     global $lc_sites;
     global $lc_langInURI;
 
-    $forceExcludeLangInURL = ($lang === false) ? true : false;
+    $forceExcludeLangInURL = $lang === false;
 
     if (stripos($path, 'http') === 0) {
         return $path;
@@ -339,9 +341,8 @@ function route_url($path = null, $queryStr = array(), $lang = '')
     $url = preg_replace('/(\s) {1,}/', '+', $url); # replace the space with "+"
     $url = preg_replace('/\?&/', '?', $url);
     $url = preg_replace('/&&/', '&', $url);
-    $url = rtrim($url, '/');
 
-    return $url;
+    return rtrim($url, '/');
 }
 
 /**

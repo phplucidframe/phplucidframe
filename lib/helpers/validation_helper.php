@@ -65,9 +65,11 @@ function __validation_init()
 {
     global $lc_validationMessages;
     $i18nEnabled = function_exists('_t');
+
     foreach ($lc_validationMessages as $key => $msg) {
         $lc_validationMessages[$key] = ($i18nEnabled) ? _t($msg) : $msg;
     }
+
     Validation::set('messages', $lc_validationMessages);
 }
 
@@ -163,9 +165,9 @@ function validate_mandatoryOne($value)
     }
 }
 /**
- * Check all of the fields are not empty
+ * Check all the fields are not empty
  * @param array $value The array of values being checked
- * @return boolean TRUE if all of the fields are not empty, FALSE otherwise
+ * @return boolean TRUE if all the fields are not empty, FALSE otherwise
  */
 function validate_mandatoryAll($value)
 {
@@ -427,15 +429,15 @@ function validate_url($value)
         if (preg_match($regExp, $value)) {
             # Ok with general regular expression
             # Analyze host segment of URL
-            $hostParts = explode(".", $host);
+            $hostParts = explode('.', $host);
+            $domain = $hostParts[count($hostParts)-1];
+            $domainParts = explode('?', $domain);
 
-            # Get suffix from host eg. com, net, org, sg or info, etc...
-            $suffix = (strstr($hostParts[count($hostParts)-1], '?'))
-                ? reset(explode('?', $hostParts[count($hostParts)-1]))
-                : $hostParts[count($hostParts)-1];
+            # Get suffix from host e.g., com, net, org, sg or info, etc...
+            $suffix = strstr($domain, '?') ? reset($domainParts) : $domain;
 
             # IF last segment is valid && URL not contains 4w
-            if (preg_match("/^[a-z]{2,4}$/", $suffix) && ! strstr($value, "wwww")) {
+            if (preg_match("/^[a-z]{2,4}$/", $suffix) && ! strstr($value, 'wwww')) {
                 return true;
             }
         } else {
@@ -444,7 +446,7 @@ function validate_url($value)
             $urlExp = "/^(([a-z0-9]|_|\-)+\.)+[a-z]{2,4}$/";
 
             # IF valid URL && URL not contains 4 w
-            if (preg_match($urlExp, $value) && ! strstr($value, "wwww")) {
+            if (preg_match($urlExp, $value) && ! strstr($value, 'wwww')) {
                 return true;
             }
         } # End of Check if URL

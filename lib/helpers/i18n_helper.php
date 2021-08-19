@@ -191,5 +191,6 @@ function __i18n_load()
     $lc_translation[$lc_lang] = array_merge($merge, $translations);
     # Store the array of translations in Session
     session_set("i18n.{$lc_lang}", $lc_translation[$lc_lang]);
+
     return $lc_translation;
 }

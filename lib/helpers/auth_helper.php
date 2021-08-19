@@ -90,7 +90,7 @@ function auth_namespace()
 }
 
 /**
- * Get the authenticate user object from Session
+ * Get the authenticated user object from Session
  * @return mixed
  */
 function auth_get()
@@ -99,7 +99,7 @@ function auth_get()
 }
 
 /**
- * Set the authenticate user object to Session
+ * Set the authenticated user object to Session
  * @param object $sess The authentication object
  */
 function auth_set($sess)
@@ -109,7 +109,7 @@ function auth_set($sess)
 }
 
 /**
- * Clear the authenticate user object from session
+ * Clear the authenticated user object from session
  */
 function auth_clear()
 {
@@ -141,7 +141,7 @@ function auth_isLoggedIn()
 
 if (!function_exists('auth_role')) {
     /**
-     * Check if the authenticate user has the specific user role
+     * Check if the authenticated user has the specific user role
      * This function is overridable from the custom helpers/auth_helper.php
      * @param  string $role The user role name or key
      * @return boolean
@@ -216,10 +216,10 @@ if (!function_exists('auth_blocks')) {
 
 if (!function_exists('auth_access')) {
     /**
-     * Check if the authenticate user has a particular permission
+     * Check if the authenticated user has a particular permission
      * This function is overridable from the custom helpers/auth_helper.php
      * @param  string $perm The permission key
-     * @return boolean TRUE if the authenticate user has a particular permission, otherwise FALSE
+     * @return boolean TRUE if the authenticated user has a particular permission, otherwise FALSE
      */
     function auth_access($perm)
     {
@@ -238,10 +238,10 @@ if (!function_exists('auth_access')) {
 
 if (!function_exists('auth_block')) {
     /**
-     * Check if the authenticate user is blocked for a particular permission
+     * Check if the authenticated user is blocked for a particular permission
      * This function is overridable from the custom helpers/auth_helper.php
      * @param  string $perm The permission key
-     * @return boolean TRUE if the authenticate user is blocked for a particular permission, otherwise FALSE
+     * @return boolean TRUE if the authenticated user is blocked for a particular permission, otherwise FALSE
      */
     function auth_block($perm)
     {

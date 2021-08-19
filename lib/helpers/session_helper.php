@@ -114,11 +114,13 @@ function __session_open()
 function __session_close()
 {
     global $lc_session;
+
     $probability = mt_rand(1, 100);
     if ($probability <= 10) {
         $maxlifetime = $lc_session['options']['gc_maxlifetime'];
         __session_clean($maxlifetime);
     }
+
     return true;
 }
 /**
@@ -137,9 +139,11 @@ function __session_read($sessionId)
     if (!$sessionId) {
         return false;
     }
+
     $sql = 'SELECT session FROM '.LC_SESSION_TABLE.' WHERE sid = ":id"';
     $data = db_fetch($sql, array('id' => $sessionId));
-    return ($data) ? $data : false;
+
+    return $data ?: false;
 }
 /**
  * @internal
@@ -158,7 +162,7 @@ function __session_write($sessionId, $data)
     if (!$sessionId) {
         return false;
     }
-    global $_conn;
+
     $record = array(
         'id' => $sessionId,
         'host' => isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '',
@@ -166,8 +170,10 @@ function __session_write($sessionId, $data)
         'session' => $data,
         'useragent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''
     );
+
     $sql = 'REPLACE INTO '.LC_SESSION_TABLE.' (sid, host, timestamp, session, useragent)
             VALUES (":id", ":host", ":timestamp", ":session", ":useragent")';
+
     return db_query($sql, $record) ? true : false;
 }
 /**
@@ -183,7 +189,6 @@ function __session_write($sessionId, $data)
  */
 function __session_destroy($sessionId)
 {
-    global $_conn;
     return db_delete(LC_SESSION_TABLE, array('sid' => $sessionId)) ? true : false;
 }
 /**
@@ -199,9 +204,9 @@ function __session_destroy($sessionId)
  */
 function __session_clean($maxlifetime)
 {
-    global $_conn;
     $backTime = time() - $maxlifetime;
     $sql = 'DELETE FROM '.LC_SESSION_TABLE.' WHERE timestamp < :backTime';
+
     return db_query($sql, array('backTime' => $backTime)) ? true : false;
 }
 /**
@@ -222,7 +227,7 @@ function session_set($name, $value = '', $serialize = false)
  * Get a message or value of the given name from Session
  *
  * @param string $name     The session variable name to retrieve its value
- *   It can be a value separated by period, eg., user.name will be ['user']['name']
+ *   It can be a value separated by period, e.g., user.name will be ['user']['name']
  * @param boolean $unserialize The value is to be unserialized or not
  *
  * @return mixed The value from SESSION
@@ -230,6 +235,7 @@ function session_set($name, $value = '', $serialize = false)
 function session_get($name, $unserialize = false)
 {
     $value = __dotNotationToArray($name, 'session');
+
     return ($unserialize && is_string($value)) ? unserialize($value) : $value;
 }
 /**
@@ -248,10 +254,12 @@ function session_delete($name)
 
     $keys = explode('.', $name);
     $firstKey = array_shift($keys);
+
     if (count($keys)) {
         if (!isset($_SESSION[$firstKey])) {
             return false;
         }
+
         $array = &$_SESSION[$firstKey];
         $parent = &$_SESSION[$firstKey];
         foreach ($keys as $k) {
@@ -343,11 +351,13 @@ function cookie_set($name, $value, $expiry = 0, $path = '/', $domain = '', $secu
     if (!$domain) {
         $domain = _cfg('siteDomain');
     }
+
     $name = preg_replace('/^('.S_PREFIX.')/', '', $name);
     $name = S_PREFIX . $name;
     if ($expiry > 0) {
         $expiry = time() + $expiry;
     }
+
     setcookie($name, $value, $expiry, $path, $domain, $secure, $httpOnly);
 }
 /**
@@ -365,6 +375,7 @@ function cookie_get($name = '')
     if (empty($name)) {
         return $_COOKIE;
     }
+
     $name = preg_replace('/^('.S_PREFIX.')/', '', $name);
     $name = S_PREFIX . $name;
 
@@ -387,6 +398,7 @@ function cookie_delete($name, $path = '/')
 
     $name = preg_replace('/^('.S_PREFIX.')/', '', $name);
     $name = S_PREFIX . $name;
+
     if (isset($_COOKIE[$name])) {
         unset($_COOKIE[$name]);
         setcookie($name, null, -1, $path);

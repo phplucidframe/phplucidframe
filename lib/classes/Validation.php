@@ -73,7 +73,6 @@ class Validation
             if (isset($v['rules']) && is_array($v['rules'])) {
                 foreach ($v['rules'] as $rule) {
                     $success = true;
-                    $caption = (!isset($v['caption'])) ? $id : $v['caption'];
 
                     if (is_array($v['value']) && in_array($rule, self::$batchRules)) {
                         # Batch validation rules may be applied for array of values
@@ -316,7 +315,7 @@ class Validation
             } # if (is_array($v['rules']) )
         } # foreach ($validations as $id => $v)
 
-        return (count(self::$errors)) ? false : true;
+        return !count(self::$errors);
     }
 
     /**
@@ -358,7 +357,7 @@ class Validation
     public static function addError($id, $msg)
     {
         self::$errors[] = array(
-            'msg' => sprintf($msg),
+            'msg' => $msg,
             'htmlID' => $id
         );
     }

@@ -675,7 +675,7 @@ function _cfg($key, $value = '')
  *
  * @param string $name The config array variable name without prefix
  * @param string $key The key of the config array of which value to be retrieved
- * @return mixed|string|null
+ * @return mixed|string|null The value of a single column of the config array variable
  */
 function _cfgOption($name, $key)
 {
@@ -722,10 +722,10 @@ function _p($name = 'env')
 }
 
 /**
- * Get the parameter value by name defined in parameter.env.inc
- * @param  string $name The parameter name in dot annotation format such as prod.db.default.username
- * @param  string $default The default value if the parameter name doesn't exist
- * @return mixed
+ * Get the parameter value by name defined in `/inc/parameter/parameter.env.inc`
+ * @param  string $name The parameter name in dot annotation format such as `prod.db.default.database`
+ * @param  mixed $default The default value if the parameter name doesn't exist
+ * @return mixed The value defined in `/inc/parameter/parameter.env.inc`
  */
 function _env($name, $default = '')
 {

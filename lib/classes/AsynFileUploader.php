@@ -33,7 +33,7 @@ class AsynFileUploader
     private $value;
     /** @var array The array of hidden values to be posted to the callbacks */
     private $hidden;
-    /** @var string The directory path where the file to be uploaded permenantly */
+    /** @var string The directory path where the file to be uploaded permanently */
     private $uploadDir;
     /** @var array The allowed file extensions; defaults to jpg, jpeg, png, gif */
     private $extensions;
@@ -249,7 +249,7 @@ class AsynFileUploader
         $this->onDelete = $callable;
     }
     /**
-     * Setter for the proprty `uploadHandler`
+     * Setter for the property `uploadHandler`
      * @param string $url The URL where file upload will be handled
      */
     private function setUploadHandler($url)

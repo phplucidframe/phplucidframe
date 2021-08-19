@@ -84,6 +84,7 @@ function _post($post = null)
         $value = _sanitize($value);
         return $value;
     }
+
     return $post;
 }
 
@@ -117,6 +118,7 @@ function _xss($value)
     if (is_object($value)) {
         return $value;
     }
+
     if (is_array($value)) {
         foreach ($value as $key => $val) {
             if (is_array($val)) {
@@ -128,6 +130,7 @@ function _xss($value)
     } else {
         $value = __xss($value);
     }
+
     return $value;
 }
 /**

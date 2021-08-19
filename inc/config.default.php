@@ -175,7 +175,6 @@ $lc_layoutName = 'layout';
  * Auth Module Configuration
  */
 # $lc_auth: configuration for the user authentication
-# This can be overridden by defining $lc_auth in /inc/site.config.php
 $lc_auth = array(
     'table' => '', // table name, for example, user
     'fields' => array(
