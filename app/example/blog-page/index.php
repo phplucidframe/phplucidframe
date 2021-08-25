@@ -3,10 +3,10 @@
  * The index.php (required) serves as the front controller for the requested page,
  * initializing the base resources needed to run the page
  */
-$get    = _get($_GET);
+$get    = _get();
 $view   = _app('view');
-$id     = $get['id'];
-$slug   = $get['slug'];
+$id     = _get('id');
+$slug   = _get('slug');
 
 $blog = post_getMock($id);
 

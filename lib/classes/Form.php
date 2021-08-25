@@ -92,11 +92,12 @@ class Form
     public static function validate($validations = null)
     {
         if (!isset($_POST['lc_formToken_' . _cfg('formTokenName')])) {
+            Validation::addError('', _t('Invalid form token.'));
             return false;
         }
 
         $token = _decrypt(session_get(_cfg('formTokenName')));
-        $postedToken = _decrypt(_post($_POST['lc_formToken_' . _cfg('formTokenName')]));
+        $postedToken = _decrypt(_post('lc_formToken_'._cfg('formTokenName')));
         $result = false;
         # check token first
         if ($token == $postedToken) {
@@ -111,6 +112,7 @@ class Form
                 }
             }
         }
+
         if ($result == false) {
             Validation::addError('', _t('Error occurred during form submission. Please refresh the page to try again.'));
             return false;
@@ -127,13 +129,16 @@ class Form
      * AJAX form responder
      * @param string $formId The HTML form ID
      * @param array $errors The array of the errors (it is used only for generic form processing)
+     * @param bool $forceJson Send json header
      * @return void
      */
-    public static function respond($formId, $errors = null)
+    public static function respond($formId, $errors = null, $forceJson = false)
     {
         self::$id = $formId;
-        $ajaxResponse = true;
-        if (is_array($errors)) {
+        self::$error = validation_get('errors');
+        $ajaxResponse = $errors === null;
+
+        if (is_array($errors) && count($errors)) {
             self::$error = $errors;
             $ajaxResponse = false;
             # if no error message and no other message, no need to respond
@@ -143,16 +148,20 @@ class Form
         }
 
         $response = array(
-            'formId' => self::$id,
-            'success' => (self::$success) ? true : false,
-            'error' => self::$error,
-            'msg' => self::$message,
-            'redirect' => self::$redirect,
-            'callback' => self::$callback
+            'formId'    => self::$id,
+            'success'   => self::$success ? true : false,
+            'error'     => self::$error,
+            'msg'       => self::$message,
+            'redirect'  => self::$redirect,
+            'callback'  => self::$callback
         );
 
         if ($ajaxResponse) {
-            echo json_encode($response);
+            if ($forceJson) {
+                _json($response);
+            } else {
+                echo json_encode($response);
+            }
         } else {
             echo '<script type="text/javascript">';
             echo 'LC.Form.submitHandler(' . json_encode($response) . ')';
@@ -171,16 +180,9 @@ class Form
      */
     public static function value($name, $defaultValue = null)
     {
-        if (count($_POST)) {
-            if (!isset($_POST[$name])) {
-                return '';
-            }
-            $value = _post($_POST[$name]);
+        $value = _post($name);
 
-            return _h($value);
-        }
-
-        return _h($defaultValue);
+        return $value ? _h($value) : _h($defaultValue);
     }
 
     /**
@@ -217,7 +219,7 @@ class Form
      */
     public static function selected($name, $value, $defaultValue = null)
     {
-        return (self::inputSelection($name, $value, $defaultValue)) ? 'selected="selected"' : '';
+        return self::inputSelection($name, $value, $defaultValue) ? 'selected="selected"' : '';
     }
 
     /**
@@ -231,7 +233,7 @@ class Form
      */
     public static function checked($name, $value, $defaultValue = null)
     {
-        return (self::inputSelection($name, $value, $defaultValue)) ? 'checked="checked"' : '';
+        return self::inputSelection($name, $value, $defaultValue) ? 'checked="checked"' : '';
     }
 
     /**
@@ -253,7 +255,7 @@ class Form
             if (!isset($_POST[$name])) {
                 return '';
             }
-            $postedValue = _post($_POST[$name]);
+            $postedValue = _post($name);
             if (is_array($postedValue) && in_array($value, $postedValue)) {
                 return true;
             } elseif ($value == $postedValue) {

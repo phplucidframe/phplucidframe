@@ -7,7 +7,7 @@
 $success = false;
 
 if (sizeof($_POST)) {
-    $post = _post($_POST);
+    $post = _post();
     extract($post);
 
     /**

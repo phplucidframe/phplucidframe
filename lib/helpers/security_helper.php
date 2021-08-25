@@ -50,7 +50,7 @@ function security_prerequisite()
 function _arg($index = null, $path = null)
 {
     if (isset($_GET[$index])) {
-        return _get($_GET[$index]);
+        return _get($index);
     }
 
     if (is_null($path)) {
@@ -90,60 +90,74 @@ function _arg($index = null, $path = null)
 
 /**
  * Sanitize input values from GET
- * @param  mixed $get (Optional) The value or The array of values being sanitized.
- * @return mixed The cleaned value
+ * @param  mixed $name (Optional) The name in $_GET to be sanitized; if it is omitted, the whole array of $_GET will be sanitized
+ * @return mixed The cleaned value or array of values
  */
-function _get($get = null)
+function _get($name = null)
 {
-    if ($get === null) {
+    if ($name === null) {
         $get = $_GET;
-    }
-
-    if (is_array($get)) {
         foreach ($get as $name => $value) {
             if (is_array($value)) {
-                $get[$name] = _get($value);
+                $get[$name] = _get($name);
             } else {
-                $value = _sanitize($value);
-                $value = urldecode($value);
-                $get[$name] = $value;
+                $get[$name] = urldecode(_sanitize($value));;
             }
         }
+
         return $get;
     } else {
-        $value = strip_tags(trim($get));
-        return urldecode($value);
+        if (isset($_GET[$name])) {
+            if (is_array($_GET[$name])) {
+                $get = $_GET[$name];
+                foreach ($get as $key => $value) {
+                     $get[$key] = urldecode(_sanitize($value));
+                }
+
+                return $get;
+            } else {
+                return urldecode(_sanitize($_GET[$name]));
+            }
+        } else {
+            return null;
+        }
     }
 }
 
 /**
  * Sanitize input values from POST
- * @param  mixed $post (Optional) The value or The array of values being sanitized
- * @return mixed the cleaned value
+ * @param  mixed $name (Optional) The name in $_POST to be sanitized; if it is omitted, the whole array of $_POST will be sanitized
+ * @return mixed the cleaned value or array of values
  */
-function _post($post = null)
+function _post($name = null)
 {
-    if ($post === null) {
+    if ($name === null) {
         $post = $_POST;
-    }
-
-    if (is_array($post)) {
         foreach ($post as $name => $value) {
             if (is_array($value)) {
-                $post[$name] = _post($value);
+                $post[$name] = _post($name);
             } else {
-                $value = stripslashes($value);
-                $value = _sanitize($value);
-                $post[$name] = $value;
+                $post[$name] = _sanitize(stripslashes($value));
             }
         }
-    } else {
-        $value = stripslashes($post);
-        $value = _sanitize($value);
-        return $value;
-    }
 
-    return $post;
+        return $post;
+    } else {
+        if (isset($_POST[$name])) {
+            if (is_array($_POST[$name])) {
+                $post = $_POST[$name];
+                foreach ($post as $key => $value) {
+                    $post[$key] = _sanitize(stripslashes($value));
+                }
+
+                return $post;
+            } else {
+                return _sanitize(stripslashes($_POST[$name]));
+            }
+        } else {
+            return null;
+        }
+    }
 }
 
 /**
@@ -191,6 +205,7 @@ function _xss($value)
 
     return $value;
 }
+
 /**
  * Sanitize strings
  * @param  mixed $input Value to filter
@@ -198,7 +213,9 @@ function _xss($value)
  */
 function _sanitize($input)
 {
-    return htmlspecialchars(trim($input), ENT_NOQUOTES);
+    $input = htmlspecialchars_decode(trim($input), ENT_NOQUOTES);
+
+    return htmlspecialchars($input, ENT_NOQUOTES);
 }
 
 /**
@@ -228,6 +245,7 @@ function __input($name = null)
 
     return $vars;
 }
+
 /**
  * @internal
  * @ignore

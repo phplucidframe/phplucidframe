@@ -21,7 +21,7 @@ require_once('bootstrap.php');
 
 ### FILE DELETE HANDLER ###
 if (count($_POST) && isset($_POST['action']) && $_POST['action'] === 'delete' && count($_FILES) === 0) {
-    $post = _post($_POST);
+    $post = _post();
     # unlink the physical files
     if ($post['value']) {
         $dir = base64_decode($post['dir']);
@@ -56,7 +56,7 @@ if (count($_POST) && isset($_POST['action']) && $_POST['action'] === 'delete' &&
 }
 
 ### FILE UPLOAD HANDLER ###
-$get = _get($_GET);
+$get = _get();
 
 $name         = $get['name'];
 $buttonId     = $get['id'];
@@ -86,7 +86,7 @@ $data = array(
 );
 
 if (count($_FILES)) {
-    $post = _post($_POST);
+    $post = _post();
 
     $validations = array(
         $name => array(

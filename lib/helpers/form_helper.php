@@ -43,9 +43,7 @@ function form_set($key, $value = '')
  */
 function form_token()
 {
-    $token = _encrypt(time());
-    session_set(_cfg('formTokenName'), $token);
-    echo '<input type="hidden" name="lc_formToken_'._cfg('formTokenName').'" value="'.$token.'" />';
+    Form::token();
 }
 
 /**
@@ -55,38 +53,7 @@ function form_token()
  */
 function form_validate($validations = null)
 {
-    if (!isset($_POST['lc_formToken_'._cfg('formTokenName')])) {
-        Validation::addError('', _t('Invalid form token.'));
-        return false;
-    }
-
-    $token        = _decrypt(session_get(_cfg('formTokenName')));
-    $postedToken  = _decrypt(_post($_POST['lc_formToken_'._cfg('formTokenName')]));
-    $result       = false;
-    # check token first
-    if ($token == $postedToken) {
-        # check referer if it is requesting in the same site
-        if (isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] && _cfg('siteDomain')) {
-            $siteDomain = _cfg('siteDomain');
-            $siteDomain = preg_replace('/^www\./', '', $siteDomain);
-            $parsedURL  = parse_url($_SERVER['HTTP_REFERER']);
-            $parsedURL['host'] = preg_replace('/^www\./', '', $parsedURL['host']);
-            if (strcasecmp($siteDomain, $parsedURL['host']) == 0) {
-                $result = true;
-            }
-        }
-    }
-
-    if ($result == false) {
-        Validation::addError('', _t('Error occured during form submission. Please refresh the page to try again.'));
-        return false;
-    }
-
-    if ($validations && Validation::check($validations) === false) {
-        return false;
-    }
-
-    return true;
+    return Form::validate($validations);
 }
 
 /**
@@ -98,40 +65,7 @@ function form_validate($validations = null)
  */
 function form_respond($formId, $errors = null, $forceJson = false)
 {
-    Form::set('id', $formId);
-    $ajaxResponse = $errors === null;
-
-    form_set('error', validation_get('errors'));
-    if (is_array($errors) && count($errors)) {
-        Form::set('error', $errors);
-        $ajaxResponse = false;
-        # if no error message and no other message, no need to respond
-        $message = Form::get('message');
-        if (count(Form::get('error')) == 0 && empty($message)) {
-            return;
-        }
-    }
-
-    $response = array(
-        'formId'   => Form::get('id'),
-        'success'  => Form::get('success') ? true : false,
-        'error'    => Form::get('error'),
-        'msg'      => Form::get('message'),
-        'redirect' => Form::get('redirect'),
-        'callback' => Form::get('callback')
-    );
-
-    if ($ajaxResponse) {
-        if ($forceJson) {
-            _json($response);
-        } else {
-            echo json_encode($response);
-        }
-    } else {
-        echo '<script type="text/javascript">';
-        echo 'LC.Form.submitHandler(' . json_encode($response) . ')';
-        echo '</script>';
-    }
+    Form::respond($formId, $errors, $forceJson);
 }
 
 /**
@@ -145,15 +79,7 @@ function form_respond($formId, $errors = null, $forceJson = false)
  */
 function form_value($name, $defaultValue = null)
 {
-    if (count($_POST)) {
-        if (!isset($_POST[$name])) {
-            return '';
-        }
-        $value = _post($_POST[$name]);
-        return _h($value);
-    } else {
-        return _h($defaultValue);
-    }
+    return Form::value($name, $defaultValue);
 }
 
 /**
@@ -167,15 +93,7 @@ function form_value($name, $defaultValue = null)
  */
 function form_htmlValue($name, $defaultValue = null)
 {
-    if (count($_POST)) {
-        if (!isset($_POST[$name])) {
-            return '';
-        }
-        $value = _xss($_POST[$name]);
-        return _h($value);
-    } else {
-        return _h($defaultValue);
-    }
+    return Form::htmlValue($name, $defaultValue);
 }
 
 /**

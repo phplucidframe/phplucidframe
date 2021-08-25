@@ -9,70 +9,104 @@ class SecurityHelperTestCase extends LucidFrameTestCase
 {
     public function testGET()
     {
-        $input = 'Hello World';
-        $this->assertEqual(_get($input), 'Hello World');
+        $_GET = array();
 
-        $input = array(
-            'str' => 'Hello World'
+        $_GET['greeting'] = 'Hello';
+        $this->assertEqual(_get('greeting'), 'Hello');
+
+        $_GET['greeting'] = array('Hello', 'World');
+        $this->assertEqual(_get('greeting'), array('Hello', 'World'));
+
+        $_GET['greeting'] = array(
+            'name' => urlencode('John Doe'),
+            'message' => 'Hello'
         );
-        $this->assertEqual(_get($input), array(
-            'str' => 'Hello World'
+
+        $this->assertEqual(_get('greeting'), array(
+            'name' => 'John Doe',
+            'message' => 'Hello'
         ));
 
-        $input = 'Hello <a href="javascript:alert(\'xss\');">World</a>';
-        $this->assertEqual(_get($input), 'Hello World');
+        $this->assertEqual(_get(), array(
+            'greeting' => array(
+                'name' => 'John Doe',
+                'message' => 'Hello'
+            ),
+        ));
 
-        $input = array(
+        $_GET['greeting'] = 'Hello <a href="javascript:alert(\'xss\');">World</a>';
+        $this->assertEqual(_get('greeting'), 'Hello &lt;a href="javascript:alert(\'xss\');"&gt;World&lt;/a&gt;');
+
+        $_GET['greeting'] = array(
             'str' => 'Hello World',
             'xss' => 'Hello <a href="javascript:alert(\'xss\');">World</a>'
         );
-        $this->assertEqual(_get($input), array(
+        $this->assertEqual(_get('greeting'), array(
             'str' => 'Hello World',
             'xss' => 'Hello &lt;a href="javascript:alert(\'xss\');"&gt;World&lt;/a&gt;'
         ));
 
-        $input = '<IMG SRC=javascript:alert("XSS")>';
-        $this->assertEqual(_get($input), '');
+        $_GET['tag'] = '<img src=javascript:alert("XSS") />';
+        $this->assertEqual(_get('tag'), '&lt;img src=javascript:alert("XSS") /&gt;');
     }
 
     public function testPOST()
     {
-        $input = 'Hello World';
-        $this->assertEqual(_post($input), 'Hello World');
+        $_POST = array();
 
-        $input = array(
-            'str' => 'Hello World'
+        $_POST['greeting'] = 'Hello';
+        $this->assertEqual(_post('greeting'), 'Hello');
+
+        $_POST['greeting'] = array('Hello', 'World');
+        $this->assertEqual(_post('greeting'), array('Hello', 'World'));
+
+        $_POST['greeting'] = array(
+            'name' => 'John Doe',
+            'message' => 'Hello'
         );
-        $this->assertEqual(_post($input), array(
-            'str' => 'Hello World'
+
+        $this->assertEqual(_post('greeting'), array(
+            'name' => 'John Doe',
+            'message' => 'Hello'
         ));
 
-        $input = 'Hello <a href="javascript:alert(\'xss\');">World</a>';
-        $this->assertEqual(_post($input), 'Hello &lt;a href="javascript:alert(\'xss\');"&gt;World&lt;/a&gt;');
-
-        $input = array(
-            'str' => 'Hello World',
-            'xss' => 'Hello <a href="javascript:alert(\'xss\');">World</a>'
-        );
-        $this->assertEqual(_post($input), array(
-            'str' => 'Hello World',
-            'xss' => 'Hello &lt;a href="javascript:alert(\'xss\');"&gt;World&lt;/a&gt;'
+        $this->assertEqual(_post(), array(
+            'greeting' => array(
+                'name' => 'John Doe',
+                'message' => 'Hello'
+            ),
         ));
 
-        $input = '<IMG SRC=javascript:alert("XSS")>';
-        $this->assertEqual(_post($input), '&lt;IMG SRC=javascript:alert("XSS")&gt;');
+        $_POST['greeting'] = 'Hello <a href="javascript:alert(\'xss\');">World</a>';
+        $this->assertEqual(_post('greeting'), 'Hello &lt;a href="javascript:alert(\'xss\');"&gt;World&lt;/a&gt;');
 
-        $input = '"Double quotes"';
-        $this->assertEqual(_post($input), '"Double quotes"');
+        $_POST['greeting'] = array(
+            'name' => 'John Doe',
+            'message' => 'Hello <a href="javascript:alert(\'xss\');">John</a>'
+        );
 
-        $input = "'Single quotes'";
-        $this->assertEqual(_post($input), "'Single quotes'");
+        $this->assertEqual(_post('greeting'), array(
+            'name' => 'John Doe',
+            'message' => 'Hello &lt;a href="javascript:alert(\'xss\');"&gt;John&lt;/a&gt;'
+        ));
 
-        $input = "'Single quotes' & \"Double quotes\"";
-        $this->assertEqual(_post($input), "'Single quotes' &amp; \"Double quotes\"");
+        $_POST['tag'] = '<img src=javascript:alert("XSS") />';
+        $this->assertEqual(_post('tag'), '&lt;img src=javascript:alert("XSS") /&gt;');
 
-        $input = "<b>Wörmann</b>";
-        $this->assertEqual(_post($input), '&lt;b&gt;Wörmann&lt;/b&gt;');
+        $_POST['greeting'] = '"Double quotes"';
+        $this->assertEqual(_post('greeting'), '"Double quotes"');
+
+        $_POST['greeting'] = "'Single quotes'";
+        $this->assertEqual(_post('greeting'), "'Single quotes'");
+
+        $_POST['greeting'] = "'Single quotes' & \"Double quotes\"";
+        $this->assertEqual(_post('greeting'), "'Single quotes' &amp; \"Double quotes\"");
+
+        $_POST['greeting'] = "<b>Wörmann</b>";
+        $this->assertEqual(_post('greeting'), '&lt;b&gt;Wörmann&lt;/b&gt;');
+
+        $_POST['greeting'] = 'Father &amp; <strong>Son</strong>';
+        $this->assertEqual(_post('greeting'), 'Father &amp; &lt;strong&gt;Son&lt;/strong&gt;');
     }
 
     public function testXSS()

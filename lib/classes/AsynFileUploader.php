@@ -337,7 +337,7 @@ class AsynFileUploader
         # by overwriting `$this->value`
         if (count($_POST) && isset($_POST[$name]) && $_POST[$name] &&
             isset($_POST[$name.'-fileName']) && $_POST[$name.'-fileName']) {
-            $post    = _post($_POST);
+            $post    = _post();
             $value   = $post[$name];
             $id      = isset($post[$name.'-id']) ? $post[$name.'-id'] : '';
 

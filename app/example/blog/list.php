@@ -4,7 +4,7 @@
  * It is normally implemented for listing with pagination.
  */
 
-$get = _get($_GET);
+$get = _get();
 
 /*
 
