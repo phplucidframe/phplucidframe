@@ -15,8 +15,8 @@
  */
 
 /**
-* Don't escape quotes when reading files from the database, disk, etc.
-*/
+ * Don't escape quotes when reading files from the database, disk, etc.
+ */
 ini_set('magic_quotes_runtime', '0');
 /**
  * Set the maximum amount of memory in bytes that a script is allowed to allocate.
