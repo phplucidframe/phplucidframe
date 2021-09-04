@@ -109,7 +109,7 @@ class Middleware
 
                                 case self::FILTER_CONTAIN:
                                     $val = is_array($val) ? $val : array($val);
-                                    if (call_user_func_array('route_contain', $val)) {
+                                    if (route_contain($val, $except)) {
                                         $closure();
                                     }
                                     break;

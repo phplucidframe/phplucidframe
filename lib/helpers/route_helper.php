@@ -569,25 +569,26 @@ function route_equal($uri)
  */
 function route_start($uri, array $except = array())
 {
-    if (count($except)) {
-        foreach ($except as $string) {
-            if (stripos(_rr(), trim($string, '/')) === 0) {
-                return false;
-            }
-        }
+    if (call_user_func_array('route_except', $except) === false) {
+        return false;
     }
 
     return stripos(_rr(), trim($uri, '/')) === 0;
 }
 
 /**
- * Check if the current route uri contains the given uri
- * @param  string $args Variable list of URI strings
+ * Check if the current route uri contains the given URI or list of URIs
+ * @param  array|string $uri URI string or array of URI strings
+ * @param  array $except Array of URI string to be excluded in check
  * @return boolean true/false
  */
-function route_contain()
+function route_contain($uri, array $except = array())
 {
-    $args = func_get_args();
+    if (call_user_func_array('route_except', $except) === false) {
+        return false;
+    }
+
+    $args = is_array($uri) ? $uri : array($uri);
     foreach ($args as $uri) {
         if (stristr(_rr(), trim($uri, '/'))) {
             return true;
@@ -608,7 +609,7 @@ function route_except()
     $except = func_get_args();
     if (count($except)) {
         foreach ($except as $string) {
-            if (stripos(_rr(), trim($string, '/')) === 0) {
+            if (stripos(_rr(), trim($string, '/')) === 0 || route_name() == $string) {
                 return false;
             }
         }
