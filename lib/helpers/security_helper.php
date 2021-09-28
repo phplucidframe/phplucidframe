@@ -111,7 +111,13 @@ function _get($name = null)
             if (is_array($_GET[$name])) {
                 $get = $_GET[$name];
                 foreach ($get as $key => $value) {
-                     $get[$key] = urldecode(_sanitize($value));
+                    if (is_array($value)) {
+                        array_walk($get[$key], function(&$val) {
+                            $val = is_array($val) ? $val : urldecode(_sanitize($val));
+                        });
+                    } else {
+                        $get[$key] = urldecode(_sanitize($value));
+                    }
                 }
 
                 return $get;
@@ -147,7 +153,13 @@ function _post($name = null)
             if (is_array($_POST[$name])) {
                 $post = $_POST[$name];
                 foreach ($post as $key => $value) {
-                    $post[$key] = _sanitize(stripslashes($value));
+                    if (is_array($value)) {
+                        array_walk($post[$key], function(&$val) {
+                            $val = is_array($val) ? $val : _sanitize(stripslashes($val));
+                        });
+                    } else {
+                        $post[$key] = _sanitize(stripslashes($value));
+                    }
                 }
 
                 return $post;
