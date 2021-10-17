@@ -119,29 +119,21 @@ if ($baseUrl) {
 require INC . 'constants.php';
 
 # Utility helpers (required)
-require HELPER . 'utility_helper.php';
-
-if ($utilityHelper = _i('helpers' . _DS_ . 'utility_helper.php', true)) {
-    if ($utilityHelper != HELPER . 'utility_helper.php') {
-        include $utilityHelper;
-    }
-}
+__autoloadHelper(array('utility'));
 
 # Autoload all system files by directory
 _autoloadDir(CLASSES);
 _autoloadDir(CLASSES . 'console');
 _autoloadDir(LIB . 'commands');
 
+# Autoload all app files by directory
+_autoloadDir(APP_ROOT . 'cmd');
+_autoloadDir(APP_ROOT . 'cmd' . _DS_ . 'classes');
+_autoloadDir(APP_ROOT . 'entity');
+_autoloadDir(APP_ROOT . 'middleware');
+
 # DB configuration & DB helper (required)
 _app('db', new \LucidFrame\Core\Database());
-
-_loader('session_helper', HELPER);
-_loader('i18n_helper', HELPER);
-_loader('validation_helper', HELPER);
-_loader('auth_helper', HELPER);
-_loader('pager_helper', HELPER);
-_loader('form_helper', HELPER);
-_loader('file_helper', HELPER);
 
 if (file_exists(INC . 'autoload.php')) {
     require INC . 'autoload.php';
@@ -153,21 +145,10 @@ if ($file = _i('inc' . _DS_ . 'site.config.php', false)) {
     require_once $file;
 }
 
-# Session helper (unloadable from /inc/autoload.php)
-if ($file = _i('helpers' . _DS_ . 'session_helper.php', false)) {
-    include $file;
-}
-if ($moduleSession = _readyloader('session_helper')) {
-    require $moduleSession;
-    __session_init();
-}
-_unloader('session_helper', HELPER);
+__autoloadHelper(array('session', 'i18n'));
 
-# Translation helper (unloadable from /inc/autoload.php)
-if ($moduleI18n = _readyloader('i18n_helper')) {
-    require $moduleI18n;
-}
-_unloader('i18n_helper', HELPER);
+# Initialize session
+__session_init();
 
 # Route helper (required)
 require HELPER . 'route_helper.php'; # WEB_ROOT and WEB_APP_ROOT is created in route_helper
@@ -181,74 +162,16 @@ if (defined('WEB_ROOT')) {
     define('WEB_VENDOR', WEB_ROOT . 'vendor/');
 }
 
+__autoloadHelper(array('validation', 'auth', 'pager', 'security', 'form', 'file'));
+
 # Load translations
-if ($moduleI18n) {
-    __i18n_load();
-}
+__i18n_load();
 
-# Validation helper (unloadable from /inc/autoload.php)
-if ($file = _i('helpers' . _DS_ . 'validation_helper.php')) {
-    include $file;
-}
-
-if ($moduleValidation = _readyloader('validation_helper')) {
-    if ($moduleValidation != $file) {
-        require $moduleValidation;
-    }
-    __validation_init();
-}
-_unloader('validation_helper', HELPER);
-
-# Auth helper (unloadable from /inc/autoload.php)
-if ($file = _i('helpers' . _DS_ . 'auth_helper.php')) {
-    include $file;
-}
-
-if ($moduleAuth = _readyloader('auth_helper')) {
-    if ($moduleAuth != $file) {
-        require $moduleAuth;
-    }
-}
-_unloader('auth_helper', HELPER);
-
-# Pager helper
-if ($file = _i('helpers' . _DS_ . 'pager_helper.php')) {
-    include $file;
-}
-if ($modulePager = _readyloader('pager_helper')) {
-    if ($modulePager != $file) {
-        require $modulePager;
-    }
-}
-_unloader('pager_helper', HELPER);
-
-# Security helper (required)
-require HELPER . 'security_helper.php';
-
-# Form helper (unloadable from /inc/autoload.php)
-if ($file = _i('helpers' . _DS_ . 'form_helper.php')) {
-    include $file;
-}
-if ($moduleForm = _readyloader('form_helper')) {
-    if ($moduleForm != $file) {
-        require $moduleForm;
-    }
-}
-_unloader('form_helper', HELPER);
-
-# File helper
-if ($file = _i('helpers' . _DS_ . 'file_helper.php')) {
-    include $file;
-}
-if ($moduleFile = _readyloader('file_helper')) {
-    if ($moduleFile != $file) {
-        require $moduleFile;
-    }
-}
-_unloader('file_helper', HELPER);
+# Initialize validation
+__validation_init();
 
 # Initialize global authentication object
-_app('auth', $moduleAuth ? auth_get() : null);
+_app('auth', auth_get());
 
 # Check security prerequisite
 security_prerequisite();
@@ -272,12 +195,6 @@ if (is_file($composerAutoloader) && file_exists($composerAutoloader)) {
 
 # Handling request to a route and map to a page
 _app('page', router());
-
-# Autoload all app files by directory
-_autoloadDir(APP_ROOT . 'cmd');
-_autoloadDir(APP_ROOT . 'cmd' . _DS_ . 'classes');
-_autoloadDir(APP_ROOT . 'entity');
-_autoloadDir(APP_ROOT . 'middleware');
 
 # Initialize view object
 _app('view', new \LucidFrame\Core\View());

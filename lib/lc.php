@@ -492,6 +492,25 @@ function __kernelErrorTypes($code)
     return 'E_ERROR, Error';
 }
 
+/**
+ * Autoload helper
+ * @param string|array $modules The module file name
+ */
+function __autoloadHelper($modules)
+{
+    $modules = is_array($modules) ? $modules : array($modules);
+    $helperDirs = _baseDirs('helpers');
+
+    foreach ($modules as $helper) {
+        foreach ($helperDirs as $dir) {
+            $moduleFile = $dir . $helper . '_helper.php';
+            if (is_file($moduleFile) && file_exists($moduleFile)) {
+                include($moduleFile);
+            }
+        }
+    }
+}
+
 /*************************/
 /* Public functions here */
 /*************************/
@@ -587,7 +606,6 @@ function _i($file, $recursive = true)
             APP_ROOT => $appRoot,
             ROOT => $root
         );
-
     }
 
     if (isset($lc_sites) && is_array($lc_sites) && count($lc_sites)) {
@@ -763,6 +781,31 @@ function _baseUrlWithProtocol()
     }
 
     return false;
+}
+
+/**
+ * Get base directory list by priority
+ * @param string $subDir The sub-directory name
+ * @return string[]
+ */
+function _baseDirs($subDir = '')
+{
+    $folders = array(
+        trim(LIB . $subDir, _DS_) . _DS_,
+        trim(APP_ROOT . $subDir, _DS_) . _DS_,
+    );
+
+    $namespace = LC_NAMESPACE;
+    if (!empty($_GET['lc_namespace'])) {
+        $namespace = $_GET['lc_namespace'];
+    }
+
+    $sites = _cfg('sites');
+    if (count($sites) && array_key_exists($namespace, $sites)) {
+        $folders[] = trim(APP_ROOT . $sites[$namespace] . _DS_ . $subDir, _DS_) . _DS_;
+    }
+
+    return $folders;
 }
 
 __prerequisite();

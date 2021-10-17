@@ -16,45 +16,6 @@
 
 use LucidFrame\Core\Validation;
 
-$lc_validationMessages = array(
-    'default'                => "'%s' needs to be revised.",
-    'mandatory'              => "'%s' is required.",
-    'mandatoryOne'           => "'%s' must be entered/selected at least one.",
-    'mandatoryAll'           => "'%s' is required. All must be entered/selected.",
-    'notAllowZero'           => "'%s' should not be zero.",
-    'alphaNumeric'           => "'%s' should contain only letters and numbers.",
-    'alphaNumericSpace'      => "'%s' should contain only letters, numbers and spaces.",
-    'alphaNumericDash'       => "'%s' should contain only letters, numbers and dashes.",
-    'numeric'                => "'%s' should be a number.",
-    'numericSpace'           => "'%s' should contain only numbers and spaces.",
-    'numericDash'            => "'%s' should contain only numbers and dashes. It should not start or end with a dash.",
-    'username'               => "'%s' should contain only letters, numbers, periods, underscores and dashes.",
-    'naturalNumber'          => "'%s' should be a positive integer. It is not allowed zero.",
-    'wholeNumber'            => "'%s' should be a positive integer.",
-    'integer'                => "'%s' should be a positive or negative integer.",
-    'rationalNumber'         => "'%s' should be an integer or decimal.",
-    'positiveRationalNumber' => "'%s' should be a positive integer or decimal.",
-    'email'                  => "'%s' should be a valid format, e.g., username@example.com",
-    'domain'                 => "'%s' should be a valid domain name with letters, numbers and dash only.",
-    'url'                    => "'%s' should be a valid website address, e.g., http://www.example.com",
-    'min'                    => "'%s' should be greater than or equal to %d.",
-    'max'                    => "'%s' should be less than or equal to %d.",
-    'minLength'              => "'%s' should have at least %d letters.",
-    'maxLength'              => "'%s' should not exceed %d letters.",
-    'between'                => "'%s' should be between %d and %d.",
-    'fileMaxSize'            => "'%s' cannot exceed the maximum allowed upload size %dMB.",
-    'fileMaxWidth'           => "'%s' cannot exceed the maximum allowed width %dpx.",
-    'fileMaxHeight'          => "'%s' cannot exceed the maximum allowed height %dpx.",
-    'fileMaxDimension'       => "'%s' cannot exceed the maximum allowed dimension %dpx%dpx.",
-    'fileExactDimension'     => "'%s' should have the dimension %dx%dpx.",
-    'fileExtension'          => "'%s' must be one of the file types: %s.",
-    'date'                   => "'%s' should be valid for the date format '%s'.",
-    'time'                   => "'%s' should be valid for the time format '%s'.",
-    'datetime'               => "'%s' should be valid for the date/time format '%s %s'.",
-    'unique'                 => "'%s' already exists. Try another one",
-    'custom'                 => "'%s' should be a valid format."
-);
-
 /**
  * @internal
  * @ignore
@@ -63,14 +24,52 @@ $lc_validationMessages = array(
  */
 function __validation_init()
 {
-    global $lc_validationMessages;
+    $validationMessages = array(
+        'default'                => "'%s' needs to be revised.",
+        'mandatory'              => "'%s' is required.",
+        'mandatoryOne'           => "'%s' must be entered/selected at least one.",
+        'mandatoryAll'           => "'%s' is required. All must be entered/selected.",
+        'notAllowZero'           => "'%s' should not be zero.",
+        'alphaNumeric'           => "'%s' should contain only letters and numbers.",
+        'alphaNumericSpace'      => "'%s' should contain only letters, numbers and spaces.",
+        'alphaNumericDash'       => "'%s' should contain only letters, numbers and dashes.",
+        'numeric'                => "'%s' should be a number.",
+        'numericSpace'           => "'%s' should contain only numbers and spaces.",
+        'numericDash'            => "'%s' should contain only numbers and dashes. It should not start or end with a dash.",
+        'username'               => "'%s' should contain only letters, numbers, periods, underscores and dashes.",
+        'naturalNumber'          => "'%s' should be a positive integer. It is not allowed zero.",
+        'wholeNumber'            => "'%s' should be a positive integer.",
+        'integer'                => "'%s' should be a positive or negative integer.",
+        'rationalNumber'         => "'%s' should be an integer or decimal.",
+        'positiveRationalNumber' => "'%s' should be a positive integer or decimal.",
+        'email'                  => "'%s' should be a valid format, e.g., username@example.com",
+        'domain'                 => "'%s' should be a valid domain name with letters, numbers and dash only.",
+        'url'                    => "'%s' should be a valid website address, e.g., http://www.example.com",
+        'min'                    => "'%s' should be greater than or equal to %d.",
+        'max'                    => "'%s' should be less than or equal to %d.",
+        'minLength'              => "'%s' should have at least %d letters.",
+        'maxLength'              => "'%s' should not exceed %d letters.",
+        'between'                => "'%s' should be between %d and %d.",
+        'fileMaxSize'            => "'%s' cannot exceed the maximum allowed upload size %dMB.",
+        'fileMaxWidth'           => "'%s' cannot exceed the maximum allowed width %dpx.",
+        'fileMaxHeight'          => "'%s' cannot exceed the maximum allowed height %dpx.",
+        'fileMaxDimension'       => "'%s' cannot exceed the maximum allowed dimension %dpx%dpx.",
+        'fileExactDimension'     => "'%s' should have the dimension %dx%dpx.",
+        'fileExtension'          => "'%s' must be one of the file types: %s.",
+        'date'                   => "'%s' should be valid for the date format '%s'.",
+        'time'                   => "'%s' should be valid for the time format '%s'.",
+        'datetime'               => "'%s' should be valid for the date/time format '%s %s'.",
+        'unique'                 => "'%s' already exists. Try another one",
+        'custom'                 => "'%s' should be a valid format."
+    );
+
     $i18nEnabled = function_exists('_t');
 
-    foreach ($lc_validationMessages as $key => $msg) {
-        $lc_validationMessages[$key] = ($i18nEnabled) ? _t($msg) : $msg;
+    foreach ($validationMessages as $key => $msg) {
+        $validationMessages[$key] = ($i18nEnabled) ? _t($msg) : $msg;
     }
 
-    Validation::set('messages', $lc_validationMessages);
+    Validation::set('messages', $validationMessages);
 }
 
 /**
@@ -81,7 +80,7 @@ function __validation_init()
  */
 function validation_set($key, $value = null)
 {
-    return Validation::set($key, $value);
+    Validation::set($key, $value);
 }
 
 /**
