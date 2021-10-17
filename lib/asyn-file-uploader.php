@@ -19,9 +19,10 @@ chdir('../');
 $_GET['bootstrap'] = true;
 require_once('bootstrap.php');
 
+$post = _post();
+
 ### FILE DELETE HANDLER ###
-if (count($_POST) && isset($_POST['action']) && $_POST['action'] === 'delete' && count($_FILES) === 0) {
-    $post = _post();
+if (_isHttpPost() && isset($post['action']) && $post['action'] === 'delete' && count($_FILES) === 0) {
     # unlink the physical files
     if ($post['value']) {
         $dir = base64_decode($post['dir']);
@@ -39,8 +40,8 @@ if (count($_POST) && isset($_POST['action']) && $_POST['action'] === 'delete' &&
             }
         }
         # invoke custom delete hook (if any)
-        if ($post['onDelete'] && function_exists($post['onDelete'])) {
-            call_user_func($post['onDelete'], $post['id']);
+        if ($post['onDeleteHook'] && function_exists($post['onDeleteHook'])) {
+            call_user_func($post['onDeleteHook'], $post['id']);
         }
     }
 
@@ -65,7 +66,7 @@ $uploadDir    = base64_decode($get['dir']);
 $webDir       = str_replace('\\', '/', str_replace(ROOT, WEB_ROOT, $uploadDir));
 $maxSize      = $get['maxSize'];
 $fileTypes    = $get['exts'] ? explode(',', $get['exts']) : '';
-$phpCallback  = !empty($get['phpCallback']) ? $get['phpCallback'] : '';
+$onUploadHook = !empty($get['onUploadHook']) ? $get['onUploadHook'] : '';
 $buttons      = !empty($get['buttons']) ? explode(',', $get['buttons']) : array();
 $dimensions   = !empty($get['dimensions']) ? explode(',', $get['dimensions']) : array();
 
@@ -86,8 +87,6 @@ $data = array(
 );
 
 if (count($_FILES)) {
-    $post = _post();
-
     $validations = array(
         $name => array(
             'caption'  => $label,
@@ -127,8 +126,8 @@ if (count($_FILES)) {
             $data['uniqueId']        = $uniqueId;
 
             # if onUpload hook is specified, execute the hook
-            if ($phpCallback && function_exists($phpCallback)) {
-                $data['savedId'] = call_user_func($phpCallback, $fileData, $post);
+            if ($onUploadHook && function_exists($onUploadHook)) {
+                $data['savedId'] = call_user_func($onUploadHook, $fileData, $post);
             }
 
             # delete the existing files if any

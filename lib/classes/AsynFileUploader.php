@@ -252,7 +252,7 @@ class AsynFileUploader
      * Setter for the property `uploadHandler`
      * @param string $url The URL where file upload will be handled
      */
-    private function setUploadHandler($url)
+    public function setUploadHandler($url)
     {
         $this->uploadHandler = $url;
     }
@@ -303,7 +303,7 @@ class AsynFileUploader
         $args[] = 'label=' . $this->label;
         $args[] = 'dir=' . base64_encode($this->uploadDir);
         $args[] = 'buttons=' . implode(',', $this->buttons);
-        $args[] = 'phpCallback=' . $this->onUpload;
+        $args[] = 'onUploadHook=' . $this->onUpload;
         $args[] = 'exts=' . implode(',', $this->extensions);
         $args[] = 'maxSize=' . $maxSize;
         $args[] = 'uploadAsOriginalFileName=' . (int) $this->uploadAsOriginalFileName;

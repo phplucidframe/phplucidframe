@@ -12,7 +12,7 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.txt
  */
-(function(win, $) {
+ (function(win, $) {
     var LC = win.LC;
 
     LC.Form = {
@@ -669,13 +669,13 @@
             });
 
             /* Delete Confirmation Dialog */
-            LC.List.createDeleteConfirmDialog();
+            LC.List.createConfirmDialog();
 
             /* Load list */
             LC.List.list(opt.params);
         },
         /* Create confirm dialog */
-        createDeleteConfirmDialog : function() {
+        createConfirmDialog : function() {
             var opt = LC.List.options;
 
             $('body').append('' +
@@ -1010,7 +1010,7 @@
             }
 
             var name       = $(trigger).parent().attr('id').replace(/asynfileuploader-delete-/i, '');
-            var url        = $('iframe#asynfileuploader-frame-' + name).attr('src').split('?')[0] || '';
+            var url        = $('iframe#asynfileuploader-frame-' + name).attr('src');
             var hook       = $(trigger).attr('rel');
             var id         = '';
             var value      = '';
@@ -1047,15 +1047,15 @@
                 value: value,
                 dir: $('input[name="' + name + '-dir"]').val(),
                 dimensions: dimensions,
-                onDelete: hook
+                onDeleteHook: hook
             }, function(data) {
                 if (data.success) {
                     // hide the displayed file name and the delete button
                     $('#asynfileuploader-name-' + name).hide();
                     $('#asynfileuploader-delete-' + name).hide();
                     // clear the values
-                    $('#' + name + '-fileName').val();
-                    $('#' + name + '-uniqueId').val();
+                    $('#' + name + '-fileName').val('');
+                    $('#' + name + '-uniqueId').val('');
                     $('#asynfileuploader-value-' + name).html('<input type="hidden" name="' + name + '" value="" />');
                     // cancel preview if image
                     LC.AsynFileUploader.preview(name);
