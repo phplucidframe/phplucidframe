@@ -310,6 +310,7 @@ class AsynFileUploader
         if ($this->dimensions) {
             $args[] = 'dimensions=' . implode(',', $this->dimensions);
         }
+        $args[] = 'lc_namespace=' . LC_NAMESPACE;
         $handlerURL = $this->uploadHandler.'?'.implode('&', $args);
 
         # If setValue(), the file information is pre-loaded
