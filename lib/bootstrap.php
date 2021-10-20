@@ -117,6 +117,9 @@ if ($baseUrl) {
 
 # System constants
 require INC . 'constants.php';
+if ($file = _i('inc' . _DS_ . 'constants.php')) {
+    require_once $file;
+}
 
 # Utility helpers (required)
 __autoloadHelper(array('utility'));
