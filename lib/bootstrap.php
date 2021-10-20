@@ -154,6 +154,10 @@ __session_init();
 require HELPER . 'route_helper.php'; # WEB_ROOT and WEB_APP_ROOT is created in route_helper
 # Routing configuration
 include INC . 'route.config.php';
+if ($file = _i('inc' . _DS_ . 'route.config.php')) {
+    require_once $file;
+}
+# Initialize routes
 __route_init();
 
 if (defined('WEB_ROOT')) {
