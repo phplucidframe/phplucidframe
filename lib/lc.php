@@ -791,8 +791,8 @@ function _baseUrlWithProtocol()
 function _baseDirs($subDir = '')
 {
     $folders = array(
-        trim(LIB . $subDir, _DS_) . _DS_,
-        trim(APP_ROOT . $subDir, _DS_) . _DS_,
+        rtrim(LIB . $subDir, _DS_) . _DS_,
+        rtrim(APP_ROOT . $subDir, _DS_) . _DS_,
     );
 
     $namespace = LC_NAMESPACE;
@@ -802,7 +802,7 @@ function _baseDirs($subDir = '')
 
     $sites = _cfg('sites');
     if (count($sites) && array_key_exists($namespace, $sites)) {
-        $folders[] = trim(APP_ROOT . $sites[$namespace] . _DS_ . $subDir, _DS_) . _DS_;
+        $folders[] = rtrim(APP_ROOT . $sites[$namespace] . _DS_ . $subDir, _DS_) . _DS_;
     }
 
     return $folders;
