@@ -293,10 +293,11 @@ function _readyloader($name, $path = HELPER)
 
 /**
  * Autoload classes from directory
- * @param  string $dir Directory path from which all files to be included
+ * @param string $dir Directory path from which all files to be included
+ * @param string $scope The sub-site scope/namespace (if it is given, the directory will only be loaded under that scope)
  * @return void
  */
-function _autoloadDir($dir)
+function _autoloadDir($dir, $scope = '')
 {
     if (is_dir($dir)) {
         $files = scandir($dir);
@@ -308,7 +309,7 @@ function _autoloadDir($dir)
                 continue;
             }
 
-            if (file_exists($file)) {
+            if (file_exists($file) && (empty($scope) || ($scope && $scope == LC_NAMESPACE))) {
                 require_once $file;
             }
         }
