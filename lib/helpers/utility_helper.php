@@ -1036,7 +1036,9 @@ function _redirect301($path = null, $queryStr = array(), $lang = '')
  */
 function _page401()
 {
-    _redirect('401');
+    _cfg('layoutMode', true);
+    include(INC . 'tpl/401.php');
+    exit;
 }
 
 /**
@@ -1045,7 +1047,9 @@ function _page401()
  */
 function _page403()
 {
-    _redirect('403');
+    _cfg('layoutMode', true);
+    include(INC . 'tpl/403.php');
+    exit;
 }
 
 /**
@@ -1054,7 +1058,9 @@ function _page403()
  */
 function _page404()
 {
-    _redirect('404');
+    _cfg('layoutMode', true);
+    include(INC . 'tpl/404.php');
+    exit;
 }
 
 /**

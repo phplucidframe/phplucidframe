@@ -31,30 +31,33 @@
 <body class="mini-page">
     <div class="container-box exception-box">
         <div class="box">
-            <div class="logo"><img src="<?php echo _img('logo.png'); ?>" /></div>
-                <div class="error-stacktrace">
-                    <div class="block-exception">
-                        <p><?php echo nl2br(ucfirst($message)); ?></p>
+            <div class="logo">
+                <img src="<?php echo _img('logo.png'); ?>" alt="<?php echo _cfg('siteName') ?>" />
+            </div>
+            <div class="error-stacktrace">
+                <div class="block-exception">
+                    <p><?php echo nl2br(ucfirst($message)); ?></p>
+                    <div class="type-status">
                         <strong><?php echo $type; ?></strong>
                         <div>HTTP status code: <?php echo _g('httpStatusCode'); ?></div>
                     </div>
-                    <div class="block-stacktrace">
-                        <h5>Stack Trace</h5>
-                        <ol>
-                            <li>in <code class="inline"><?php echo $file; ?></code> at line <?php echo $line; ?></li>
-                            <?php foreach($trace as $item) { ?>
-                            <li>
-                                <?php if (isset($item['file'])) { ?>
-                                    <code class="inline"><?php echo $item['file']; ?></code>
-                                <?php } ?>
-                                <?php if (isset($item['line'])) { ?>
-                                    at line <?php echo $item['line']; ?>
-                                <?php } ?>
-                                calling <strong><code class="inline"><?php echo $item['function']; ?>()</code></strong>
-                            </li>
+                </div>
+                <div class="block-stacktrace">
+                    <h5>Stack Trace</h5>
+                    <ol>
+                        <li>in <code class="inline"><?php echo $file; ?></code> at line <?php echo $line; ?></li>
+                        <?php foreach($trace as $item) { ?>
+                        <li>
+                            <?php if (isset($item['file'])) { ?>
+                                <code class="inline"><?php echo $item['file']; ?></code>
                             <?php } ?>
-                        </ol>
-                    </div>
+                            <?php if (isset($item['line'])) { ?>
+                                at line <?php echo $item['line']; ?>
+                            <?php } ?>
+                            calling <strong><code class="inline"><?php echo $item['function']; ?>()</code></strong>
+                        </li>
+                        <?php } ?>
+                    </ol>
                 </div>
             </div>
         </div>

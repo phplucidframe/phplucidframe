@@ -13,7 +13,7 @@
  * with this source code in the file LICENSE
  */
 
- body {
+body {
     font-size: 12px;
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
@@ -754,7 +754,6 @@ body.mini-page {
 }
 
 .container-box .box {
-    min-height: 275px;
     margin: auto;
     padding: 0 63px 25px;
     background-color: #e6eee6;
@@ -997,7 +996,15 @@ span.invalid {
     border-radius: 3px;
     font-size: 17px;
     padding: 10px 15px;
-    margin-bottom: 10px;
+}
+
+.error-stacktrace .block-exception .type-status {
+    margin-top: 20px;
+}
+
+.error-stacktrace .block-exception .type-status strong {
+    display: block;
+    margin-bottom: 5px;
 }
 
 .error-stacktrace .block-exception code.inline {

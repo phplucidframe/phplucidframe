@@ -17,12 +17,26 @@
  */
 ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="<?php echo _lang(); ?>">
 <head>
+    <title>403 <?php echo _cfg('siteName') ?></title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>403</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="shortcut icon" href="<?php echo _img('favicon.ico'); ?>" type="image/x-icon" />
+    <?php _css('base.css'); ?>
 </head>
-<body>
-    <h1>403 Forbidden</h1>
+<body class="mini-page">
+    <div class="container-box exception-box">
+        <div class="box">
+            <div class="logo">
+                <img src="<?php echo _img('logo.png'); ?>" alt="<?php echo _cfg('siteName') ?>" />
+            </div>
+            <div class="error-stacktrace">
+                <div class="block-exception">
+                    <p>403 Forbidden</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
