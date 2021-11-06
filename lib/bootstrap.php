@@ -129,12 +129,6 @@ _autoloadDir(CLASSES);
 _autoloadDir(CLASSES . 'console');
 _autoloadDir(LIB . 'commands');
 
-# Autoload all app files by directory
-_autoloadDir(APP_ROOT . 'cmd');
-_autoloadDir(APP_ROOT . 'cmd' . _DS_ . 'classes');
-_autoloadDir(APP_ROOT . 'entity');
-_autoloadDir(APP_ROOT . 'middleware');
-
 # DB configuration & DB helper (required)
 _app('db', new \LucidFrame\Core\Database());
 
@@ -202,6 +196,12 @@ if (is_file($composerAutoloader) && file_exists($composerAutoloader)) {
 
 # Handling request to a route and map to a page
 _app('page', router());
+
+# Autoload all app files by directory
+_autoloadDir(APP_ROOT . 'cmd');
+_autoloadDir(APP_ROOT . 'cmd' . _DS_ . 'classes');
+_autoloadDir(APP_ROOT . 'entity');
+_autoloadDir(APP_ROOT . 'middleware');
 
 # Initialize view object
 _app('view', new \LucidFrame\Core\View());
