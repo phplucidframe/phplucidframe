@@ -1300,16 +1300,15 @@ if (!function_exists('_fstr')) {
      */
     function _fstr($value, $glue = ', ', $lastGlue = 'and')
     {
-        global $lc_nullFill;
         if (!is_array($value)) {
-            return ($value == '') ? $lc_nullFill : nl2br($value);
+            return $value == '' ? _nullFill($value) : nl2br($value);
         } elseif (is_array($value) && sizeof($value) > 1) {
             $last          = array_slice($value, -2, 2);
             $lastImplode   = implode(' '.$lastGlue.' ', $last);
             $first         = array_slice($value, 0, sizeof($value)-2);
             $firstImplode  = implode($glue, $first);
-            $finalImplode  = ($firstImplode)? $firstImplode.$glue.$lastImplode : $lastImplode;
-            return $finalImplode;
+
+            return $firstImplode ? $firstImplode.$glue.$lastImplode : $lastImplode;
         } else {
             return nl2br($value[0]);
         }
@@ -1328,16 +1327,12 @@ if (!function_exists('_fnum')) {
      */
     function _fnum($value, $decimals = 2, $unit = '')
     {
-        global $lc_nullFill;
         if ($value === '') {
-            return $lc_nullFill;
+            return _nullFill($value);
         } elseif (is_numeric($value)) {
             $value = number_format($value, $decimals, '.', ',');
-            if (!empty($unit)) {
-                return $value.' '.$unit;
-            } else {
-                return $value;
-            }
+
+            return $unit ? $value . ' ' . $unit : $value;
         }
 
         return $value;
@@ -2280,7 +2275,7 @@ function _nullFill($value)
         return __nullFill($value);
     }
 
-    return $value ?: '<span class="nullFill">-</span>';
+    return $value ?: '<span class="null-fill">-</span>';
 }
 
 /**
