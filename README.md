@@ -31,9 +31,10 @@ It supports a wide range of web application development features:
 - Rename it as **phplucidframe**.
 - Open your terminal or command line and CD to your project root, and then run `php lucidframe secret:generate`. For more about the PHPLucidFrame console, read [the documentation section "The LucidFrame Console"](http://www.phplucidframe.com/download/doc/latest).
 - Check `http://localhost/phplucidframe` in your browser.
-- (Optional, but recommended) Copy `/inc/tpl/head.php` to `/app/inc/tpl/head.php` if you want to update it.
 
-**Note:** If you have your own project folder name other than **phplucidframe** in your development environment, you have to change the value of `baseURL` in `/inc/parameter/development.php` in accordance with your project name.
+**Note:**
+- If you have your own project folder name other than `phplucidframe` in your development environment, you have to change the value of `baseURL` in `/inc/parameter/development.php` in accordance with your project name.
+- If you use a virtual host for your project, you have to leave an empty string for the value of `baseURL` in `/inc/parameter/development.php`.
 
 ## Alternate Installation with Composer
 
@@ -58,7 +59,7 @@ PHPLucidFrame encourages a structured page organization. You can check the recom
 
 **Additional Site Settings** : You can also configure the other settings in `/inc/config.php` and `/app/inc/site.config.php` according to your requirement.
 
-**CSS Template** : PHPLucidFrame provides you a default site CSS template `/assets/css/base.css`. To make your site easily upgradable in the future, create your own file in `/assets/css` or `/app/assets/css` with whatever name you like and update your `/app/inc/tpl/layout.php` by including `<?php _css('yourfilename.css'); ?>`. Then you can override the rules of `/assets/css/base.css` in your CSS file.
+**CSS Template** : PHPLucidFrame provides you a default site CSS template `/assets/css/base.css`. To make your site easily upgradable in the future, create your own file in `/app/assets/css` with whatever name you like and update your `/app/inc/tpl/layout.php` by including `<?php _css('yourfilename.css'); ?>`. Then you can override the rules of `/assets/css/base.css` in your CSS file.
 
 ## Documentation
 
