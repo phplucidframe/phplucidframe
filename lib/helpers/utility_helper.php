@@ -407,7 +407,7 @@ function _addJsVar($name, $value = '')
  */
 function _js($file, $subDir = '', $return = false)
 {
-    $version = '?v' . _cfg('asset_version');
+    $version = '?v' . _cfg('assetVersion');
 
     if (stripos($file, 'http') === 0 || stripos($file, '//') === 0) {
         $html = '<script src="' . $file . '" type="text/javascript"></script>';
@@ -474,7 +474,7 @@ function _js($file, $subDir = '', $return = false)
  */
 function _css($file, $subDir = '', $return = false)
 {
-    $version = '?v' . _cfg('asset_version');
+    $version = '?v' . _cfg('assetVersion');
 
     if (stripos($file, 'http') === 0 || stripos($file, '//') === 0) {
         $html = '<link href="' . $file . '" rel="stylesheet" type="text/css" />';

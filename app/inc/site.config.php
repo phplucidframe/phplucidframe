@@ -27,5 +27,5 @@ $lc_dateTimeFormat = 'd-m-Y h:ia';
 $lc_pageNumLimit = 10;
 # $lc_itemsPerPage: number of items per page in pager
 $lc_itemsPerPage = 15;
-# $lc_asset_version: Versioning for css/js file includes
-$lc_asset_version = 1;
+# $lc_assetVersion: Versioning for css/js file includes
+$lc_assetVersion = 1;
