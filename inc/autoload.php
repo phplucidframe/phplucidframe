@@ -6,5 +6,8 @@
  * @see https://phplucidframe.readthedocs.io/en/latest/auto-loading-libraries.html#custom-autoloader
  */
 
-// Syntax
+// Syntax to load a library
 // _loader('library_file_name_without_extension',  THIRD_PARTY . 'library_folder_to_library_name');
+
+// Syntax to autoload directory for a particular sub-site
+// _autoloadDir(APP_ROOT . 'admin/middleware', 'admin');
