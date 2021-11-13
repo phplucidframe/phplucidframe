@@ -38,6 +38,8 @@ class ConsoleTable
     private $rowIndex = -1;
     /** @var array */
     private $columnWidths = array();
+    /** @var int */
+    private $maxColumnCount = 0;
 
     /**
      * Adds a column to the table header
@@ -84,6 +86,8 @@ class ConsoleTable
             foreach ($data as $col => $content) {
                 $this->data[$this->rowIndex][$col] = $content;
             }
+
+            $this->setMaxColumnCount(count($this->data[$this->rowIndex]));
         }
 
         return $this;
@@ -104,6 +108,7 @@ class ConsoleTable
         }
 
         $this->data[$row][$col] = $content;
+        $this->setMaxColumnCount(count($this->data[$row]));
 
         return $this;
     }
@@ -206,6 +211,10 @@ class ConsoleTable
                 continue;
             }
 
+            if ($y === self::HEADER_INDEX && count($row) < $this->maxColumnCount) {
+                $row = $row + array_fill(count($row), $this->maxColumnCount - count($row), ' ');
+            }
+
             foreach ($row as $x => $cell) {
                 $output .= $this->getCellOutput($x, $row);
             }
@@ -261,6 +270,7 @@ class ConsoleTable
 
     /**
      * Get the printable cell content
+     *
      * @param integer $index The column index
      * @param array   $row   The table row
      * @return string
@@ -269,7 +279,6 @@ class ConsoleTable
     {
         $cell       = $row ? $row[$index] : '-';
         $width      = $this->columnWidths[$index];
-        $pad        = $row ? $width - strlen($cell) : $width;
         $padding    = str_repeat($row ? ' ' : '-', $this->padding);
 
         $output = '';
@@ -285,10 +294,10 @@ class ConsoleTable
         $output .= $padding; # left padding
         $cell    = trim(preg_replace('/\s+/', ' ', $cell)); # remove line breaks
         $content = preg_replace('#\x1b[[][^A-Za-z]*[A-Za-z]#', '', $cell);
-        $delta   = strlen($cell) - strlen($content);
-        $output .= str_pad($cell, $width + $delta, $row ? ' ' : '-'); # cell content
+        $delta   = mb_strlen($cell, 'UTF-8') - mb_strlen($content, 'UTF-8');
+        $output .= $this->strPadUnicode($cell, $width + $delta, $row ? ' ' : '-'); # cell content
         $output .= $padding; # right padding
-        if ($row && $index == count($row)-1 && $this->border) {
+        if ($row && $index == count($row) - 1 && $this->border) {
             $output .= $row ? '|' : '+';
         }
 
@@ -301,15 +310,15 @@ class ConsoleTable
      */
     private function calculateColumnWidth()
     {
-        foreach ($this->data as $y => $row) {
+        foreach ($this->data as $row) {
             if (is_array($row)) {
                 foreach ($row as $x => $col) {
                     $content = preg_replace('#\x1b[[][^A-Za-z]*[A-Za-z]#', '', $col);
                     if (!isset($this->columnWidths[$x])) {
-                        $this->columnWidths[$x] = strlen($content);
+                        $this->columnWidths[$x] = mb_strlen($content, 'UTF-8');
                     } else {
-                        if (strlen($content) > $this->columnWidths[$x]) {
-                            $this->columnWidths[$x] = strlen($content);
+                        if (mb_strlen($content, 'UTF-8') > $this->columnWidths[$x]) {
+                            $this->columnWidths[$x] = mb_strlen($content, 'UTF-8');
                         }
                     }
                 }
@@ -317,5 +326,52 @@ class ConsoleTable
         }
 
         return $this->columnWidths;
+    }
+
+    /**
+     * Multibyte version of str_pad() function
+     * @source http://php.net/manual/en/function.str-pad.php
+     */
+    private function strPadUnicode($str, $padLength, $padString = ' ', $dir = STR_PAD_RIGHT)
+    {
+        $strLen     = mb_strlen($str, 'UTF-8');
+        $padStrLen  = mb_strlen($padString, 'UTF-8');
+
+        if (!$strLen && ($dir == STR_PAD_RIGHT || $dir == STR_PAD_LEFT)) {
+            $strLen = 1;
+        }
+
+        if (!$padLength || !$padStrLen || $padLength <= $strLen) {
+            return $str;
+        }
+
+        $result = null;
+        $repeat = ceil($strLen - $padStrLen + $padLength);
+        if ($dir == STR_PAD_RIGHT) {
+            $result = $str . str_repeat($padString, $repeat);
+            $result = mb_substr($result, 0, $padLength, 'UTF-8');
+        } elseif ($dir == STR_PAD_LEFT) {
+            $result = str_repeat($padString, $repeat) . $str;
+            $result = mb_substr($result, -$padLength, null, 'UTF-8');
+        } elseif ($dir == STR_PAD_BOTH) {
+            $length = ($padLength - $strLen) / 2;
+            $repeat = ceil($length / $padStrLen);
+            $result = mb_substr(str_repeat($padString, $repeat), 0, floor($length), 'UTF-8')
+                . $str
+                . mb_substr(str_repeat($padString, $repeat), 0, ceil($length), 'UTF-8');
+        }
+
+        return $result;
+    }
+
+    /**
+     * Set max column count
+     * @param int $count The column count
+     */
+    private function setMaxColumnCount($count)
+    {
+        if ($count > $this->maxColumnCount) {
+            $this->maxColumnCount = $count;
+        }
     }
 }
