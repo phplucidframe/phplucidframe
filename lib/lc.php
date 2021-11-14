@@ -790,10 +790,7 @@ function _baseUrlWithProtocol()
  */
 function _baseDirs($subDir = '')
 {
-    $folders = array(
-        rtrim(LIB . $subDir, _DS_) . _DS_,
-        rtrim(APP_ROOT . $subDir, _DS_) . _DS_,
-    );
+    $folders = array();
 
     $namespace = LC_NAMESPACE;
     if (!empty($_GET['lc_namespace'])) {
@@ -804,6 +801,9 @@ function _baseDirs($subDir = '')
     if (count($sites) && array_key_exists($namespace, $sites)) {
         $folders[] = rtrim(APP_ROOT . $sites[$namespace] . _DS_ . $subDir, _DS_) . _DS_;
     }
+
+    $folders[] = rtrim(APP_ROOT . $subDir, _DS_) . _DS_;
+    $folders[] = rtrim(LIB . $subDir, _DS_) . _DS_;
 
     return $folders;
 }
