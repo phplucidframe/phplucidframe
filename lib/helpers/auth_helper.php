@@ -14,51 +14,6 @@
  * with this source code in the file LICENSE
  */
 
-if (!function_exists('auth_create')) {
-    /**
-     * Create Authentication object
-     * This function is overridable from the custom helpers/auth_helper.php
-     *
-     * @param  string $id PK value
-     * @param  object $data The user data object (optional). If it is not given, auth_create will load it from db
-     *
-     * @return object|bool The authenticated user object or FALSE on failure
-     */
-    function auth_create($id, $data = null)
-    {
-        $lc_auth = auth_prerequisite();
-        $auth    = auth_get();
-        if (!$auth) {
-            $table     = db_table($lc_auth['table']);
-            $fieldId   = $lc_auth['fields']['id'];
-            $fieldRole = $lc_auth['fields']['role'];
-
-            if (is_object($data)) {
-                $session = $data;
-            } else {
-                $session = db_select($table)
-                    ->where()->condition($fieldId, $id)
-                    ->getSingleResult();
-            }
-            if (isset($session)) {
-                $session->sessId        = session_id();
-                $session->timestamp     = time();
-                $session->token         = strtoupper(_randomCode(20));
-                $session->permissions   = auth_permissions($session->$fieldRole);
-                $session->blocks        = auth_blocks($session->$fieldRole);
-
-                auth_set($session);
-
-                return $session;
-            }
-        } else {
-            return $auth;
-        }
-
-        return false;
-    }
-}
-
 /**
  * Check and get the authentication configuration settings
  */
@@ -75,6 +30,62 @@ function auth_prerequisite()
     } else {
         _header(400);
         throw new \InvalidArgumentException('Required to configure <code class="inline">$lc_auth</code> in <code class="inline">/inc/config.php</code> or <code class="inline">/inc/site.config.php</code>.');
+    }
+}
+
+if (!function_exists('auth_create')) {
+    /**
+     * Create Authentication object
+     * This function is overridable from the custom helpers/auth_helper.php
+     *
+     * @param  string $id PK value
+     * @param  object $data The user data object (optional). If it is not given, auth_create will load it from db
+     *
+     * @return object|bool The authenticated user object or FALSE on failure
+     */
+    function auth_create($id, $data = null)
+    {
+        $lc_auth = auth_prerequisite();
+        $auth = auth_get();
+
+        if (!$auth) {
+            $session = is_object($data) ? $data : auth_getUserInfo($id);
+            if (isset($session)) {
+                $fieldRole = $lc_auth['fields']['role'];
+
+                $session->sessId        = session_id();
+                $session->timestamp     = time();
+                $session->token         = strtoupper(_randomCode(20));
+                $session->permissions   = auth_permissions($session->$fieldRole);
+
+                auth_set($session);
+
+                return $session;
+            }
+        } else {
+            return $auth;
+        }
+
+        return false;
+    }
+}
+
+if (!function_exists('auth_getUserInfo')) {
+    /**
+     * Get user record from db to create auth session
+     * This function is overridable from the custom helpers/auth_helper.php
+     * @param int $id User ID
+     * @return mixed
+     */
+    function auth_getUserInfo($id)
+    {
+        $auth = _cfg('auth');
+        $table = db_table($auth['table']);
+        $fieldId = $auth['fields']['id'];
+
+        return db_select($table)
+            ->where()->condition($fieldId, $id)
+            ->getSingleResult();
     }
 }
 
@@ -139,11 +150,27 @@ function auth_isLoggedIn()
     return ! auth_isAnonymous();
 }
 
+if (!function_exists('auth_permissions')) {
+    /**
+     * Get the permissions of a particular role
+     * This function is overridable from the custom helpers/auth_helper.php
+     * @param string $role The user role name or id
+     * @return array|null Array of permissions of the role
+     */
+    function auth_permissions($role)
+    {
+        $auth = _cfg('auth');
+        $perms = isset($auth['permissions']) ? $auth['permissions'] : array();
+
+        return isset($perms[$role]) ? $perms[$role] : null;
+    }
+}
+
 if (!function_exists('auth_role')) {
     /**
      * Check if the authenticated user has the specific user role
      * This function is overridable from the custom helpers/auth_helper.php
-     * @param  string $role The user role name or key
+     * @param  string $role The user role name or id
      * @return boolean
      */
     function auth_role($role)
@@ -162,9 +189,9 @@ if (!function_exists('auth_role')) {
 
 if (!function_exists('auth_roles')) {
     /**
-     * Check if the authenticate user has the specific user role(s)
+     * Check if the authenticated user has the specific user role(s)
      * This function is overridable from the custom helpers/auth_helper.php
-     * @param  string $roles The user role names
+     * @param  string [$role, ...] The list of user role names
      * @return boolean
      */
     function auth_roles()
@@ -182,75 +209,26 @@ if (!function_exists('auth_roles')) {
     }
 }
 
-if (!function_exists('auth_permissions')) {
-    /**
-     * Get the permissions of a particular role
-     * This function is overridable from the custom helpers/auth_helper.php
-     * @param  string $role The user role name or key
-     * @return array Array of permissions of the role
-     */
-    function auth_permissions($role)
-    {
-        $auth = _cfg('auth');
-        $perms = isset($auth['perms']) ? $auth['perms'] : array();
-
-        return isset($perms[$role]) ? $perms[$role] : array();
-    }
-}
-
-if (!function_exists('auth_blocks')) {
-    /**
-     * Get the blocked permissions of a particular role
-     * This function is overridable from the custom helpers/auth_helper.php
-     * @param  string $role The user role name or key
-     * @return array Array of permissions of the role
-     */
-    function auth_blocks($role)
-    {
-        $auth = _cfg('auth');
-        $perms = isset($auth['block']) ? $auth['block'] : array();
-
-        return isset($perms[$role]) ? $perms[$role] : array();
-    }
-}
-
-if (!function_exists('auth_access')) {
+if (!function_exists('auth_can')) {
     /**
      * Check if the authenticated user has a particular permission
      * This function is overridable from the custom helpers/auth_helper.php
-     * @param  string $perm The permission key
+     * @param  string $perm The permission name
      * @return boolean TRUE if the authenticated user has a particular permission, otherwise FALSE
      */
-    function auth_access($perm)
+    function auth_can($perm)
     {
         if (auth_isAnonymous()) {
             return false;
         }
 
         $sess = auth_get();
-        if (in_array($perm, $sess->permissions)) {
-            return true;
+
+        if (!is_array($sess->permissions)) {
+            return false;
         }
 
-        return false;
-    }
-}
-
-if (!function_exists('auth_block')) {
-    /**
-     * Check if the authenticated user is blocked for a particular permission
-     * This function is overridable from the custom helpers/auth_helper.php
-     * @param  string $perm The permission key
-     * @return boolean TRUE if the authenticated user is blocked for a particular permission, otherwise FALSE
-     */
-    function auth_block($perm)
-    {
-        if (auth_isAnonymous()) {
-            return true;
-        }
-
-        $sess = auth_get();
-        if (in_array($perm, $sess->blocks)) {
+        if (count($sess->permissions) == 0 || in_array($perm, $sess->permissions)) {
             return true;
         }
 
