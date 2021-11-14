@@ -186,9 +186,9 @@ $lc_titleSeparator = '-';
 # $lc_breadcrumbSeparator - Breadcrumb separator
 $lc_breadcrumbSeparator = '&raquo;';
 # $lc_dateFormat: Date format
-$lc_dateFormat = 'd-m-Y';
+$lc_dateFormat = 'd/m/Y';
 # $lc_dateTimeFormat: Date Time format
-$lc_dateTimeFormat = 'd-m-Y h:ia';
+$lc_dateTimeFormat = 'd/m/Y h:ia';
 # $lc_pageNumLimit: number of page numbers to be shown in pager
 $lc_pageNumLimit = 10;
 # $lc_itemsPerPage: number of items per page in pager
