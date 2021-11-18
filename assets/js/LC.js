@@ -209,7 +209,7 @@
                     }
                 }
                 if (response.callback) {
-                    eval(response.callback); // jshint ignore:line
+                    LC.eval(response.callback); // jshint ignore:line
                 }
                 LC.Page.progress.stop(response.formId);
             } else {
@@ -248,7 +248,7 @@
             if ($data.length) {
                 var $row = {};
                 if ($('html').hasClass('ie7')) {
-                    eval('$row = ' + $data.text() ); // jshint ignore:line
+                    LC.eval('$row = ' + $data.text() ); // jshint ignore:line
                 } else {
                     $row = JSON.parse($data.text());
                 }
