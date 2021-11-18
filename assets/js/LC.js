@@ -239,24 +239,6 @@
             });
         },
         /**
-         * @deprecated Use getFormData() instead
-         * LC.Form.data()
-         * Get the embedded JSON form data
-         */
-        data : function( id ) {
-            var $data = $( '#row-'+id ).find('.row-data');
-            if ($data.length) {
-                var $row = {};
-                if ($('html').hasClass('ie7')) {
-                    LC.eval('$row = ' + $data.text() ); // jshint ignore:line
-                } else {
-                    $row = JSON.parse($data.text());
-                }
-                return $row;
-            }
-            return false;
-        },
-        /**
          * LC.Form.getFormData()
          * Get the embedded JSON form data
          */
