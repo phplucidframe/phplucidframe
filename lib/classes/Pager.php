@@ -361,7 +361,7 @@ class Pager
                     echo '</span>';
                 }
             }
-            echo '<span class="currentPage">' . $thisPage . '</span>';
+            echo '<span class="current-page">' . $thisPage . '</span>';
 
             # after pages
             if (isset($afterPages) && $afterPages) {

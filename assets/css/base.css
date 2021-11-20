@@ -627,17 +627,15 @@ ol li div, ul li div {
 }
 
 ul#menu {
-    margin: 0;
     padding: 0;
     list-style-type: none;
-    margin-top: 11px;
+    margin: 11px 0 0;
 }
 
 ul#menu li {
     float: left;
-    margin: 0;
     padding: 0;
-    margin-right: 5px;
+    margin: 0 5px 0 0;
 }
 
 ul#menu li a {
@@ -698,9 +696,8 @@ ul.social-icons {
 
 ul.social-icons li {
     float: left;
-    margin: 0;
     padding: 0;
-    margin-left: 5px;
+    margin: 0 0 0 5px;
 }
 
 ul.social-icons li a {
@@ -743,8 +740,7 @@ body.mini-page {
 }
 
 .container-box {
-    margin: auto;
-    margin-top: 110px;
+    margin: 110px auto auto;
     width: 455px;
     /* Needed for IEs box shadow */
     background-color: rgb(68,68,68);
@@ -1139,14 +1135,16 @@ table.form td.label {
     white-space: nowrap;
 }
 
-table.form td.entry, div.tableForm .entry {
+table.form td.entry,
+div.table-form .entry {
     padding-top: 4px;
     padding-bottom: 4px;
 }
 
-table.form td.label, div.tableForm .label,
-table.form td.labelSeperator, table.form td.labelSeparator,
-div.tableForm .labelSeperator, div.tableForm .labelSeparator
+table.form td.label,
+div.table-form .label,
+table.form td.label-separator,
+div.table-form .label-separator,
 table.form td.nextLabel {
     padding-top: 12px;
 }
@@ -1156,24 +1154,24 @@ table.form td.nextLabel {
 }
 
 table.form td.entry,
-table.form td.labelSeperator, table.form td.labelSeparator {
+table.form td.label-separator {
     padding-left: 5px;
 }
 
-table.form td.labelSeperator, table.form td.labelSeparator {
+table.form td.label-separator {
     width: 1px;
 }
 
-/* labelOnly */
-table.form tr.labelOnly td {
+/* label-only */
+table.form tr.label-only td {
     padding-bottom: 3px;
 }
 
-table.form tr.labelOnly td.label {
+table.form tr.label-only td.label {
     padding-top: 9px;
 }
 
-table.form tr.labelOnly td.entry {
+table.form tr.label-only td.entry {
     padding-top: 9px;
 }
 
@@ -1229,7 +1227,7 @@ table.list tr th {
     border-top: medium none;
 }
 
-table.list tr td.tableLeft,
+table.list tr td.table-left,
 table.list tr td:first-child,
 table.list tr th:first-child {
     border-left: 1px solid #999999;
@@ -1257,12 +1255,12 @@ table.list tr th {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f9f9f9', endColorstr='#e5e5e5',GradientType=0 ); /* IE6-9 */
 }
 
-table.list tr.label td, table.list tr.label td div
+table.list tr.label td, table.list tr.label td div,
 table.list tr th, table.list tr th div {
     color: #333333;
 }
 
-table.list tr.groupHeader {
+table.list tr.group-header {
     font-family: 'Arial Rounded MT bold', Arial, Helvetica, sans-serif;
     color: #404040;
 }
@@ -1292,7 +1290,7 @@ table.list tr.foot {
     background: #d9d9d9;
 }
 
-table.list tr td.colSelect {
+table.list tr td.col-select {
     border-left: 1px solid #999999;
 }
 
@@ -1314,41 +1312,41 @@ table.list td.right {
     text-align: right;
 }
 
-table.list tr td.colAction {
+table.list tr td.col-action {
     text-align: center;
     width: 16px;
 }
 
-table.list tr td.colAction a,
-table.list tr td.colAction span.disabled,
+table.list tr td.col-action a,
+table.list tr td.col-action span.disabled,
 div.table .row .left .actions a{
     display: block;
     width: 16px;
     height: 16px;
 }
 
-table.list tr td.colAction a span,
+table.list tr td.col-action a span,
 div.table .row .actions a span {
     display: none;
 }
 
-table.list tr td.colAction .edit-ico,
+table.list tr td.col-action .edit-ico,
 div.table .row .actions .edit-ico {
     background: url(../images/ico-edit.png) no-repeat;
 }
 
-table.list tr td.colAction .delete-ico,
+table.list tr td.col-action .delete-ico,
 div.table .row .actions .delete-ico {
     background: url(../images/ico-delete.png) no-repeat;
 }
 
-table.list tr td.colAction .edit-ico.disabled,
+table.list tr td.col-action .edit-ico.disabled,
 div.table .row .actions .edit-ico.disabled {
     background: url(../images/ico-edit-disable.png) no-repeat;
     display: block;
 }
 
-table.list tr td.colAction .delete-ico.disabled,
+table.list tr td.col-action .delete-ico.disabled,
 div.table .row .actions .delete-ico.disabled {
     background: url(../images/ico-delete-disable.png) no-repeat;
     display: block;
@@ -1415,7 +1413,7 @@ ul.lc-pager li {
 }
 
 .lc-pager .pages a,
-.lc-pager .pages span.currentPage {
+.lc-pager .pages span.current-page {
     padding: 4px 8px;
     background: #ccc;
     margin: 0 1px;
@@ -1433,7 +1431,7 @@ ul.lc-pager li {
     border-radius: 4px;
 }
 
-.lc-pager .pages span.currentPage,
+.lc-pager .pages span.current-page,
 .lc-pager .pages a:hover {
     background: #777777;
     border: 1px #555555 solid;
@@ -1486,55 +1484,55 @@ ul.lc-pager li {
 /* TABLE VIEW */
 /**************/
 
-table.formView td {
+table.form-view td {
     padding-bottom: 3px;
     vertical-align: top;
 }
 
-table.formView td.label {
+table.form-view td.label {
     padding-top: 6px;
     white-space: nowrap;
 }
 
-table.formView td.labelSeperator,
-table.formView td.labelSeparator {
+table.form-view td.label-separator {
     padding-top: 6px;
     padding-left: 5px;
 }
 
-table.formView td.entry {
+table.form-view td.entry {
     padding-top: 6px;
     padding-left: 5px;
     word-wrap: break-word;
 }
 
-table.formView td.entry div {
+table.form-view td.entry div {
     word-wrap: break-word;
 }
 
-table.formView.tableView {
+table.form-view.table-view {
     border: 1px #999999 solid;
 }
 
-table.formView.tableView tr td {
+table.form-view.table-view tr td {
     padding: 5px;
     text-align: center;
     text-transform: uppercase;
 }
 
-table.formView.tableView .label {
+table.form-view.table-view .label {
     padding-top: 5px;
     border-right: 1px #999999 solid;
     font-weight: 700;
 }
 
-table.formView.tableView tr td.labelSeperator {
-    border: 1px #999999 solid;
+table.form-view.table-view tr td.label-separator {
     border-width: 0 1px;
+    border-color: #999999;
+    border-style: solid;
     padding-top: 5px;
 }
 
-table.formView.tableView tr.head td {
+table.form-view.table-view tr.head td {
     background: #3e9cff;
     font-weight: 700;
     border-bottom: 1px #999999 solid;
@@ -1543,45 +1541,44 @@ table.formView.tableView tr.head td {
     text-transform: none;
 }
 
-table.formView.tableView tr.foot td {
+table.form-view.table-view tr.foot td {
     border-top: 1px #999999 solid;
 }
 
-table.formView.tableView tr.foot td.left {
+table.form-view.table-view tr.foot td.left {
     text-align: left;
 }
 
-table.formView.tableView tr.foot td.right {
+table.form-view.table-view tr.foot td.right {
     text-align: right;
 }
 
-table.formView.tableView tr.normal td {
+table.form-view.table-view tr.normal td {
     background: #ecf7fd;
 }
 
-table.formView.tableView tr.toggle td {
+table.form-view.table-view tr.toggle td {
     background: #dbedff;
 }
 
-.formView {
+.form-view {
     margin-bottom: 5px;
 }
 
-.formView .line {
+.form-view .line {
     line-height: 17px;
 }
 
-.formView .line label {
-    padding: 0;
-    padding-right: 3px;
+.form-view .line label {
+    padding: 0 3px 0 0;
     font-weight: 700;
 }
 
-.formView .line span {
+.form-view .line span {
     padding-right: 15px;
 }
 
-.formView div.pic {
+.form-view div.pic {
     width: 100px;
     float: left;
     text-align: center;
@@ -1590,7 +1587,7 @@ table.formView.tableView tr.toggle td {
     padding: 1px;
 }
 
-.formView div.pic a {
+.form-view div.pic a {
     display: block;
     width: 100px;
     height: 100px;
@@ -1598,7 +1595,7 @@ table.formView.tableView tr.toggle td {
     margin: 1px 0;
 }
 
-.formView div.pic .top, .formView div.pic .bottom {
+.form-view div.pic .top, .form-view div.pic .bottom {
     background: #066acf;
     color: #ffffff;
     padding: 2px;
@@ -1727,13 +1724,13 @@ table.formView.tableView tr.toggle td {
     font-size: 1em;
 }
 
-.validateTips {
+.validate-tips {
     border: 1px solid transparent;
     padding: .3em 0;
     margin: .1em;
 }
 
-.validateTips.ui-state-highlight {
+.validate-tips.ui-state-highlight {
     padding: .3em;
 }
 

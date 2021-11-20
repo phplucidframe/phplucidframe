@@ -78,7 +78,7 @@
         display: block;
     }
 
-    table.form td.labelSeparator {
+    table.form td.label-separator {
         display: none;
         border: none;
     }
