@@ -87,7 +87,7 @@ if (count($blog)) {
     }
     ?>
     <div class="pager-container clearfix">
-        <?php echo $pager->display(); ?>
+        <?php $pager->display(); ?>
         <div class="pager-records"><?php echo _t('Total %d records', $totalRecords); ?></div>
     </div>
     <?php
