@@ -6,7 +6,7 @@ return array(
         'slug'      => 'administrator',
         'full_name' => 'Administrator',
         'username'  => 'admin',
-        'password'  => _encrypt('admin'),
+        'password'  => _encrypt('pwd@admin'),
         'email'     => 'admin@localhost.com',
         'role'      => 'admin',
         'is_master' => true,
