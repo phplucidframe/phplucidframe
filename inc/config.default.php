@@ -211,5 +211,7 @@ $lc_auth = array(
         // For example,
         // 'admin' => array('post-list', 'post-add', 'post-edit', 'post-delete'),
         // 'editor' => array('post-list', 'post-add', 'post-edit') // editor is not allowed for post deletion
+        // If you store permissions in your db, implement auth_permissions($role) in /app/helpers/auth_helper.php
+        // to return the permission list from your db
     ),
 );
