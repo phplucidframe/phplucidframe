@@ -65,7 +65,7 @@ class Seeder
      * @param string $key The reference key
      * @return string
      */
-    public static function setReference($key)
+    public static function getReference($key)
     {
         return __CLASS__ . '::' . $key;
     }
@@ -75,7 +75,7 @@ class Seeder
      * @param string $key The reference key
      * @return mixed The value
      */
-    public static function getReference($key)
+    public static function getReferenceValue($key)
     {
         return isset(self::$references[$key]) ? self::$references[$key] : null;
     }
@@ -131,7 +131,7 @@ class Seeder
                     if (is_string($value) && strpos($value, __CLASS__ . '::') === 0) {
                         $refKeyName = explode('::', $value);
                         $refKey = end($refKeyName);
-                        $data[$field] = self::getReference($refKey);
+                        $data[$field] = self::getReferenceValue($refKey);
                     } else {
                         $data[$field] = $value;
                     }
