@@ -117,7 +117,8 @@ if ($baseUrl) {
 
 # System constants
 require INC . 'constants.php';
-if ($file = _i('inc' . _DS_ . 'constants.php')) {
+require APP_ROOT . 'inc' . _DS_ . 'constants.php';
+if ($file = _i('inc' . _DS_ . 'constants.php', false)) {
     require_once $file;
 }
 
@@ -137,7 +138,7 @@ if (file_exists(INC . 'autoload.php')) {
 }
 
 # Site-specific configuration variables
-require_once APP_ROOT . 'inc' . _DS_ . 'site.config.php';
+require APP_ROOT . 'inc' . _DS_ . 'site.config.php';
 if ($file = _i('inc' . _DS_ . 'site.config.php', false)) {
     require_once $file;
 }
@@ -150,8 +151,9 @@ __session_init();
 # Route helper (required)
 require HELPER . 'route_helper.php'; # WEB_ROOT and WEB_APP_ROOT is created in route_helper
 # Routing configuration
-include INC . 'route.config.php';
-if ($file = _i('inc' . _DS_ . 'route.config.php')) {
+require INC . 'route.config.php';
+require APP_ROOT . 'inc' . _DS_ . 'route.config.php';
+if ($file = _i('inc' . _DS_ . 'route.config.php', false)) {
     require_once $file;
 }
 # Initialize routes
