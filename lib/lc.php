@@ -429,7 +429,10 @@ function __kernelErrorHandler($code, $message, $file, $line)
 function __kernelShutdownHandler()
 {
     $error = error_get_last();
-    __kernelErrorHandler($error['type'], $error['message'], $error['file'], $error['line']);
+
+    if (is_array($error)) {
+        __kernelErrorHandler($error['type'], $error['message'], $error['file'], $error['line']);
+    }
 }
 
 /**
