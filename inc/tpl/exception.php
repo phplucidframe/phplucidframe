@@ -61,6 +61,7 @@
     </div>
     <script>
         $('html font').remove();
+        $('body > br').remove();
     </script>
 </body>
 </html>

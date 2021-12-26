@@ -135,7 +135,9 @@ class Command
     public function addOption($name, $shortcut = null, $description = '', $default = null, $type = LC_CONSOLE_OPTION_OPTIONAL)
     {
         $name = ltrim($name, '--');
-        $shortcut = ltrim($shortcut, '-');
+        if ($shortcut) {
+            $shortcut = ltrim($shortcut, '-');
+        }
 
         $this->options[$name] = array(
             'name'          => $name,

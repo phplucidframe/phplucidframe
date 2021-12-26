@@ -65,11 +65,9 @@ function __session_init()
     foreach ($options as $key => $value) {
         if ($key == 'gc_maxlifetime' || $key == 'cookie_lifetime') {
             $value = $value * 60;
+            $options[$key] = $value * 60;
         }
-        ini_set('session.'.$key, $value);
     }
-
-    _cfg('session.options', $options);
 
     if ($type === 'database') {
         session_set_save_handler(
@@ -87,7 +85,7 @@ function __session_init()
         call_user_func('session_beforeStart');
     }
 
-    session_start();
+    session_start($options);
 }
 /**
  * @internal

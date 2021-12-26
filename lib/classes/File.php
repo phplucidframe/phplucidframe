@@ -154,6 +154,7 @@ class File extends \SplFileInfo
     /**
      * Getter for the file name generated
      */
+    #[\ReturnTypeWillChange]
     public function getFileName()
     {
         return $this->fileName;

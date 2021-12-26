@@ -255,7 +255,7 @@ function route_url($path = null, $queryStr = array(), $lang = '')
 
     $forceExcludeLangInURL = $lang === false;
 
-    if (stripos($path, 'http') === 0) {
+    if ($path && stripos($path, 'http') === 0) {
         return $path;
     }
 
@@ -573,7 +573,11 @@ function route_start($uri, array $except = array())
         return false;
     }
 
-    return stripos(_rr(), trim($uri, '/')) === 0;
+    if ($uri) {
+        $uri = trim($uri, '/');
+    }
+
+    return $uri && stripos(_rr(), $uri) === 0;
 }
 
 /**
@@ -590,7 +594,11 @@ function route_contain($uri, array $except = array())
 
     $args = is_array($uri) ? $uri : array($uri);
     foreach ($args as $uri) {
-        if (stristr(_rr(), trim($uri, '/'))) {
+        if ($uri) {
+            $uri = trim($uri, '/');
+        }
+
+        if (stristr(_rr(), $uri)) {
             return true;
         }
     }
@@ -609,7 +617,11 @@ function route_except()
     $except = func_get_args();
     if (count($except)) {
         foreach ($except as $string) {
-            if (stripos(_rr(), trim($string, '/')) === 0 || route_name() == $string) {
+            if ($string) {
+                $string = trim($string, '/');
+            }
+
+            if (stripos(_rr(), $string) === 0 || route_name() == $string) {
                 return false;
             }
         }
