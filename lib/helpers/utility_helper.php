@@ -1998,7 +1998,10 @@ function _isBot()
         'Barkrowler',
         'panscient.com',
         'Symfony BrowserKit',
-        'Apache-HttpClient'
+        'Apache-HttpClient',
+        'serpstatbot',
+        'BLEXBot',
+        'DotBot',
     );
     foreach ($bots as $bot) {
         if (false !== strpos(strtolower($userAgent), strtolower($bot))) {
