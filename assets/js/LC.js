@@ -12,7 +12,7 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.txt
  */
- (function(win, $) {
+(function(win, $) {
     var LC = win.LC;
 
     LC.Form = {
@@ -1110,9 +1110,19 @@
             }
         });
     };
-
+    /**
+     * Evaluates JavaScript code represented as a string
+     */
     LC.eval = function(statement) {
         Function('"use strict";' + statement)();
+    };
+    /**
+     * Get a key in an object by its value
+     */
+    LC.getKeyByValue = function(object, value) {
+        return Object.keys(object).find(function(key) {
+            return object[key] === value;
+        });
     };
 
     win.LC = LC;
