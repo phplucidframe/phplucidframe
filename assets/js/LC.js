@@ -199,7 +199,7 @@
                         } else {
                             LC.Form.clear(response.formId);
                             if (response.msg) {
-                                $message.html('<div class="message-success alert alert-danger">' +
+                                $message.html('<div class="message-success alert alert-success">' +
                                     '<ul><li>'+response.msg+'</li></ul>' +
                                     '</div>')
                                     .show();
@@ -1110,9 +1110,7 @@
             }
         });
     };
-    /**
-     * Evaluates JavaScript code represented as a string
-     */
+
     LC.eval = function(statement) {
         Function('"use strict";' + statement)();
     };
