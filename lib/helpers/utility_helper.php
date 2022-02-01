@@ -2022,6 +2022,7 @@ function _isBot()
         'serpstatbot',
         'BLEXBot',
         'DotBot',
+        'AhrefsBot',
     );
     foreach ($bots as $bot) {
         if (false !== strpos(strtolower($userAgent), strtolower($bot))) {
