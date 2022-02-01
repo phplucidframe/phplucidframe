@@ -33,6 +33,7 @@ class SchemaManager
     private static $dataTypes = array(
         'mysql' => array(
             'smallint'  => 'SMALLINT',
+            'mediumint' => 'MEDIUMINT',
             'int'       => 'INT',
             'integer'   => 'INT',
             'bigint'    => 'BIGINT',
@@ -45,8 +46,14 @@ class SchemaManager
             'string'    => 'VARCHAR',
             'char'      => 'CHAR',
             'binary'    => 'VARBINARY',
+            'tinytext'  => 'TINYTEXT',
             'text'      => 'TEXT',
+            'mediumtext'=> 'MEDIUMTEXT',
+            'longtext'  => 'LONGTEXT',
+            'tinyblob'  => 'TINYBLOB',
             'blob'      => 'BLOB',
+            'mediumblob'=> 'MEDIUMBLOB',
+            'longblob'  => 'LONGBLOB',
             'array'     => 'TEXT',
             'json'      => 'TEXT',
             # For text, blob, array and json
