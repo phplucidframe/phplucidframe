@@ -2392,3 +2392,17 @@ function _en2myNum($num)
 
     return preg_replace(array_keys($digits), array_values($digits), $num);
 }
+
+/**
+ * Check if array is associative or sequential
+ * @param array $arr The array to be checked
+ * @return bool
+ */
+function _arrayAssoc(array $arr)
+{
+    if (empty($arr)) {
+        return false;
+    }
+
+    return array_keys($arr) !== range(0, count($arr) - 1);
+}
