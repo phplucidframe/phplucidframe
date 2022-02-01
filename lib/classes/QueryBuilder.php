@@ -827,7 +827,7 @@ class QueryBuilder
     /**
      * Perform a query on the database and return the array of all results
      *
-     * @return array|null The result array of objects.
+     * @return array The result array of objects.
      *   If the result not found, return null.
      */
     public function getResult()
@@ -836,9 +836,8 @@ class QueryBuilder
             $this->execute();
         }
 
-        $data = null;
+        $data = array();
         if ($this->result) {
-            $data = array();
             while ($row = db_fetchObject($this->result)) {
                 $data[] = $row;
             }
