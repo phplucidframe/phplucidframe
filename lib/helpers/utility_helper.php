@@ -246,8 +246,28 @@ function _loader($name, $path = HELPER)
 
     $path = rtrim($path, _DS_) . _DS_;
 
-    $name = rtrim($name, '.php');
-    $lc_autoload[] = $path . $name . '.php';
+    $dir = $path . $name . _DS_;
+    if (is_dir($dir)) {
+        // include all files from the library
+        $files = scandir($dir);
+        foreach ($files as $fileName) {
+            $dir = rtrim(rtrim($dir, '/'), '\\');
+            $file = $dir . _DS_ . $fileName;
+
+            if (!in_array(substr($fileName, -3), array('php', 'inc')) || !is_file($file)) {
+                continue;
+            }
+
+            if (file_exists($file)) {
+                $lc_autoload[] = $file;
+            }
+        }
+    } else {
+        // include one file from the library
+        $name = rtrim($name, '.php');
+        $lc_autoload[] = $path . $name . '.php';
+    }
+
     $lc_autoload = array_unique($lc_autoload);
 }
 
@@ -309,7 +329,7 @@ function _autoloadDir($dir, $scope = '')
                 continue;
             }
 
-            if (file_exists($file) && (empty($scope) || ($scope && $scope == LC_NAMESPACE))) {
+            if (file_exists($file) && (empty($scope) || $scope == LC_NAMESPACE)) {
                 require_once $file;
             }
         }

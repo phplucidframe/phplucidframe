@@ -7,7 +7,8 @@
  */
 
 // Syntax to load a library
-// _loader('library_file_name_without_extension',  THIRD_PARTY . 'library_folder_to_library_name');
+// _loader('library_file_name_without_extension',  THIRD_PARTY . 'library_folder_to_library_name'); # to include a file from the library directory
+// _loader('library_directory_name',  THIRD_PARTY); # to include all files from the library directory
 
 // Syntax to autoload directory for a particular sub-site
 // _autoloadDir(APP_ROOT . 'admin/middleware', 'admin');
