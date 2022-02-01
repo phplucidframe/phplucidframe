@@ -1160,7 +1160,7 @@ function db_exp($field, $value, $exp = '')
  * Find a single entity result by id
  * @param string $table
  * @param int $id
- * @return mixed
+ * @return object|null
  */
 function db_find($table, $id)
 {
@@ -1223,11 +1223,23 @@ function db_findOrFail($table, $id)
  * @param string $table The table name to fetch data from
  * @param array $condition The condition array for query
  *
- *     array(
- *       'value'  => $value,
- *       'exp >=' => $exp,
- *       'field   => $field
- *     )
+ *    array(
+ *      'fieldName1'    => $value1,
+ *      'fieldName2 >=' => $value2,
+ *      'fieldName3     => NULL
+ *    )
+ *
+ *  OR
+ *
+ *    array(
+ *      'fieldName1'    => $value1,
+ *      'fieldName2 >=' => $value2,
+ *      'fieldName3     => NULL,
+ *      '$or' => array(
+ *          'fieldName4'    => array(1, 2, 3)
+ *          'fieldName4 <'  => 10
+ *      )
+ *    )
  *
  * @param array $orderBy The order by clause for query
  *
@@ -1273,4 +1285,133 @@ function db_findWithPager($table, array $condition = array(), array $orderBy = a
     }
 
     return array($qb, $pager, $rowCount);
+}
+
+/**
+ * Get data of a table by condition
+ * @param string $table The table name to fetch data from
+ * @param array $condition The condition array for query
+ *
+ *    array(
+ *      'fieldName1'    => $value1,
+ *      'fieldName2 >=' => $value2,
+ *      'fieldName3     => NULL
+ *    )
+ *
+ *  OR
+ *
+ *    array(
+ *      'fieldName1'    => $value1,
+ *      'fieldName2 >=' => $value2,
+ *      'fieldName3     => NULL,
+ *      '$or' => array(
+ *          'fieldName4'    => array(1, 2, 3)
+ *          'fieldName4 <'  => 10
+ *      )
+ *    )
+ *
+ * @param array $orderBy The order by clause for query
+ *
+ *     array(
+ *       'field'  => 'asc|desc'
+ *     )
+ *
+ * @param int $limit The number of records to return; No limit by default
+ * @return array
+ */
+function db_findBy($table, array $condition, array $orderBy = array(), $limit = null)
+{
+    $qb = db_select($table)->where($condition);
+
+    foreach ($orderBy as $field => $sort) {
+        $qb->orderBy($field, $sort);
+    }
+
+    if ($limit) {
+        $qb->limit($limit);
+    }
+
+    return $qb->getResult();
+}
+
+/**
+ * Get one record of a table by condition
+ * @param string $table The table name to fetch data from
+ * @param array $condition The condition array for query
+ *
+ *    array(
+ *      'fieldName1'    => $value1,
+ *      'fieldName2 >=' => $value2,
+ *      'fieldName3     => NULL
+ *    )
+ *
+ *  OR
+ *
+ *    array(
+ *      'fieldName1'    => $value1,
+ *      'fieldName2 >=' => $value2,
+ *      'fieldName3     => NULL,
+ *      '$or' => array(
+ *          'fieldName4'    => array(1, 2, 3)
+ *          'fieldName4 <'  => 10
+ *      )
+ *    )
+ *
+ * @param array $orderBy The order by clause for query
+ *
+ *     array(
+ *       'field'  => 'asc|desc'
+ *     )
+ *
+ * @return object|null
+ */
+function db_findOneBy($table, array $condition, array $orderBy = array())
+{
+    $result = db_findBy($table, $condition, $orderBy, 1);
+    if (!empty($result)) {
+        return $result[0];
+    }
+
+    return null;
+}
+
+/**
+ * Get one record of a table by condition or throw 404 if not found
+ * @param string $table The table name to fetch data from
+ * @param array $condition The condition array for query
+ *
+ *    array(
+ *      'fieldName1'    => $value1,
+ *      'fieldName2 >=' => $value2,
+ *      'fieldName3     => NULL
+ *    )
+ *
+ *  OR
+ *
+ *    array(
+ *      'fieldName1'    => $value1,
+ *      'fieldName2 >=' => $value2,
+ *      'fieldName3     => NULL,
+ *      '$or' => array(
+ *          'fieldName4'    => array(1, 2, 3)
+ *          'fieldName4 <'  => 10
+ *      )
+ *    )
+ *
+ * @param array $orderBy The order by clause for query
+ *
+ *     array(
+ *       'field'  => 'asc|desc'
+ *     )
+ *
+ * @return object|null
+ */
+function db_findOneByOrFail($table, array $condition, array $orderBy = array())
+{
+    $result = db_findOneBy($table, $condition, $orderBy);
+    if (empty($result)) {
+        _page404();
+    }
+
+    return $result;
 }
