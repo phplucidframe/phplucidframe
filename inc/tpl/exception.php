@@ -31,9 +31,6 @@
 <body class="mini-page">
     <div class="container-box exception-box">
         <div class="box">
-            <div class="logo">
-                <img src="<?php echo _img('logo.png'); ?>" alt="<?php echo _cfg('siteName') ?>" />
-            </div>
             <div class="error-stacktrace">
                 <div class="block-exception">
                     <p><?php echo nl2br(ucfirst($message)); ?></p>

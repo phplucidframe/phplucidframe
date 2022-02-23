@@ -974,6 +974,7 @@ span.invalid {
 
 .container-box.exception-box .box {
     padding-bottom: 60px;
+    padding-top: 60px;
 }
 
 .error-stacktrace .block-exception {
@@ -1019,14 +1020,6 @@ span.invalid {
 
 .error-stacktrace .block-stacktrace code.inline {
     background: #ffffff;
-}
-
-.error-stacktrace .block-exception.warning {
-    background: #e49e00;
-}
-
-.error-stacktrace .block-exception.warning p {
-    background: #c07c00;
 }
 
 /*************/
