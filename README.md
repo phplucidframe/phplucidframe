@@ -76,7 +76,12 @@ PHPLucidFrame encourages a structured page organization. You can check the recom
 
 ## Run Tests
 
+Prerequisites:
+
     composer install
+
+    php lucidframe env test
+    php lucidframe schema:load sample
 
 From command line,
 

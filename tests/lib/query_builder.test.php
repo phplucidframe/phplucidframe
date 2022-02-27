@@ -24,37 +24,37 @@ class QueryBuilderTestCase extends LucidFrameTestCase
         $this->assertEqual($qb->getSQL(), 'SELECT `p`.* FROM `post` `p`');
 
         $qb = db_select('post', 'p')
-            ->fields('p', array('postId', 'postTitle'))
+            ->fields('p', array('id', 'title'))
             ->orderBy('p.created', 'desc');
         $this->assertEqual($qb->getSQL(), self::oneline('
-            SELECT `p`.`postId`, `p`.`postTitle` FROM `post` `p`
+            SELECT `p`.`id`, `p`.`title` FROM `post` `p`
             ORDER BY `p`.`created` DESC
         '));
 
         $qb = db_select('post', 'p')
-            ->fields('p', array('postId', array('postTitle', 'title')))
+            ->fields('p', array('id', 'title'))
             ->orderBy('p.created', 'desc');
         $this->assertEqual($qb->getSQL(), self::oneline('
-            SELECT `p`.`postId`, `p`.`postTitle` `title` FROM `post` `p`
+            SELECT `p`.`id`, `p`.`title` FROM `post` `p`
             ORDER BY `p`.`created` DESC
         '));
 
         $qb = db_select('post', 'p')
-            ->fields('p', array('postId', 'postTitle'))
+            ->fields('p', array('id', 'title'))
             ->fields('u')
-            ->join('user', 'u', 'p.uid = u.uid')
+            ->join('user', 'u', 'p.user_id = u.id')
             ->orderBy('p.created', 'desc');
         $this->assertEqual($qb->getSQL(), self::oneline('
-            SELECT `p`.`postId`, `p`.`postTitle`, `u`.* FROM `post` `p`
-            INNER JOIN `user` `u` ON `p`.`uid` = `u`.`uid`
+            SELECT `p`.`id`, `p`.`title`, `u`.* FROM `post` `p`
+            INNER JOIN `user` `u` ON `p`.`user_id` = `u`.`id`
             ORDER BY `p`.`created` DESC
         '));
 
         $qb = db_select('post', 'p')
             ->where()
-            ->condition('p.postId', 1);
-        $this->assertEqual($qb->getSQL(), 'SELECT `p`.* FROM `post` `p` WHERE `p`.`postId` = :p_postId');
-        $this->assertEqual($qb->getReadySQL(), 'SELECT `p`.* FROM `post` `p` WHERE `p`.`postId` = 1');
+            ->condition('p.id', 1);
+        $this->assertEqual($qb->getSQL(), 'SELECT `p`.* FROM `post` `p` WHERE `p`.`id` = :p_id');
+        $this->assertEqual($qb->getReadySQL(), 'SELECT `p`.* FROM `post` `p` WHERE `p`.`id` = 1');
 
         $qb = db_select('post', 'p')
             ->where()
@@ -63,112 +63,112 @@ class QueryBuilderTestCase extends LucidFrameTestCase
         $this->assertEqual($qb->getReadySQL(), 'SELECT `p`.* FROM `post` `p` WHERE `p`.`created` > 2015-11-08');
 
         $qb = db_select('post', 'p')
-            ->fields('p', array('postId', 'postTitle'))
-            ->fields('u', array('fullName', 'username'))
-            ->join('user', 'u', 'p.uid = u.uid')
-            ->leftJoin('category', 'c', 'p.catId = c.catId')
+            ->fields('p', array('id', 'title'))
+            ->fields('u', array('full_name', 'username'))
+            ->join('user', 'u', 'p.user_id = u.id')
+            ->leftJoin('category', 'c', 'p.cat_id = c.id')
             ->where()
-            ->condition('catId', 1)
-            ->condition('uid', 1)
+            ->condition('cat_id', 1)
+            ->condition('user_id', 1)
             ->orderBy('p.created', 'desc')
-            ->orderBy('c.catId');
+            ->orderBy('c.id');
         $this->assertEqual($qb->getSQL(), self::oneline('
-            SELECT `p`.`postId`, `p`.`postTitle`, `u`.`fullName`, `u`.`username` FROM `post` `p`
-            INNER JOIN `user` `u` ON `p`.`uid` = `u`.`uid`
-            LEFT JOIN `category` `c` ON `p`.`catId` = `c`.`catId`
-            WHERE `catId` = :catId
-            AND `uid` = :uid
-            ORDER BY `p`.`created` DESC, `c`.`catId` ASC
+            SELECT `p`.`id`, `p`.`title`, `u`.`full_name`, `u`.`username` FROM `post` `p`
+            INNER JOIN `user` `u` ON `p`.`user_id` = `u`.`id`
+            LEFT JOIN `category` `c` ON `p`.`cat_id` = `c`.`id`
+            WHERE `cat_id` = :cat_id
+            AND `user_id` = :user_id
+            ORDER BY `p`.`created` DESC, `c`.`id` ASC
         '));
         $this->assertEqual($qb->getReadySQL(), self::oneline('
-            SELECT `p`.`postId`, `p`.`postTitle`, `u`.`fullName`, `u`.`username` FROM `post` `p`
-            INNER JOIN `user` `u` ON `p`.`uid` = `u`.`uid`
-            LEFT JOIN `category` `c` ON `p`.`catId` = `c`.`catId`
-            WHERE `catId` = 1
-            AND `uid` = 1
-            ORDER BY `p`.`created` DESC, `c`.`catId` ASC
+            SELECT `p`.`id`, `p`.`title`, `u`.`full_name`, `u`.`username` FROM `post` `p`
+            INNER JOIN `user` `u` ON `p`.`user_id` = `u`.`id`
+            LEFT JOIN `category` `c` ON `p`.`cat_id` = `c`.`id`
+            WHERE `cat_id` = 1
+            AND `user_id` = 1
+            ORDER BY `p`.`created` DESC, `c`.`id` ASC
         '));
 
         $qb = db_select('post', 'p')
             ->orWhere()
-            ->condition('catId', 1)
-            ->condition('catId', 2);
-        $this->assertEqual($qb->getSQL(), 'SELECT `p`.* FROM `post` `p` WHERE `catId` = :catId OR `catId` = :catId0');
-        $this->assertEqual($qb->getReadySQL(), 'SELECT `p`.* FROM `post` `p` WHERE `catId` = 1 OR `catId` = 2');
+            ->condition('cat_id', 1)
+            ->condition('cat_id', 2);
+        $this->assertEqual($qb->getSQL(), 'SELECT `p`.* FROM `post` `p` WHERE `cat_id` = :cat_id OR `cat_id` = :cat_id0');
+        $this->assertEqual($qb->getReadySQL(), 'SELECT `p`.* FROM `post` `p` WHERE `cat_id` = 1 OR `cat_id` = 2');
 
         $qb = db_select('post', 'p')
             ->fields('p')
-            ->fields('u', array('fullName', 'username'))
-            ->join('user', 'u', 'p.uid = u.uid')
-            ->leftJoin('category', 'c', 'p.catId = c.catId')
+            ->fields('u', array('full_name', 'username'))
+            ->join('user', 'u', 'p.user_id = u.id')
+            ->leftJoin('category', 'c', 'p.cat_id = c.id')
             ->orWhere(array(
-                'postTitle like' => 'A project',
+                'title like' => 'A project',
                 '$and' => array(
-                    'postId' => array(1, 2, 3),
-                    'uid' => 1
+                    'id' => array(1, 2, 3),
+                    'user_id' => 1
                 )
             ))
             ->orderBy('p.created', 'desc');
         $this->assertEqual($qb->getSQL(), self::oneline('
-            SELECT `p`.*, `u`.`fullName`, `u`.`username` FROM `post` `p`
-            INNER JOIN `user` `u` ON `p`.`uid` = `u`.`uid`
-            LEFT JOIN `category` `c` ON `p`.`catId` = `c`.`catId`
-            WHERE ( `postTitle` LIKE CONCAT("%", :postTitle, "%")
-            OR (`postId` IN (:postId0, :postId1, :postId2) AND `uid` = :uid) )
+            SELECT `p`.*, `u`.`full_name`, `u`.`username` FROM `post` `p`
+            INNER JOIN `user` `u` ON `p`.`user_id` = `u`.`id`
+            LEFT JOIN `category` `c` ON `p`.`cat_id` = `c`.`id`
+            WHERE ( `title` LIKE CONCAT("%", :title, "%")
+            OR (`id` IN (:id0, :id1, :id2) AND `user_id` = :user_id) )
             ORDER BY `p`.`created` DESC
         '));
         $this->assertEqual($qb->getReadySQL(), self::oneline('
-            SELECT `p`.*, `u`.`fullName`, `u`.`username` FROM `post` `p`
-            INNER JOIN `user` `u` ON `p`.`uid` = `u`.`uid`
-            LEFT JOIN `category` `c` ON `p`.`catId` = `c`.`catId`
-            WHERE ( `postTitle` LIKE CONCAT("%", A project, "%")
-            OR (`postId` IN (1, 2, 3) AND `uid` = 1) )
+            SELECT `p`.*, `u`.`full_name`, `u`.`username` FROM `post` `p`
+            INNER JOIN `user` `u` ON `p`.`user_id` = `u`.`id`
+            LEFT JOIN `category` `c` ON `p`.`cat_id` = `c`.`id`
+            WHERE ( `title` LIKE CONCAT("%", A project, "%")
+            OR (`id` IN (1, 2, 3) AND `user_id` = 1) )
             ORDER BY `p`.`created` DESC
         '));
 
         $qb = db_select('post', 'p')
             ->fields('p')
-            ->fields('u', array('fullName', 'username'))
-            ->join('user', 'u', 'p.uid = u.uid')
-            ->join('category', 'c', 'p.catId = c.catId')
+            ->fields('u', array('full_name', 'username'))
+            ->join('user', 'u', 'p.user_id = u.id')
+            ->join('category', 'c', 'p.cat_id = c.id')
             ->where(array(
-                'postTitle like' => 'A project',
+                'title like' => 'A project',
                 '$or' => array(
-                    'postId' => array(1, 2, 3),
-                    'uid' => 1
+                    'id' => array(1, 2, 3),
+                    'user_id' => 1
                 )
             ))
             ->orderBy('p.created', 'desc')
             ->limit(0, 20);
         $this->assertEqual($qb->getSQL(), self::oneline('
-            SELECT `p`.*, `u`.`fullName`, `u`.`username` FROM `post` `p`
-            INNER JOIN `user` `u` ON `p`.`uid` = `u`.`uid`
-            INNER JOIN `category` `c` ON `p`.`catId` = `c`.`catId`
-            WHERE ( `postTitle` LIKE CONCAT("%", :postTitle, "%")
-            AND (`postId` IN (:postId0, :postId1, :postId2) OR `uid` = :uid) )
+            SELECT `p`.*, `u`.`full_name`, `u`.`username` FROM `post` `p`
+            INNER JOIN `user` `u` ON `p`.`user_id` = `u`.`id`
+            INNER JOIN `category` `c` ON `p`.`cat_id` = `c`.`id`
+            WHERE ( `title` LIKE CONCAT("%", :title, "%")
+            AND (`id` IN (:id0, :id1, :id2) OR `user_id` = :user_id) )
             ORDER BY `p`.`created` DESC
             LIMIT 0, 20
         '));
         $this->assertEqual($qb->getReadySQL(), self::oneline('
-            SELECT `p`.*, `u`.`fullName`, `u`.`username` FROM `post` `p`
-            INNER JOIN `user` `u` ON `p`.`uid` = `u`.`uid`
-            INNER JOIN `category` `c` ON `p`.`catId` = `c`.`catId`
-            WHERE ( `postTitle` LIKE CONCAT("%", A project, "%")
-            AND (`postId` IN (1, 2, 3) OR `uid` = 1) )
+            SELECT `p`.*, `u`.`full_name`, `u`.`username` FROM `post` `p`
+            INNER JOIN `user` `u` ON `p`.`user_id` = `u`.`id`
+            INNER JOIN `category` `c` ON `p`.`cat_id` = `c`.`id`
+            WHERE ( `title` LIKE CONCAT("%", A project, "%")
+            AND (`id` IN (1, 2, 3) OR `user_id` = 1) )
             ORDER BY `p`.`created` DESC
             LIMIT 0, 20
         '));
 
         $qb = db_select('post', 'p')
             ->fields('p')
-            ->fields('u', array('fullName', 'username'))
-            ->join('user', 'u', 'p.uid = u.uid')
-            ->join('category', 'c', 'p.catId = c.catId')
+            ->fields('u', array('full_name', 'username'))
+            ->join('user', 'u', 'p.user_id = u.id')
+            ->join('category', 'c', 'p.cat_id = c.id')
             ->orWhere(array(
-                'postTitle nlike' => 'A project',
+                'title nlike' => 'A project',
                 '$and' => array(
-                    'postId' => array(1, 2, 3),
-                    'postId <=' => 10,
+                    'id' => array(1, 2, 3),
+                    'id <=' => 10,
                     '$or' => array(
                         'created >' => '2014-12-31',
                         'deleted' => null
@@ -178,26 +178,26 @@ class QueryBuilderTestCase extends LucidFrameTestCase
             ->orderBy('p.created', 'desc')
             ->limit(5);
         $this->assertEqual($qb->getSQL(), self::oneline('
-            SELECT `p`.*, `u`.`fullName`, `u`.`username` FROM `post` `p`
-            INNER JOIN `user` `u` ON `p`.`uid` = `u`.`uid`
-            INNER JOIN `category` `c` ON `p`.`catId` = `c`.`catId`
+            SELECT `p`.*, `u`.`full_name`, `u`.`username` FROM `post` `p`
+            INNER JOIN `user` `u` ON `p`.`user_id` = `u`.`id`
+            INNER JOIN `category` `c` ON `p`.`cat_id` = `c`.`id`
             WHERE (
-                `postTitle` NOT LIKE CONCAT("%", :postTitle, "%")
-                OR (`postId` IN (:postId0, :postId1, :postId2)
-                    AND `postId` <= :postId3
+                `title` NOT LIKE CONCAT("%", :title, "%")
+                OR (`id` IN (:id0, :id1, :id2)
+                    AND `id` <= :id3
                     AND (`created` > :created OR `deleted` IS NULL))
             )
             ORDER BY `p`.`created` DESC
             LIMIT 5
         '));
         $this->assertEqual($qb->getReadySQL(), self::oneline('
-            SELECT `p`.*, `u`.`fullName`, `u`.`username` FROM `post` `p`
-            INNER JOIN `user` `u` ON `p`.`uid` = `u`.`uid`
-            INNER JOIN `category` `c` ON `p`.`catId` = `c`.`catId`
+            SELECT `p`.*, `u`.`full_name`, `u`.`username` FROM `post` `p`
+            INNER JOIN `user` `u` ON `p`.`user_id` = `u`.`id`
+            INNER JOIN `category` `c` ON `p`.`cat_id` = `c`.`id`
             WHERE (
-                `postTitle` NOT LIKE CONCAT("%", A project, "%")
-                OR (`postId` IN (1, 2, 3)
-                    AND `postId` <= 10
+                `title` NOT LIKE CONCAT("%", A project, "%")
+                OR (`id` IN (1, 2, 3)
+                    AND `id` <= 10
                     AND (`created` > 2014-12-31 OR `deleted` IS NULL))
             )
             ORDER BY `p`.`created` DESC
@@ -205,22 +205,22 @@ class QueryBuilderTestCase extends LucidFrameTestCase
         '));
 
         $qb = db_select('post', 'p')
-            ->groupBy('p.catId');
-        $this->assertEqual($qb->getSQL(), 'SELECT `p`.* FROM `post` `p` GROUP BY `p`.`catId`');
+            ->groupBy('p.cat_id');
+        $this->assertEqual($qb->getSQL(), 'SELECT `p`.* FROM `post` `p` GROUP BY `p`.`cat_id`');
 
         $qb = db_select('post', 'p')
-            ->groupBy('p.catId')
-            ->having(array('p.catId >' => 10));
-        $this->assertEqual($qb->getSQL(), 'SELECT `p`.* FROM `post` `p` GROUP BY `p`.`catId` HAVING `p`.`catId` > :p_catId');
-        $this->assertEqual($qb->getReadySQL(), 'SELECT `p`.* FROM `post` `p` GROUP BY `p`.`catId` HAVING `p`.`catId` > 10');
+            ->groupBy('p.cat_id')
+            ->having(array('p.cat_id >' => 10));
+        $this->assertEqual($qb->getSQL(), 'SELECT `p`.* FROM `post` `p` GROUP BY `p`.`cat_id` HAVING `p`.`cat_id` > :p_cat_id');
+        $this->assertEqual($qb->getReadySQL(), 'SELECT `p`.* FROM `post` `p` GROUP BY `p`.`cat_id` HAVING `p`.`cat_id` > 10');
 
         $qb = db_select('post', 'p')
-            ->groupBy('p.catId')
+            ->groupBy('p.cat_id')
             ->having(array(
-                'p.catId >' => 10
+                'p.cat_id >' => 10
             ));
-        $this->assertEqual($qb->getSQL(), 'SELECT `p`.* FROM `post` `p` GROUP BY `p`.`catId` HAVING `p`.`catId` > :p_catId');
-        $this->assertEqual($qb->getReadySQL(), 'SELECT `p`.* FROM `post` `p` GROUP BY `p`.`catId` HAVING `p`.`catId` > 10');
+        $this->assertEqual($qb->getSQL(), 'SELECT `p`.* FROM `post` `p` GROUP BY `p`.`cat_id` HAVING `p`.`cat_id` > :p_cat_id');
+        $this->assertEqual($qb->getReadySQL(), 'SELECT `p`.* FROM `post` `p` GROUP BY `p`.`cat_id` HAVING `p`.`cat_id` > 10');
     }
 
     public function testQueryBuilderCOUNT()
@@ -228,18 +228,18 @@ class QueryBuilderTestCase extends LucidFrameTestCase
         $qb = db_count('post');
         $this->assertEqual($qb->getSQL(), 'SELECT COUNT(*) count FROM `post` `post`');
 
-        $qb = db_count('post', 'postId');
-        $this->assertEqual($qb->getSQL(), 'SELECT COUNT(`postId`) count FROM `post` `post`');
+        $qb = db_count('post', 'id');
+        $this->assertEqual($qb->getSQL(), 'SELECT COUNT(`id`) count FROM `post` `post`');
 
-        $qb = db_count('post', 'postId');
-        $qb->count('uid');
-        $this->assertEqual($qb->getSQL(), 'SELECT COUNT(`postId`) count, COUNT(`uid`) FROM `post` `post`');
+        $qb = db_count('post', 'id');
+        $qb->count('user_id');
+        $this->assertEqual($qb->getSQL(), 'SELECT COUNT(`id`) count, COUNT(`user_id`) FROM `post` `post`');
 
-        $qb = db_count('post', 'postId')
+        $qb = db_count('post', 'id')
             ->where()
-            ->condition('catId', 1);
-        $this->assertEqual($qb->getSQL(), 'SELECT COUNT(`postId`) count FROM `post` `post` WHERE `catId` = :catId');
-        $this->assertEqual($qb->getReadySQL(), 'SELECT COUNT(`postId`) count FROM `post` `post` WHERE `catId` = 1');
+            ->condition('cat_id', 1);
+        $this->assertEqual($qb->getSQL(), 'SELECT COUNT(`id`) count FROM `post` `post` WHERE `cat_id` = :cat_id');
+        $this->assertEqual($qb->getReadySQL(), 'SELECT COUNT(`id`) count FROM `post` `post` WHERE `cat_id` = 1');
     }
 
     public function testQueryBuilderAggregates()
@@ -285,8 +285,8 @@ class QueryBuilderTestCase extends LucidFrameTestCase
         $this->assertEqual($qb->getSQL(), 'SELECT COUNT(*) count, NOW() now FROM `post` `p`');
 
         $qb = db_select('user', 'u')
-            ->field('CONTACT(u.fullName, "-", u.username)', 'name');
-        $this->assertEqual($qb->getSQL(), 'SELECT CONTACT(u.fullName, "-", u.username) name FROM `user` `u`');
+            ->field('CONTACT(u.full_name, "-", u.username)', 'name');
+        $this->assertEqual($qb->getSQL(), 'SELECT CONTACT(u.full_name, "-", u.username) name FROM `user` `u`');
     }
 
     public function testQueryBuilderResult()
@@ -303,14 +303,14 @@ class QueryBuilderTestCase extends LucidFrameTestCase
             ->where()
             ->condition('LOWER(username)', 'admin');
         if ($userId) {
-            $qb->condition('uid !=', $userId);
+            $qb->condition('id !=', $userId);
         }
         $count = $qb->fetch();
         $this->assertEqual($count, 0);
 
-        db_insert('category', array('catName' => 'PHP'));
-        db_insert('category', array('catName' => 'MySQL'));
-        db_insert('category', array('catName' => 'Framework'));
+        db_insert('category', array('name' => 'PHP'));
+        db_insert('category', array('name' => 'MySQL'));
+        db_insert('category', array('name' => 'Framework'));
 
         $result = db_select('category')->getResult();
         $this->assertTrue(is_array($result));
@@ -318,11 +318,11 @@ class QueryBuilderTestCase extends LucidFrameTestCase
 
         $result = db_select('category')->getSingleResult();
         $this->assertTrue(is_object($result));
-        $this->assertEqual($result->catName, 'PHP');
+        $this->assertEqual($result->name, 'PHP');
 
         $result = db_select('category')
             ->field('slug')
-            ->orderBy('catId')
+            ->orderBy('id')
             ->fetch();
         $this->assertEqual($result, 'php');
 
@@ -335,11 +335,11 @@ class QueryBuilderTestCase extends LucidFrameTestCase
         $this->assertEqual($result, 3);
 
         $result = db_select('category', 'c')
-            ->fields('c', array('slug', 'catName'))
-            ->orderBy('catName')
+            ->fields('c', array('slug', 'name'))
+            ->orderBy('name')
             ->getSingleResult();
         $this->assertTrue(is_object($result));
         $this->assertEqual($result->slug, 'framework');
-        $this->assertEqual($result->catName, 'Framework');
+        $this->assertEqual($result->name, 'Framework');
     }
 }

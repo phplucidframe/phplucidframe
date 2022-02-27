@@ -108,7 +108,7 @@ class ValidationHelperTestCase extends LucidFrameTestCase
         $values = array(
             1 => array('31/12/2014 13:59', 'd/m/y'),
             2 => array('12/31/2014 13:59:59', 'm/d/y'),
-            2 => array('12/31/2014 02:00:00', 'm/d/y'),
+            3 => array('12/31/2014 02:00:00', 'm/d/y'),
         );
         foreach ($values as $key => $val) {
             $validations['txtDateTime'.$key] = array(

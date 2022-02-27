@@ -324,64 +324,64 @@ class DBHelperTestCase extends LucidFrameTestCase
     public function testUpdateQuery()
     {
         db_insert('post', array(
-            'postTitle' => 'Hello World',
-            'postBody'  => 'Hello World body',
-            'postId'    => 1,
-            'uid'       => 1
+            'id'        => 1,
+            'user_id'   => 1,
+            'title'     => 'Hello World',
+            'body'      => 'Hello World body',
         ));
 
         # Using the first field as condition
         db_update('post', array(
-            'postId' => 1,
-            'postTitle' => 'Hello World Updated!'
+            'id' => 1,
+            'title' => 'Hello World Updated!'
         ));
 
         $post = db_select('post')
-            ->where(array('postId' => 1))
+            ->where(array('id' => 1))
             ->getSingleResult();
 
         $this->assertEqual($post->slug, 'hello-world-updated');
-        $this->assertEqual($post->postTitle, 'Hello World Updated!');
+        $this->assertEqual($post->title, 'Hello World Updated!');
 
         # Using simple array condition
         db_update(
             'post',
-            array('postTitle' => 'Hello World updated with simple array condition'),
-            array('postId' => 1)
+            array('title' => 'Hello World updated with simple array condition'),
+            array('id' => 1)
         );
 
         $post = db_select('post')
-            ->where(array('postId' => 1))
+            ->where(array('id' => 1))
             ->getSingleResult();
 
         $this->assertEqual($post->slug, 'hello-world-updated-with-simple-array-condition');
-        $this->assertEqual($post->postTitle, 'Hello World updated with simple array condition');
+        $this->assertEqual($post->title, 'Hello World updated with simple array condition');
 
         # Using array AND condition
         db_update(
             'post',
-            array('postTitle' => 'Hello World updated with array AND condition!'),
-            array('postId' => 1, 'uid' => 1)
+            array('title' => 'Hello World updated with array AND condition!'),
+            array('id' => 1, 'user_id' => 1)
         );
 
         $post = db_select('post')
             ->where(array(
-                'postId' => 1,
-                'uid' => 1
+                'id' => 1,
+                'user_id' => 1
             ))
             ->getSingleResult();
 
         $this->assertEqual($post->slug, 'hello-world-updated-with-array-and-condition');
-        $this->assertEqual($post->postTitle, 'Hello World updated with array AND condition!');
+        $this->assertEqual($post->title, 'Hello World updated with array AND condition!');
 
         # Using string OR condition
         db_update(
             'post',
-            array('postTitle' => 'Hello World updated with string OR condition!'),
+            array('title' => 'Hello World updated with string OR condition!'),
             array(
                 '$or' => array(
-                    'postId' => 1,
-                    'uid' => 1
+                    'id' => 1,
+                    'user_id' => 1
                 )
             )
         );
@@ -389,96 +389,96 @@ class DBHelperTestCase extends LucidFrameTestCase
         $post = db_select('post')
             ->where(array(
                 '$or' => array(
-                    'postId' => 1,
-                    'uid' => 1
+                    'id' => 1,
+                    'user_id' => 1
                 )
             ))
             ->getSingleResult();
 
         $this->assertEqual($post->slug, 'hello-world-updated-with-string-or-condition');
-        $this->assertEqual($post->postTitle, 'Hello World updated with string OR condition!');
+        $this->assertEqual($post->title, 'Hello World updated with string OR condition!');
     }
 
     public function testDeleteQuery()
     {
         db_delete('post', array(
-            'postId' => 1
+            'id' => 1
         ));
-        $this->assertEqual(self::oneline(db_queryStr()), 'DELETE FROM `post` WHERE `postId` = 1 LIMIT 1');
+        $this->assertEqual(self::oneline(db_queryStr()), 'DELETE FROM `post` WHERE `id` = 1 LIMIT 1');
 
         db_delete_multi('post', array(
-            'postId between' => array(1, 10)
+            'id between' => array(1, 10)
         ));
-        $this->assertEqual(self::oneline(db_queryStr()), 'DELETE FROM `post` WHERE (`postId` BETWEEN 1 AND 10)');
+        $this->assertEqual(self::oneline(db_queryStr()), 'DELETE FROM `post` WHERE (`id` BETWEEN 1 AND 10)');
 
         db_delete_multi('post', array(
-            'uid' => 1,
-            'postId' => array(9, 10)
+            'user_id' => 1,
+            'id' => array(9, 10)
         ));
-        $this->assertEqual(self::oneline(db_queryStr()), 'DELETE FROM `post` WHERE `uid` = 1 AND `postId` IN (9, 10)');
+        $this->assertEqual(self::oneline(db_queryStr()), 'DELETE FROM `post` WHERE `user_id` = 1 AND `id` IN (9, 10)');
 
         db_delete_multi('post', array(
-                'postId' => array(1, 9, 10))
+            'id' => array(1, 9, 10))
         );
-        $this->assertEqual(self::oneline(db_queryStr()), 'DELETE FROM `post` WHERE `postId` IN (1, 9, 10)');
+        $this->assertEqual(self::oneline(db_queryStr()), 'DELETE FROM `post` WHERE `id` IN (1, 9, 10)');
     }
 
     public function testUpdateQueryWithAutoFields()
     {
         db_insert('post', array(
-            'postTitle' => 'Welcome to LucidFrame Blog',
-            'postBody'  => 'Blog body',
-            'postId'    => 2,
-            'uid'       => 1
+            'id'        => 2,
+            'user_id'   => 1,
+            'title'     => 'Welcome to LucidFrame Blog',
+            'body'      => 'Blog body',
         ));
 
         ### if no slug and condition is given
         db_update('post', array(
-            'postId' => 2,
-            'postTitle' => 'LucidFrame Blog'
+            'id' => 2,
+            'title' => 'LucidFrame Blog'
         ));
 
-        $sql = 'SELECT slug, postTitle FROM ' . db_table('post') . ' WHERE postId = 2';
+        $sql = 'SELECT slug, title FROM ' . db_table('post') . ' WHERE id = 2';
         $post = db_fetchResult($sql);
         $this->assertEqual($post->slug, 'lucidframe-blog');
-        $this->assertEqual($post->postTitle, 'LucidFrame Blog');
+        $this->assertEqual($post->title, 'LucidFrame Blog');
 
         ### if no slug flag given and condition at 2nd place
         db_update(
             'post',
-            array('postTitle' => 'Welcome to LucidFrame Blog'),
-            array('postId' => 2)
+            array('title' => 'Welcome to LucidFrame Blog'),
+            array('id' => 2)
         );
 
-        $sql = 'SELECT slug, postTitle FROM ' . db_table('post') .' WHERE postId = 2';
+        $sql = 'SELECT slug, title FROM ' . db_table('post') .' WHERE id = 2';
         $post = db_fetchResult($sql);
         $this->assertEqual($post->slug, 'welcome-to-lucidframe-blog');
-        $this->assertEqual($post->postTitle, 'Welcome to LucidFrame Blog');
+        $this->assertEqual($post->title, 'Welcome to LucidFrame Blog');
 
         ### if slug flag is false
         db_update(
             'post',
-            array('postTitle' => 'Welcome to LucidFrame Blog Updated'),
+            array('title' => 'Welcome to LucidFrame Blog Updated'),
             false,
-            array('postId' => 2)
+            array('id' => 2)
         );
 
-        $sql = 'SELECT slug, postTitle FROM ' . db_table('post') .' WHERE postId = 2';
+        $sql = 'SELECT slug, title FROM ' . db_table('post') .' WHERE id = 2';
         $post = db_fetchResult($sql);
         $this->assertEqual($post->slug, 'welcome-to-lucidframe-blog');
-        $this->assertEqual($post->postTitle, 'Welcome to LucidFrame Blog Updated');
+        $this->assertEqual($post->title, 'Welcome to LucidFrame Blog Updated');
 
         ### if slug flag is true
         db_update(
             'post',
-            array('postTitle' => 'Welcome to LucidFrame Blog'),
+            array('title' => 'Welcome to LucidFrame Blog'),
             true,
-            array('postId' => 2)
+            array('id' => 2)
         );
 
-        $sql = 'SELECT slug, postTitle FROM ' . db_table('post') . ' WHERE postId = 2';
+        $sql = 'SELECT slug, title FROM ' . db_table('post') . ' WHERE id = 2';
         $post = db_fetchResult($sql);
         $this->assertEqual($post->slug, 'welcome-to-lucidframe-blog');
-        $this->assertEqual($post->postTitle, 'Welcome to LucidFrame Blog');
+        $this->assertEqual($post->title, 'Welcome to LucidFrame Blog');
     }
 }

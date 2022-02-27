@@ -49,19 +49,20 @@ class LucidFrameTestCase extends \UnitTestCase
         db_delete_multi('post_to_tag');
         db_delete_multi('post_image');
         db_delete_multi('post');
+        db_delete_multi('tag');
         db_delete_multi('category');
         db_delete_multi('lc_sessions');
         db_delete_multi('social_profile');
         db_delete_multi('user');
 
         db_insert('user', array(
-            'fullName'  => 'Administrator',
-            'uid'       => 1,
+            'id'        => 1,
+            'full_name' => 'Administrator',
             'username'  => 'admin',
-            'password'  => _encrypt('admin'),
+            'password'  => _encrypt('pwd@admin'),
             'email'     => 'admin@localhost.com',
             'role'      => 'admin',
-            'isMaster'  => 1
+            'is_master' => 1
         ));
     }
 }
