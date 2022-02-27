@@ -1164,9 +1164,13 @@ function db_exp($field, $value, $exp = '')
  */
 function db_find($table, $id)
 {
-    $entity = db_select($table)
-        ->where()->condition('id', $id)
-        ->getSingleResult();
+    $qb = db_select($table)->where()->condition('id', $id);
+
+    if (db_tableHasTimestamps($table)) {
+        $qb->condition('deleted', null);
+    }
+
+    $entity = $qb->getSingleResult();
 
     if ($entity) {
         $schema = _schema(_cfg('defaultDbSource'), true);
@@ -1252,6 +1256,10 @@ function db_findOrFail($table, $id)
  */
 function db_findWithPager($table, array $condition = array(), array $orderBy = array(), array $pagerOptions = array())
 {
+    if (db_tableHasTimestamps($table)) {
+        $condition['deleted'] = null;
+    }
+
     # Count query for the pager
     $countQuery = db_count($table);
     if (!empty($condition)) {
@@ -1321,6 +1329,10 @@ function db_findWithPager($table, array $condition = array(), array $orderBy = a
  */
 function db_findBy($table, array $condition, array $orderBy = array(), $limit = null)
 {
+    if (db_tableHasTimestamps($table)) {
+        $condition['deleted'] = null;
+    }
+
     $qb = db_select($table)->where($condition);
 
     foreach ($orderBy as $field => $sort) {
