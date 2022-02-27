@@ -1415,3 +1415,36 @@ function db_findOneByOrFail($table, array $condition, array $orderBy = array())
 
     return $result;
 }
+
+/**
+ * Get all records for a table
+ * @param string $table The table name to fetch data from
+ * @param array $fields The list of the field names to select
+ * @param array $orderBy The order by clause for query
+ *
+ *     array(
+ *       'field'  => 'asc|desc'
+ *     )
+ *
+ * @return array
+ */
+function db_findAll($table, $fields = array(), $orderBy = array())
+{
+    $qb = db_select($table);
+
+    if (db_tableHasTimestamps($table)) {
+        $qb->where()->condition('deleted', null);
+    }
+
+    if (!empty($fields)) {
+        $qb->fields($table, $fields);
+    }
+
+    if (!empty($orderBy)) {
+        foreach ($orderBy as $field => $sort) {
+            $qb->orderBy($field, $sort);
+        }
+    }
+
+    return $qb->getResult();
+}
