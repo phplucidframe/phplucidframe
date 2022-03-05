@@ -45,18 +45,21 @@ class LucidFrameTestCase extends \UnitTestCase
     {
         // Data cleanup by each test run
         // This is an example for the sample database
-        db_delete_multi('document');
-        db_delete_multi('post_to_tag');
-        db_delete_multi('post_image');
-        db_delete_multi('post');
-        db_delete_multi('tag');
-        db_delete_multi('category');
-        db_delete_multi('lc_sessions');
-        db_delete_multi('social_profile');
-        db_delete_multi('user');
+        db_setForeignKeyCheck(0);
+
+        db_truncate('document');
+        db_truncate('post_to_tag');
+        db_truncate('post_image');
+        db_truncate('post');
+        db_truncate('tag');
+        db_truncate('category');
+        db_truncate('lc_sessions');
+        db_truncate('social_profile');
+        db_truncate('user');
+
+        db_setForeignKeyCheck(1);
 
         db_insert('user', array(
-            'id'        => 1,
             'full_name' => 'Administrator',
             'username'  => 'admin',
             'password'  => _encrypt('pwd@admin'),

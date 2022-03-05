@@ -324,10 +324,9 @@ class DBHelperTestCase extends LucidFrameTestCase
     public function testUpdateQuery()
     {
         db_insert('post', array(
-            'id'        => 1,
-            'user_id'   => 1,
             'title'     => 'Hello World',
             'body'      => 'Hello World body',
+            'user_id'   => 1,
         ));
 
         # Using the first field as condition
@@ -426,19 +425,18 @@ class DBHelperTestCase extends LucidFrameTestCase
     public function testUpdateQueryWithAutoFields()
     {
         db_insert('post', array(
-            'id'        => 2,
-            'user_id'   => 1,
             'title'     => 'Welcome to LucidFrame Blog',
             'body'      => 'Blog body',
+            'user_id'   => 1,
         ));
 
         ### if no slug and condition is given
         db_update('post', array(
-            'id' => 2,
+            'id' => 1,
             'title' => 'LucidFrame Blog'
         ));
 
-        $sql = 'SELECT slug, title FROM ' . db_table('post') . ' WHERE id = 2';
+        $sql = 'SELECT slug, title FROM ' . db_table('post') . ' WHERE id = 1';
         $post = db_fetchResult($sql);
         $this->assertEqual($post->slug, 'lucidframe-blog');
         $this->assertEqual($post->title, 'LucidFrame Blog');
@@ -447,10 +445,10 @@ class DBHelperTestCase extends LucidFrameTestCase
         db_update(
             'post',
             array('title' => 'Welcome to LucidFrame Blog'),
-            array('id' => 2)
+            array('id' => 1)
         );
 
-        $sql = 'SELECT slug, title FROM ' . db_table('post') .' WHERE id = 2';
+        $sql = 'SELECT slug, title FROM ' . db_table('post') .' WHERE id = 1';
         $post = db_fetchResult($sql);
         $this->assertEqual($post->slug, 'welcome-to-lucidframe-blog');
         $this->assertEqual($post->title, 'Welcome to LucidFrame Blog');
@@ -460,10 +458,10 @@ class DBHelperTestCase extends LucidFrameTestCase
             'post',
             array('title' => 'Welcome to LucidFrame Blog Updated'),
             false,
-            array('id' => 2)
+            array('id' => 1)
         );
 
-        $sql = 'SELECT slug, title FROM ' . db_table('post') .' WHERE id = 2';
+        $sql = 'SELECT slug, title FROM ' . db_table('post') .' WHERE id = 1';
         $post = db_fetchResult($sql);
         $this->assertEqual($post->slug, 'welcome-to-lucidframe-blog');
         $this->assertEqual($post->title, 'Welcome to LucidFrame Blog Updated');
@@ -473,12 +471,55 @@ class DBHelperTestCase extends LucidFrameTestCase
             'post',
             array('title' => 'Welcome to LucidFrame Blog'),
             true,
-            array('id' => 2)
+            array('id' => 1)
         );
 
-        $sql = 'SELECT slug, title FROM ' . db_table('post') . ' WHERE id = 2';
+        $sql = 'SELECT slug, title FROM ' . db_table('post') . ' WHERE id = 1';
         $post = db_fetchResult($sql);
         $this->assertEqual($post->slug, 'welcome-to-lucidframe-blog');
         $this->assertEqual($post->title, 'Welcome to LucidFrame Blog');
+    }
+
+    public function testDbFind()
+    {
+        db_insert('post', array(
+            'title'     => 'Hello World',
+            'body'      => 'Hello World body',
+            'user_id'   => 1,
+        ));
+
+        db_insert('post', array(
+            'title'     => 'Welcome to LucidFrame Blog',
+            'body'      => 'Blog body',
+            'user_id'   => 1,
+        ));
+
+        $post = db_find('post', 1);
+        $this->assertEqual($post->slug, 'hello-world');
+
+        $result = db_findOneBy('post', array('id' => 2));
+        $this->assertEqual($result->slug, 'welcome-to-lucidframe-blog');
+
+        $result = db_findBy('post', array('id' => 1));
+        $this->assertEqual(count($result), 1);
+        $this->assertEqual($result[0]->slug, 'hello-world');
+
+        list($qb, $pager, $total) = db_findWithPager('post', array(), array('id' => 'desc'));
+        $pg = $pager->get('result');
+        $this->assertEqual($total, 2);
+        $this->assertEqual($pager->get('total'), 2);
+        $this->assertEqual($pg['offset'], 0);
+        $this->assertEqual($pg['thisPage'], 1);
+        $this->assertTrue(is_object($qb));
+        $this->assertEqual(get_class($qb), QueryBuilder::class);
+        $this->assertEqual($qb->getNumRows(), 2);
+
+        $result = db_findAll('post');
+        $this->assertEqual(count($result), 2);
+
+        db_delete('post', array('id' => 2), true);
+
+        $result = db_findAll('post');
+        $this->assertEqual(count($result), 1);
     }
 }
