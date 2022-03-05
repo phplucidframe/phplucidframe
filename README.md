@@ -83,10 +83,28 @@ Prerequisites:
     php lucidframe env test
     php lucidframe schema:load sample
 
-From command line,
+From **Command Line**,
 
+    # to run all tests
     php tests/tests.php
 
-From browser,
+    # to run tests/lib/db_helper.test.php only
+    php tests/tests.php file=db_helper
 
+    # to run tests/lib/db_helper.test.php and query_builer.test.php
+    php tests/tests.php file=db_helper,query_builder
+
+Note: You can also use the short-form option name `f` instead of `file`.
+
+From **Browser**,
+
+    # to run all tests
     http://[site_url]/tests/tests.php
+
+    # to run tests/lib/db_helper.test.php only
+    http://[site_url]/tests/tests.php?file=db_helper
+
+    # to run tests/lib/db_helper.test.php and query_builer.test.php
+    http://[site_url]/tests/tests.php?file=db_helper,query_builder
+
+Note: You can also use the query string parameter `f` instead of `file`.
