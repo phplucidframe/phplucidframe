@@ -63,6 +63,10 @@ function __validation_init()
         'custom'                 => "'%s' should be a valid format."
     );
 
+    if (function_exists('__validation_messages')) {
+        $validationMessages = array_merge($validationMessages, __validation_messages());
+    }
+
     $i18nEnabled = function_exists('_t');
 
     foreach ($validationMessages as $key => $msg) {

@@ -335,8 +335,8 @@ class Validation
             $args = array_slice($args, 3);
             array_unshift($args, $caption);
             self::$errors[] = array(
-                "msg" => vsprintf($msg, $args),
-                "htmlID" => $id
+                'msg' => vsprintf($msg, $args),
+                'htmlID' => $id
             );
         } else {
             self::$errors[] = array(

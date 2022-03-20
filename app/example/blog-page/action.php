@@ -30,7 +30,6 @@ if (_isHttpPost()) {
             ),
             'messages'  => array( // The custom error messages by rule
                 'mandatory' => _t('Please re-type Email.'),
-                'validate_emailRetyped' => _t('Your re-typed email address does not match.')
             )
         ),
         'txaComment' => array(

@@ -4,6 +4,19 @@
  */
 
 /**
+ * Hook for custom validation messages
+ * @return string[]
+ */
+function __validation_messages()
+{
+    return array(
+        # rule => message
+        'validate_emailRetyped'     => 'Your re-typed email address does not match.',
+        'validate_confirmPassword'  => '"%s" does not match.',
+    );
+}
+
+/**
 * The custom validation function to check the retyped email address matching
 * This is just for example
 *
