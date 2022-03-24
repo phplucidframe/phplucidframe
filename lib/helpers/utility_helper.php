@@ -319,6 +319,8 @@ function _readyloader($name, $path = HELPER)
  */
 function _autoloadDir($dir, $scope = '')
 {
+    $scope = trim($scope, '/');
+
     if (is_dir($dir)) {
         $files = scandir($dir);
         foreach ($files as $fileName) {
