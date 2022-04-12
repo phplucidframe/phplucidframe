@@ -201,6 +201,10 @@ class SchemaManager
      */
     private function getRelationOptions($relation, $fkTable = '')
     {
+        if (empty($relation)) {
+            $relation = array('name' => $fkTable . '_id');
+        }
+
         if (_arrayAssoc($relation)) {
             $relations[] = $relation;
         } else { // when more than one relationship for the same table
@@ -895,7 +899,6 @@ class SchemaManager
                         }
 
                         $sql['up'][] = "ALTER TABLE `{$fullTableName}` DROP COLUMN `{$field}`;";
-                        _writeln($field);
                     }
                 }
 
