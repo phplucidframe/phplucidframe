@@ -236,6 +236,10 @@
                         $input.val($input.data('default'));
                     }
                 }
+
+                if ($input.hasClass('select2-hidden-accessible')) {
+                    $input.val('').trigger('change');
+                }
             });
         },
         /**
