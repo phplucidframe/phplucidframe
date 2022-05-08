@@ -504,7 +504,7 @@
                         }
                         // afterRequest callback
                         if (LC.Page.afterRequest) {
-                            LC.Page.afterRequest();
+                            LC.Page.afterRequest(id);
                         }
                     }
 
@@ -612,29 +612,30 @@
     };
 
     LC.List = {
-        options: {
+        defaultOptions: {
             id: 'list',
             formModal: '#dialog-item',
             formModalCancelButton: '#btn-cancel',
-            confirmModal: '#dialog-confirm',
             confirmModalTitle: 'Confirm Delete',
             confirmModalMessage: 'Are you sure you want to delete?',
             formId: 'dialog-form',
             createButton: '#btn-new',
-            editButton: '.table .actions .edit',
-            deleteButton: '.table .actions .delete',
+            editButtonClass: '.table .actions .edit',
+            deleteButtonClass: '.table .actions .delete',
             createCallback: null,
             editCallback: null,
             deleteCallback: null,
             url: LC.Page.url(LC.vars.baseDir), /* mapping directory */
             params: {},
         },
+        options: {},
 
         /* Constructor */
         init : function(options) {
-            $.extend(LC.List.options, options);
-
-            var opt = LC.List.options;
+            options.id = options.id || 'list';
+            options.confirmModal = options.confirmModal || '#' + options.id + '-confirm-delete';
+            var opt = $.extend({}, LC.List.defaultOptions, options);
+            LC.List.options[opt.id] = opt;
 
             /* Add/Edit Dialog */
             $(opt.formModal).dialog({
@@ -651,23 +652,24 @@
 
             $(opt.createButton).click(function(e) {
                 e.preventDefault();
-                LC.List.create();
+                LC.List.create(opt.id);
             });
 
             /* Delete Confirmation Dialog */
-            LC.List.createConfirmDialog();
+            LC.List.createConfirmDialog(opt.id);
 
             /* Load list */
-            LC.List.list(opt.params);
+            LC.List.list(opt.id, opt.params);
         },
         /* Create confirm dialog */
-        createConfirmDialog : function() {
-            var opt = LC.List.options;
+        createConfirmDialog : function(listId) {
+            listId = listId || LC.List.defaultOptions.id;
+            var opt = LC.List.options[listId];
 
             $('body').append('' +
                 '<div id="' + opt.confirmModal.replace(/#/, '') + '" class="dialog" title="' + opt.confirmModalTitle + '">' +
                 '    <div class="msg-body">' + opt.confirmModalMessage + '</div>' +
-                '    <input type="hidden" id="delete-id" />' +
+                '    <input type="hidden" name="delete-id" />' +
                 '</div>');
 
             $(opt.confirmModal).dialog({
@@ -681,7 +683,7 @@
                         class: 'btn btn-danger btn-flat btn-sm',
                         click: function() {
                             $(this).dialog('close');
-                            LC.List.doDelete();
+                            LC.List.doDelete(listId);
                         }
                     },
                     {
@@ -695,18 +697,19 @@
             });
         },
         /* Load the list */
-        list : function() {
-            var opt = LC.List.options;
+        list : function(id) {
+            id = id || LC.List.defaultOptions.id;
+            var opt = LC.List.options[id];
 
             var param = {};
-            if (arguments.length === 2) {
-                opt.url = arguments[0];
-                param = arguments[1];
-            } else if (arguments.length === 1) {
-                if (typeof arguments[0] === 'string') {
-                    opt.url = arguments[0];
-                } else if (typeof arguments[0] === 'object') {
-                    param = arguments[0];
+            if (arguments.length === 3) {
+                opt.url = arguments[1];
+                param = arguments[2];
+            } else if (arguments.length === 2) {
+                if (typeof arguments[1] === 'string') {
+                    opt.url = arguments[1];
+                } else if (typeof arguments[1] === 'object') {
+                    param = arguments[1];
                 }
             }
 
@@ -714,23 +717,26 @@
 
             LC.Page.request(opt.id, opt.url + 'list', param);
 
-            LC.Page.afterRequest = function () {
-                $(opt.editButton).on('click', function (e) {
+            LC.Page.afterRequest = function (id) {
+                var $list = $('#' + id);
+
+                $list.on('click', opt.editButtonClass, function (e) {
                     e.preventDefault();
-                    LC.List.edit($(this).attr('rel'));
+                    LC.List.edit($(this).attr('rel'), id);
                 });
 
-                $(opt.deleteButton).on('click', function (e) {
+                $list.on('click', opt.deleteButtonClass, function (e) {
                     e.preventDefault();
-                    LC.List.remove($(this).attr('rel'));
+                    LC.List.remove($(this).attr('rel'), id);
                 });
 
-                $('#' + opt.id).find('[data-toggle="tooltip"]').tooltip();
+                $list.find('[data-toggle="tooltip"]').tooltip();
             };
         },
         /* Launch the dialog to create a new entry */
-        create : function() {
-            var opt = LC.List.options;
+        create : function(listId) {
+            listId = listId || LC.List.defaultOptions.id;
+            var opt = LC.List.options[listId];
 
             LC.Form.clear(opt.formId);
 
@@ -741,40 +747,48 @@
             $(opt.formModal).dialog('open');
         },
         /* Launch the dialog to edit an existing entry */
-        edit : function(id) {
-            var opt = LC.List.options;
+        edit : function(id, listId) {
+            listId = listId || LC.List.defaultOptions.id;
+            var opt = LC.List.options[listId];
 
             LC.Form.clear(opt.formId);
             var $data = LC.Form.getFormData(opt.formId, id);
             if ($data) {
                 var $form = $('#' + opt.formId);
-                $form.find('#id').val(id);
+                $form.find('[name="id"]').val(id);
 
                 if (opt.editCallback) {
-                    opt.editCallback($form, $data);
+                    opt.editCallback($form, $data, listId);
                 }
 
                 $(opt.formModal).dialog('open');
             }
         },
         /* Launch the dialog to confirm an entry delete */
-        remove : function( id ) {
-            $('#delete-id').val(id);
-            $(LC.List.options.confirmModal).dialog('open');
+        remove : function(id, listId) {
+            listId = listId || LC.List.defaultOptions.id;
+            var opt = LC.List.options[listId];
+            var $modal = $(opt.confirmModal);
+
+            $modal.find('input[name="delete-id"]').val(id);
+            $modal.dialog('open');
         },
         /* Do delete action upon confirm OK */
-        doDelete : function() {
+        doDelete : function(listId) {
+            listId = listId || LC.List.defaultOptions.id;
+            var opt = LC.List.options[listId];
+
             LC.Page.request('POST', // type
-                LC.List.options.url + 'action', // page to post
+                opt.url + 'action', // page to post
                 { // data to post
-                    id: $('#delete-id').val(),
+                    id: $(opt.confirmModal).find('input[name="delete-id"]').val(),
                     action: 'delete'
                 },
                 function() { // callback
-                    if (LC.List.options.deleteCallback) {
-                        LC.List.options.deleteCallback();
+                    if (opt.deleteCallback) {
+                        opt.deleteCallback(listId);
                     } else {
-                        LC.List.list();
+                        LC.List.list(listId);
                     }
                 }
             );
