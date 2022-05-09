@@ -57,7 +57,7 @@ class QueryBuilder
     /** @var array Collection of SQL operators allowed */
     private static $operators = array(
         '=', '>=', '<=', '>', '<', '!=', '<>',
-        'not',
+        'not', 'in',
         'between', 'nbetween',
         'like', 'like%%', 'like%~', 'like~%',
         'nlike', 'nlike%%', 'nlike%~', 'nlike~%'
@@ -718,7 +718,7 @@ class QueryBuilder
             $groupBy = array();
             foreach ($this->groupBy as $field) {
                 if (self::isRawExp($field)) {
-                    $groupBy[] = self::parseFieldFromRawExp($field);
+                    $groupBy[] = self::parseFromRawExp($field);
                     continue;
                 }
 
@@ -737,7 +737,7 @@ class QueryBuilder
             $orderBy = array();
             foreach ($this->orderBy as $field => $sort) {
                 if (self::isRawExp($field)) {
-                    $orderBy[] = self::parseFieldFromRawExp($field);
+                    $orderBy[] = self::parseFromRawExp($field);
                     continue;
                 }
 
@@ -983,7 +983,7 @@ class QueryBuilder
      * @param string $field
      * @return false|string
      */
-    private static function parseFieldFromRawExp($field)
+    private static function parseFromRawExp($field)
     {
         if (self::isRawExp($field)) {
             return substr($field, strlen(self::EXP_RAW));
@@ -1046,6 +1046,7 @@ class QueryBuilder
             }
 
             $opr = count($fieldOpr) === 2 ? trim($fieldOpr[1]) : '=';
+            $opr = strtolower($opr);
 
             # check if any operator is given in the field
             if (!in_array($opr, self::$operators)) {
@@ -1065,10 +1066,19 @@ class QueryBuilder
                     $opr = '=';
                 }
 
-                $opr = strtolower($opr);
                 $key = $field;
                 $placeholder = self::getPlaceholder($key, self::$bindValues);
                 $field = self::quote($field);
+
+                if ($opr == 'in') {
+                    if (self::isRawExp($value)) {
+                        $condition[] = $field . ' IN (' . self::parseFromRawExp($value) . ')';
+                    } else {
+                        $condition[] = $field . ' IN (' . $placeholder . ')';
+                        self::setBindValue($placeholder, $value);
+                    }
+                    continue;
+                }
 
                 if (array_key_exists($opr, self::$likes)) {
                     $condition[] = $field . ' ' . str_replace(':placeholder', $placeholder, self::$likes[$opr]);
