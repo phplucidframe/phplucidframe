@@ -1126,11 +1126,12 @@ function db_rollback()
 /**
  * Get raw expression string
  * @param string $exp Expression
+ * @param array $values The values to be replaced with specifier in $exp. See vsprintf.
  * @return string
  */
-function db_raw($exp)
+function db_raw($exp, array $values = array())
 {
-    return QueryBuilder::raw($exp);
+    return QueryBuilder::raw($exp, $values);
 }
 
 /**

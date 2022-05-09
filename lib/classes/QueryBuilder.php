@@ -961,11 +961,12 @@ class QueryBuilder
     /**
      * Create raw expression string
      * @param string $expression
+     * @param array $values The values to be replaced with specifier in $expression. See vsprintf.
      * @return string
      */
-    public static function raw($expression)
+    public static function raw($expression, array $values = array())
     {
-        return self::EXP_RAW . $expression;
+        return vsprintf(self::EXP_RAW . $expression, $values);
     }
 
     /**
