@@ -135,15 +135,16 @@ class View
      */
     public function block($name, array $data = array())
     {
-        $name = basename($name, '.php') . '.php';
+        $name = rtrim($name, '.php') . '.php';
 
         $paths = array();
         if (strrpos($name, '/') !== false) {
             $paths[] = $name; // in the given directory path
         } else {
             $paths[] = _ds(_cr(), $name); // in the current directory
-            $paths[] = _ds('inc', 'tpl', $name); // in app/inc/tpl or /inc/tpl
         }
+
+        $paths[] = _ds('inc', 'tpl', $name); // in app/inc/tpl or /inc/tpl
 
         $this->data = array_merge($this->data, $data);
 
