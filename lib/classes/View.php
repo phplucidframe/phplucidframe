@@ -129,11 +129,12 @@ class View
 
     /**
      * Display block view
-     *
      * @param string $name Block view name to the file name with or without extension php
-     * @param array $data
+     * @param array $data The data injected to the view
+     * @param bool $return To return html or not
+     * @return false|string|void
      */
-    public function block($name, array $data = array())
+    public function block($name, array $data = array(), $return = false)
     {
         $name = rtrim($name, '.php') . '.php';
 
@@ -152,7 +153,14 @@ class View
             $block = _i($file);
             if ($block) {
                 extract($this->data);
-                include $block;
+                if ($return) {
+                    ob_start();
+                    include $block;
+                    return ob_get_clean();
+                } else {
+                    include $block;
+                }
+
                 return;
             }
         }
