@@ -12,10 +12,15 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.txt
  */
-(function(win, $) {
+ (function(win, $) {
     var LC = win.LC;
 
     LC.Form = {
+        forms: [], // a list of AJAX form IDs
+        hooks: {
+            beforeSubmit: {}, // executed before AJAX form is submitted
+            afterSubmit: {} // executed after AJAX form is submitted
+        },
         formData: {},
         /**
          * @internal
@@ -28,16 +33,13 @@
             var $forms = $('form');
             $.each( $forms, function() {
                 var $form = $(this);
-                if (typeof(CKEDITOR) !== 'undefined') {
-                    for (var instance in CKEDITOR.instances) {
-                        if (CKEDITOR.instances.hasOwnProperty(instance)) {
-                            CKEDITOR.instances[instance].updateElement();
-                        }
-                    }
-                }
+
                 if ($form.hasClass('no-ajax')) {
                     return; // normal form submission
                 }
+
+                LC.Form.forms.push($form.attr('id'));
+
                 // Add a hidden input and a reset button
                 $form.append('<input type="hidden" name="submitButton" class="submitButton" />');
                 $form.append('<input type="reset" class="reset" style="display:none;width:0;height:0" />');
@@ -149,6 +151,10 @@
             var url = $form.attr('action'); // which URL to be posted; captured from form action attribute
             var values = $form.serialize(); // encode a set of form elements as a string for submission
 
+            if (typeof LC.Form.hooks.beforeSubmit[formId] !== 'undefined' && $.inArray(formId, LC.Form.forms) !== -1) {
+                LC.Form.hooks.beforeSubmit[formId]();
+            }
+
             $.ajax({
                 type: 'POST',
                 url: url,
@@ -156,6 +162,7 @@
                 data: values,
                 success: LC.Form.submitHandler
             });
+
             LC.Page.progress.start(formId);
         },
         /**
@@ -208,9 +215,15 @@
                         }
                     }
                 }
+
                 if (response.callback) {
                     LC.eval(response.callback); // jshint ignore:line
                 }
+
+                if (typeof LC.Form.hooks.afterSubmit[response.formId] !== 'undefined' && $.inArray(response.formId, LC.Form.forms) !== -1) {
+                    LC.Form.hooks.afterSubmit[response.formId]();
+                }
+
                 LC.Page.progress.stop(response.formId);
             } else {
                 LC.Page.progress.stop();
@@ -264,6 +277,21 @@
             str = str.replace(/(^-)|(-$)/g, ''); // trim leading and trailing dashes
 
             return str;
+        },
+        /**
+         * LC.Form.beforeSubmit
+         * Bind beforeSubmit hook to form
+         */
+        beforeSubmit: function(formId, callback) {
+            console.log(callback);
+            LC.Form.hooks.beforeSubmit[formId] = callback;
+        },
+        /**
+         * LC.Form.afterSubmit
+         * Bind afterSubmit hook to form
+         */
+        afterSubmit: function(formId, callback) {
+            LC.Form.hooks.afterSubmit[formId] = callback;
         }
     };
 
@@ -632,7 +660,6 @@
 
         /* Constructor */
         init : function(options) {
-            options.id = options.id || 'list';
             options.confirmModal = options.confirmModal || '#' + options.id + '-confirm-delete';
             var opt = $.extend({}, LC.List.defaultOptions, options);
             LC.List.options[opt.id] = opt;
