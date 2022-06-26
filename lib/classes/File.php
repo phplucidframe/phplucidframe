@@ -386,7 +386,7 @@ class File extends \SplFileInfo
             $singleDimension = true;
         }
 
-        $extension = ($extension) ? $extension : strtolower(pathinfo($file, PATHINFO_EXTENSION));
+        $extension = $extension ?: strtolower(pathinfo($file, PATHINFO_EXTENSION));
 
         if ($extension == "jpg" || $extension == "jpeg") {
             $img = imagecreatefromjpeg($file);
