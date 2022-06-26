@@ -40,12 +40,6 @@ if (_cfg('layoutMode') && _isAjax() === false) {
         }
     }
 
-    $query = _ds(APP_ROOT, _cr(), 'query.php');
-
-    if (is_file($query) && file_exists($query)) {
-        require_once $query; // TODO: deprecated query.php; write business logic in index.php instead
-    }
-
     $layout = _i(_ds('inc', 'tpl', _app('view')->layout . '.php'));
     if (is_file($layout) && file_exists($layout)) {
         $viewData = _app('view')->data;
