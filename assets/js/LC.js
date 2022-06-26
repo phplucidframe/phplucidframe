@@ -28,8 +28,6 @@
          * Initialize the forms for Ajax
          */
         init: function() {
-            LC.Form.placeholderIE();
-
             var $forms = $('form');
             $.each( $forms, function() {
                 var $form = $(this);
@@ -93,40 +91,6 @@
                     dateFormat: format
                 });
             });
-        },
-        /**
-         * @internal
-         * LC.Form.placeholderIE()
-         * IE placeholder attribute fix
-         */
-        placeholderIE : function() {
-            if ($('html').hasClass('ie7') || $('html').hasClass('ie8')) {
-                var $inputs = $('[placeholder]');
-                $inputs.focus(function() {
-                    var input = $(this);
-                    if (input.val() === input.attr('placeholder')) {
-                        input.val('');
-                        input.removeClass('placeholder');
-                    }
-                });
-
-                $inputs.blur(function() {
-                    var input = $(this);
-                    if (input.val() === '' || input.val() === input.attr('placeholder')) {
-                        input.addClass('placeholder');
-                        input.val(input.attr('placeholder'));
-                    }
-                }).blur();
-
-                $inputs.parents('form').submit(function() {
-                    $(this).find('[placeholder]').each(function() {
-                        var input = $(this);
-                        if (input.val() === input.attr('placeholder')) {
-                            input.val('');
-                        }
-                    });
-                }).addClass('no-focus'); // no focus on the first element of the form.
-            }
         },
         /**
          * @internal
