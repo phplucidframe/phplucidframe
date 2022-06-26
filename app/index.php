@@ -33,9 +33,11 @@ if ($basename != 'view') {
 }
 
 if (_cfg('layoutMode') && _isAjax() === false) {
-    $action = _ds(APP_ROOT, _cr(), 'action.php');
-    if (is_file($action) && file_exists($action)) {
-        require_once $action;
+    if (_isHttpPost()) {
+        $action = _ds(APP_ROOT, _cr(), 'action.php');
+        if (is_file($action) && file_exists($action)) {
+            require_once $action;
+        }
     }
 
     $query = _ds(APP_ROOT, _cr(), 'query.php');
