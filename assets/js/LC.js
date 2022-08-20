@@ -247,7 +247,6 @@
          * Bind beforeSubmit hook to form
          */
         beforeSubmit: function(formId, callback) {
-            console.log(callback);
             LC.Form.hooks.beforeSubmit[formId] = callback;
         },
         /**
