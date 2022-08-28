@@ -1158,9 +1158,9 @@ function db_exp($field, $value, $exp = '')
 }
 
 /**
- * Find a single entity result by id
- * @param string $table
- * @param int $id
+ * Get a single entity result where the primary key matches the value passed in as the second parameter for the table name in the first parameter.
+ * @param string $table The table name to fetch data from
+ * @param int $id The value of the primary key to match
  * @return object|null
  */
 function db_find($table, $id)
@@ -1207,9 +1207,9 @@ function db_find($table, $id)
 }
 
 /**
- * Find a single entity result by id or show 404 if not found
- * @param string $table
- * @param int $id
+ * Get a single entity result where the primary key matches the value passed in as the second parameter for the table name in the first parameter OR throws 404 if any result is not found.
+ * @param string $table The table name to fetch data from
+ * @param int $id The value of the primary key to match
  * @return mixed
  */
 function db_findOrFail($table, $id)
@@ -1224,7 +1224,7 @@ function db_findOrFail($table, $id)
 }
 
 /**
- * Get data with pagination
+ * Get array of data row objects with pagination result
  * @param string $table The table name to fetch data from
  * @param array $condition The condition array for query
  *
