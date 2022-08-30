@@ -6,7 +6,6 @@
  * @package     PHPLucidFrame\Core
  * @since       PHPLucidFrame v 3.0.0
  * @copyright   Copyright (c), PHPLucidFrame.
- * @author      Sithu K. <cithukyaw@gmail.com>
  * @link        http://phplucidframe.com
  * @license     http://www.opensource.org/licenses/mit-license.php MIT License
  * This source file is subject to the MIT license that is bundled
