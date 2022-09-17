@@ -975,7 +975,7 @@ class QueryBuilder
      */
     private static function isRawExp($field)
     {
-        return strpos($field, self::EXP_RAW) !== false;
+        return is_string($field) && strpos($field, self::EXP_RAW) !== false;
     }
 
     /**
@@ -1075,7 +1075,7 @@ class QueryBuilder
                         $condition[] = $field . ' IN (' . self::parseFromRawExp($value) . ')';
                     } else {
                         $condition[] = $field . ' IN (' . $placeholder . ')';
-                        self::setBindValue($placeholder, $value);
+                        self::setBindValue($placeholder, is_array($value) ? implode(', ', $value) : $value);
                     }
                     continue;
                 }

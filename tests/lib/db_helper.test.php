@@ -318,6 +318,23 @@ class DBHelperTestCase extends LucidFrameTestCase
         $this->assertEqual($clause, '`title` NOT LIKE CONCAT(:title, "%")');
         $this->assertEqual($this->toSql($clause, $values), '`title` NOT LIKE CONCAT(a project, "%")');
 
+        // 25. IN
+        QueryBuilder::clearBindValues();
+        list($clause, $values) = db_and(array(
+            'id in' => array(1, 2, 3),
+        ));
+
+        $this->assertEqual($clause, '`id` IN (:id)');
+        $this->assertEqual($this->toSql($clause, $values), '`id` IN (1, 2, 3)');
+
+        QueryBuilder::clearBindValues();
+        list($clause, $values) = db_and(array(
+            'id in' => '1, 2, 3',
+        ));
+
+        $this->assertEqual($clause, '`id` IN (:id)');
+        $this->assertEqual($this->toSql($clause, $values), '`id` IN (1, 2, 3)');
+
         db_prq(false);
     }
 
