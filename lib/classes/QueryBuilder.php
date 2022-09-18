@@ -33,6 +33,10 @@ class QueryBuilder
     protected $fields;
     /** @var array Collection of conditions */
     protected $where;
+    /** @var array Collection of EXISTS clauses */
+    protected $exist = array();
+    /** @var array Collection of NOT EXISTS clauses */
+    protected $notExist = array();
     /** @var array Collection of fields to order */
     protected $orderBy;
     /** @var array Collection of fields to group by */
@@ -410,6 +414,58 @@ class QueryBuilder
     }
 
     /**
+     * Add EXISTS clause to WHERE condition
+     * @param string $subquery The sub-query statement
+     * @param string $type AND|OR
+     * @return object QueryBuilder
+     */
+    public function exists($subquery, $type = 'AND')
+    {
+        $this->exist[] = array(
+            'query' => self::raw($subquery),
+            'type' => strtoupper($type)
+        );
+
+        return $this;
+    }
+
+    /**
+     * Add NOT EXISTS clause to WHERE condition
+     * @param string $subquery The sub-query statement
+     * @param string $type AND|OR
+     * @return object QueryBuilder
+     */
+    public function notExists($subquery, $type = 'AND')
+    {
+        $this->notExist[] = array(
+            'query' => self::raw($subquery),
+            'type' => strtoupper($type)
+        );
+
+        return $this;
+    }
+
+    /**
+     * Add `OR EXISTS` clause to WHERE condition
+     * @param string $subquery The sub-query statement
+     * @return object QueryBuilder
+     */
+    public function orExists($subquery)
+    {
+        return $this->exists($subquery, 'OR');
+    }
+
+    /**
+     * Add `OR NOT EXISTS` clause to WHERE condition
+     * @param string $subquery The sub-query statement
+     * @return object QueryBuilder
+     */
+    public function orNotExists($subquery)
+    {
+        return $this->notExists($subquery, 'OR');
+    }
+
+    /**
      * Add ORDER BY clause
      *
      * @param string $field The field name to sort
@@ -712,6 +768,25 @@ class QueryBuilder
             }
         }
 
+        # EXISTS clause
+        $exists = array();
+        if (!empty($this->exist)) {
+            foreach ($this->exist as $exist) {
+                $subquery = self::isRawExp($exist['query']) ? self::parseFromRawExp($exist['query']) : $exist['query'];
+                $exists[] = " $exist[type] EXISTS ($subquery)";
+            }
+        }
+
+        # NOT EXISTS clause
+        if (!empty($this->notExist)) {
+            foreach ($this->notExist as $exist) {
+                $subquery = self::isRawExp($exist['query']) ? self::parseFromRawExp($exist['query']) : $exist['query'];
+                $exists[] = " $exist[type] NOT EXISTS ($subquery)";
+            }
+        }
+
+        $sql = $this->appendExistClauses($exists, $sql);
+
         # GROUP BY clause
         if ($this->groupBy) {
             $groupBy = array();
@@ -755,6 +830,31 @@ class QueryBuilder
         $this->sql = $sql;
 
         return $this;
+    }
+
+    /**
+     * Append EXISTS clauses to the SQL statement building
+     * @param array $exists Array of exists clauses
+     * @param string $sql The original SQL statement to be appended
+     * @return string
+     */
+    protected function appendExistClauses(array $exists, $sql)
+    {
+        if (!count($exists)) {
+            return $sql;
+        }
+
+        $clause = implode('', $exists);
+        if (!empty($this->where)) {
+            // if there is already WHERE clause in the statement
+            $sql .= $clause;
+        } else {
+            // if there is no WHERE clause in the statement
+            $clause = preg_replace('/^(AND|OR)\s+/', '', trim($clause));
+            $sql .= ' WHERE ' . $clause;
+        }
+
+        return $sql;
     }
 
     /**
@@ -905,7 +1005,8 @@ class QueryBuilder
      * Get the built SQL with the values replaced
      * @return string
      */
-    public function getReadySQL() {
+    public function getReadySQL()
+    {
         $sql = $this->getSQL();
 
         foreach (QueryBuilder::getBindValues() as $key => $value) {
