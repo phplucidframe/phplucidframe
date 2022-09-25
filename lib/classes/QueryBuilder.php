@@ -1125,6 +1125,9 @@ class QueryBuilder
 
         foreach ($cond as $field => $value) {
             $field = trim($field);
+            if (self::isRawExp($value)) {
+                $value = self::quote(self::parseFromRawExp($value));
+            }
 
             if (in_array(strtolower($field), array('$and', '$or', '$not'))) {
                 $field = substr($field, 1);
