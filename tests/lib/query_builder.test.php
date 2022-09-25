@@ -342,4 +342,94 @@ class QueryBuilderTestCase extends LucidFrameTestCase
         $this->assertEqual($result->slug, 'framework');
         $this->assertEqual($result->name, 'Framework');
     }
+
+    function testQueryBuilderExists()
+    {
+        foreach (range(1, 3) as $i) {
+            db_insert('tag', array(
+                'name' => 'tag' . $i,
+            ));
+        }
+
+        $postId = db_insert('post', array(
+            'title'     => 'Hello World',
+            'body'      => 'Hello World body',
+            'user_id'   => 1,
+        ));
+
+        db_insert('post_to_tag', array(
+            'post_id' => $postId,
+            'tag_id' => 1,
+        ));
+
+        $postId = db_insert('post', array(
+            'title'     => 'Another Hello World',
+            'body'      => 'Another Hello World body',
+            'user_id'   => 1,
+        ));
+
+        db_insert('post_to_tag', array(
+            'post_id' => $postId,
+            'tag_id' => 1,
+        ));
+
+        db_insert('post_to_tag', array(
+            'post_id' => $postId,
+            'tag_id' => 3,
+        ));
+
+        // EXISTS test cases
+        $tests = array(
+            /* tag_id => result count */
+            1 => 2,
+            2 => 0,
+            3 => 1,
+        );
+
+        foreach ($tests as $tagId => $count) {
+            $subquery = db_select('post_to_tag', 'pt')
+                ->where()
+                ->condition('post_id', db_raw('p.id'))
+                ->condition('tag_id', $tagId)
+                ->getReadySQL();
+            $this->assertEqual($subquery, 'SELECT `pt`.* FROM `post_to_tag` `pt` WHERE `post_id` = `p`.`id` AND `tag_id` = ' . $tagId);
+
+            $qb = db_select('post', 'p')
+                ->where()
+                ->condition('deleted', null)
+                ->exists($subquery);
+
+            $this->assertEqual($qb->getReadySQL(), 'SELECT `p`.* FROM `post` `p` WHERE `deleted` IS NULL AND EXISTS (SELECT `pt`.* FROM `post_to_tag` `pt` WHERE `post_id` = `p`.`id` AND `tag_id` = ' . $tagId . ')');
+
+            $result = $qb->getResult();
+            $this->assertEqual(count($result), $count);
+        }
+
+        // NOT EXISTS test cases
+        $tests = array(
+            /* tag_id => result count */
+            1 => 0,
+            2 => 2,
+            3 => 1,
+        );
+
+        foreach ($tests as $tagId => $count) {
+            $subquery = db_select('post_to_tag', 'pt')
+                ->where()
+                ->condition('post_id', db_raw('p.id'))
+                ->condition('tag_id', $tagId)
+                ->getReadySQL();
+            $this->assertEqual($subquery, 'SELECT `pt`.* FROM `post_to_tag` `pt` WHERE `post_id` = `p`.`id` AND `tag_id` = ' . $tagId);
+
+            $qb = db_select('post', 'p')
+                ->where()
+                ->condition('deleted', null)
+                ->notExists($subquery);
+
+            $this->assertEqual($qb->getReadySQL(), 'SELECT `p`.* FROM `post` `p` WHERE `deleted` IS NULL AND NOT EXISTS (SELECT `pt`.* FROM `post_to_tag` `pt` WHERE `post_id` = `p`.`id` AND `tag_id` = ' . $tagId . ')');
+
+            $result = $qb->getResult();
+            $this->assertEqual(count($result), $count);
+        }
+    }
 }
