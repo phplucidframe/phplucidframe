@@ -17,6 +17,8 @@
  * with this source code in the file LICENSE
  */
 
+use LucidFrame\Core\Router;
+
 if (!isset($_SERVER['REQUEST_URI'])) {
     $_SERVER['REQUEST_URI'] = __FILE__;
 }
@@ -156,7 +158,7 @@ if ($file = _i('inc' . _DS_ . 'route.config.php', false)) {
     require_once $file;
 }
 # Initialize routes
-__route_init();
+Router::init();
 
 if (defined('WEB_ROOT')) {
     define('CSS', WEB_ROOT . 'assets/css/');

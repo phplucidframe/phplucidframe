@@ -35,41 +35,41 @@ class RouteHelperTestCase extends LucidFrameTestCase
     public function testRouteMatch()
     {
         $_GET[ROUTE] = '';
-        $this->assertEqual(route_match(), 'top');
+        $this->assertEqual(Router::match(), 'top');
 
         $_GET[ROUTE] = 'post/new';
-        $this->assertEqual(route_match(), 'post/new');
+        $this->assertEqual(Router::match(), 'post/new');
 
         $_GET[ROUTE] = 'post/2/edit';
-        $this->assertEqual(route_match(), 'post/edit');
+        $this->assertEqual(Router::match(), 'post/edit');
         $this->assertEqual($_GET['id'], 2);
 
         $_GET[ROUTE] = 'post/3/show';
-        $this->assertEqual(route_match(), 'post/show');
+        $this->assertEqual(Router::match(), 'post/show');
         $this->assertEqual($_GET['id'], 3);
 
         $_GET[ROUTE] = 'post/1/comment4';
-        $this->assertEqual(route_match(), 'post/comment');
+        $this->assertEqual(Router::match(), 'post/comment');
         $this->assertEqual($_GET['id'], 1);
         $this->assertEqual($_GET['cid'], 4);
 
         $_GET[ROUTE] = 'blog/1/url-rewrite-to-a-lucid-page-including-a-form-example';
-        $this->assertEqual(route_match(), 'blog/show');
+        $this->assertEqual(Router::match(), 'blog/show');
         $this->assertEqual($_GET['id'], 1);
         $this->assertEqual($_GET['slug'], 'url-rewrite-to-a-lucid-page-including-a-form-example');
 
         $_GET[ROUTE] = 'area/yangon/list';
-        $this->assertEqual(route_match(), 'area');
+        $this->assertEqual(Router::match(), 'area');
         $this->assertEqual($_GET['city'], 'yangon');
         $this->assertEqual($_GET['type'], 'list');
 
         $_GET[ROUTE] = 'area/yangon/poah101';
-        $this->assertEqual(route_match(), 'area');
+        $this->assertEqual(Router::match(), 'area');
         $this->assertEqual($_GET['city'], 'yangon');
         $this->assertEqual($_GET['type'], 'poah101');
 
         $_GET[ROUTE] = 'area/yangon/prin201';
-        $this->assertEqual(route_match(), 'area');
+        $this->assertEqual(Router::match(), 'area');
         $this->assertEqual($_GET['city'], 'yangon');
         $this->assertEqual($_GET['type'], 'prin201');
     }
@@ -78,7 +78,7 @@ class RouteHelperTestCase extends LucidFrameTestCase
     {
         try {
             $_GET[ROUTE] = 'blog/1a/url-rewrite-to-a-lucid-page-including-a-form-example';
-            route_match();
+            Router::match();
         } catch (\Exception $e) {
             $this->assertEqual(get_class($e), 'InvalidArgumentException');
             $this->assertEqual($e->getMessage(), 'The Router does not satisfy the argument value "1a" for "\d+".');
@@ -86,7 +86,7 @@ class RouteHelperTestCase extends LucidFrameTestCase
 
         try {
             $_GET[ROUTE] = 'area/yangon./list';
-            route_match();
+            Router::match();
         } catch (\Exception $e) {
             $this->assertEqual(get_class($e), 'InvalidArgumentException');
             $this->assertEqual($e->getMessage(), 'The Router does not satisfy the argument value "yangon." for "[a-zA-Z\-_]+".');
@@ -94,7 +94,7 @@ class RouteHelperTestCase extends LucidFrameTestCase
 
         try {
             $_GET[ROUTE] = 'area/yangon/poah';
-            route_match();
+            Router::match();
         } catch (\Exception $e) {
             $this->assertEqual(get_class($e), 'InvalidArgumentException');
             $this->assertEqual($e->getMessage(), 'The Router does not satisfy the argument value "poah" for "list|(poah|prin)\d+".');
@@ -105,7 +105,7 @@ class RouteHelperTestCase extends LucidFrameTestCase
     {
         try {
             $_GET[ROUTE] = 'post/create';
-            route_match();
+            Router::match();
         } catch (\Exception $e) {
             $this->assertEqual(get_class($e), 'RuntimeException');
             $this->assertEqual($e->getMessage(), 'The Router does not allow the method "GET" for "lc_post_create".');
@@ -113,7 +113,7 @@ class RouteHelperTestCase extends LucidFrameTestCase
 
         try {
             $_GET[ROUTE] = 'post/1/update';
-            route_match();
+            Router::match();
         } catch (\Exception $e) {
             $this->assertEqual(get_class($e), 'RuntimeException');
             $this->assertEqual($e->getMessage(), 'The Router does not allow the method "GET" for "lc_post_update".');
