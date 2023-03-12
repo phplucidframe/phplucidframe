@@ -154,7 +154,6 @@ class Router
             foreach ($patternPath as $i => $segment) {
                 if ($segment === $realPath[$i]) {
                     $matchedPath[$i] = $segment;
-                    continue;
                 } else {
                     if (preg_match('/([a-z0-9\-_\.]*)?{([a-z0-9\_]+)}([a-z0-9\-_\.]*)?/i', $segment, $matches)) {
                         $name = $matches[2];

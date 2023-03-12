@@ -172,7 +172,7 @@ function route_search()
     }
 
     $append = array('/index.php', '/view.php', '.php');
-    for ($i=$count; $i>0; $i--) {
+    for ($i = $count; $i > 0; $i--) {
         # try to look for
         # ~/path/to/the-given-name/index.php
         # ~/path/to/the-given-name.php
@@ -439,7 +439,13 @@ function route_getAbsolutePathToRoot($q)
 
     # if it is a directory, it should have index.php
     if (is_dir($_page)) {
-        $_page .= '/index.php';
+        foreach (array('index', 'view') as $pg) {
+            $page = $_page . '/' . $pg . '.php';
+            if (is_file($page) && file_exists($page)) {
+                $_page = $page;
+                break;
+            }
+        }
     } else {
         $pathInfo = pathinfo($_page);
         if (!isset($pathInfo['extension'])) {
