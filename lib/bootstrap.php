@@ -201,8 +201,9 @@ _app('page', router());
 # Autoload all app files by directory
 _autoloadDir(APP_ROOT . 'cmd');
 _autoloadDir(APP_ROOT . 'cmd' . _DS_ . 'classes');
-_autoloadDir(APP_ROOT . 'entity');
+_autoloadDir(APP_ROOT . 'entity'); // @deprecated Use /services instead
 _autoloadDir(APP_ROOT . 'middleware');
+_autoloadDir(APP_ROOT . 'services');
 
 # Initialize view object
 _app('view', new \LucidFrame\Core\View());
