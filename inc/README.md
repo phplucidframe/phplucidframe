@@ -1,5 +1,5 @@
 This directory structure contains the settings and configuration files regarding with PHPLucidFrame.
-The following files are overwritable or inherited by the `app/inc` or `app/subsite/inc` directory.
+The following files are overridable or inherited by the `app/inc` or `app/subsite/inc` directory.
 
 - config.php (inherit)
 - site.config.php (inherit)
