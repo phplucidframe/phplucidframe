@@ -81,7 +81,7 @@ if (count($blog)) {
         <p class="blog">
             <h5><a href="<?php echo _url('blog', array($id, $b->slug)); ?>"><?php echo $b->title; ?></a></h5>
             <p><?php echo $b->body; ?></p>
-            <p><a href="<?php echo _url('blog', array($id, $b->slug)); ?>" class="button mini green"><?php echo _t('Read More'); ?></a></p>
+            <p><a href="<?php echo _url('blog', array($id, $b->slug)); ?>" class="button mini blue"><?php echo _t('Read More'); ?></a></p>
         </p>
     <?php
     }

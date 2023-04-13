@@ -70,7 +70,7 @@ p {
 
 a, a:visited, a:hover {
     text-decoration: none;
-    color: #0077cc;
+    color: #0069d9;
 }
 
 a:hover {
@@ -358,7 +358,7 @@ label.radio {
 }
 
 .button.mini {
-    padding: 4px 10px;
+    padding: 5px 10px;
     font-size: 12px;
 }
 
@@ -382,6 +382,21 @@ label.radio {
     background-image: linear-gradient(#eee, #ddd);
     background-repeat: repeat-x;
     border-color: #cccccc
+}
+
+.button.blue {
+    color: #ffffff;
+    text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
+    background: #0069d9;
+    background: linear-gradient(0deg, rgba(0,105,217,1) 0%, rgba(0,122,255,1) 100%);
+    border-color: #0069d9;
+}
+
+.button.blue:hover {
+    color: #ffffff;
+    background: #004b9c;
+    background: linear-gradient(0deg, rgba(0,75,156,1) 0%, rgba(0,105,217,1) 100%);
+    border-color: #004b9c;
 }
 
 .button.green {
@@ -512,7 +527,7 @@ ol li div, ul li div {
 #top-bar {
     color: #ffffff;
     min-height: 30px;
-    background: #333333 url(../images/logo-22.png) 4px 4px no-repeat;
+    background: #333333 url(../images/logo-square-22.png) 4px 4px no-repeat;
     padding-left: 34px;
     font-size: 11px;
 }
@@ -572,7 +587,7 @@ ol li div, ul li div {
 #logo {
     display: block;
     width: 70%;
-    margin: 0;
+    margin: 0 0 0 -2px;
 }
 
 #footer {
@@ -604,7 +619,7 @@ ol li div, ul li div {
 }
 
 #footer #copyright #left {
-    background: #006600;
+    background: #0069d9;
     padding-left: 10px;
     padding-right: 8px;
     border-top-left-radius: 3px;
@@ -645,7 +660,7 @@ ul#menu li a {
     min-width: 55px;
     height: 25px;
     display: block;
-    background-color: #004E00;
+    background-color: #0069d9;
     padding: 8px 10px 0;
     text-align: center;
     -moz-border-radius: 4px;
@@ -707,27 +722,27 @@ ul.social-icons li a {
 }
 
 ul.social-icons li a.fb {
-    background: url('../images/social-icons.gif') 0 0 no-repeat;
+    background: url('../images/social-icons.png') 0 0 no-repeat;
 }
 
 ul.social-icons li a:hover.fb {
-    background: url('../images/social-icons.gif') 0 -26px no-repeat;
+    background: url('../images/social-icons.png') 0 -26px no-repeat;
 }
 
 ul.social-icons li a.tw {
-    background: url('../images/social-icons.gif') -29px 0 no-repeat;
+    background: url('../images/social-icons.png') -29px 0 no-repeat;
 }
 
 ul.social-icons li a:hover.tw {
-    background: url('../images/social-icons.gif') -29px -26px no-repeat;
+    background: url('../images/social-icons.png') -29px -26px no-repeat;
 }
 
 ul.social-icons li a.gplus {
-    background: url('../images/social-icons.gif') -58px 0 no-repeat;
+    background: url('../images/social-icons.png') -58px 0 no-repeat;
 }
 
 ul.social-icons li a:hover.gplus {
-    background: url('../images/social-icons.gif') -58px -26px no-repeat;
+    background: url('../images/social-icons.png') -58px -26px no-repeat;
 }
 
 /*************/
@@ -735,7 +750,7 @@ ul.social-icons li a:hover.gplus {
 /*************/
 
 body.mini-page {
-    background: #002D00 url(../images/green-bg.png) fixed repeat-x;
+    background: #0061c9 url(../images/blue-bg.png) fixed repeat-x;
 }
 
 .container-box {

@@ -72,7 +72,7 @@
             </div>
         </div>
         <div class="row">
-            <input type="submit" id="btnSubmit" name="btnSubmit" value="<?php echo _t('Submit'); ?>" class="button green" />
+            <input type="submit" id="btnSubmit" name="btnSubmit" value="<?php echo _t('Submit'); ?>" class="button blue" />
         </div>
     </div>
     <?php form_token(); ?>

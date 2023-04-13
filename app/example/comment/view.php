@@ -24,7 +24,7 @@
                 <textarea name="txaComment" rows="7" class="lc-form-input fluid-50" placeholder="<?php echo _t('Enter comment *'); ?>"><?php echo form_value('txaComment'); ?></textarea>
             </div>
             <div class="row">
-                <input type="submit" name="btnSubmit" value="<?php echo _t('Post Comment'); ?>" class="button green" />
+                <input type="submit" name="btnSubmit" value="<?php echo _t('Post Comment'); ?>" class="button blue" />
             </div>
         </div>
         <?php form_token(); ?>

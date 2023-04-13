@@ -60,7 +60,7 @@
                 <tr>
                     <td colspan="2"></td>
                     <td class="entry">
-                        <input type="submit" name="btnSubmit" value="<?php echo _t('Post Comment'); ?>" class="button green" />
+                        <input type="submit" name="btnSubmit" value="<?php echo _t('Post Comment'); ?>" class="button blue" />
                         <a href="<?php echo _url('example/blog'); ?>" class="button black"><?php echo _t('Cancel'); ?></a>
                     </td>
                 </tr>

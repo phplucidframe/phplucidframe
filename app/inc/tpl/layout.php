@@ -27,7 +27,7 @@
             <div id="header">
                 <div class="container clearfix">
                     <a href="<?php echo _url('home'); ?>" id="logo">
-                        <img src="<?php echo _img('logo.png'); ?>" class="fluid" alt="<?php echo _cfg('siteName'); ?>" />
+                        <img src="<?php echo _img('logo-blue-320.png'); ?>" class="fluid" alt="<?php echo _cfg('siteName'); ?>" />
                     </a>
                     <div id="language-switcher">
                         <?php

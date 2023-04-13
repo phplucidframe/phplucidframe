@@ -13,13 +13,13 @@
     <li>MySQL 5.0+ or newer</li>
 </ul>
 <p>
-    <a href="http://phplucidframe.com" class="button large green"><?php echo _t('Download PHPLucidFrame'); ?></a>
+    <a href="http://phplucidframe.com" class="button large blue"><?php echo _t('Download PHPLucidFrame'); ?></a>
 </p>
 <p>
     <a href="<?php echo _url('example/blog'); ?>" class="button">AJAX List <?php echo _t('Example'); ?></a>
     <a href="<?php echo _url('example/articles'); ?>" class="button">Ordinary List <?php echo _t('Example'); ?></a>
-    <a href="<?php echo _url('blog/2/url-rewrite-to-a-lucid-page-including-a-form-example'); ?>" class="button green">AJAX Form <?php echo _t('Example'); ?></a>
-    <a href="<?php echo _url('example/comment'); ?>" class="button green">Generic Form <?php echo _t('Example'); ?></a>
+    <a href="<?php echo _url('blog/2/url-rewrite-to-a-lucid-page-including-a-form-example'); ?>" class="button blue">AJAX Form <?php echo _t('Example'); ?></a>
+    <a href="<?php echo _url('example/comment'); ?>" class="button blue">Generic Form <?php echo _t('Example'); ?></a>
     <a href="<?php echo _url('example/asyn-file-uploader'); ?>" class="button black">AsynFileUploader <?php echo _t('Example'); ?></a>
 </p>
 

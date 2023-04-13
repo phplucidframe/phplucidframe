@@ -15,7 +15,7 @@
                 <input type="file" name="filImage" id="filImage" />
             </div>
             <div class="row">
-                <input type="submit" name="btnUpload" value="<?php echo _t('Upload'); ?>" class="button green" />
+                <input type="submit" name="btnUpload" value="<?php echo _t('Upload'); ?>" class="button blue" />
             </div>
         </div>
         <?php form_token(); ?>
