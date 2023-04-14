@@ -14,12 +14,12 @@
 
 @font-face {
     font-family: 'myanmar3regular';
-    src: url('../../files/fonts/myanmar3/myanmar3-webfont.eot');
-    src: url('../../files/fonts/myanmar3/myanmar3-webfont.eot?#iefix') format('embedded-opentype'),
-         url('../../files/fonts/myanmar3/myanmar3-webfont.woff2') format('woff2'),
-         url('../../files/fonts/myanmar3/myanmar3-webfont.woff') format('woff'),
-         url('../../files/fonts/myanmar3/myanmar3-webfont.ttf') format('truetype'),
-         url('../../files/fonts/myanmar3/myanmar3-webfont.svg#myanmar3regular') format('svg');
+    src: url('../../assets/fonts/myanmar3/myanmar3-webfont.eot');
+    src: url('../../assets/fonts/myanmar3/myanmar3-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../../assets/fonts/myanmar3/myanmar3-webfont.woff2') format('woff2'),
+         url('../../assets/fonts/myanmar3/myanmar3-webfont.woff') format('woff'),
+         url('../../assets/fonts/myanmar3/myanmar3-webfont.ttf') format('truetype'),
+         url('../../assets/fonts/myanmar3/myanmar3-webfont.svg#myanmar3regular') format('svg');
     font-weight: normal;
     font-style: normal;
 }
