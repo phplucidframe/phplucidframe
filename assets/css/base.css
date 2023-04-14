@@ -596,6 +596,7 @@ ol li div, ul li div {
     display: block;
     width: 70%;
     margin: 0 0 0 -2px;
+    max-height: 38px;
 }
 
 #footer {

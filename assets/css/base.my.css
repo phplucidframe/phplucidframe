@@ -13,17 +13,6 @@
  */
 
 @font-face {
-    font-family: 'zawgyi-oneregular';
-    src: url('../../files/fonts/zawgyione/zawgyione-webfont.eot');
-    src: url('../../files/fonts/zawgyione/zawgyione-webfont.eot?#iefix') format('embedded-opentype'),
-         url('../../files/fonts/zawgyione/zawgyione-webfont.woff') format('woff'),
-         url('../../files/fonts/zawgyione/zawgyione-webfont.ttf') format('truetype'),
-         url('../../files/fonts/zawgyione/zawgyione-webfont.svg#zawgyi-oneregular') format('svg');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
     font-family: 'myanmar3regular';
     src: url('../../files/fonts/myanmar3/myanmar3-webfont.eot');
     src: url('../../files/fonts/myanmar3/myanmar3-webfont.eot?#iefix') format('embedded-opentype'),
@@ -36,21 +25,21 @@
 }
 
 .my body, .my, .my p {
-    font-family: "Padauk", "myanmar3", "myanmar3regular", "zawgyi-oneregular", "Zawgyi-One", Helvetica, sans-serif;
+    font-family: "Padauk", "myanmar3", "myanmar3regular", Helvetica, sans-serif;
     font-size: 15px;
 }
 
 .my input, input[name$='_my'], input.my, select.my, textarea.my, .my button {
-    font-family: "Padauk", "myanmar3", "myanmar3regular", "zawgyi-oneregular", "Zawgyi-One", Helvetica, sans-serif !important;
+    font-family: "Padauk", "myanmar3", "myanmar3regular", Helvetica, sans-serif !important;
     font-size: 14px;
 }
 
 .my h1, .my h2, .my h3, .my h4, .my h5, .my h6 {
-    font-family: "Padauk", "myanmar3", "myanmar3regular", "zawgyi-oneregular", "Zawgyi-One", Helvetica, sans-serif;
+    font-family: "Padauk", "myanmar3", "myanmar3regular", Helvetica, sans-serif;
 }
 
 .my .ui-widget {
-    font-family: "Padauk", "myanmar3", "myanmar3regular", "zawgyi-oneregular", "Zawgyi-One", Arial, sans-serif;
+    font-family: "Padauk", "myanmar3", "myanmar3regular", Helvetica, sans-serif;
 }
 
 .my code {
