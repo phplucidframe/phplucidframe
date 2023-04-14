@@ -276,7 +276,7 @@ textarea.lc-form-input {
 }
 
 .lc-form-input.large.full-width {
-    width: 93.5%;
+    width: calc(100% - 22px);
 }
 
 select.lc-form-input.large {
@@ -527,19 +527,28 @@ ol li div, ul li div {
 #top-bar {
     color: #ffffff;
     min-height: 30px;
-    background: #333333 url(../images/logo-square-22.png) 4px 4px no-repeat;
-    padding-left: 34px;
+    background: #333333;
+    padding: 0 10px;
     font-size: 11px;
 }
 
 #top-bar a {
     color: #ffffff;
-    display:inline-block;
-    margin-top: 7px;
+    display: inline-block;
+    margin-top: 9px;
+    position: relative;
+    padding-left: 28px;
+}
+
+#top-bar a.logo-sm:before {
+    content: url(../images/logo-square-22.png);
+    position: absolute;
+    top: -6px;
+    left: 0;
 }
 
 #top-bar a:hover {
-    color: #64b24e;
+    color: #7abcff;
 }
 
 #top-bar ul {
@@ -556,7 +565,7 @@ ol li div, ul li div {
 }
 
 #top-bar li a {
-    margin-top: 4px;
+    margin-top: 5px;
     margin-right: 4px;
     background-color: #545454;
     padding: 3px 7px;
@@ -572,8 +581,7 @@ ol li div, ul li div {
 }
 
 #top-bar li.greeting {
-    padding-top: 8px;
-    padding-right: 8px;
+    padding: 9px 9px 0 0;
 }
 
 #header {
@@ -581,7 +589,7 @@ ol li div, ul li div {
     background: #f1f1f1;
     border-bottom: 2px #eeeeee solid;
     padding-top: 10px;
-    padding-bottom: 10px;
+    padding-bottom: 5px;
 }
 
 #logo {
@@ -643,7 +651,7 @@ ol li div, ul li div {
 ul#menu {
     padding: 0;
     list-style-type: none;
-    margin: 11px 0 0;
+    margin: 5px 0 0;
 }
 
 ul#menu li {
@@ -754,26 +762,20 @@ body.mini-page {
 }
 
 .container-box {
-    margin: 110px auto auto;
-    width: 455px;
-    /* Needed for IEs box shadow */
-    background-color: rgb(68,68,68);
-    filter: progid:DXImageTransform.Microsoft.Blur(PixelRadius=5,MakeShadow=true,ShadowOpacity=0.50);
-    -ms-filter: "progid:DXImageTransform.Microsoft.Blur(PixelRadius=5,MakeShadow=true,ShadowOpacity=0.50)";
-    zoom: 1;
+    margin: 120px auto auto;
+    max-width: 500px;
 }
 
 .container-box .box {
-    margin: auto;
-    padding: 0 63px 25px;
-    background-color: #e6eee6;
+    background-color: #f8ffff;
     border-radius: 5px;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
-    -moz-box-shadow: 1px 0 12px 5px rgba(0,0,0,0.6);
-    -webkit-box-shadow: 1px 0 12px 5px rgba(0,0,0,0.6);
-    box-shadow: 1px 0 12px 5px rgba(0,0,0,0.6);
-    position: relative; /* This protects the inner element from being blurred for IE box shadow */
+    -moz-box-shadow: 1px 0 12px 5px rgba(0,0,0,0.4);
+    -webkit-box-shadow: 1px 0 12px 5px rgba(0,0,0,0.4);
+    box-shadow: 1px 0 12px 5px rgba(0,0,0,0.4);
+    padding: 25px 15%;
+    margin: 0 5%;
 }
 
 .container-box .box h1 {
@@ -785,7 +787,7 @@ body.mini-page {
 .container-box .box .logo {
     height: 30px;
     margin: 0;
-    padding: 25px 0 25px;
+    padding: 2em 0;
     text-align: center;
 }
 
@@ -797,21 +799,18 @@ body.mini-page {
     font-size: 14px;
 }
 
-.container-box .box .form .entry.pwd {
-    position: relative;
-}
-
 .container-box .box .form .entry.pwd a {
     display: block;
     width: 40px;
-    height: 25px;
+    height: 24px;
     font-size: 15px;
     padding-top: 7px;
     text-align: center;
     border-left: 1px #b8b8b8 solid;
-    position: absolute;
-    top: 1px;
-    right: 1px;
+    position: relative;
+    float: right;
+    margin-top: -32px;
+    margin-right: 1px;
     border-top-right-radius: 2px;
     -moz-border-top-right-radius: 2px;
     -webkit-border-top-right-radius: 2px;

@@ -1,6 +1,6 @@
 /**
  * This file is part of the PHPLucidFrame library.
- * Framework foundation CSS Document for reponsive
+ * Framework foundation CSS Document for responsive
  *
  * @package     PHPLucidFrame\Core
  * @since       PHPLucidFrame v 1.0.0
@@ -11,8 +11,6 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE
  */
-
-@charset "utf-8";
 
 @media screen and ( min-width : 1406px ) {
     /* Desktop extra large */
