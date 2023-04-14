@@ -13,7 +13,7 @@
     <li>MySQL 5.0+ or newer</li>
 </ul>
 <p>
-    <a href="http://phplucidframe.com" class="button large blue"><?php echo _t('Download PHPLucidFrame'); ?></a>
+    <a href="http://phplucidframe.com" class="button large blue" target="_blank"><?php echo _t('Download PHPLucidFrame'); ?></a>
 </p>
 <p>
     <a href="<?php echo _url('example/blog'); ?>" class="button">AJAX List <?php echo _t('Example'); ?></a>
