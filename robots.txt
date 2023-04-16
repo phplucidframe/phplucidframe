@@ -20,7 +20,6 @@ User-agent: *
 
 # Directories
 Disallow: /assets
-Disallow: /business
 Disallow: /db
 Disallow: /css
 Disallow: /files
@@ -30,6 +29,7 @@ Disallow: /images
 Disallow: /inc
 Disallow: /js
 Disallow: /tests
+Disallow: /third-party
 Disallow: /vendor
 # Files
 Disallow: /LICENSE
