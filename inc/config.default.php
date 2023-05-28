@@ -13,27 +13,14 @@
  * with this source code in the file LICENSE
  */
 
-/**
- * Don't escape quotes when reading files from the database, disk, etc.
- */
-ini_set('magic_quotes_runtime', '0');
-/**
- * Set the maximum amount of memory in bytes that a script is allowed to allocate.
- * This helps prevent poorly written scripts for eating up all available memory on a server
- */
-ini_set('memory_limit', '256M');
-/**
- * Set the maximum time in seconds a script is allowed to run before it is terminated by the parser.
- * This helps prevent poorly written scripts from tying up the server. The default setting is 30.
-*/
-ini_set('max_execution_time', 36000);
-/**
- * Default Time Zone
- */
-date_default_timezone_set('Asia/Rangoon');
-
-# $lc_env: The setting for running environment: `development` or `production`
-$lc_env = _p('env');
+# $lc_env: The setting for running environment: `development` or `production` (read from .lcenv)
+$lc_env = _p();
+# $lc_timeZone: Default Time Zone (See https://www.php.net/manual/en/timezones.php)
+$lc_timeZone = 'Asia/Rangoon';
+# $lc_memoryLimit: The maximum amount of memory in bytes that a script is allowed to allocate.
+$lc_memoryLimit = '128M';
+# $lc_maxExecTime: The maximum time in seconds a script is allowed to run before it is terminated by the parser.
+$lc_maxExecTime = 300;
 # $lc_debugLevel: The debug level. If $lc_env = 'production', this is not considered.
 # `1` - show fatal errors, parse errors, but no PHP startup errors
 # `2` - show fatal errors, parse errors, warnings and notices

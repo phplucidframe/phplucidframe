@@ -261,6 +261,29 @@ function __envLoader()
     global $lc_env;
     global $lc_debugLevel;
     global $lc_minifyHTML;
+    global $lc_timeZone;
+    global $lc_memoryLimit;
+    global $lc_maxExecTime;
+
+    /**
+     * Don't escape quotes when reading files from the database, disk, etc.
+     */
+    ini_set('magic_quotes_runtime', '0');
+    /**
+     * Set the maximum amount of memory in bytes that a script is allowed to allocate.
+     * This helps prevent poorly written scripts for eating up all available memory on a server
+     */
+    ini_set('memory_limit', $lc_memoryLimit);
+    /**
+     * Set the maximum time in seconds a script is allowed to run before it is terminated by the parser.
+     * This helps prevent poorly written scripts from tying up the server. The default setting is 30.
+     */
+    ini_set('max_execution_time', $lc_maxExecTime);
+
+    /**
+     * Default Time Zone
+     */
+    date_default_timezone_set($lc_timeZone);
 
     $lc_env = strtolower($lc_env);
     if (!in_array($lc_env, __envList())) {
@@ -325,6 +348,7 @@ function __envLoader()
     unset($requestURI);
     unset($request);
 }
+
 /**
  * @internal
  * @ignore
