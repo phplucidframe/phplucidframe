@@ -1052,7 +1052,7 @@ function _redirect301($path = null, $queryStr = array(), $lang = '')
 }
 
 /**
- * Redirect to 401 page
+ * Display 401 page
  * @return void
  */
 function _page401()
@@ -1063,7 +1063,7 @@ function _page401()
 }
 
 /**
- * Redirect to 403 page
+ * Display 403 page
  * @return void
  */
 function _page403()
@@ -1074,13 +1074,32 @@ function _page403()
 }
 
 /**
- * Redirect to 404 page
+ * Display 404 page
  * @return void
  */
 function _page404()
 {
     _cfg('layoutMode', true);
     include(INC . 'tpl/404.php');
+    exit;
+}
+
+/**
+ * Display error page
+ * @param string $message The error message
+ * @param int $code The error code
+ * @param int $status HTTP status code
+ * @return void
+ */
+function _error($message, $code, $status = 500)
+{
+    _cfg('layoutMode', true);
+    _g('httpStatusCode', $status);
+    $type = __kernelErrorTypes($code);
+
+    _header($status);
+
+    include(INC . 'tpl/exception.php');
     exit;
 }
 

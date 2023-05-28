@@ -38,23 +38,25 @@
                         <div>HTTP status code: <?php echo _g('httpStatusCode'); ?></div>
                     </div>
                 </div>
-                <div class="block-stacktrace">
-                    <h5>Stack Trace</h5>
-                    <ol>
-                        <li>in <code class="inline"><?php echo $file; ?></code> at line <?php echo $line; ?></li>
-                        <?php foreach($trace as $item) { ?>
-                        <li>
-                            <?php if (isset($item['file'])) { ?>
-                                <code class="inline"><?php echo $item['file']; ?></code>
+                <?php if (isset($file) && isset($line) && isset($trace)): ?>
+                    <div class="block-stacktrace">
+                        <h5>Stack Trace</h5>
+                        <ol>
+                            <li>in <code class="inline"><?php echo $file; ?></code> at line <?php echo $line; ?></li>
+                            <?php foreach($trace as $item) { ?>
+                            <li>
+                                <?php if (isset($item['file'])) { ?>
+                                    <code class="inline"><?php echo $item['file']; ?></code>
+                                <?php } ?>
+                                <?php if (isset($item['line'])) { ?>
+                                    at line <?php echo $item['line']; ?>
+                                <?php } ?>
+                                calling <strong><code class="inline"><?php echo $item['function']; ?>()</code></strong>
+                            </li>
                             <?php } ?>
-                            <?php if (isset($item['line'])) { ?>
-                                at line <?php echo $item['line']; ?>
-                            <?php } ?>
-                            calling <strong><code class="inline"><?php echo $item['function']; ?>()</code></strong>
-                        </li>
-                        <?php } ?>
-                    </ol>
-                </div>
+                        </ol>
+                    </div>
+                <?php endif ?>
             </div>
         </div>
     </div>
