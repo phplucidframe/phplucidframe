@@ -136,6 +136,10 @@ function _get($name = null)
  */
 function _post($name = null)
 {
+    if (isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] == 'application/json') {
+        return __input($name);
+    }
+
     if ($name === null) {
         $post = $_POST;
         foreach ($post as $name => $value) {
@@ -240,7 +244,7 @@ function _sanitize($input)
 function __input($name = null)
 {
     $input = file_get_contents("php://input");
-    if ($_SERVER['CONTENT_TYPE'] == 'application/json') {
+    if (isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] == 'application/json') {
         $vars = json_decode($input, true);
     } else {
         parse_str($input, $vars);
@@ -250,8 +254,10 @@ function __input($name = null)
         return isset($vars[$name]) ? _sanitize(stripslashes($vars[$name])) : null;
     }
 
-    foreach ($vars as $key => $value) {
-        $vars[$key] = _sanitize(stripslashes($value));
+    if (is_array($vars)) {
+        foreach ($vars as $key => $value) {
+            $vars[$key] = _sanitize(stripslashes($value));
+        }
     }
 
     return $vars;
