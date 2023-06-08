@@ -2231,16 +2231,18 @@ function _isHttpPost()
 
 /**
  * Header sent as text/json
- * @param array $data Array of data to be encoded as JSON
+ * @param array|object $data Array/Object of data to be encoded as JSON
  * @param int $status HTTP status code, default to 200
  * @return void
  */
-function _json(array $data, $status = 200)
+function _json($data = [], $status = 200)
 {
     _header($status);
 
-    header('Content-Type: text/json');
-    echo json_encode($data);
+    header('Content-Type: application/json');
+    if ($status != 204) {
+        echo json_encode($data);
+    }
 
     Middleware::runAfter();
     exit;
