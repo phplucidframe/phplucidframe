@@ -1053,10 +1053,17 @@ function _redirect301($path = null, $queryStr = array(), $lang = '')
 
 /**
  * Display 401 page
+ * @param string $message The error message
  * @return void
  */
-function _page401()
+function _page401($message = '')
 {
+    $message = $message ?: _t('Access Denied');
+
+    if (isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] == 'application/json') {
+        _json(['error' => $message], 403);
+    }
+
     _cfg('layoutMode', true);
     include(INC . 'tpl/401.php');
     exit;
@@ -1064,10 +1071,17 @@ function _page401()
 
 /**
  * Display 403 page
+ * @param string $message The error message
  * @return void
  */
-function _page403()
+function _page403($message = '')
 {
+    $message = $message ?: _t('403 Forbidden');
+
+    if (isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] == 'application/json') {
+        _json(['error' => $message], 403);
+    }
+
     _cfg('layoutMode', true);
     include(INC . 'tpl/403.php');
     exit;
@@ -1075,10 +1089,17 @@ function _page403()
 
 /**
  * Display 404 page
+ * @param string $message The error message
  * @return void
  */
-function _page404()
+function _page404($message = '')
 {
+    $message = $message ?: _t('404 Not Found');
+
+    if (isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] == 'application/json') {
+        _json(['error' => $message], 404);
+    }
+
     _cfg('layoutMode', true);
     include(INC . 'tpl/404.php');
     exit;
@@ -1093,6 +1114,10 @@ function _page404()
  */
 function _error($message, $code, $status = 500)
 {
+    if (isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] == 'application/json') {
+        _json(['error' => $message], $status);
+    }
+
     _cfg('layoutMode', true);
     _g('httpStatusCode', $status);
     $type = __kernelErrorTypes($code);

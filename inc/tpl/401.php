@@ -29,7 +29,7 @@
         <div class="box">
             <div class="error-stacktrace">
                 <div class="block-exception">
-                    <p>Access Denied.</p>
+                    <p><?php echo $message ?></p>
                 </div>
             </div>
         </div>

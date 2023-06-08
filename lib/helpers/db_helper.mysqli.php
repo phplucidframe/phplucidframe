@@ -1218,7 +1218,7 @@ function db_findOrFail($table, $id)
     $result = db_find($table, $id);
 
     if (!$result) {
-        _page404();
+        _page404(_t('The entity %s not found.', $table));
     }
 
     return $result;

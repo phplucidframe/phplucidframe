@@ -29,7 +29,7 @@
         <div class="box">
             <div class="error-stacktrace">
                 <div class="block-exception">
-                    <p>403 Forbidden</p>
+                    <p><?php echo $message ?></p>
                 </div>
             </div>
         </div>
