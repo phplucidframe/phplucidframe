@@ -136,7 +136,7 @@ function _get($name = null)
  */
 function _post($name = null)
 {
-    if (isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] == 'application/json') {
+    if (_isContentType('application/json')) {
         return __input($name);
     }
 
@@ -244,7 +244,7 @@ function _sanitize($input)
 function __input($name = null)
 {
     $input = file_get_contents("php://input");
-    if (isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] == 'application/json') {
+    if (_isContentType('application/json')) {
         $vars = json_decode($input, true);
     } else {
         parse_str($input, $vars);

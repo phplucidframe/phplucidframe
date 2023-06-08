@@ -1060,7 +1060,7 @@ function _page401($message = '')
 {
     $message = $message ?: _t('Access Denied');
 
-    if (isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] == 'application/json') {
+    if (_isContentType('application/json')) {
         _json(['error' => $message], 403);
     }
 
@@ -1078,7 +1078,7 @@ function _page403($message = '')
 {
     $message = $message ?: _t('403 Forbidden');
 
-    if (isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] == 'application/json') {
+    if (_isContentType('application/json')) {
         _json(['error' => $message], 403);
     }
 
@@ -1096,7 +1096,7 @@ function _page404($message = '')
 {
     $message = $message ?: _t('404 Not Found');
 
-    if (isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] == 'application/json') {
+    if (_isContentType('application/json')) {
         _json(['error' => $message], 404);
     }
 
@@ -1114,7 +1114,7 @@ function _page404($message = '')
  */
 function _error($message, $code, $status = 500)
 {
-    if (isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] == 'application/json') {
+    if (_isContentType('application/json')) {
         _json(['error' => $message], $status);
     }
 
@@ -2452,4 +2452,14 @@ function _arrayAssoc(array $arr)
     }
 
     return array_keys($arr) !== range(0, count($arr) - 1);
+}
+
+/**
+ * Check if HTTP header has the given content type
+ * @param string $type HTTP header content type
+ * @return bool
+ */
+function _isContentType($type)
+{
+    return isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] == $type;
 }
