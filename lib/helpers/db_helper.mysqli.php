@@ -1200,16 +1200,18 @@ function db_find($table, $id)
                 }
             }
         }
+        $entity = (object) $entity;
     }
 
-    return (object) $entity;
+    return $entity ?: null;
 }
 
 /**
  * Get a single entity result where the primary key matches the value passed in as the second parameter for the table name in the first parameter OR throws 404 if any result is not found.
+ *
  * @param string $table The table name to fetch data from
  * @param int $id The value of the primary key to match
- * @return mixed
+ * @return object|null
  */
 function db_findOrFail($table, $id)
 {
