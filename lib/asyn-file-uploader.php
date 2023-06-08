@@ -14,6 +14,8 @@
  * with this source code in the file LICENSE
  */
 
+use LucidFrame\Core\Validation;
+
 chdir('../');
 $_GET['bootstrap'] = true;
 require_once('bootstrap.php');
@@ -104,7 +106,7 @@ if (count($_FILES)) {
         $validations[$name]['messages']['fileExtension'] = _t('File must be one of the file types: %s.', _fstr($fileTypes));
     }
 
-    if (validation_check($validations, 'single') === true) {
+    if (validation_check($validations, [], Validation::TYPE_SINGLE) === true) {
         $file = _fileHelper();
         $uniqueId = $file->get('uniqueId');
         $file->set('uploadDir', $uploadDir);

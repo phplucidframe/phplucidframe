@@ -100,19 +100,20 @@ function validation_get($key)
  * Check all inputs according to the validation rules provided
  *
  * @param array $validations The array of the validation rules
+ * @param array $data The optional data array (if no `value` in $validation, it will be looked up in $data)
  * @param string $type The return form of the error message:
  *  "multi" to return all error messages occurred;
  *  "single" to return the first error message occurred
  *
  * @return bool
  */
-function validation_check($validations, $type = 'multi')
+function validation_check($validations, $data = [], $type = Validation::TYPE_MULTI)
 {
-    return Validation::check($validations, $type);
+    return Validation::check($validations, $data, $type);
 }
 
 /**
- * Add an external error messsage
+ * Add an external error message
  *
  * @param string $id HTML ID
  * @param string $msg The error message to show

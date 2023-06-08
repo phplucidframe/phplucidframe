@@ -86,9 +86,10 @@ class Form
     /**
      * Form token validation
      * @param array $validations The array of validation rules
+     * @param array $data The optional data array (if no `value` in $validation, it will be looked up in $data)
      * @return boolean
      */
-    public static function validate($validations = null)
+    public static function validate($validations = null, $data = [])
     {
         if (!isset($_POST['lc_formToken_' . _cfg('formTokenName')])) {
             Validation::addError('', _t('Invalid form token.'));
@@ -112,12 +113,12 @@ class Form
             }
         }
 
-        if ($result == false) {
+        if (!$result) {
             Validation::addError('', _t('Error occurred during form submission. Please refresh the page to try again.'));
             return false;
         }
 
-        if ($validations && Validation::check($validations) === false) {
+        if ($validations && Validation::check($validations, $data) === false) {
             return false;
         }
 

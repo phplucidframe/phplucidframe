@@ -20,6 +20,9 @@ namespace LucidFrame\Core;
  */
 class Validation
 {
+    const TYPE_MULTI = 'multi';
+    const TYPE_SINGLE = 'single';
+
     /** @var array The array of the error messages upon validation */
     public static $errors = array();
     /** @var array The array of default error messages */
@@ -52,24 +55,29 @@ class Validation
      * Check all inputs according to the validation rules provided
      *
      * @param array $validations The array of the validation rules
+     * @param array $data The optional data array (if no `value` in $validation, it will be looked up in $data)
      * @param string $type The return form of the error message:
      *  "multi" to return all error messages occurred;
      *  "single" to return the first error message occurred
      *
      * @return bool
      */
-    public static function check($validations, $type = 'multi')
+    public static function check($validations, $data, $type = self::TYPE_MULTI)
     {
         form_init();
 
         $type = strtolower($type);
-        if (!in_array($type, array('single', 'multi'))) {
-            $type = 'multi';
+        if (!in_array($type, array(self::TYPE_SINGLE, self::TYPE_MULTI))) {
+            $type = self::TYPE_MULTI;
         }
 
         self::$errors = array();
         foreach ($validations as $id => $v) {
             if (isset($v['rules']) && is_array($v['rules'])) {
+                if (!isset($v['value'])) {
+                    $v['value'] = isset($data[$id]) ? $data[$id] : '';
+                }
+
                 foreach ($v['rules'] as $rule) {
                     $success = true;
 
@@ -87,8 +95,7 @@ class Validation
                         # if array of values, the validation function
                         # (apart from the batch validation functions) will be applied to each value
                     } else {
-                        if (!is_array($v['value']) ||
-                            (is_array($v['value']) && array_key_exists('tmp_name', $v['value']))) {
+                        if (!is_array($v['value']) || array_key_exists('tmp_name', $v['value'])) {
                             $values = array($v['value']);
                         } else {
                             $values = $v['value'];

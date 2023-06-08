@@ -47,12 +47,13 @@ function form_token()
 
 /**
  * Form token validation
- * @param  array $validations The array of validation rules
+ * @param array $validations The array of validation rules
+ * @param array $data The optional data array (if no `value` in $validation, it will be looked up in $data)
  * @return boolean
  */
-function form_validate($validations = null)
+function form_validate($validations = null, $data = [])
 {
-    return Form::validate($validations);
+    return Form::validate($validations, $data);
 }
 
 /**
