@@ -1,0 +1,60 @@
+@import url('//fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+html, body, html * {
+    font-family: 'Roboto', sans-serif;
+}
+
+.exception-box {
+    margin: 50px auto 15px;
+    width: 90%;
+    max-width: 100%;
+}
+
+.error-stacktrace .block-exception {
+    background: darkred;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    color: #ffffff;
+    padding: 20px;
+}
+
+.error-stacktrace .block-exception p {
+    background: #dc4343;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    font-size: 17px;
+    padding: 10px 15px;
+}
+
+.error-stacktrace .block-exception .type-status {
+    margin-top: 20px;
+}
+
+.error-stacktrace .block-exception .type-status strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.error-stacktrace .block-exception code.inline {
+    background: darkred;
+}
+
+.error-stacktrace .block-stacktrace {
+    background: #f5f5f5;
+    border: 1px #eee solid;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    margin-top: 20px;
+    padding: 25px;
+}
+
+.error-stacktrace .block-stacktrace code.inline {
+    background: #ffffff;
+}
+
+.error-stacktrace .block-stacktrace li {
+    line-height: 170%;
+}

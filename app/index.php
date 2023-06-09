@@ -23,12 +23,16 @@ ob_start('_flush');
 
 $basename = basename(_app('page'), '.php');
 
-if (in_array($basename, array('401', '403', '404'))) {
-    _cfg('layoutMode', false);
-}
-
 if ($basename != 'view') {
-    require _app('page');
+    if ($basename == '401') {
+        _page401();
+    } elseif ($basename == '403') {
+        _page403();
+    } elseif ($basename == '404') {
+        _page404();
+    } else {
+        require _app('page');
+    }
 }
 
 if (_cfg('layoutMode') && _isAjax() === false) {

@@ -22,15 +22,13 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="shortcut icon" href="<?php echo _img('favicon.ico'); ?>" type="image/x-icon" />
-    <?php _css('base.css'); ?>
+    <?php _css('exception.css'); ?>
 </head>
-<body class="mini-page">
-    <div class="container-box exception-box">
-        <div class="box">
-            <div class="error-stacktrace">
-                <div class="block-exception">
-                    <p><?php echo $message ?></p>
-                </div>
+<body>
+    <div class="exception-box">
+        <div class="error-stacktrace">
+            <div class="block-exception">
+                <p><?php echo $message ?></p>
             </div>
         </div>
     </div>

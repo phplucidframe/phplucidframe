@@ -22,47 +22,43 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="shortcut icon" href="<?php echo _img('favicon.ico'); ?>" type="image/x-icon" />
-    <?php _css('base.css'); ?>
-    <link href="https://fonts.googleapis.com/css?family=Padauk:400,700" rel="stylesheet">
-    <?php _css('base.' . _lang() . '.css'); ?>
-    <?php _js('jquery'); ?>
+    <?php _css('exception.css'); ?>
+    <style>
+        .xdebug-error, .xdebug-error.xe-uncaught-exception, br:first-child {
+            display: none;
+        }
+    </style>
 </head>
-<body class="mini-page">
-    <div class="container-box exception-box">
-        <div class="box">
-            <div class="error-stacktrace">
-                <div class="block-exception">
-                    <p><?php echo nl2br(ucfirst($message)); ?></p>
-                    <div class="type-status">
-                        <strong><?php echo $type; ?></strong>
-                        <div>HTTP status code: <?php echo _g('httpStatusCode'); ?></div>
-                    </div>
+<body>
+    <div class="exception-box">
+        <div class="error-stacktrace">
+            <div class="block-exception">
+                <p><?php echo nl2br(ucfirst($message)); ?></p>
+                <div class="type-status">
+                    <strong><?php echo $type; ?></strong>
+                    <div>HTTP status code: <?php echo _g('httpStatusCode'); ?></div>
                 </div>
-                <?php if (isset($file) && isset($line) && isset($trace)): ?>
-                    <div class="block-stacktrace">
-                        <h5>Stack Trace</h5>
-                        <ol>
-                            <li>in <code class="inline"><?php echo $file; ?></code> at line <?php echo $line; ?></li>
-                            <?php foreach($trace as $item) { ?>
-                            <li>
-                                <?php if (isset($item['file'])) { ?>
-                                    <code class="inline"><?php echo $item['file']; ?></code>
-                                <?php } ?>
-                                <?php if (isset($item['line'])) { ?>
-                                    at line <?php echo $item['line']; ?>
-                                <?php } ?>
-                                calling <strong><code class="inline"><?php echo $item['function']; ?>()</code></strong>
-                            </li>
-                            <?php } ?>
-                        </ol>
-                    </div>
-                <?php endif ?>
             </div>
+            <?php if (isset($file) && isset($line) && isset($trace)): ?>
+                <div class="block-stacktrace">
+                    <h3>Stack Trace</h3>
+                    <ol>
+                        <li>in <code class="inline"><?php echo $file; ?></code> at line <?php echo $line; ?></li>
+                        <?php foreach($trace as $item) { ?>
+                        <li>
+                            <?php if (isset($item['file'])) { ?>
+                                <code class="inline"><?php echo $item['file']; ?></code>
+                            <?php } ?>
+                            <?php if (isset($item['line'])) { ?>
+                                at line <?php echo $item['line']; ?>
+                            <?php } ?>
+                            calling <strong><code class="inline"><?php echo $item['function']; ?>()</code></strong>
+                        </li>
+                        <?php } ?>
+                    </ol>
+                </div>
+            <?php endif ?>
         </div>
     </div>
-    <script>
-        $('html font').remove();
-        $('body > br').remove();
-    </script>
 </body>
 </html>
