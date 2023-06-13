@@ -2349,6 +2349,29 @@ function _requestHeader($name)
 }
 
 /**
+ * Get request method
+ * @return string|null
+ */
+function _requestMethod()
+{
+    if (isset($_SERVER['REQUEST_METHOD'])) {
+        return strtoupper($_SERVER['REQUEST_METHOD']);
+    }
+
+    return null;
+}
+
+/**
+ * Check if the request method is the given one
+ * @param string $method The request method
+ * @return bool
+ */
+function _isRequestMethod($method)
+{
+    return _requestMethod() == strtoupper($method);
+}
+
+/**
  * Convert form data into js variable
  * @param string $name The form name or scope name
  * @param array $data Array of data
