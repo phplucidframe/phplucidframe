@@ -295,7 +295,7 @@ class Router
                             $regex = $value['patterns'][$name];
                             if (!preg_match('/^' . $regex . '$/', $var)) {
                                 _header(400);
-                                throw new \InvalidArgumentException(sprintf('The Router does not satisfy the argument value "%s" for "%s".', $var, $regex));
+                                throw new \InvalidArgumentException(sprintf('The URL does not satisfy the argument value "%s" for "%s".', $var, $regex));
                             }
                         }
 
@@ -322,7 +322,7 @@ class Router
                 } else {
                     if (!in_array($_SERVER['REQUEST_METHOD'], $value['method'])) {
                         _header(405);
-                        throw new \RuntimeException(sprintf('The Router does not allow the method "%s" for "%s".', $_SERVER['REQUEST_METHOD'], $key));
+                        throw new \RuntimeException(sprintf('The URL does not allow the method "%s" for "%s".', $_SERVER['REQUEST_METHOD'], $key));
                     }
                 }
             }
