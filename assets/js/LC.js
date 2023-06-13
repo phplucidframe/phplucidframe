@@ -140,19 +140,19 @@
                 if (response.error && response.error.length > 0) {
                     var errHtml = '<div class="message-error alert alert-danger"><ul>';
                     $.each( response.error, function(i, err) {
-                        if (err.htmlID) {
-                            if (err.htmlID.indexOf('[]') !== -1) {
-                                err.htmlID = err.htmlID.replace(/\[\]/, '');
-                                $form.find('#'+err.htmlID).find('input,select,textarea').addClass('invalid');
+                        if (err.field) {
+                            if (err.field.indexOf('[]') !== -1) {
+                                err.field = err.field.replace(/\[\]/, '');
+                                $form.find('#'+err.field).find('input,select,textarea').addClass('invalid');
                             } else {
-                                if ($('#'+err.htmlID).length) {
-                                    $form.find('#' + err.htmlID).addClass('invalid');
+                                if ($('#'+err.field).length) {
+                                    $form.find('#' + err.field).addClass('invalid');
                                 } else {
-                                    $form.find('input[name='+err.htmlID+'],textarea[name='+err.htmlID+'],select[name='+err.htmlID+']').addClass('invalid');
+                                    $form.find('input[name='+err.field+'],textarea[name='+err.field+'],select[name='+err.field+']').addClass('invalid');
                                 }
                             }
                         }
-                        errHtml += '<li>' + err.msg + '</li>';
+                        errHtml += '<li>' + err.message + '</li>';
                     } );
                     errHtml += '</ul></div>';
                     $message.html(errHtml).show();

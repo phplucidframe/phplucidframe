@@ -340,15 +340,9 @@ class Validation
         if (count($args) > 3) {
             $args = array_slice($args, 3);
             array_unshift($args, $caption);
-            self::$errors[] = array(
-                'msg' => vsprintf($msg, $args),
-                'htmlID' => $id
-            );
+            self::addError($id, vsprintf($msg, $args));
         } else {
-            self::$errors[] = array(
-                'msg' => sprintf($msg, $caption),
-                'htmlID' => $id
-            );
+            self::addError($id, sprintf($msg, $caption));
         }
     }
 
@@ -363,8 +357,8 @@ class Validation
     public static function addError($id, $msg)
     {
         self::$errors[] = array(
-            'msg' => $msg,
-            'htmlID' => $id
+            'field' => $id,
+            'message' => $msg,
         );
     }
 }

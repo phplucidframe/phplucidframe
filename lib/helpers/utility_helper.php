@@ -1061,7 +1061,7 @@ function _page401($message = '')
     $message = $message ?: _t('Access Denied');
 
     if (_isContentType('application/json')) {
-        _json(['error' => $message], 403);
+        _jsonError($message, '', 401);
     }
 
     _cfg('layoutMode', true);
@@ -1079,7 +1079,7 @@ function _page403($message = '')
     $message = $message ?: _t('403 Forbidden');
 
     if (_isContentType('application/json')) {
-        _json(['error' => $message], 403);
+        _jsonError($message, '', 403);
     }
 
     _cfg('layoutMode', true);
@@ -1090,14 +1090,15 @@ function _page403($message = '')
 /**
  * Display 404 page
  * @param string $message The error message
+ * @param string $entity The entity name
  * @return void
  */
-function _page404($message = '')
+function _page404($message = '', $entity = '')
 {
     $message = $message ?: _t('404 Not Found');
 
     if (_isContentType('application/json')) {
-        _json(['error' => $message], 404);
+        _jsonError($message, $entity, 404);
     }
 
     _cfg('layoutMode', true);
@@ -1563,8 +1564,8 @@ if (!function_exists('_msg')) {
             if (count($msg) > 0) {
                 $html .= '<ul>';
                 foreach ($msg as $m) {
-                    if (is_array($msg) && isset($m['msg'])) {
-                        $html .= '<li>'.$m['msg'].'</li>';
+                    if (is_array($msg) && isset($m['message'])) {
+                        $html .= '<li>'.$m['message'].'</li>';
                     } else {
                         $html .= '<li>'.$m.'</li>';
                     }
@@ -2271,6 +2272,29 @@ function _json($data = [], $status = 200)
 
     Middleware::runAfter();
     exit;
+}
+
+/**
+ * Response error as JSON
+ * @param string|array $message The error message or array of error message
+ * @param string $field The field name
+ * @param int $status HTTP status code
+ * @return void
+ */
+function _jsonError($message, $field = '', $status = 400)
+{
+    $errors = [];
+    if (is_array($message)) {
+        $errors = $message;
+    } else {
+        $errors[] = [
+            'field' => $field,
+            'message' => $message,
+        ];
+
+    }
+
+    _json(['error' => $errors], $status);
 }
 
 /**

@@ -159,8 +159,8 @@ if (count($_FILES)) {
         $errors = validation_get('errors');
         # if there is any validation error and if there was any uploaded file
         $data['error'] = array(
-            'id'    => $errors[0]['htmlID'],
-            'plain' => $errors[0]['msg'],
+            'id'    => $errors[0]['field'],
+            'plain' => $errors[0]['message'],
             'html'  => _msg($errors, 'error', 'html')
         );
         $data['value'] = $post[$name];
