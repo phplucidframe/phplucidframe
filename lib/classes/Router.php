@@ -202,12 +202,15 @@ class Router
 
         $method = explode('|', strtoupper($method));
         $methods = array_filter($method, function ($value) {
-            return in_array($value, array('GET', 'POST', 'PUT', 'PATCH', 'DELETE'));
+            return in_array($value, array('GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS', 'CONNECT', 'TRACE'));
         });
 
         if (count($methods) == 0) {
             $methods = array('GET');
         }
+
+        $methods[] = 'OPTIONS';
+        $methods = array_unique($methods);
 
         self::$routes[$this->name] = array(
             'path'      => $path,

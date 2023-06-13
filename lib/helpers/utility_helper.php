@@ -2294,6 +2294,10 @@ function _jsonError($message, $field = '', $status = 400)
 
     }
 
+    if (_requestMethod() == 'OPTIONS') {
+        $status = 200;
+    }
+
     _json(['error' => $errors], $status);
 }
 
