@@ -1160,11 +1160,16 @@ function db_exp($field, $value, $exp = '')
  * Get a single entity result where the primary key matches the value passed in as the second parameter for the table name in the first parameter.
  * @param string $table The table name to fetch data from
  * @param int $id The value of the primary key to match
+ * @param array $fields The array of fields to select
  * @return object|null
  */
-function db_find($table, $id)
+function db_find($table, $id, $fields = [])
 {
     $qb = db_select($table)->where()->condition('id', $id);
+
+    if (!empty($fields)) {
+        $qb->fields($table, $fields);
+    }
 
     if (db_tableHasTimestamps($table)) {
         $qb->condition('deleted', null);
@@ -1211,11 +1216,12 @@ function db_find($table, $id)
  *
  * @param string $table The table name to fetch data from
  * @param int $id The value of the primary key to match
+ * @param array $fields The array of fields to select
  * @return object|null
  */
-function db_findOrFail($table, $id)
+function db_findOrFail($table, $id, $fields = [])
 {
-    $result = db_find($table, $id);
+    $result = db_find($table, $id, $fields);
 
     if (!$result) {
         _page404(_t('The entity %s not found.', $table), $table);
