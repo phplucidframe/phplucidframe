@@ -197,19 +197,34 @@ class QueryBuilder
                 if (count($field) != 2) {
                     return null;
                 }
+
                 # field with alias
-                $f = self::quote($field[0]);
+                list($fieldName, $alias) = $field;
+
+                $f = self::quote($fieldName);
                 if (substr($f, 0, 1) !== '`') {
-                    return $f . ' ' . $field[1];
+                    if (self::isRawExp($f)) {
+                        $f = self::parseFromRawExp($f);
+                    }
+
+                    return $f . ' AS ' . $alias;
                 } else {
-                    return self::quote($table) . '.' . $f . ' ' . self::quote($field[1]);
+                    if (self::isRawExp($f)) {
+                        return self::parseFromRawExp($f) . ' AS ' . self::quote($alias);
+                    }
+
+                    return self::quote($table) . '.' . $f . ' AS ' . self::quote($alias);
                 }
             } else {
                 # field without alias
                 $f = self::quote($field);
                 if (substr($f, 0, 1) !== '`') {
-                    return $f;
+                    return self::isRawExp($f) ? self::parseFromRawExp($f) : $f;
                 } else {
+                    if (self::isRawExp($f)) {
+                        return self::parseFromRawExp($f);
+                    }
+
                     return self::quote($table) . '.' . $f;
                 }
             }
@@ -1041,7 +1056,7 @@ class QueryBuilder
     {
         $name = trim($name);
 
-        if ($name === '*') {
+        if ($name === '*' || self::isRawExp($name)) {
             return $name;
         }
 
