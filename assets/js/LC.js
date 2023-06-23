@@ -202,6 +202,10 @@
             $form.find('.message').filter(':first').html('').hide();
             $form.find('.invalid').removeClass('invalid');
 
+            if ($form.data('clear') === 'off') {
+                return;
+            }
+
             $form.find('input, select, textarea').each(function (i, elem) {
                 var $input = $(elem);
                 if (($input.attr('name') && !$input.attr('name').includes('lc_formToken')) &&
