@@ -2263,6 +2263,11 @@ function _isHttpPost()
  */
 function _json($data = [], $status = 200)
 {
+    if (_isRequestMethod('OPTIONS')) {
+        _header(200);
+        exit;
+    }
+
     _header($status);
 
     header('Content-Type: application/json');
@@ -2292,10 +2297,6 @@ function _jsonError($message, $field = '', $status = 400)
             'message' => $message,
         ];
 
-    }
-
-    if (_requestMethod() == 'OPTIONS') {
-        $status = 200;
     }
 
     _json(['error' => $errors], $status);
