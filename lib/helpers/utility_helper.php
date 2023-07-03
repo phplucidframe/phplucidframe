@@ -718,6 +718,10 @@ function _g($key, $value = '')
  */
 function _h($string)
 {
+    if (empty($string)) {
+        return $string;
+    }
+
     $string = stripslashes($string);
     $string = htmlspecialchars_decode($string, ENT_QUOTES);
 
@@ -1336,6 +1340,10 @@ function _breadcrumb()
  */
 function _shorten($str, $length = 50, $trail = '...')
 {
+    if (empty($str)) {
+        return $str;
+    }
+
     $str = strip_tags(trim($str));
     if (strlen($str) <= $length) {
         return $str;
@@ -1366,6 +1374,10 @@ if (!function_exists('_fstr')) {
      */
     function _fstr($value, $glue = ', ', $lastGlue = 'and')
     {
+        if (empty($value)) {
+            return $value;
+        }
+
         if (!is_array($value)) {
             return $value == '' ? _nullFill($value) : nl2br($value);
         } elseif (is_array($value) && sizeof($value) > 1) {
