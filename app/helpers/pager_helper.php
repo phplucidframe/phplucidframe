@@ -7,7 +7,7 @@
  * Get ordinary (non-ajax) pager object
  * @param int $rowCount
  * @param  string $pageQueryStr The customized page query string name
- * @return \LucidFrame\Core\Pager|object
+ * @return Pager|object
  */
 function pager_ordinary($rowCount, $pageQueryStr = '')
 {
@@ -22,7 +22,7 @@ function pager_ordinary($rowCount, $pageQueryStr = '')
  * Get ajax pager object
  * @param int $rowCount
  * @param  string $pageQueryStr The customized page query string name
- * @return \LucidFrame\Core\Pager|object
+ * @return Pager|object
  */
 function pager_ajax($rowCount, $pageQueryStr = '')
 {
@@ -56,6 +56,7 @@ function pager_ajax($rowCount, $pageQueryStr = '')
  */
 function pager_bootstrap($result)
 {
+    $pager = _pager();
     # The outermost container must have "lc-pager" class for AJAX pagination
     ?>
     <ul class="pagination lc-pager">
@@ -81,7 +82,7 @@ function pager_bootstrap($result)
                     <?php if ($result['ajax']): ?>
                         <a href="<?php echo _url($result['url']) ?>" rel="<?php echo $pg ?>"><?php echo $pg ?></a>
                     <?php else: ?>
-                        <a href="<?php echo _url($result['url'], array($this->pageQueryStr => $pg)) ?>" rel="<?php echo $pg ?>"><?php echo $pg ?></a>
+                        <a href="<?php echo _url($result['url'], array($pager->get('pageQueryStr') => $pg)) ?>" rel="<?php echo $pg ?>"><?php echo $pg ?></a>
                     <?php endif ?>
                 </li>
             <?php endforeach; ?>
@@ -97,7 +98,7 @@ function pager_bootstrap($result)
                     <?php if ($result['ajax']): ?>
                         <a href="<?php echo _url($result['url']) ?>" rel="<?php echo $pg ?>"><?php echo $pg ?></a>
                     <?php else: ?>
-                        <a href="<?php echo _url($result['url'], array($this->pageQueryStr => $pg)) ?>" rel="<?php echo $pg ?>"><?php echo $pg ?></a>
+                        <a href="<?php echo _url($result['url'], array($pager->get('pageQueryStr') => $pg)) ?>" rel="<?php echo $pg ?>"><?php echo $pg ?></a>
                     <?php endif ?>
                 </li>
             <?php endforeach; ?>
