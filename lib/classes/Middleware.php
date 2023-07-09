@@ -34,8 +34,10 @@ class Middleware
     private static $after = array();
     /** @var string Unique id */
     private static $id;
-    /** @var array */
+    /** @var array Array of route filters by each middleware */
     private static $routeFilters = array();
+    /** @var array Array of order by each middleware */
+    private static $orders = array();
 
     /**
      * Register a middleware
@@ -49,11 +51,18 @@ class Middleware
 
         if (in_array($event, array(self::BEFORE, self::AFTER))) {
             self::${$event}[self::$id] = $closure;
+            $this->order(count(self::${$event}), $event);
         }
 
         return $this;
     }
 
+    /**
+     * Register route filter for the middleware
+     * @param string $key One of the values - startWith, contain, equal, except
+     * @param string $value URI or a part of URI
+     * @return $this
+     */
     public function on($key, $value)
     {
         if (self::$id) {
@@ -64,11 +73,27 @@ class Middleware
     }
 
     /**
+     * Register precedence of the middleware
+     * @param int $sort Ascending order (smaller value runs first)
+     * @param string $event before (default) or after
+     * @return $this
+     */
+    public function order($sort, $event = self::BEFORE)
+    {
+        if (self::$id) {
+            self::$orders[$event][self::$id] = $sort;
+        }
+
+        return $this;
+    }
+
+    /**
      * Run all registered middlewares (before)
      */
     public static function runBefore()
     {
-        self::invoke(self::$before);
+        asort(self::$orders[self::BEFORE]);
+        self::invoke(self::BEFORE);
     }
 
     /**
@@ -76,16 +101,21 @@ class Middleware
      */
     public static function runAfter()
     {
-        self::invoke(self::$after);
+        asort(self::$orders[self::AFTER]);
+        self::invoke(self::AFTER);
     }
 
     /**
      * Run the registered middlewares
-     * @param array $middlewares List of middlewares
+     * @param string $event before or after
      */
-    private static function invoke(array $middlewares)
+    private static function invoke($event)
     {
-        foreach ($middlewares as $id => $closure) {
+        $middlewares = $event == self::AFTER ? self::$after : self::$before;
+
+        foreach (self::$orders[$event] as $id => $order) {
+            $closure = $middlewares[$id];
+
             if (isset(self::$routeFilters[$id])) {
                 $except = array();
                 if (isset(self::$routeFilters[$id][self::FILTER_EXCEPT])) {
