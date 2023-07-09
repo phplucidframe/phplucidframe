@@ -28,7 +28,7 @@ function auth_prerequisite()
         return $auth;
     } else {
         _header(400);
-        throw new \InvalidArgumentException('Required to configure <code class="inline">$lc_auth</code> in <code class="inline">/inc/config.php</code> or <code class="inline">/inc/site.config.php</code>.');
+        throw new \InvalidArgumentException('Required to configure <code class="inline">$lc_auth</code> in <code class="inline">/inc/config.php</code>.');
     }
 }
 
