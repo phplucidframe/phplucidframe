@@ -119,6 +119,18 @@ class Validation
                             $func = 'validate_' . $rule;
                             if (function_exists($func)) {
                                 switch ($rule) {
+                                    case 'exactLength':
+                                        # Required property: length
+                                        if (!isset($v['length'])) {
+                                            break;
+                                        }
+
+                                        $success = call_user_func_array($func, array($value, $v['length']));
+                                        if (!$success) {
+                                            self::setError($id, $rule, $v, $v['length']);
+                                        }
+                                        break;
+
                                     case 'min':
                                         # Required property: min
                                         if (!isset($v['min'])) {

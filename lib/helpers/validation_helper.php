@@ -44,6 +44,7 @@ function __validation_init()
         'email'                  => "'%s' should be a valid format, e.g., username@example.com",
         'domain'                 => "'%s' should be a valid domain name with letters, numbers and dash only.",
         'url'                    => "'%s' should be a valid website address, e.g., http://www.example.com",
+        'exactLength'            => "'%s' should have exact length of %d.",
         'min'                    => "'%s' should be greater than or equal to %d.",
         'max'                    => "'%s' should be less than or equal to %d.",
         'minLength'              => "'%s' should have at least %d letters.",
@@ -456,6 +457,20 @@ function validate_url($value)
     } # End of Check Host Name
 
     return false;
+}
+/**
+ * Checks that a string/array's length is equal to the specific length.
+ * @param mixed $value The value being checked
+ * @param int $length The exact length to meet
+ * @return boolean if the character length of the value meets the specified exact length, FALSE otherwise
+ */
+function validate_exactLength($value, $length)
+{
+    if (is_array($value)) {
+        return count($value) == $length;
+    }
+
+    return mb_strlen($value) == $length;
 }
 /**
  * Checks that a string length is greater than the specific length.
