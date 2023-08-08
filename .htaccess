@@ -1,26 +1,26 @@
-# Protect files and directories from prying eyes.
-<FilesMatch "\.(secret|env|lcenv|salt|engine|inc|po|sh|bat|cmd|.*sql|sqlc|theme|tpl(\.php)?|xtmpl)$|^(\..*|inc)$">
-  Order allow,deny
-</FilesMatch>
-
-# Don't show directory listings for URLs which map to a directory.
+# Disable directory browsing
 Options -Indexes
 
 # Set the default handler.
 DirectoryIndex index.php index.html index.htm
 
+# ----------------------------------------------------------------------
+# Rewrite engine
+# ----------------------------------------------------------------------
+
+# Turning on the rewrite engine is necessary for the following rules and features.
 <IfModule mod_rewrite.c>
     RewriteEngine on
-    RewriteRule .* - [e=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Ensure Authorization header is passed along
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
     RewriteRule ^index.php$ app/index.php [NC,L]
 
-    # If the request is not for a valid file
+    # If the request is not for a valid file/directory/link
     RewriteCond %{REQUEST_FILENAME} !-f
-    # If the request is not for a valid directory
     RewriteCond %{REQUEST_FILENAME} !-d
-    # If the request is not for a valid link
     RewriteCond %{REQUEST_FILENAME} !-l
-
-    RewriteRule ^ app/index.php [L]
+    RewriteRule ^ app/index.php [NC,L]
 </IfModule>
