@@ -37,10 +37,6 @@
 
 @media screen and ( max-width : 576px ) {
     /* Mobile */
-    body {
-        font-size: 11px;
-    }
-
     textarea {
         display: block;
     }
@@ -84,6 +80,20 @@
         padding-left: 0;
         padding-top: 2px;
         min-height: 22px;
+    }
+
+    table.form tr.label-only td {
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+
+    table.form tr.label-only td.label {
+        padding-top: 9px;
+    }
+
+    table.form tr.label-only td.entry {
+        padding-bottom: 9px;
+        min-height: auto;
     }
 
     #overlay #processing, #page-loading #processing {
