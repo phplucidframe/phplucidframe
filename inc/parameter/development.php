@@ -29,7 +29,7 @@ return array(
             'driver'    => 'mysql',
             'host'      => 'localhost',
             'port'      => '',
-            'database'  => 'lucid_blog',
+            'database'  => 'lucid',
             'username'  => 'root',
             'password'  => 'root',
             'prefix'    => '',

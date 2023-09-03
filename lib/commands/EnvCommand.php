@@ -15,7 +15,7 @@
 
 _consoleCommand('env')
     ->setDescription('Change environment setting')
-    ->addArgument('env', 'The envirnoment name: [dev, development, staging, prod, production]')
+    ->addArgument('env', 'The environment name: [dev, development, staging, prod, production]')
     ->addOption('show', null, 'Display the current active environment setting', null, LC_CONSOLE_OPTION_NOVALUE)
     ->setDefinition(function(\LucidFrame\Console\Command $cmd) {
         if ($cmd->getOption('show')) {

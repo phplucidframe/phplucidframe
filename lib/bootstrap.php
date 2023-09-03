@@ -131,8 +131,10 @@ _autoloadDir(CLASSES);
 _autoloadDir(CLASSES . 'console');
 _autoloadDir(LIB . 'commands');
 
-# DB configuration & DB helper (required)
-_app('db', new \LucidFrame\Core\Database());
+if (__dbLoadable()) {
+    # DB configuration & DB helper (required)
+    _app('db', new \LucidFrame\Core\Database());
+}
 
 if (file_exists(INC . 'autoload.php')) {
     require INC . 'autoload.php';

@@ -537,6 +537,20 @@ function __autoloadHelper($modules)
     }
 }
 
+/**
+ * @internal
+ * @ignore
+ *
+ * Check if db is loadable (skip db initialization upon some CLI commands execution)
+ * @return bool
+ */
+function __dbLoadable()
+{
+    global $argv;
+
+    return !(PHP_SAPI == 'cli' && $argv[0] === 'lucidframe' && in_array($argv[1], ['list', 'env', 'secret:generate']));
+}
+
 /*************************/
 /* Public functions here */
 /*************************/
@@ -833,5 +847,6 @@ function _baseDirs($subDir = '')
 
     return $folders;
 }
+
 
 __prerequisite();
