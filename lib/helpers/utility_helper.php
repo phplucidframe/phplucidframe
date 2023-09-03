@@ -1842,14 +1842,6 @@ function _metaSeoTags()
         _cfg('metaKeywords', _meta('keywords'));
     }
 
-    $gpSiteName = _cfg('siteName');
-    if (_meta('gp:name')) {
-        $gpSiteName = _meta('gp:name');
-    }
-    if (_meta('gp:site_name')) {
-        $gpSiteName = _meta('gp:site_name');
-    }
-
     $tags = array();
     $tags['description'] = _cfg('metaDescription');
     $tags['keywords']    = _cfg('metaKeywords');
@@ -1858,7 +1850,7 @@ function _metaSeoTags()
     $tags['og']['title']        = _meta('og:title') ? _meta('og:title') : _cfg('siteName');
     $tags['og']['url']          = _meta('og:url') ? _meta('og:url') : _url();
     $tags['og']['type']         = _meta('og:type') ? _meta('og:type') : 'website';
-    $tags['og']['image']        = _meta('og:image') ? _meta('og:image') : _img('logo-200x200.jpg');
+    $tags['og']['image']        = _meta('og:image') ? _meta('og:image') : _img('logo-social.jpg');
     $tags['og']['description']  = _meta('og:description') ? _meta('og:description') : _cfg('metaDescription');
     $tags['og']['site_name']    = _meta('og:site_name') ? _meta('og:site_name') : _cfg('siteName');
 
@@ -1867,12 +1859,7 @@ function _metaSeoTags()
     $tags['twitter']['site']    = _meta('twitter:site') ? '@'._meta('twitter:site') : '@'._cfg('siteDomain');
     $tags['twitter']['title']   = _meta('twitter:title') ? _meta('twitter:title') : _cfg('siteName');
     $tags['twitter']['description'] = _meta('twitter:description') ? _meta('twitter:description') : _cfg('metaDescription');
-    $tags['twitter']['image']   = _meta('twitter:image') ? _meta('twitter:image') : _img('logo-120x120.jpg');
-
-    $tags['gp']                 = array();
-    $tags['gp']['name']         = $gpSiteName;
-    $tags['gp']['description']  = _meta('gp:description') ? _meta('gp:description') : _cfg('metaDescription');
-    $tags['gp']['image']        = _meta('gp:image') ? _meta('gp:image') : _img('logo-200x200.jpg');
+    $tags['twitter']['image']   = _meta('twitter:image') ? _meta('twitter:image') : _img('logo-social.jpg');
 
     if (function_exists('__metaSeoTags')) {
         echo __metaSeoTags($tags);
@@ -1886,10 +1873,6 @@ function _metaSeoTags()
             } elseif ($name == 'twitter') {
                 foreach ($tag as $key => $content) {
                     echo '<meta name="twitter:' . $key . '" content="' . $content . '" />'."\n";
-                }
-            } elseif ($name == 'gp') {
-                foreach ($tag as $key => $content) {
-                    echo '<meta itemprop="' . $key . '" content="' . $content . '" />'."\n";
                 }
             } else {
                 echo '<meta name="' . $name . '" content="' . $tag . '" />'."\n";
