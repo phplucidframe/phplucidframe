@@ -273,7 +273,7 @@ class QueryBuilderTestCase extends LucidFrameTestCase
     {
         $qb = db_select('post', 'p')
             ->fields('p', array(array('COUNT(*)', 'count')));
-        $this->assertEqual($qb->getSQL(), 'SELECT COUNT(*) count FROM `post` `p`');
+        $this->assertEqual($qb->getSQL(), 'SELECT COUNT(*) AS count FROM `post` `p`');
 
         $qb = db_select('post', 'p')
             ->field('COUNT(*)', 'count');

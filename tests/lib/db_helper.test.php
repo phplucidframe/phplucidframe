@@ -514,6 +514,12 @@ class DBHelperTestCase extends LucidFrameTestCase
         $post = db_find('post', 1);
         $this->assertEqual($post->slug, 'hello-world');
 
+        $post = db_find('post', 1, array('id', 'title'));
+        $this->assertFalse(isset($post->slug));
+
+        $post = db_findOrFail('post', 1);
+        $this->assertEqual($post->slug, 'hello-world');
+
         $result = db_findOneBy('post', array('id' => 2));
         $this->assertEqual($result->slug, 'welcome-to-lucidframe-blog');
 

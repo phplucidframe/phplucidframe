@@ -81,7 +81,7 @@ class RouteHelperTestCase extends LucidFrameTestCase
             Router::match();
         } catch (\Exception $e) {
             $this->assertEqual(get_class($e), 'InvalidArgumentException');
-            $this->assertEqual($e->getMessage(), 'The Router does not satisfy the argument value "1a" for "\d+".');
+            $this->assertEqual($e->getMessage(), 'The URL does not satisfy the argument value "1a" for "\d+".');
         }
 
         try {
@@ -89,7 +89,7 @@ class RouteHelperTestCase extends LucidFrameTestCase
             Router::match();
         } catch (\Exception $e) {
             $this->assertEqual(get_class($e), 'InvalidArgumentException');
-            $this->assertEqual($e->getMessage(), 'The Router does not satisfy the argument value "yangon." for "[a-zA-Z\-_]+".');
+            $this->assertEqual($e->getMessage(), 'The URL does not satisfy the argument value "yangon." for "[a-zA-Z\-_]+".');
         }
 
         try {
@@ -97,7 +97,7 @@ class RouteHelperTestCase extends LucidFrameTestCase
             Router::match();
         } catch (\Exception $e) {
             $this->assertEqual(get_class($e), 'InvalidArgumentException');
-            $this->assertEqual($e->getMessage(), 'The Router does not satisfy the argument value "poah" for "list|(poah|prin)\d+".');
+            $this->assertEqual($e->getMessage(), 'The URL does not satisfy the argument value "poah" for "list|(poah|prin)\d+".');
         }
     }
 
@@ -108,7 +108,7 @@ class RouteHelperTestCase extends LucidFrameTestCase
             Router::match();
         } catch (\Exception $e) {
             $this->assertEqual(get_class($e), 'RuntimeException');
-            $this->assertEqual($e->getMessage(), 'The Router does not allow the method "GET" for "lc_post_create".');
+            $this->assertEqual($e->getMessage(), 'The URL does not allow the method "GET" for "lc_post_create".');
         }
 
         try {
@@ -116,7 +116,7 @@ class RouteHelperTestCase extends LucidFrameTestCase
             Router::match();
         } catch (\Exception $e) {
             $this->assertEqual(get_class($e), 'RuntimeException');
-            $this->assertEqual($e->getMessage(), 'The Router does not allow the method "GET" for "lc_post_update".');
+            $this->assertEqual($e->getMessage(), 'The URL does not allow the method "GET" for "lc_post_update".');
         }
     }
 

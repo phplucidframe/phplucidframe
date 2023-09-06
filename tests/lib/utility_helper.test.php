@@ -183,6 +183,7 @@ class UtilityHelperTestCase extends LucidFrameTestCase
      */
     public function testForFunctionUnderscoreImg()
     {
-        $this->assertEqual(_img('logo.png'), WEB_ROOT . 'assets/images/logo.png');
+        $this->assertEqual(_img('logo.png'), '');
+        $this->assertEqual(_img('logo-blue.png'), WEB_ROOT . 'assets/images/logo-blue.png');
     }
 }
