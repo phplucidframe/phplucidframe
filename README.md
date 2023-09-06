@@ -81,6 +81,9 @@ Prerequisites:
     composer install
 
     php lucidframe env test
+
+Create a test database and setup in `inc/parameter/test.php`. By default, the database name `lucid_blog_test` is set up under `sample` namespace. Then you can create a new database `lucid_blog_test` and run `schema:load sample`.
+
     php lucidframe schema:load sample
 
 From **Command Line**,
