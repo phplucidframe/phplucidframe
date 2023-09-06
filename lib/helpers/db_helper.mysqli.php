@@ -136,18 +136,6 @@ function db_switch($namespace = null)
 }
 
 /**
- * @deprecated
- * Sets the default client character set
- *
- * @param  string $charset The charset to be set as default.
- * @return boolean Returns TRUE on success or FALSE on failure.
- */
-function db_setCharset($charset)
-{
-    return db_query('SET NAMES "%s"', $charset);
-}
-
-/**
  * Closes a previously opened database connection
  * @return void
  */
@@ -196,34 +184,6 @@ function db_query($sql, $args = array())
 function db_queryStr()
 {
     return _app('db')->getQueryStr();
-}
-
-/**
- * @deprecated
- * Escapes special characters in a string for use in a SQL statement,
- * taking into account the current charset of the connection
- *
- * @param  string $str An escaped string
- * @return string
- */
-function db_escapeString($str)
-{
-    return $str;
-}
-
-/**
- * @deprecated
- * @internal
- * @ignore
- *
- * Quote and return the value if it is string; otherwise return as it is
- * This is used for array_map()
- */
-function db_escapeStringMulti($val)
-{
-    $val = db_escapeString($val);
-
-    return is_numeric($val) ? $val : '"'.$val.'"';
 }
 
 /**
