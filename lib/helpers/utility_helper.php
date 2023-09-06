@@ -2230,12 +2230,12 @@ function _isAjax()
 }
 
 /**
- * Check if HTTP request has POST values
+ * Check if HTTP request method is POST and has request data
  * @return bool
  */
 function _isHttpPost()
 {
-    return (bool) count($_POST);
+    return _isRequestMethod('POST') && count($_POST);
 }
 
 /**
