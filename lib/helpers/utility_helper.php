@@ -2387,10 +2387,11 @@ function _nullFill($value)
 /**
  * Get default entity object from the schema
  * @param string $table The mapped table name without prefix
+ * @param array $data Array of default data
  * @param string|null $dbNamespace The current db namespace
  * @return object The empty stdClass object with field names as properties
  */
-function _entity($table, $dbNamespace = null)
+function _entity($table, array $data = [], $dbNamespace = null)
 {
     if (!$dbNamespace) {
         $dbNamespace = _cfg('defaultDbSource');
@@ -2424,6 +2425,10 @@ function _entity($table, $dbNamespace = null)
             }
 
             $entity[$field] = $value;
+
+            if (isset($data[$field])) {
+                $entity[$field] = $data[$field];
+            }
         }
     }
 
