@@ -16,7 +16,7 @@
 # $lc_env: The setting for running environment: `development` or `production` (read from .lcenv)
 $lc_env = _p();
 # $lc_timeZone: Default Time Zone (See https://www.php.net/manual/en/timezones.php)
-$lc_timeZone = 'Asia/Rangoon';
+$lc_timeZone = 'Asia/Yangon';
 # $lc_memoryLimit: The maximum amount of memory in bytes that a script is allowed to allocate.
 $lc_memoryLimit = '128M';
 # $lc_maxExecTime: The maximum time in seconds a script is allowed to run before it is terminated by the parser.
