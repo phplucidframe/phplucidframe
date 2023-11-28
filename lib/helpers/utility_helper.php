@@ -2503,3 +2503,55 @@ function _isContentType($type)
 {
     return isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] == $type;
 }
+
+/**
+ * cURL helper
+ *
+ * @param string $url The absolute URL
+ * @param array|string $params The data to send
+ * @param string $method GET|POST|PUT|DELETE
+ * @param array $headers The mail headers
+ * @return bool|string
+ */
+function _curl($url, $params = array(), $method = 'get', $headers = array())
+{
+    $method = strtoupper($method);
+    if (!in_array($method, array('GET', 'POST', 'PUT', 'DELETE'))) {
+        $method = 'GET';
+    }
+
+    $queryStr = '';
+    if (!empty($params)) {
+        $queryStr = is_array($params) ? http_build_query($params) : $params;
+    }
+
+    $ch = curl_init();
+    if ($method == 'POST') {
+        curl_setopt($ch, CURLOPT_POST, 1);
+        if ($queryStr) {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $queryStr);
+        }
+    } else {
+        if ($queryStr) {
+            $url .= '?' . $queryStr;
+        }
+    }
+
+    // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_URL, $url);
+    if (!empty($headers)) {
+        if (_arrayAssoc($headers)) {
+            $headers = array_map(function($key, $value) {
+                return $key . ': ' . $value;
+            }, array_keys($headers), array_values($headers));
+        }
+
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    }
+
+    $response = curl_exec($ch);
+    curl_close($ch);
+
+    return $response;
+}
