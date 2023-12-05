@@ -2555,3 +2555,33 @@ function _curl($url, $params = array(), $method = 'get', $headers = array())
 
     return $response;
 }
+
+/**
+ * Helper to print select dropdown
+ * @param string $name The input name
+ * @param array $data The data for the options to render (key/value pair or array of objects containing id/name properties)
+ * @param mixed $value The option value to be selected
+ * @param array $attributes Array of HTML attributes key/value pair
+ * @return string
+ */
+function form_select($name, $data = [], $value = null, $attributes = [])
+{
+    $attr = '';
+    foreach ($attributes as $key => $val) {
+        $attr .= ' ' . $key . '="' . $val . '"';
+    }
+
+    $html = '<select name="' . $name . '" ' . $attr . '>';
+    foreach ($data as $key => $val) {
+        if (isset($val->id) && isset($val->name)) {
+            $key = $val->id;
+            $val = $val->name;
+        }
+        $html .= '<option value="' . $key . '" ';
+        $html .= form_selected($name, $key, $value);
+        $html .= '>' . $val . '</option>';
+    }
+    $html .= '</select>';
+
+    return $html;
+}
