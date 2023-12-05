@@ -11,7 +11,7 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.txt
  */
- (function(win, $) {
+(function(win, $) {
     var LC = win.LC;
 
     LC.Form = {
@@ -610,6 +610,7 @@
             id: 'list',
             formModal: '#dialog-item',
             formModalCancelButton: '#btn-cancel',
+            confirmModal: '#list-confirm-delete',
             confirmModalTitle: 'Confirm Delete',
             confirmModalMessage: 'Are you sure you want to delete?',
             formId: 'dialog-form',
@@ -626,7 +627,6 @@
 
         /* Constructor */
         init : function(options) {
-            options.confirmModal = options.confirmModal || '#' + options.id + '-confirm-delete';
             var opt = $.extend({}, LC.List.defaultOptions, options);
             LC.List.options[opt.id] = opt;
 
