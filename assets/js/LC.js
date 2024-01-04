@@ -227,7 +227,7 @@
          * Get the embedded JSON form data
          */
         getFormData : function(formId, id) {
-            if (typeof LC.Form.formData[formId][id] !== 'undefined') {
+            if (typeof LC.Form.formData[formId] !== 'undefined' && typeof LC.Form.formData[formId][id] !== 'undefined') {
                 return LC.Form.formData[formId][id];
             }
 
@@ -608,15 +608,18 @@
     LC.List = {
         defaultOptions: {
             id: 'list',
+            modalStyle: 'jquery', // or bootstrap
             formModal: '#dialog-item',
             formModalCancelButton: '#btn-cancel',
             confirmModal: '#list-confirm-delete',
             confirmModalTitle: 'Confirm Delete',
             confirmModalMessage: 'Are you sure you want to delete?',
+            confirmModalPositiveMessage: 'Yes, continue',
+            confirmModalNegativeMessage: 'Close',
             formId: 'dialog-form',
-            createButton: '#btn-new',
-            editButtonClass: '.table .actions .edit',
-            deleteButtonClass: '.table .actions .delete',
+            createButton: '#btn-new', // @deprecated, use [data-action="list-create"] attribute
+            editButtonClass: '.table .actions .edit', // @deprecated use [data-action="list-edit"] attribute
+            deleteButtonClass: '.table .actions .delete', // @deprecated use [data-action="list-delete"] attribute
             createCallback: null,
             editCallback: null,
             deleteCallback: null,
@@ -630,35 +633,56 @@
             var opt = $.extend({}, LC.List.defaultOptions, options);
             LC.List.options[opt.id] = opt;
 
-            /* Add/Edit Dialog */
-            $(opt.formModal).dialog({
-                modal: true,
-                autoOpen: false,
-                resizable: false,
-                width: 340,
-                minHeight: 120
-            });
+            /* Create/Edit Dialog */
+            if (opt.modalStyle === 'bootstrap') {
+                /* Init Create/Edit bootstrap modal show event */
+                $(opt.formModal).on('show.bs.modal', function () {
+                    LC.Form.clear(opt.formId);
 
-            $(opt.formModalCancelButton).click(function() {
-                $(opt.formModal).dialog('close');
-            });
+                    if (opt.createCallback) {
+                        opt.createCallback($('#' + opt.formId));
+                    }
+                });
+            } else {
+                /* Init Create/Edit jQuery Dialog */
+                $(opt.formModal).dialog({
+                    modal: true,
+                    autoOpen: false,
+                    resizable: false,
+                    width: 340,
+                    minHeight: 120
+                });
 
-            $(opt.createButton).click(function(e) {
+                $(opt.formModalCancelButton).click(function () {
+                    $(opt.formModal).dialog('close');
+                });
+            }
+
+            /* Create/Edit dialog event */
+            $('[data-action="list-create"], ' + opt.createButton).click(function(e) {
                 e.preventDefault();
                 LC.List.create(opt.id);
             });
 
             /* Delete Confirmation Dialog */
-            LC.List.createConfirmDialog(opt.id);
+            LC.List.createDeleteConfirmDialog(opt.id);
 
             /* Load list */
             LC.List.list(opt.id, opt.params);
         },
-        /* Create confirm dialog */
-        createConfirmDialog : function(listId) {
+        /* Create Delete Confirmation Dialog */
+        createDeleteConfirmDialog : function(listId) {
             listId = listId || LC.List.defaultOptions.id;
             var opt = LC.List.options[listId];
 
+            if (opt.modalStyle === 'bootstrap') {
+                LC.List.createBootstrapDeleteModal(listId, opt);
+            } else {
+                LC.List.createJQueryDeleteDialog(listId, opt);
+            }
+        },
+        /* Create jQuery dialog for delete confirm */
+        createJQueryDeleteDialog : function(listId, opt) {
             $('body').append('' +
                 '<div id="' + opt.confirmModal.replace(/#/, '') + '" class="dialog" title="' + opt.confirmModalTitle + '">' +
                 '    <div class="msg-body">' + opt.confirmModalMessage + '</div>' +
@@ -672,7 +696,7 @@
                 minHeight: 120,
                 buttons: [
                     {
-                        text: 'Yes',
+                        text: opt.confirmModalPositiveMessage,
                         class: 'btn btn-danger btn-flat btn-sm',
                         click: function() {
                             $(this).dialog('close');
@@ -680,13 +704,43 @@
                         }
                     },
                     {
-                        text: 'No',
+                        text: opt.confirmModalNegativeMessage,
                         class: 'btn btn-warning btn-flat btn-sm',
                         click: function() {
                             $(this).dialog('close');
                         }
                     }
                 ],
+            });
+        },
+        /* Create bootstrap modal for delete confirm */
+        createBootstrapDeleteModal : function(listId, opt) {
+            var html = '' +
+                '<div class="modal fade" id="' + opt.confirmModal.replace(/#/, '') + '" tabIndex="-1"> ' +
+                    '<div class="modal-dialog"> ' +
+                        '<div class="modal-content">' +
+                            '<div class="modal-header">' +
+                                '<h5 class="modal-title">' + opt.confirmModalTitle + '</h5>' +
+                                '<button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
+                                    '<span aria-hidden="true">&times;</span>' +
+                                '</button>' +
+                            '</div>' +
+                            '<div class="modal-body">' +
+                                '<p class="text-dark">' + opt.confirmModalMessage + '</p>' +
+                                '<input type="hidden" name="delete-id" />' +
+                            '</div>' +
+                            '<div class="modal-footer justify-content-between">' +
+                                '<button type="button" class="btn btn-secondary btn-negative" data-dismiss="modal">' + opt.confirmModalNegativeMessage + '</button>' +
+                                '<button type="button" class="btn btn-danger btn-positive">' + opt.confirmModalPositiveMessage + '</button>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>';
+
+            $('body').append(html);
+
+            $(opt.confirmModal).find('.btn-positive').on('click', function() {
+                LC.List.doDelete(listId);
             });
         },
         /* Load the list */
@@ -706,19 +760,23 @@
                 }
             }
 
-            $(opt.formModal).dialog('close');
+            if (opt.modalStyle === 'bootstrap') {
+                $(opt.formModal).modal('hide');
+            } else {
+                $(opt.formModal).dialog('close');
+            }
 
             LC.Page.request(opt.id, opt.url + 'list', param);
 
             LC.Page.afterRequest = function (id) {
                 var $list = $('#' + id);
 
-                $list.on('click', opt.editButtonClass, function (e) {
+                $list.on('click', '[data-action="list-edit"], ' + opt.editButtonClass, function (e) {
                     e.preventDefault();
                     LC.List.edit($(this).attr('rel'), id);
                 });
 
-                $list.on('click', opt.deleteButtonClass, function (e) {
+                $list.on('click', '[data-action="list-delete"], ' + opt.deleteButtonClass, function (e) {
                     e.preventDefault();
                     LC.List.remove($(this).attr('rel'), id);
                 });
@@ -737,7 +795,11 @@
                 opt.createCallback($('#' + opt.formId));
             }
 
-            $(opt.formModal).dialog('open');
+            if (opt.modalStyle === 'bootstrap') {
+                $(opt.formModal).modal('show');
+            } else {
+                $(opt.formModal).dialog('open');
+            }
         },
         /* Launch the dialog to edit an existing entry */
         edit : function(id, listId) {
@@ -745,16 +807,22 @@
             var opt = LC.List.options[listId];
 
             LC.Form.clear(opt.formId);
-            var $data = LC.Form.getFormData(opt.formId, id);
-            if ($data) {
+            var data = LC.Form.getFormData(opt.formId, id);
+            if (data) {
+                if (opt.modalStyle === 'bootstrap') {
+                    $(opt.formModal).modal('show');
+                } else {
+                    $(opt.formModal).dialog('open');
+                }
+
                 var $form = $('#' + opt.formId);
                 $form.find('[name="id"]').val(id);
 
                 if (opt.editCallback) {
-                    opt.editCallback($form, $data, listId);
+                    opt.editCallback($form, data, listId);
                 }
-
-                $(opt.formModal).dialog('open');
+            } else {
+                console.error('No data specified.');
             }
         },
         /* Launch the dialog to confirm an entry delete */
@@ -764,7 +832,12 @@
             var $modal = $(opt.confirmModal);
 
             $modal.find('input[name="delete-id"]').val(id);
-            $modal.dialog('open');
+
+            if (opt.modalStyle === 'bootstrap') {
+                $modal.modal('show');
+            } else {
+                $modal.dialog('open');
+            }
         },
         /* Do delete action upon confirm OK */
         doDelete : function(listId) {
@@ -778,6 +851,10 @@
                     action: 'delete'
                 },
                 function() { // callback
+                    if (opt.modalStyle === 'bootstrap') {
+                        $(opt.confirmModal).modal('hide');
+                    }
+
                     if (opt.deleteCallback) {
                         opt.deleteCallback(listId);
                     } else {
