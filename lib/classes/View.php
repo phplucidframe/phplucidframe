@@ -149,7 +149,12 @@ class View
         $this->data = array_merge($this->data, $data);
 
         foreach ($paths as $file) {
-            $block = _i($file);
+            if (is_file($file) && file_exists($file)) {
+                $block = $file;
+            } else {
+                $block = _i($file);
+            }
+
             if ($block) {
                 extract($this->data);
                 if ($return) {
