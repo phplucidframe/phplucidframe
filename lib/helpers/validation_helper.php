@@ -423,7 +423,7 @@ function validate_url($value)
     }
 
     # General regular expression for URL
-    $regExp = '/^((http|https|ftp):\/\/)?([a-z0-9\-_]+\.) {2,4}([[:alnum:]]) {2,4}([[:alnum:]\/+=%&_\.~?\-]*)$/';
+    $regExp = '/^((http|https|ftp):\/\/)?([a-z0-9\-_]+\.){2,4}([[:alnum:]]){2,4}([[:alnum:]\/+=%&_\.~?\-]*)$/';
 
     # Get host name from URL
     preg_match("/^((http|https|ftp):\/\/)?([^\/]+)/i", $value, $matches);
