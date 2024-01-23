@@ -961,6 +961,29 @@ class QueryBuilder
     }
 
     /**
+     * Perform a query on the database and return the key/value array of all results
+     *
+     * @param string $keyField The field name for the array key; default is `id`
+     * @param string $valueField The field name for the array value; default is `name`
+     * @return array
+     */
+    public function getList($keyField = 'id', $valueField = 'name')
+    {
+        if ($this->result === null) {
+            $this->execute();
+        }
+
+        $data = array();
+        if ($this->result) {
+            while ($row = db_fetchObject($this->result)) {
+                $data[$row->{$keyField}] = $row->{$valueField};
+            }
+        }
+
+        return $data;
+    }
+
+    /**
      * Perform a query on the database and return the result object
      *
      * @return object|null The result object
