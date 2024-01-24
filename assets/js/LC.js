@@ -217,8 +217,12 @@
                     }
                 }
 
-                if ($input.hasClass('select2-hidden-accessible')) {
+                if ($input.hasClass('select2-hidden-accessible')) { // https://select2.org
                     $input.val('').trigger('change');
+                }
+
+                if ($input.hasClass('selectized')) { // https://selectize.dev
+                    $input[0].selectize.clear();
                 }
             });
         },
