@@ -1447,7 +1447,7 @@ if (!function_exists('_fdate')) {
     /**
      * Format a date
      *
-     * @param  string $date   A date to be formatted
+     * @param  string|int $date   A date to be formatted
      * @param  string $format The date format; The config variable will be used if it is not passed
      * @return string The formatted date
      */
@@ -1473,7 +1473,7 @@ if (!function_exists('_fdatetime')) {
     /**
      * Format a date/time
      *
-     * @param  string $dateTime  A date/time to be formatted
+     * @param  string|int $dateTime  A date/time to be formatted
      * @param  string $format    The date/time format; The config variable will be used if it is not passed
      * @return string The formatted date/time
      */
@@ -1491,7 +1491,7 @@ if (!function_exists('_fdatetime')) {
             return '';
         }
 
-        return date($format, strtotime($dateTime));
+        return is_string($dateTime) ? date($format, strtotime($dateTime)) : date($format, $dateTime);
     }
 }
 
