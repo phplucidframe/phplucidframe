@@ -2511,7 +2511,10 @@ function _isContentType($type)
  * @param array|string $params The data to send
  * @param string $method GET|POST|PUT|DELETE
  * @param array $headers The mail headers
- * @return bool|string
+ * @return array
+ *  - options array The returned data from curl_getinfo
+ *  - error string The returned data from curl_error
+ *  - response mixed The whole response
  */
 function _curl($url, $params = array(), $method = 'get', $headers = array())
 {
@@ -2550,10 +2553,17 @@ function _curl($url, $params = array(), $method = 'get', $headers = array())
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
     }
 
-    $response = curl_exec($ch);
+    $response   = curl_exec($ch);
+    $info       = curl_getinfo($ch);
+    $error      = curl_error($ch);
+
     curl_close($ch);
 
-    return $response;
+    return [
+        'options'   => $info,
+        'error'     => $error,
+        'response'  => $response,
+    ];
 }
 
 /**
