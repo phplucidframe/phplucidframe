@@ -14,6 +14,12 @@
  * with this source code in the file LICENSE.txt
  */
 
+$projectRoot = dirname(__FILE__);
+if (getcwd() != $projectRoot) {
+    # change directory to the project root
+    chdir($projectRoot);
+}
+
 require_once 'bootstrap.php';
 
 new LucidFrame\Console\Console();
