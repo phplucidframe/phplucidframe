@@ -177,7 +177,7 @@ function __dotNotationToArray($key, $scope = 'global', $value = '', $serialize =
 
     if ($type == 'getter' && $justOneLevelKey) {
         # just one-level key
-        if ($scope == 'session') {
+        if ($scope == 'session' && __sessionLoadable()) {
             $firstKey = S_PREFIX . $firstKey;
             return (array_key_exists($firstKey, $_SESSION)) ? $_SESSION[$firstKey] : null;
         } elseif ($scope == 'global') {
@@ -188,7 +188,7 @@ function __dotNotationToArray($key, $scope = 'global', $value = '', $serialize =
     }
 
     $current = null;
-    if ($scope == 'session') {
+    if ($scope == 'session' && __sessionLoadable()) {
         $firstKey = S_PREFIX . $firstKey;
         if (!array_key_exists($firstKey, $_SESSION)) {
             $_SESSION[$firstKey] = null;
@@ -551,6 +551,18 @@ function __dbLoadable()
     return !(PHP_SAPI == 'cli' && $argv[0] === 'lucidframe' && in_array($argv[1], ['list', 'env', 'secret:generate']));
 }
 
+/**
+ * @internal
+ * @ignore
+ *
+ * Check if session is loadable (skip session initialization upon some CLI commands execution)
+ * @return bool
+ */
+function __sessionLoadable()
+{
+    return PHP_SAPI != 'cli';
+}
+
 /*************************/
 /* Public functions here */
 /*************************/
@@ -558,7 +570,7 @@ function __dbLoadable()
 /**
  * Get schema definition file
  * @param  string $dbNamespace The namespace for the database
- * @param  boolean TRUE to look for the file in /db/build/; FALSE in /db/
+ * @param  boolean $cache TRUE to look for the file in /db/build/; FALSE in /db/
  *  `TRUE` to look for the file in such priority
  *      1. /db/build/schema.{namespace}.lock
  *      2. /db/build/schema.lock (only for default)

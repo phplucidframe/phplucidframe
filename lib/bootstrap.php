@@ -148,8 +148,10 @@ if ($file = _i('inc' . _DS_ . 'site.config.php', false)) {
 
 __autoloadHelper(array('session', 'i18n'));
 
-# Initialize session
-__session_init();
+if (__sessionLoadable()) {
+    # Initialize session
+    __session_init();
+}
 
 # Route helper (required)
 require HELPER . 'route_helper.php'; # WEB_ROOT and WEB_APP_ROOT is created in route_helper
