@@ -548,7 +548,9 @@ function __dbLoadable()
 {
     global $argv;
 
-    return !(PHP_SAPI == 'cli' && $argv[0] === 'lucidframe' && in_array($argv[1], ['list', 'env', 'secret:generate']));
+    return !(PHP_SAPI == 'cli'
+        && stripos($argv[0], 'lucidframe') !== false
+        && isset($argv[1]) && in_array($argv[1], ['list', 'env', 'secret:generate']));
 }
 
 /**
@@ -769,7 +771,7 @@ function _p($name = 'env')
 
     global $argv;
 
-    if (PHP_SAPI == 'cli' && $argv[0] === 'lucidframe') {
+    if (PHP_SAPI == 'cli' && isset($argv[0]) && stripos($argv[0], 'lucidframe') !== false) {
         # keep the current environment when `php lucidframe` is run
         $env = _cfg('env');
     } elseif (PHP_SAPI == 'cli' || stripos($_SERVER['REQUEST_URI'], 'tests/') !== false) {
