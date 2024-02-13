@@ -1056,6 +1056,8 @@ function _page401($message = '')
         _jsonError($message, '', 401);
     }
 
+    _header(401);
+
     _cfg('layoutMode', true);
     include(INC . 'tpl/401.php');
     exit;
@@ -1073,6 +1075,8 @@ function _page403($message = '')
     if (_isContentType('application/json')) {
         _jsonError($message, '', 403);
     }
+
+    _header(403);
 
     _cfg('layoutMode', true);
     include(INC . 'tpl/403.php');
@@ -1092,6 +1096,8 @@ function _page404($message = '', $entity = '')
     if (_isContentType('application/json')) {
         _jsonError($message, $entity, 404);
     }
+
+    _header(404);
 
     _cfg('layoutMode', true);
     include(INC . 'tpl/404.php');
