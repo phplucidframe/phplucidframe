@@ -422,41 +422,22 @@ function validate_url($value)
         return true;
     }
 
-    # General regular expression for URL
-    $regExp = '/^((http|https|ftp):\/\/)?([a-z0-9\-_]+\.){2,4}([[:alnum:]]){2,4}([[:alnum:]\/+=%&_\.~?\-]*)$/';
+    $value = rtrim($value, '/');
 
     # Get host name from URL
     preg_match("/^((http|https|ftp):\/\/)?([^\/]+)/i", $value, $matches);
     $host = $matches[3];
-    # Checking host name
-    if (!strstr($host, "@")) {
-        if (preg_match($regExp, $value)) {
-            # Ok with general regular expression
-            # Analyze host segment of URL
-            $hostParts = explode('.', $host);
-            $domain = $hostParts[count($hostParts)-1];
-            $domainParts = explode('?', $domain);
+    $hostParts = explode('.', $host);
 
-            # Get suffix from host e.g., com, net, org, sg or info, etc...
-            $suffix = strstr($domain, '?') ? reset($domainParts) : $domain;
+    if (strstr($host, '@') !== false) {
+        return false;
+    }
 
-            # IF last segment is valid && URL not contains 4w
-            if (preg_match("/^[a-z]{2,4}$/", $suffix) && ! strstr($value, 'wwww')) {
-                return true;
-            }
-        } else {
-            # IF not OK with general regular expression
-            # Regular Expression for URL
-            $urlExp = "/^(([a-z0-9]|_|\-)+\.)+[a-z]{2,4}$/";
+    if (preg_match('/^(w+)$/i', $hostParts[0], $matches) && strlen($matches[0]) != 3) {
+        return false;
+    }
 
-            # IF valid URL && URL not contains 4 w
-            if (preg_match($urlExp, $value) && ! strstr($value, 'wwww')) {
-                return true;
-            }
-        } # End of Check if URL
-    } # End of Check Host Name
-
-    return false;
+    return preg_match('/^((http|https|ftp):\/\/)?([a-z0-9_\-]+\.)+([a-z]{2,13})(\/[.^\S]+)*$/', $value);
 }
 /**
  * Checks that a string/array's length is equal to the specific length.

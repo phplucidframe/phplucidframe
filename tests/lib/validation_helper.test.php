@@ -138,4 +138,56 @@ class ValidationHelperTestCase extends LucidFrameTestCase
         }
         $this->assertTrue(validation_check($validations));
     }
+
+    public function testUrlSuccessValidation()
+    {
+        $values = array(
+            'example.com.sg',
+            'example.audio',
+            'phplucidframe.com',
+            'http://phplucidframe.com',
+            'https://phplucidframe.com',
+            'http://www.phplucidframe.com',
+            'https://www.phplucidframe.com',
+            'https://phplucidframe.com/',
+            'https://phplucidframe.com/',
+            'https://github.com/phplucidframe/console-table',
+            'https://github.com/phplucidframe/phplucidframe/blob/master/index.php#L15',
+            'https://www.udemy.com/teaching/?ref=teach_header',
+            'https://example.com/d/1V5xSQVeuUCv5o6f8nfjZEf-swNFRg04jEGNZ9Sny7f/edit?usp=sharing',
+            'https://www.example.com/landing-page?utm_source=google&utm_medium=email&utm_campaign=march2014',
+        );
+        foreach ($values as $key => $url) {
+            $validations = array();
+            $validations['txtUrl' . $key] = array(
+                'caption'   => 'URL ' . $key,
+                'value'     => $url,
+                'rules'     => array('url'),
+            );
+            $this->assertTrue(validation_check($validations));
+        }
+    }
+
+    public function testUrlFailedValidation()
+    {
+        $values = array(
+            'abc',
+            'hello@phplucidframe.com',
+            'http:/phplucidframe.com',
+            'http://w.phplucidframe.com',
+            'https://ww.phplucidframe.com',
+            'https://wwww.phplucidframe.com',
+            'https://wwwww.phplucidframe.com',
+            'https:// phplucidframe.com',
+        );
+        foreach ($values as $key => $url) {
+            $validations = array();
+            $validations['txtUrl' . $key] = array(
+                'caption'   => 'URL ' . $key,
+                'value'     => $url,
+                'rules'     => array('url'),
+            );
+            $this->assertFalse(validation_check($validations));
+        }
+    }
 }
