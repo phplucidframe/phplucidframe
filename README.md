@@ -92,10 +92,15 @@ From **Command Line**,
     php tests/tests.php
 
     # to run tests/lib/db_helper.test.php only
-    php tests/tests.php file=db_helper
+    php tests/tests.php --file=db_helper
+
+    # to run tests/lib/validation_helper.test.php only
+    php tests/tests.php -f=validation_helper
+    # or
+    php tests/tests.php -f validation_helper
 
     # to run tests/lib/db_helper.test.php and query_builer.test.php
-    php tests/tests.php file=db_helper,query_builder
+    php tests/tests.php --file=db_helper,query_builder
 
 Note: You can also use the short-form option name `f` instead of `file`.
 
