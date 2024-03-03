@@ -32,6 +32,8 @@ class Form
     private static $redirect = '';
     /** @var string The Javascript callback function to be invoked upon form submission completed */
     private static $callback = '';
+    /** @var array Array of data that need to send to the client */
+    private static $data = array();
 
     /**
      * Constructor
@@ -44,6 +46,7 @@ class Form
         self::$message = '';
         self::$redirect = '';
         self::$callback = '';
+        self::$data = array();
     }
 
     /**
@@ -153,7 +156,8 @@ class Form
             'error'     => self::$error,
             'msg'       => self::$message,
             'redirect'  => self::$redirect,
-            'callback'  => self::$callback
+            'callback'  => self::$callback,
+            'data'      => self::$data,
         );
 
         if ($ajaxResponse) {
