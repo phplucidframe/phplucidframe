@@ -31,6 +31,7 @@ class SchemaManager
     /** @var array The data types for each db driver */
     private static $dataTypes = array(
         'mysql' => array(
+            'tinyint'   => 'TINYINT',
             'smallint'  => 'SMALLINT',
             'mediumint' => 'MEDIUMINT',
             'int'       => 'INT',
