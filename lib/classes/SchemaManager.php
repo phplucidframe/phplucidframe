@@ -299,11 +299,19 @@ class SchemaManager
         }
 
         if ($definition['type'] == 'boolean') {
-            # if type is boolean, force unsigned, not null and default 0
+            # if type is boolean, force unsigned
             $definition['unsigned'] = true;
-            $definition['null'] = false;
+
             if (!isset($definition['default'])) {
                 $definition['default'] = false;
+            }
+
+            if (!isset($definition['null'])) {
+                $definition['null'] = false;
+            } else {
+                if ($definition['null'] === true) {
+                    $definition['default'] = null;
+                }
             }
         }
 
