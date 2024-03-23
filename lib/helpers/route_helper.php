@@ -222,7 +222,8 @@ function route_url($path = null, $queryStr = array(), $lang = '')
     }
 
     if (is_array($lc_sites) && array_key_exists(LC_NAMESPACE, $lc_sites)) {
-        $regex = '/\b^(' . $lc_sites[LC_NAMESPACE] . ') {1}\b/i';
+        $regex = str_replace('/', '\/', $lc_sites[LC_NAMESPACE]);
+        $regex = '/\b^(' . $regex . ') {1}\b/i';
         $path = preg_replace($regex, LC_NAMESPACE, $path);
     }
 
