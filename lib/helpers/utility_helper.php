@@ -2158,7 +2158,7 @@ function _pager($pageQueryStr = '')
 /**
  * Simple helper to create File object
  * @since   PHPLucidFrame v 1.11.0
- * @param   string $fileName (optinal) Path to the file
+ * @param   string $fileName (optional) Path to the file
  * @return  object LucidFrame\File\File
  */
 function _fileHelper($fileName = '')
@@ -2600,4 +2600,127 @@ function form_select($name, $data = [], $value = null, $attributes = [])
     $html .= '</select>';
 
     return $html;
+}
+
+/**
+ * Get extension from MIME type
+ * @param string $mime MIME type
+ * @return int|string
+ */
+function _mime2ext($mime) {
+    $mimeMap = [
+        '3g2'   => ['video/3gpp2'],
+        '3gp'   => ['video/3gp', 'video/3gpp'],
+        '7zip'  => ['application/x-compressed'],
+        'acc'   => ['audio/x-acc'],
+        'ac3'   => ['audio/ac3'],
+        'ai'    => ['application/postscript'],
+        'aif'   => ['audio/x-aiff', 'audio/aiff'],
+        'au'    => ['audio/x-au'],
+        'avi'   => ['video/x-msvideo', 'video/msvideo', 'video/avi', 'application/x-troff-msvideo'],
+        'bin'   => ['application/macbinary', 'application/mac-binary', 'application/x-binary', 'application/mac-binary'],
+        'bmp'   => ['image/bmp', 'image/x-bmp', 'image/x-bitmap', 'image/x-xbitmap', 'image/x-win-bitmap', 'image/x-windows-bmp', 'image/ms-bmp', 'image/x-ms-bmp', 'application/bmp', 'application/x-bmp', 'application/x-win-bitmap'],
+        'cdr'   => ['application/cdr', 'application/x-cdr', 'application/coreldraw', 'application/x-coreldraw', 'image/cdr', 'image/x-cdr', 'zz-application/zz-winassoc-cdr'],
+        'cpt'   => ['application/mac-compactpro'],
+        'crl'   => ['application/pkix-crl', 'application/pkcs-crl'],
+        'crt'   => ['application/x-x509-ca-cert', 'application/pkix-cert'],
+        'css'   => ['text/css'],
+        'csv'   => ['text/x-comma-separated-values', 'text/comma-separated-values', 'application/vnd.msexcel'],
+        'dcr'   => ['application/x-director'],
+        'doc'   => ['application/msword'],
+        'docx'  => ['application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+        'dvi'   => ['application/x-dvi'],
+        'eml'   => ['message/rfc822'],
+        'exe'   => ['application/x-msdownload'],
+        'f4v'   => ['video/x-f4v'],
+        'flac'  => ['audio/x-flac'],
+        'flv'   => ['video/x-flv'],
+        'gif'   => ['image/gif'],
+        'gpg'   => ['application/gpg-keys'],
+        'gtar'  => ['application/x-gtar'],
+        'gzip'  => ['application/x-gzip'],
+        'hqx'   => ['application/mac-binhex40', 'application/mac-binhex', 'application/x-binhex40', 'application/x-mac-binhex40'],
+        'html'  => ['text/html'],
+        'ico'   => ['image/x-icon', 'image/x-ico', 'image/vnd.microsoft.icon'],
+        'ics'   => ['text/calendar'],
+        'jar'   => ['application/java-archive', 'application/x-java-application', 'application/x-jar'],
+        'jp2'   => ['image/jp2', 'video/mj2', 'image/jpx', 'image/jpm'],
+        'jpeg'  => ['image/jpeg', 'image/pjpeg'],
+        'js'    => ['application/x-javascript'],
+        'json'  => ['application/json', 'text/json'],
+        'kml'   => ['application/vnd.google-earth.kml+xml'],
+        'kmz'   => ['application/vnd.google-earth.kmz'],
+        'log'   => ['text/x-log'],
+        'm4a'   => ['audio/x-m4a', 'audio/mp4'],
+        'm4u'   => ['application/vnd.mpegurl'],
+        'mid'   => ['audio/midi'],
+        'mif'   => ['application/vnd.mif'],
+        'mov'   => ['video/quicktime'],
+        'movie' => ['video/x-sgi-movie'],
+        'mp3'   => ['audio/mpeg', 'audio/mpg', 'audio/mpeg3', 'audio/mp3'],
+        'mp4'   => ['video/mp4'],
+        'mpeg'  => ['video/mpeg'],
+        'oda'   => ['application/oda'],
+        'ogg'   => ['audio/ogg', 'video/ogg', 'application/ogg'],
+        'otf'   => ['font/otf'],
+        'p10'   => ['application/x-pkcs10', 'application/pkcs10'],
+        'p12'   => ['application/x-pkcs12'],
+        'p7a'   => ['application/x-pkcs7-signature'],
+        'p7c'   => ['application/pkcs7-mime', 'application/x-pkcs7-mime'],
+        'p7r'   => ['application/x-pkcs7-certreqresp'],
+        'p7s'   => ['application/pkcs7-signature'],
+        'pdf'   => ['application/pdf', 'application/octet-stream'],
+        'pem'   => ['application/x-x509-user-cert', 'application/x-pem-file'],
+        'pgp'   => ['application/pgp'],
+        'php'   => ['application/x-httpd-php', 'application/php', 'application/x-php', 'text/php', 'text/x-php', 'application/x-httpd-php-source'],
+        'png'   => ['image/png', 'image/x-png'],
+        'ppt'   => ['application/powerpoint', 'application/vnd.ms-powerpoint', 'application/vnd.ms-office'],
+        'pptx'  => ['application/vnd.openxmlformats-officedocument.presentationml.presentation'],
+        'psd'   => ['application/x-photoshop', 'image/vnd.adobe.photoshop'],
+        'ra'    => ['audio/x-realaudio'],
+        'ram'   => ['audio/x-pn-realaudio'],
+        'rar'   => ['application/x-rar', 'application/rar', 'application/x-rar-compressed'],
+        'rpm'   => ['audio/x-pn-realaudio-plugin'],
+        'rsa'   => ['application/x-pkcs7'],
+        'rtf'   => ['text/rtf'],
+        'rtx'   => ['text/richtext'],
+        'rv'    => ['video/vnd.rn-realvideo'],
+        'sit'   => ['application/x-stuffit'],
+        'smil'  => ['application/smil'],
+        'srt'   => ['text/srt'],
+        'svg'   => ['image/svg+xml'],
+        'swf'   => ['application/x-shockwave-flash'],
+        'tar'   => ['application/x-tar'],
+        'tgz'   => ['application/x-gzip-compressed'],
+        'tiff'  => ['image/tiff'],
+        'ttf'   => ['ont/ttf'],
+        'txt'   => ['text/plain'],
+        'vcf'   => ['text/x-vcard'],
+        'vlc'   => ['application/videolan'],
+        'vtt'   => ['text/vtt'],
+        'wav'   => ['audio/x-wav', 'audio/wave', 'audio/wav'],
+        'wbxml' => ['application/wbxml'],
+        'webm'  => ['video/webm'],
+        'webp'  => ['image/webp'],
+        'wma'   => ['audio/x-ms-wma'],
+        'wmlc'  => ['application/wmlc'],
+        'wmv'   => ['video/x-ms-wmv', 'video/x-ms-asf'],
+        'woff'  => ['font/woff', 'font/woff2'],
+        'xhtml' => ['application/xhtml+xml'],
+        'xl'    => ['application/excel'],
+        'xls'   => ['application/msexcel', 'application/x-msexcel', 'application/x-ms-excel', 'application/x-excel', 'application/x-dos_ms_excel', 'application/xls', 'application/x-xls'],
+        'xlsx'  => ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'],
+        'xml'   => ['application/xml', 'text/xml'],
+        'xsl'   => ['text/xsl'],
+        'xspf'  => ['application/xspf+xml'],
+        'z'     => ['application/x-compress'],
+        'zip'   => ['application/x-zip', 'application/zip', 'application/x-zip-compressed', 'application/s-compressed', 'multipart/x-zip'],
+        'zsh'   => ['text/x-scriptzsh'],
+    ];
+
+    $result = array_filter($mimeMap, function($val) use ($mime) {
+        return in_array($mime, $val);
+    });
+
+    return count($result) ? array_keys($result)[0] : null;
 }
