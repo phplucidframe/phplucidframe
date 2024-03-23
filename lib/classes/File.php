@@ -257,11 +257,17 @@ class File extends \SplFileInfo
             return null;
         }
 
-        $fileName     = stripslashes($file['name']);
-        $uploadedFile = $file['tmp_name'];
-        $info         = pathinfo($fileName);
-        $extension    = strtolower($info['extension']);
-        $uploaded     = null;
+        $fileName       = stripslashes($file['name']);
+        $uploadedFile   = $file['tmp_name'];
+        $info           = pathinfo($fileName);
+        $uploaded       = null;
+
+        if (empty($info['extension'])) {
+            $extension = _mime2ext($file['type']);
+            $fileName .= '.' . $extension;
+        } else {
+            $extension = strtolower($info['extension']);
+        }
 
         if ($fileName && $file['error'] === UPLOAD_ERR_OK) {
             $this->originalFileName = $fileName;
@@ -335,7 +341,7 @@ class File extends \SplFileInfo
      */
     public function guessExtension($file = '')
     {
-        $file = $file ? $file : $this->originalFileName;
+        $file = $file ?: $this->originalFileName;
 
         if ($file) {
             $info = pathinfo($file);
@@ -526,7 +532,7 @@ class File extends \SplFileInfo
             # new height for the image
             $newHeight = floor($scale * $height);
         } else {
-        # if the image is small than than the resized width and height
+            # if the image is small than than the resized width and height
             $newWidth = $width;
             $newHeight = $height;
         }
