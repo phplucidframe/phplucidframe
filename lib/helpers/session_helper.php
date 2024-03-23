@@ -63,7 +63,7 @@ function __session_init()
 
     foreach ($options as $key => $value) {
         if ($key == 'gc_maxlifetime' || $key == 'cookie_lifetime') {
-            $options[$key] = $value * 60;
+            $options[$key] = $value * 60; # change to seconds
         }
     }
 

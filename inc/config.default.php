@@ -77,9 +77,9 @@ $lc_session = array(
     'type' => 'default', // default or database
     'options' => array(
         'name'            => 'LC_SESSID',
-        //'table'           => 'lc_sessions', # when type is database
-        'gc_maxlifetime'  => 240, // in minutes
-        'cookie_lifetime' => 180, // in minutes
+        // 'table'           => 'lc_sessions', # when type is database
+        'gc_maxlifetime'  => 24, # in minutes
+        'cookie_lifetime' => 180 # in minutes
     )
 );
 
