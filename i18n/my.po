@@ -1,16 +1,16 @@
 msgid ""
 msgstr ""
-"Plural-Forms: nplurals=1; plural=0;\n"
 "Project-Id-Version: PHPLucidFrame\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Sithu <sithu@phplucidframe.com>\n"
 "Language-Team: \n"
+"Language: my_MM\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: my_MM\n"
-"X-Generator: Poedit 1.6.3\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 3.4.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 msgid "'%s' needs to be revised."
@@ -43,13 +43,10 @@ msgstr "'%s'ကို နံပါတ်သာ ထည့်သွင်းပေ
 msgid "'%s' should contain only numbers and spaces."
 msgstr "'%s'ကို နံပါတ်နှင့် space များသာ ထည့်သွင်းပေးပါ။"
 
-msgid ""
-"'%s' should contain only numbers and dashes. It should not start or end with "
-"a dash."
+msgid "'%s' should contain only numbers and dashes. It should not start or end with a dash."
 msgstr "'%s'ကို နံပါတ်နှင့် dash များသာ ထည့်သွင်းပေးပါ။ dash ဖြင့်စ၍ (သို့) ဆုံး၍မရပါ။"
 
-msgid ""
-"'%s' should contain only letters, numbers, periods, underscores and dashes."
+msgid "'%s' should contain only letters, numbers, periods, underscores and dashes."
 msgstr "'%s'ကို letters, number, period, underscore နှင့် dash များသာ ထည့်သွင်းပေးပါ။"
 
 msgid "'%s' should be a positive integer. It is not allowed zero."
@@ -62,17 +59,16 @@ msgid "'%s' should be a positive or negative integer."
 msgstr "'%s'ကို အပေါင်း (သို့) အနှုတ်ကိန်းပြည့်သာ ထည့်သွင်းပေးပါ။"
 
 msgid "'%s' should be an integer or decimal."
-msgstr "'%s'ကို ကိန်းပြည့် (သို့) ဒဿမကိန်းသာ ထည့်သွင်းပေးပါ။ "
+msgstr "'%s'ကို ကိန်းပြည့် (သို့) ဒဿမကိန်းသာ ထည့်သွင်းပေးပါ။"
 
 msgid "'%s' should be a positive integer or decimal."
-msgstr "'%s'ကို အပေါင်းကိန်းပြည့် (သို့) ဒဿမကိန်းသာ ထည့်သွင်းပေးပါ။ "
+msgstr "'%s'ကို အပေါင်းကိန်းပြည့် (သို့) ဒဿမကိန်းသာ ထည့်သွင်းပေးပါ။"
 
 msgid "'%s' should be a valid format, e.g., username@example.com"
 msgstr "'%s'ကို မှန်ကန်သည့်ပုံစံသာ ထည့်သွင်းပေးပါ။ ဥပမာ username@example.com"
 
 msgid "'%s' should be a valid domain name with letters, numbers and dash only."
-msgstr ""
-"'%s'ကို မှန်ကန်သည့် domain ပုံစံသာ ထည့်သွင်းပေးပါ။ letters, numbers နှင့် dash များသားပါဝင်ရမည်။"
+msgstr "'%s'ကို မှန်ကန်သည့် domain ပုံစံသာ ထည့်သွင်းပေးပါ။ letters, numbers နှင့် dash များသားပါဝင်ရမည်။"
 
 msgid "'%s' should be greater than or equal to %d."
 msgstr "'%s'သည် '%d' ထက် ညီပြီး ကြီးရပါမည်။"
@@ -101,7 +97,7 @@ msgstr "'%s'သည် အများဆုံး height %dpx ထက်ကျေ
 msgid "'%s' cannot exceed the maximum allowed dimension %dpx%dpx."
 msgstr "'%s'သည် အများဆုံး dimension %dpx%dpx ထက်ကျော်၍ မရပါ။"
 
-msgid "'%s' should have the dimension %dx%dpx."
+msgid "'%s' should have the dimension %dpx%dpx."
 msgstr "'%s'သည် dimension %dpx%dpx ရှိရပါမည်။"
 
 msgid "'%s' must be one of the file types: %s."
@@ -119,19 +115,13 @@ msgstr "'%s'သည် မှန်ကန်သည့် ရက်စွဲနှ
 msgid "'%s' should be a valid format."
 msgstr "'%s'သည် မှန်ကန်သည့် ပုံစံဖြစ်ရပါမည်။"
 
-msgid ""
-"Error occured during form submission. Please refresh the page to try again."
-msgstr ""
-"Form submission လုပ်ချိန်မှာ error ဖြစ်ပေါ်ခဲ့ပါသည်။ ကျေးဇူးပြု၍ page ကို refresh လုပ်၍ "
-"ပြန်ကြိုးစားကြည့်ပါ။"
+msgid "Error occured during form submission. Please refresh the page to try again."
+msgstr "Form submission လုပ်ချိန်မှာ error ဖြစ်ပေါ်ခဲ့ပါသည်။ ကျေးဇူးပြု၍ page ကို refresh လုပ်၍ ပြန်ကြိုးစားကြည့်ပါ။"
 
 msgid "The uploaded file exceeds the upload_max_filesize directive in php.ini."
-msgstr ""
-"တင်လိုက်သောဖိုင်ဆိုဒ်သည် php.ini တွင် သတ်မှတ်ထားသော upload_max_filesize ထက် ကျော်လွန်နေပါသည်။"
+msgstr "တင်လိုက်သောဖိုင်ဆိုဒ်သည် php.ini တွင် သတ်မှတ်ထားသော upload_max_filesize ထက် ကျော်လွန်နေပါသည်။"
 
-msgid ""
-"The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in "
-"the HTML form."
+msgid "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form."
 msgstr "တင်လိုက်သောဖိုင်ဆိုဒ်သည် သတ်မှတ်ထားသော MAX_FILE_SIZE ထက် ကျော်လွန်နေပါသည်။"
 
 msgid "The uploaded file was only partially uploaded."
