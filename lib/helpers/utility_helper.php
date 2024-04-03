@@ -1272,7 +1272,8 @@ function _title()
         if ($lc_siteName) {
             $title .= ' | '.$lc_siteName;
         }
-        return $title;
+
+        return strip_tags($title);
     }
 
     return $lc_siteName;
