@@ -81,7 +81,7 @@ class Form
      */
     public static function token()
     {
-        $token = _encrypt(time());
+        $token = _randomCode(32);
         session_set(_cfg('formTokenName'), $token);
         echo '<input type="hidden" name="lc_formToken_' . _cfg('formTokenName') . '" value="' . $token . '" />';
     }
@@ -99,8 +99,8 @@ class Form
             return false;
         }
 
-        $token = _decrypt(session_get(_cfg('formTokenName')));
-        $postedToken = _decrypt(_post('lc_formToken_'._cfg('formTokenName')));
+        $token = session_get(_cfg('formTokenName'));
+        $postedToken = _post('lc_formToken_' . _cfg('formTokenName'));
         $result = false;
         # check token first
         if ($token == $postedToken) {
