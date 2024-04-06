@@ -97,11 +97,6 @@ class Router
         # e.g. "&" or "%" that have special meanings in URLs and must be encoded.
         $_GET[ROUTE] = Router::request();
         _cfg('cleanRoute', $_GET[ROUTE]);
-
-        $languages = _cfg('languages');
-        if (count($languages) <= 1) {
-            _cfg('translationEnabled', false);
-        }
     }
 
     /**

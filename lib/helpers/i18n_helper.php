@@ -98,7 +98,7 @@ function __i18n_load()
     global $lc_translation;
     global $lc_translationEnabled;
 
-    if ($lc_translationEnabled == false) {
+    if (!$lc_translationEnabled) {
         return false;
     }
 

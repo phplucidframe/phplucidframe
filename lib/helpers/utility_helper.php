@@ -63,7 +63,7 @@ function _version()
  * It also adds the following to <html>
  *
  * - a class for IE "ie ieX"
- * - lang="xx" for multi-lingual site
+ * - lang="xx" for multilingual site
  * - itemscope and itemtype attribute
  *
  * Hook to implement `__flush()` at app/helpers/utility_helper.php
@@ -122,13 +122,14 @@ function _flush($buffer, $phase)
                     $attributes['class'][1] .= ' ' . _lang();
                 }
             } else {
-                # if there is not class attributes provided
-                if ($IE || _multilingual()) {
+                $translationEnabled =  _cfg('translationEnabled');
+                # if there is no class attributes provided
+                if ($IE || _multilingual() || $translationEnabled) {
                     $value = array();
                     if ($IE) {
                         $value[] = 'ie ' . $IEVersion; # ie class
                     }
-                    if (_multilingual()) {
+                    if (_multilingual() || $translationEnabled) {
                         $value[] = _lang(); # lang class
                     }
                     if (count($value)) {
@@ -843,13 +844,13 @@ function _langName($lang = '')
 }
 
 /**
- * Get the current site is multi-lingual or not
+ * Get the current site is multilingual or not
  * @return boolean
  */
 function _multilingual()
 {
     if (_cfg('languages')) {
-        return (count(_cfg('languages')) > 1) ? true : false;
+        return count(_cfg('languages')) > 1;
     } else {
         return false;
     }
