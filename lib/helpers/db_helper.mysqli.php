@@ -1428,3 +1428,18 @@ function db_findAll($table, $fields = array(), $orderBy = array())
 
     return $qb->getResult();
 }
+
+/**
+ * Get a column result value of a single entity result
+ *
+ * @param string $table The table name to fetch data from
+ * @param string $field The field name to select
+ * @param array $condition The condition array for query
+ * @return mixed
+ */
+function db_findColumn($table, $field, array $condition)
+{
+    $entity = db_findOneBy($table, $condition);
+
+    return $entity ? $entity->$field : null;
+}
