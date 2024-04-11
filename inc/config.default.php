@@ -163,8 +163,6 @@ $lc_layoutMode = true;
 $lc_layoutName = 'layout';
 # The site meta description for search engines
 $lc_metaDescription = 'PHPLucidFrame (a.k.a LucidFrame) is a PHP application development framework that is simple, easy, lightweight and yet powerful.';
-# The site meta keywords for search engines
-$lc_metaKeywords = 'PHP LucidFrame, PHP, Framework, Web Application Development, Toolkit';
 # The site contact email address - This address will be used as "To" for all incoming mails
 # Update this in `/inc/parameter/*.php`
 $lc_siteReceiverEmail = _p('siteReceiverEmail');

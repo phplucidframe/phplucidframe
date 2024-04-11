@@ -1834,13 +1834,8 @@ function _metaSeoTags()
         _cfg('metaDescription', _meta('description'));
     }
 
-    if (_meta('keywords')) {
-        _cfg('metaKeywords', _meta('keywords'));
-    }
-
     $tags = array();
     $tags['description'] = _cfg('metaDescription');
-    $tags['keywords']    = _cfg('metaKeywords');
 
     $tags['og']                 = array();
     $tags['og']['title']        = _meta('og:title') ? _meta('og:title') : _cfg('siteName');
