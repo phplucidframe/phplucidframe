@@ -1048,6 +1048,10 @@ class QueryBuilder
         $sql = $this->getSQL();
 
         foreach (QueryBuilder::getBindValues() as $key => $value) {
+            if (is_string($value) && !self::hasQuote($value)) {
+                $value = '"' . $value . '"';
+            }
+
             $sql = preg_replace('/' . $key . '\b/', $value, $sql);
         }
 
@@ -1094,6 +1098,16 @@ class QueryBuilder
         }
 
         return '`' . $name . '`';
+    }
+
+    /**
+     * Check if the value has quoted table name and field name
+     * @param mixed $value
+     * @return false|int|null
+     */
+    public static function hasQuote($value)
+    {
+        return preg_match_all('/(`[a-z0-9_-]+`\.`[a-z0-9_-]+`)/i', $value);
     }
 
     /**
