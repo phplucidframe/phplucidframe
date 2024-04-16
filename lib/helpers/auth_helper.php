@@ -90,13 +90,23 @@ if (!function_exists('auth_getUserInfo')) {
 
 /**
  * Get the namespace for the authentication object
- * Sometimes, the Auth session name should be different upon directory (namespace)
+ * The Auth session name can be different upon directory (namespace)
+ * But it can also be shared according to $lc_sharedNamespaces
  *
  * @return string
  */
 function auth_namespace()
 {
-    return LC_NAMESPACE ? 'AuthUser.' . LC_NAMESPACE : 'AuthUser.default';
+    $sites = _cfg('sites');
+    $namespaces = _cfg('sharedNamespaces');
+
+    if (LC_NAMESPACE && isset($sites[LC_NAMESPACE]) && isset($namespaces[LC_NAMESPACE])) {
+        $namespace = $namespaces[LC_NAMESPACE];
+    } else {
+        $namespace = LC_NAMESPACE;
+    }
+
+    return LC_NAMESPACE ? 'AuthUser.' . $namespace : 'AuthUser.default';
 }
 
 /**

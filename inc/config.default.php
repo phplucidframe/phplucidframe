@@ -108,6 +108,11 @@ $lc_sites = array(
     /* 'virtual_folder_name (namespace)'  => 'path/to/physical_folder_name_directly_under_app_directory' */
     'admin' => 'admin'
 );
+# $lc_shareNamespaces: specify the shared session name group for each sub-site
+$lc_sharedNamespaces = array(
+    /* 'virtual_folder_name (namespace)'  => 'shared namespace' */
+    // 'admin' => 'default', // if you enable this, the admin site will use 'default' for session name group, otherwise 'admin' as defined above
+);
 # $lc_translationEnabled - Enable/Disable language translation
 $lc_translationEnabled = true;
 # $lc_languages: Site languages (leave this as an empty array for single-language site)
