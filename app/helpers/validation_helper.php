@@ -11,8 +11,8 @@ function __validation_messages()
 {
     return array(
         # rule => message
-        'validate_emailRetyped'     => 'Your re-typed email address does not match.',
-        'validate_confirmPassword'  => '"%s" does not match.',
+        'validate_emailRetyped'     => _t('Your re-typed email address does not match.'),
+        'validate_confirmPassword'  => _t('"%s" does not match.'),
     );
 }
 

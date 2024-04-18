@@ -148,6 +148,12 @@ msgstr "Upload တင်လိုက်သောဖိုင်မှ ပုံ�
 msgid "Unknown upload error."
 msgstr "Unknown upload error."
 
+msgid "Your re-typed email address does not match."
+msgstr "သင့်အီးမေးလ်လိပ်စာသည် မကိုက်ညီပါ။"
+
+msgid "\"%s\" does not match."
+msgstr "\"%s\" သည် မကိုက်ညီပါ။"
+
 msgid "Welcome"
 msgstr "ကြိုဆိုပါသည်"
 
