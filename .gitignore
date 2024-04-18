@@ -4,17 +4,13 @@
 .env
 .lcenv
 /inc/parameter/parameter.env.inc
+/vendor/
 /db/build/*
 !/db/build/.gitkeep
 /db/generated/*
 !/db/generated/.gitkeep
-/files/sessions/*
-!files/sessions/.gitkeep
-/files/cache/*
-!files/cache/.gitkeep
-/files/tmp/*
-!files/tmp/.gitkeep
-/vendor/
+/files/*/*
+!files/*/.gitkeep
 
 # OS generated files #
 ######################

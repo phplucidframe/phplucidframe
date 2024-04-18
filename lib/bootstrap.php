@@ -77,6 +77,8 @@ define('VENDOR', ROOT . 'vendor' . _DS_);
 define('BUSINESS', ROOT . 'business' . _DS_);
 # path to files/ folder
 define('FILE', ROOT . 'files' . _DS_);
+# path to files/ folder
+define('LOG', FILE . 'logs' . _DS_);
 # path to images/ folder
 if (is_dir(ROOT . 'assets' . _DS_ . 'images' . _DS_)) {
     define('IMAGE', ROOT . 'assets' . _DS_ . 'images' . _DS_);

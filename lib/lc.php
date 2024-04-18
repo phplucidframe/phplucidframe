@@ -454,6 +454,10 @@ function __kernelShutdownHandler()
     $error = error_get_last();
 
     if (is_array($error)) {
+        if (__env() == ENV_PROD || error_reporting() == 0) {
+            _log($error);
+        }
+
         __kernelErrorHandler($error['type'], $error['message'], $error['file'], $error['line']);
     }
 }
@@ -839,7 +843,7 @@ function _baseUrlWithProtocol()
 
 /**
  * Get base directory list by priority
- * @param string $subDir The sub-directory name
+ * @param string $subDir The subdirectory name
  * @return string[]
  */
 function _baseDirs($subDir = '')
@@ -860,6 +864,37 @@ function _baseDirs($subDir = '')
     $folders[] = rtrim(LIB . $subDir, _DS_) . _DS_;
 
     return $folders;
+}
+
+/**
+ * Write log to file
+ *
+ * @param array|string $msg The message to log
+ * @param string $file The destination file name
+ * @param int $type 0 ~ 4 See error_log() at https://www.php.net/manual/en/function.error-log
+ * @return bool
+ */
+function _log($msg, $file = '', $type = 3)
+{
+    $file = $file ?: LOG . 'log-' . date('Ymd') . '.log';
+    $file = substr($file, 0, strrpos($file, '.log'));
+    $file .= '-' . __env();
+    if (strtolower(php_sapi_name()) == 'cli') {
+        $file .= '.cli';
+    }
+    $file .= '.log';
+
+    if (is_array($msg)) {
+        if (isset($msg['message'])) {
+            $msg = $msg['message'] . ' in ' . $msg['file'] . ' on line ' . $msg['line'];
+        } else {
+            $msg = print_r($msg, true);
+        }
+    }
+
+    $msg = '[' . date('Y-m-d H:i:s') . '] : ' . trim($msg) . PHP_EOL;
+
+    return error_log($msg, $type, $file);
 }
 
 
