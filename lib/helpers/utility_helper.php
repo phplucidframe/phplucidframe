@@ -539,9 +539,10 @@ function _css($file, $subDir = '', $return = false)
  * Get the image file name with absolute web path
  *
  * @param string $file An image file name only (no need directory path)
+ * @param bool $version Whether asset version appended to the file name or not
  * @return string The absolute image URL if the file found or empty string if it is not found
  */
-function _img($file)
+function _img($file, $version = null)
 {
     $fileWithPath = 'assets/images/' . $file;
     $fileWithPath = _i($fileWithPath);
@@ -551,10 +552,16 @@ function _img($file)
     }
 
     if (stripos($fileWithPath, APP_ROOT) === 0) {
-        return WEB_APP_ROOT . str_replace(APP_ROOT, '', $fileWithPath);
+        $img = WEB_APP_ROOT . str_replace(APP_ROOT, '', $fileWithPath);
     } else {
-        return WEB_ROOT . str_replace(ROOT, '', $fileWithPath);
+        $img = WEB_ROOT . str_replace(ROOT, '', $fileWithPath);
     }
+
+    if ($version) {
+        $img .= '?v' . _cfg('assetVersion');
+    }
+
+    return $img;
 }
 
 if (!function_exists('_image')) {
