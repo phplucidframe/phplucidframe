@@ -364,7 +364,7 @@ function _script()
     $script .= 'LC.route = "'._r().'";';
     $script .= 'LC.cleanRoute = "'._cfg('cleanRoute').'";';
     $script .= 'LC.namespace = "'.LC_NAMESPACE.'";';
-    $script .= 'LC.sites = '.(is_array($sites) && count($sites) ? json_encode($sites) : 'false').';';
+    $script .= 'LC.sites = "' . base64_encode(is_array($sites) && count($sites) ? json_encode($sites) : '[]') . _randomCode() . '";';
     $script .= 'LC.sitewideWarnings = '.json_encode($sitewideWarnings).';';
     # run hook
     if (function_exists('__script')) {

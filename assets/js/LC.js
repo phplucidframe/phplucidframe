@@ -363,7 +363,8 @@
         url : function(path) {
             path = path.replace(/^\/|\/$/g, ''); // trim the trailing slash
             var $seg = path.split('/');
-            if (typeof LC.sites === 'object' && LC.namespace in LC.sites) { // array_key_exists
+            var sites = JSON.parse(win.atob(LC.sites.slice(0, -5)));
+            if (typeof sites === 'object' && LC.namespace in sites) { // array_key_exists
                 $seg[0] = LC.namespace;
                 path = $seg.join('/');
             }
