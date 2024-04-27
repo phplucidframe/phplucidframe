@@ -366,7 +366,9 @@ function _script()
     $script .= 'LC.namespace = "'.LC_NAMESPACE.'";';
     $script .= 'LC.sites = "' . base64_encode(is_array($sites) && count($sites) ? json_encode($sites) : '[]') . _randomCode() . '";';
     $script .= 'LC.sitewideWarnings = '.json_encode($sitewideWarnings).';';
+
     # run hook
+    # @deprecated __script() hook will be removed in the later version
     if (function_exists('__script')) {
         __script();
     }
