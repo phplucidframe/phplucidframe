@@ -1847,7 +1847,7 @@ function _metaSeoTags()
     $tags['description'] = _cfg('metaDescription');
 
     $tags['og']                 = array();
-    $tags['og']['title']        = _meta('og:title') ? _meta('og:title') : _cfg('siteName');
+    $tags['og']['title']        = _meta('og:title') ? _meta('og:title') : _title();
     $tags['og']['url']          = _meta('og:url') ? _meta('og:url') : _url();
     $tags['og']['type']         = _meta('og:type') ? _meta('og:type') : 'website';
     $tags['og']['image']        = _meta('og:image') ? _meta('og:image') : _img('logo-social.jpg');
@@ -1857,7 +1857,7 @@ function _metaSeoTags()
     $tags['twitter']            = array();
     $tags['twitter']['card']    = _meta('twitter:card') ? _meta('twitter:card') : 'summary';
     $tags['twitter']['site']    = _meta('twitter:site') ? '@'._meta('twitter:site') : '@'._cfg('siteDomain');
-    $tags['twitter']['title']   = _meta('twitter:title') ? _meta('twitter:title') : _cfg('siteName');
+    $tags['twitter']['title']   = _meta('twitter:title') ? _meta('twitter:title') : _title();
     $tags['twitter']['description'] = _meta('twitter:description') ? _meta('twitter:description') : _cfg('metaDescription');
     $tags['twitter']['image']   = _meta('twitter:image') ? _meta('twitter:image') : _img('logo-social.jpg');
 
