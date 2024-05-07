@@ -105,7 +105,7 @@ function _flush($buffer, $phase)
 
             $IE = false;
             $IEVersion = '';
-            $userAgent = $_SERVER['HTTP_USER_AGENT'];
+            $userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
             if (strpos($userAgent, 'MSIE') !== false || strpos($userAgent, 'Trident') !== false) {
                 $IE = true;
                 if (preg_match('/(MSIE|rv)\s(\d+)/i', $userAgent, $m)) {
