@@ -798,6 +798,26 @@ function _p($name = 'env')
 }
 
 /**
+ * Convenience method to get/set a global variable
+ *
+ * @param string $key The global variable name
+ * @param mixed $value The value to set to the global variable; if it is not given, it is Getter method.
+ * @return mixed The value of the global variable
+ */
+function _g($key, $value = '')
+{
+    if (empty($key)) {
+        return null;
+    }
+
+    if (count(func_get_args()) == 2) {
+        return __dotNotationToArray($key, 'global', $value);
+    } else {
+        return __dotNotationToArray($key);
+    }
+}
+
+/**
  * Get the parameter value by name defined in `/inc/parameter/parameter.env.inc`
  * @param  string $name The parameter name in dot annotation format such as `prod.db.default.database`
  * @param  mixed $default The default value if the parameter name doesn't exist

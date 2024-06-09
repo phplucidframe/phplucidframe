@@ -689,26 +689,6 @@ if (!function_exists('_dump')) {
 }
 
 /**
- * Convenience method to get/set a global variable
- *
- * @param string $key The global variable name
- * @param mixed $value The value to set to the global variable; if it is not given, it is Getter method.
- * @return mixed The value of the global variable
- */
-function _g($key, $value = '')
-{
-    if (empty($key)) {
-        return null;
-    }
-
-    if (count(func_get_args()) == 2) {
-        return __dotNotationToArray($key, 'global', $value);
-    } else {
-        return __dotNotationToArray($key);
-    }
-}
-
-/**
  * Convenience method for htmlspecialchars.
  *
  * @param string $string The string being converted
