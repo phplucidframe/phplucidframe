@@ -763,24 +763,25 @@ class QueryBuilder
         }
 
         # WHERE clause
-        if ($this->where) {
-            if (is_array($this->where)) {
-                if (array_key_exists('AND', $this->where)) {
-                    list($clause, $values) = self::buildCondition($this->where['AND'], 'AND');
-                    $sql .= ' WHERE ' . $clause;
+        if (is_array($this->where)) {
+            $sql .= ' WHERE 1 = 1';
+            foreach ($this->where as $key => $where) {
+                if ($key == 'AND') {
+                    list($clause, $values) = self::buildCondition($where, 'AND');
+                    $sql .= ' AND ' . $clause;
                     self::addBindValues($values);
-                } elseif (array_key_exists('OR', $this->where)) {
-                    list($clause, $values) = self::buildCondition($this->where['OR'], 'OR');
-                    $sql .= ' WHERE ' . $clause;
+                } elseif ($key == 'OR') {
+                    list($clause, $values) = self::buildCondition($where, 'OR');
+                    $sql .= ' AND ' . $clause;
                     self::addBindValues($values);
-                } elseif (array_key_exists('NOT', $this->where)) {
-                    list($clause, $values) = self::buildCondition($this->where['NOT'], 'NOT');
-                    $sql .= ' WHERE ' . $clause;
+                } elseif ($key == 'NOT') {
+                    list($clause, $values) = self::buildCondition($where, 'NOT');
+                    $sql .= ' AND ' . $clause;
                     self::addBindValues($values);
                 }
-            } else {
-                $sql .= ' WHERE ' . $this->where;
             }
+        } elseif (is_string($this->where)) {
+            $sql .= ' WHERE ' . $this->where;
         }
 
         # EXISTS clause
