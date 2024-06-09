@@ -324,8 +324,17 @@ function _autoloadDir($dir, $scope = '')
     if (is_dir($dir)) {
         $files = scandir($dir);
         foreach ($files as $fileName) {
+            if (in_array($fileName, array('.', '..', '.gitkeep', 'README.md', 'empty'))) {
+                continue;
+            }
+
             $dir = rtrim(rtrim($dir, '/'), '\\');
             $file = $dir . _DS_ . $fileName;
+
+            if (is_dir($file)) {
+                _autoloadDir($file, $scope);
+                break;
+            }
 
             if (!in_array(substr($fileName, -3), array('php', 'inc')) || !is_file($file)) {
                 continue;
