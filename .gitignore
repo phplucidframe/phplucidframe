@@ -3,7 +3,8 @@
 .secret
 .env
 .lcenv
-/inc/parameter/parameter.env.inc
+parameter.env.inc
+env.inc
 /vendor/
 /db/build/*
 !/db/build/.gitkeep

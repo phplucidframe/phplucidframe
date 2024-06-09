@@ -827,21 +827,26 @@ function _g($key, $value = '')
 }
 
 /**
- * Get the parameter value by name defined in `/inc/parameter/parameter.env.inc`
+ * Get the parameter value by name defined in `/inc/parameter/env.inc`
  * @param  string $name The parameter name in dot annotation format such as `prod.db.default.database`
  * @param  mixed $default The default value if the parameter name doesn't exist
- * @return mixed The value defined in `/inc/parameter/parameter.env.inc`
+ * @return mixed The value defined in `/inc/parameter/env.inc`
  */
 function _env($name, $default = '')
 {
     global $lc_envParameters;
 
     if ($lc_envParameters === null) {
-        $file = INC . 'parameter/parameter.env.inc';
-        if (is_file($file) && file_exists($file)) {
-            $lc_envParameters = include($file);
-        } else {
-            return $default;
+        $files = array(
+            INC . 'parameter/env.inc',
+            INC . 'parameter/parameter.env.inc',
+        );
+
+        foreach ($files as $file) {
+            if (is_file($file) && file_exists($file)) {
+                $lc_envParameters = include($file);
+                break;
+            }
         }
     }
 
