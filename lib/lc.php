@@ -722,12 +722,21 @@ function _i($file, $recursive = true)
 
 /**
  * Get the host name or server name
+ * @return mixed|string
  */
 function _host()
 {
-    return !isset($_SERVER['HTTP_HOST']) ? isset($_SERVER['SERVER_NAME'])
-        ? $_SERVER['SERVER_NAME'] : php_uname('n') : $_SERVER['HTTP_HOST'];
+    if (isset($_SERVER['HTTP_HOST'])) {
+        return $_SERVER['HTTP_HOST'];
+    }
+
+    if (isset($_SERVER['SERVER_NAME'])) {
+        return $_SERVER['SERVER_NAME'];
+    }
+
+    return _env('host');
 }
+
 /**
  * Convenience method to get/set a config variable without global declaration within the calling function
  *
@@ -843,22 +852,25 @@ function _env($name, $default = '')
 
 /**
  * Get base URL with protocol
- * @return bool|string
+ * @return string
  */
 function _baseUrlWithProtocol()
 {
-    if (isset($_SERVER['SERVER_PROTOCOL'])) {
-        $baseUrl = _cfg('baseURL');
-        $protocol = _cfg('ssl') ? 'https' : 'http';
-        $base = strtolower($protocol) . '://' . $_SERVER['HTTP_HOST'];
-        if ($baseUrl) {
-            $base .= '/' . $baseUrl;
-        }
+    $baseUrl = _cfg('baseURL');
+    $protocol = _cfg('ssl') ? 'https' : 'http';
 
-        return $base;
+    if (PHP_SAPI == 'cli') {
+        $base = trim(_p('siteDomain'), '/');
+    } else {
+        $base = strtolower($protocol) . '://';
+        $base .= $_SERVER['HTTP_HOST'];
     }
 
-    return false;
+    if ($baseUrl) {
+        $base .= '/' . $baseUrl;
+    }
+
+    return $base;
 }
 
 /**

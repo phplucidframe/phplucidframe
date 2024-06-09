@@ -6,6 +6,7 @@
  * especially for login credentials. These values can be retrieved by using _env().
  */
 return array(
+    'host' => 'http://localhost', # change this by environment
     'prod' => array( # either prod or production as you like
         'db' => array(
             'default' => array(
