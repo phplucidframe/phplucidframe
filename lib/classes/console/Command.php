@@ -230,7 +230,15 @@ class Command
      */
     public function getOption($name)
     {
-        return isset($this->parsedOptions[$name]) ? $this->parsedOptions[$name] : null;
+        if (!empty($this->parsedOptions[$name])) {
+            return $this->parsedOptions[$name];
+        } else {
+            if ($this->options[$name]['type'] == LC_CONSOLE_OPTION_REQUIRED) {
+                _writeln('The option "' . $name . '" is required.');
+            }
+        }
+
+        return null;
     }
 
     /**
