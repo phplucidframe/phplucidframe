@@ -59,7 +59,7 @@ function __validation_init()
         'date'                   => "'%s' should be valid for the date format '%s'.",
         'time'                   => "'%s' should be valid for the time format '%s'.",
         'datetime'               => "'%s' should be valid for the date/time format '%s %s'.",
-        'unique'                 => "'%s' already exists. Try another one",
+        'unique'                 => "'%s' already exists. Please try another one.",
         'custom'                 => "'%s' should be a valid format."
     );
 

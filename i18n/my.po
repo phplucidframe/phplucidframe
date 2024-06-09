@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 3.4.4\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 msgid "'%s' needs to be revised."
@@ -111,6 +111,9 @@ msgstr "'%s'သည် မှန်ကန်သည့် အချိန်ပု
 
 msgid "'%s' should be valid for the date/time format '%s %s'."
 msgstr "'%s'သည် မှန်ကန်သည့် ရက်စွဲနှင့်အချိန်ပုံစံ '%s %s' ဖြစ်ရပါမည်။"
+
+msgid "'%s' already exists. Please try another one."
+msgstr "'%s' သည် ရှိပြီးဖြစ်သည်။ ကျေးဇူးပြု၍ နောက်တစ်ခု စမ်းကြည့်ပါ။"
 
 msgid "'%s' should be a valid format."
 msgstr "'%s'သည် မှန်ကန်သည့် ပုံစံဖြစ်ရပါမည်။"
