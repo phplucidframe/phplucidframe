@@ -265,7 +265,7 @@ class SchemaManager
         }
 
         if (isset($definition['default'])) {
-            $statement .= sprintf(" DEFAULT '%d'", (int)$definition['default']);
+            $statement .= sprintf(" DEFAULT '%s'", $definition['default']);
         }
 
         if (isset($definition['autoinc']) && $definition['autoinc']) {
