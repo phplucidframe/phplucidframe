@@ -2590,7 +2590,7 @@ function form_select($name, $data = [], $value = null, $attributes = [])
         }
         $html .= '<option value="' . $key . '" ';
         $html .= form_selected($name, $key, $value);
-        $html .= '>' . $val . '</option>';
+        $html .= '>' . _t($val) . '</option>';
     }
     $html .= '</select>';
 
