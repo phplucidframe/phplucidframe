@@ -962,6 +962,28 @@ class QueryBuilder
     }
 
     /**
+     * Perform a query on the database and return the array of all results in associate array
+     *
+     * @return array The result array of objects.
+     *   If the result not found, return null.
+     */
+    public function getResultArray()
+    {
+        if ($this->result === null) {
+            $this->execute();
+        }
+
+        $data = array();
+        if ($this->result) {
+            while ($row = db_fetchAssoc($this->result)) {
+                $data[] = $row;
+            }
+        }
+
+        return $data;
+    }
+
+    /**
      * Perform a query on the database and return the key/value array of all results
      *
      * @param string $keyField The field name for the array key; default is `id`
