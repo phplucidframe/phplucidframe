@@ -913,7 +913,12 @@ function _baseDirs($subDir = '')
  */
 function _log($msg, $file = '', $type = 3)
 {
-    $file = $file ?: LOG . 'log-' . date('Ymd') . '.log';
+    if ($file) {
+        $file = $file . '-'. date('Ymd') . '.log';
+    } else {
+        $file = 'log-'. date('Ymd') . '.log';
+    }
+    $file = LOG . $file;
     $file = substr($file, 0, strrpos($file, '.log'));
     $file .= '-' . __env();
     if (strtolower(php_sapi_name()) == 'cli') {
