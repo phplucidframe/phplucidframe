@@ -288,11 +288,8 @@ if (!function_exists('flash_set')) {
     function flash_set($msg, $name = '', $class = 'success')
     {
         $msgHTML = _msg($msg, $class, 'html');
-        if ($name) {
-            $_SESSION[S_PREFIX . 'flashMessage'][$name] = $msgHTML;
-        } else {
-            $_SESSION[S_PREFIX . 'flashMessage'] = $msgHTML;
-        }
+        $name = $name ?: 'general';
+        $_SESSION[S_PREFIX . 'flashMessage'][$name] = $msgHTML;
     }
 }
 
@@ -302,27 +299,23 @@ if (!function_exists('flash_get')) {
      * This function is overridable from the custom helpers/session_helper.php
      *
      * @param string $name The optional session name to retrieve the message from
-     * @param string $class The HTML class name; default is success
+     * @param bool $html Return HTML or plain text
      *
      * @return string The HTML message
      */
-    function flash_get($name = '', $class = 'success')
+    function flash_get($name = '', $html = true)
     {
+        $name = $name ?: 'general';
         $message = '';
-        if ($name) {
-            if (isset($_SESSION[S_PREFIX.'flashMessage'][$name])) {
-                $message = $_SESSION[S_PREFIX.'flashMessage'][$name];
-                unset($_SESSION[S_PREFIX.'flashMessage'][$name]);
-            }
-        } else {
-            if (isset($_SESSION[S_PREFIX.'flashMessage'])) {
-                $message = $_SESSION[S_PREFIX.'flashMessage'];
-                unset($_SESSION[S_PREFIX.'flashMessage']);
-            }
+        if (isset($_SESSION[S_PREFIX.'flashMessage'][$name])) {
+            $message = $_SESSION[S_PREFIX.'flashMessage'][$name];
+            unset($_SESSION[S_PREFIX.'flashMessage'][$name]);
         }
-        return $message;
+
+        return $html ? $message : strip_tags($message);
     }
 }
+
 /**
  * Send a cookie
  * Convenience method for setcookie()
