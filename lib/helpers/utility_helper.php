@@ -367,6 +367,7 @@ function _script()
         $script .= 'var WEB_APP_ROOT = "'.WEB_APP_ROOT.'";';
         $script .= 'LC.appRoot = WEB_ROOT;';
     }
+    $script .= 'LC.env = "' . __env() . '";';
     $script .= 'LC.self = "'._self().'";';
     $script .= 'LC.lang = "'._lang().'";';
     $script .= 'LC.baseURL = "'._cfg('baseURL').'/";';
