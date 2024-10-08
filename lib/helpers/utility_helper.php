@@ -1133,7 +1133,7 @@ function _error($message, $code, $status = 500)
  */
 function _isRewriteRule()
 {
-    return (strcasecmp(REQUEST_URI, _r()) !== 0) ? true : false;
+    return strcasecmp(REQUEST_URI, _r()) !== 0;
 }
 
 /**
@@ -2242,11 +2242,13 @@ function _isHttpPost()
 
 /**
  * Header sent as text/json
+ *
  * @param array|object $data Array/Object of data to be encoded as JSON
  * @param int $status HTTP status code, default to 200
- * @return void
+ * @param bool $return Return json data or not
+ * @return false|string|void
  */
-function _json($data = [], $status = 200)
+function _json($data = [], $status = 200, $return = false)
 {
     if (_isRequestMethod('OPTIONS')) {
         _header(200);
@@ -2257,7 +2259,12 @@ function _json($data = [], $status = 200)
 
     header('Content-Type: application/json');
     if ($status != 204) {
-        echo json_encode($data);
+        $json = json_encode($data);
+        if ($return) {
+            return $json;
+        }
+
+        echo $json;
     }
 
     Middleware::runAfter();
