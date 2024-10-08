@@ -117,12 +117,17 @@ class View
             $viewName = 'view';
         }
 
-        $view = _i(_ds(_cr(), $viewName . '.php'));
-        if ($view) {
-            extract($this->data);
-            include $view;
+        $page = _app('page');
+        if ($page instanceof \Closure) {
+            echo $page();
         } else {
-            throw new \RuntimeException('View file is missing.');
+            $view = _i(_ds(_cr(), $viewName . '.php'));
+            if ($view) {
+                extract($this->data);
+                include $view;
+            } else {
+                throw new \RuntimeException('View file is missing.');
+            }
         }
     }
 

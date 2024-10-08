@@ -21,17 +21,19 @@ Middleware::runBefore();
 
 ob_start('_flush');
 
-$basename = basename(_app('page'), '.php');
-
-if ($basename != 'view') {
-    if ($basename == '401') {
-        _page401();
-    } elseif ($basename == '403') {
-        _page403();
-    } elseif ($basename == '404') {
-        _page404();
-    } else {
-        require _app('page');
+$page = _app('page');
+if (is_string($page)) {
+    $basename = basename($page, '.php');
+    if ($basename != 'view') {
+        if ($basename == '401') {
+            _page401();
+        } elseif ($basename == '403') {
+            _page403();
+        } elseif ($basename == '404') {
+            _page404();
+        } else {
+            require $page;
+        }
     }
 }
 
@@ -52,6 +54,8 @@ if (_cfg('layoutMode') && _isAjax() === false) {
         _header(500);
         throw new \RuntimeException(sprintf('Layout file is missing: %s', _app('view')->layout . '.php'));
     }
+} elseif ($page instanceof \Closure) {
+    echo $page();
 }
 
 ob_end_flush();

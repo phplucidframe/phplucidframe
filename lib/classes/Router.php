@@ -221,7 +221,7 @@ class Router
      * Define the custom routing path
      *
      * @param string $path URL path with optional dynamic variables such as `/post/{id}/edit`
-     * @param string $to The real path to a directory or file in `/app`
+     * @param string|\Closure $to The real path to a directory or file in `/app`
      * @param string $method GET, POST, PUT or DELETE or any combination with `|` such as GET|POST
      * @param array|null $patterns array of the regex patterns for variables in $path such s `array('id' => '\d+')`
      * @return Router
@@ -234,7 +234,7 @@ class Router
     /**
      * Matching the current route to the defined custom routes
      *
-     * @return string|boolean The matched route or false if no matched route is found
+     * @return string|\Closure|boolean The matched route or false if no matched route is found
      */
     public static function match()
     {
@@ -249,18 +249,32 @@ class Router
             return false;
         }
 
-        $matchedRoute = array_filter($routes, function ($array) use ($realPath) {
-            $last = array_pop($realPath);
-            $path = '/' . implode('/', $realPath);
-            if ($array['path'] == $path && in_array($_SERVER['REQUEST_METHOD'], $array['method'])
-                && file_exists(APP_ROOT . $array['to'] . _DS_ . $last . '.php')) {
-                return true;
+        $matchedKey = null;
+        $matchedRoute = array_filter($routes, function ($array, $key) use ($realPath, &$matchedKey) {
+            if ($array['to'] instanceof \Closure) {
+                $path = '/' . implode('/', $realPath);
+                if ($array['path'] == $path && in_array($_SERVER['REQUEST_METHOD'], $array['method'])) {
+                    $matchedKey = $key;
+                    return true;
+                }
+            } else {
+                $last = array_pop($realPath);
+                $path = '/' . implode('/', $realPath);
+                if ($array['path'] == $path && in_array($_SERVER['REQUEST_METHOD'], $array['method'])
+                    && file_exists(APP_ROOT . $array['to'] . _DS_ . $last . '.php')) {
+                    $matchedKey = $key;
+                    return true;
+                }
             }
 
             return false;
-        });
+        }, ARRAY_FILTER_USE_BOTH);
 
         if (count($matchedRoute)) {
+            if (isset($matchedRoute[$matchedKey]) && $matchedRoute[$matchedKey]['to'] instanceof \Closure) {
+                return $matchedRoute[$matchedKey]['to'];
+            }
+
             return false;
         }
 
@@ -326,11 +340,23 @@ class Router
             }
         }
 
-        if ($found) {
+        if ($found && !empty($key) && !empty($value)) {
             self::$matchedRouteName = $key;
-            $toRoute     = trim($value['to'], '/');
+
+            $toRoute = $value['to'];
+            if (is_string($value['to'])) {
+                $toRoute = trim($value['to'], '/');
+            }
+
             $_GET[ROUTE] = $toRoute;
-            $_GET        = array_merge($_GET, $vars);
+            if ($value['to'] instanceof \Closure) {
+                $_GET[ROUTE . '_path'] = trim($value['path'], '/');
+            }
+
+            if (!empty($vars)) {
+                $_GET = array_merge($_GET, $vars);
+            }
+
             return $toRoute;
         }
 

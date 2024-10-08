@@ -20,7 +20,7 @@ use LucidFrame\Core\Router;
  * @ignore
  * Route to a page according to request
  * internally called by /app/index.php
- * @return string
+ * @return string|\Closure
  */
 function router()
 {
@@ -30,6 +30,11 @@ function router()
 
     # Get a route from the defined custom routes (if any)
     $_page = Router::match();
+
+    if ($_page instanceof \Closure) {
+        return $_page;
+    }
+
     if ($_page) {
         $pathToPage = Router::getAbsolutePathToRoot($_page);
         if (is_file($pathToPage) && file_exists($pathToPage)) {
@@ -109,7 +114,7 @@ function route_search()
                 $definedRoutes = Router::getRoutes();
                 // Find matching routes for this clean route
                 $routes = array_filter($definedRoutes, function ($route) use ($cleanRoute) {
-                    return ltrim($route['to'], '/') == ltrim($cleanRoute, '/');
+                    return is_string($route['to']) && ltrim($route['to'], '/') == ltrim($cleanRoute, '/');
                 });
 
                 foreach ($routes as $key => $value) {
@@ -143,7 +148,7 @@ function route_path()
     $path = '';
 
     if (isset($_GET[ROUTE])) {
-        $path = urldecode($_GET[ROUTE]);
+        $path = $_GET[ROUTE] instanceof \Closure ? $_GET[ROUTE . '_path'] : urldecode($_GET[ROUTE]);
     }
 
     return $path;
@@ -179,7 +184,7 @@ function route_url($path = null, $queryStr = array(), $lang = '')
 
     $customRoute = Router::getPathByName($path);
     if ($customRoute !== null) {
-        $path = $customRoute ? $customRoute : 'home';
+        $path = $customRoute ?: 'home';
         if ($queryStr && is_array($queryStr) && count($queryStr)) {
             foreach ($queryStr as $key => $value) {
                 $path = str_replace('{' . $key . '}', urlencode($value), $path);
