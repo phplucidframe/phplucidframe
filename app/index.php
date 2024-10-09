@@ -37,6 +37,11 @@ if (is_string($page)) {
     }
 }
 
+if ($page instanceof \Closure) {
+    $response = $page();
+    echo $response;
+}
+
 if (_cfg('layoutMode') && _isAjax() === false) {
     if (_isHttpPost()) {
         $action = _ds(APP_ROOT, _cr(), 'action.php');
@@ -54,8 +59,6 @@ if (_cfg('layoutMode') && _isAjax() === false) {
         _header(500);
         throw new \RuntimeException(sprintf('Layout file is missing: %s', _app('view')->layout . '.php'));
     }
-} elseif ($page instanceof \Closure) {
-    echo $page();
 }
 
 ob_end_flush();

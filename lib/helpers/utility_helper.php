@@ -2250,6 +2250,8 @@ function _isHttpPost()
  */
 function _json($data = [], $status = 200, $return = false)
 {
+    _cfg('layoutMode', false);
+
     if (_isRequestMethod('OPTIONS')) {
         _header(200);
         exit;
