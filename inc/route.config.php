@@ -30,6 +30,20 @@ route('lc_blog_show')->map('/blog/{id}/{slug}', '/example/blog-page', 'GET', arr
     'slug'  => '[a-zA-Z\-_]+' # {slug} must only contain alphabets, dashes and underscores
 ));
 
+/**
+ * State page rendering
+ */
+route('lc_about')->map('/about', function() {
+    # /about maps to /app/example/pages/about.php
+    $pageTitle = _t('About');
+    _app('title', $pageTitle);
+
+    return _app('view')->block('example/pages/about');
+});
+
+/**
+ * API routes
+ */
 route_group('/api/posts', function () {
     route('lc_post')->map('/', '/example/api/post', 'GET');
     route('lc_post_create')->map('/', '/example/api/post/create', 'POST');

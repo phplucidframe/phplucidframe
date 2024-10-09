@@ -88,12 +88,14 @@ a label {
 code {
     display: block;
     border: 1px #ededed solid;
-    padding: 5px 10px;
-    background: #f1f1f1;
+    padding: 0 15px 15px;
+    background: #f5f5f5;
     margin: 5px 0;
     -moz-box-shadow: inset 1px 1px 1px 0 rgba(210, 210, 210, 0.3);
     -webkit-box-shadow: inset 1px 1px 1px 0 rgba(210, 210, 210, 0.3);
     box-shadow: inset 1px 1px 1px 0 rgba(210, 210, 210, 0.3);
+    white-space: pre;
+    overflow-x: auto;
 }
 
 code.inline {

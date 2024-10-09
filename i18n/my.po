@@ -160,6 +160,9 @@ msgstr "\"%s\" သည် မကိုက်ညီပါ။"
 msgid "Welcome"
 msgstr "ကြိုဆိုပါသည်"
 
+msgid "About"
+msgstr "အကြောင်းအရာ"
+
 msgid "Welcome to PHPLucidFrame"
 msgstr "PHPLucidFrame မှကြိုဆိုပါသည်"
 
