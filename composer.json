@@ -26,5 +26,11 @@
     },
     "require-dev": {
         "simpletest/simpletest": "^1.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "LucidFrame\\Core\\": "lib/classes/",
+            "LucidFrame\\Console\\": "lib/classes/console"
+        }
     }
 }
