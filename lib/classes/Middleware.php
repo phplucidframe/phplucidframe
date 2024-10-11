@@ -20,6 +20,8 @@ namespace LucidFrame\Core;
  */
 class Middleware
 {
+    private static $instance = null;
+
     const BEFORE = 'before';
     const AFTER = 'after';
 
@@ -38,6 +40,33 @@ class Middleware
     private static $routeFilters = array();
     /** @var array Array of order by each middleware */
     private static $orders = array();
+
+    /**
+     * # Make the constructor private to prevent instantiation from outside
+     */
+    private function __construct() { }
+
+    /**
+     * Prevent cloning of the instance
+     */
+    private function __clone() { }
+
+    /**
+     * Prevent unserialization of the instance
+     */
+    private function __wakeup() { }
+
+    /**
+     * Static method to provide access to the single instance
+     */
+    public static function getInstance()
+    {
+        if (!self::$instance) {
+            self::$instance = new Middleware();
+        }
+
+        return self::$instance;
+    }
 
     /**
      * Register a middleware

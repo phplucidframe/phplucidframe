@@ -2186,7 +2186,7 @@ function _asynFileUploader()
  */
 function _middleware(\Closure $closure, $event = 'before')
 {
-    $middleware = new Middleware();
+    $middleware = Middleware::getInstance();
 
     return $middleware->register($closure, $event);
 }
