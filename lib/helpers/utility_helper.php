@@ -18,8 +18,8 @@ use LucidFrame\Console\Console;
 use LucidFrame\Console\ConsoleTable;
 use LucidFrame\Core\Middleware;
 use LucidFrame\Core\Pager;
-use LucidFrame\File\AsynFileUploader;
-use LucidFrame\File\File;
+use LucidFrame\Core\AsynFileUploader;
+use LucidFrame\Core\File;
 use LucidFrame\Core\SchemaManager;
 use LucidFrame\Core\App;
 

@@ -13,7 +13,7 @@
  * with this source code in the file LICENSE
  */
 
-namespace LucidFrame\File;
+namespace LucidFrame\Core;
 
 /**
  * This class is part of the PHPLucidFrame library.

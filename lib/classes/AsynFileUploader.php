@@ -13,7 +13,7 @@
  * with this source code in the file LICENSE
  */
 
-namespace LucidFrame\File;
+namespace LucidFrame\Core;
 
 /**
  * Helper for ajax-like file upload with instant preview if the preview placeholder is provided
