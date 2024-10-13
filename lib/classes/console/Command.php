@@ -15,6 +15,8 @@
 
 namespace LucidFrame\Console;
 
+use Closure;
+
 /**
  * This class manages the process of a Command
  */
@@ -34,7 +36,7 @@ class Command
     protected $arguments = array();
     /** @var array Array of the argument names */
     protected $argumentNames = array();
-    /** @var closure|string Anonymous function or class name that performs the job of the command */
+    /** @var \Closure|string Anonymous function or class name that performs the job of the command */
     protected $definition;
     /** @var array Array of arguments passed to script */
     private $argv;
@@ -201,7 +203,7 @@ class Command
 
     /**
      * Setter for $definition
-     * @param closure|string $function Anonymous function or class name that performs the job of the command
+     * @param \Closure|string $function Anonymous function or class name that performs the job of the command
      * @return object LucidFrame\Console\Command`
      */
     public function setDefinition($function)
@@ -293,12 +295,13 @@ class Command
 
         if ($this->getOption('help')) {
             $this->showHelp();
-            return;
+            return true;
         }
 
         if (is_string($this->definition)) {
             $cmd = new $this->definition;
             $cmd->execute($this);
+            return true;
         } else {
             return call_user_func_array($this->definition, array($this));
         }
@@ -387,6 +390,8 @@ class Command
         if ($type === 'shortopt') {
             return isset($this->shortcuts[$name]) ? $this->shortcuts[$name] : false;
         }
+
+        return false;
     }
 
     /**

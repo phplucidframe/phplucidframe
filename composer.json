@@ -30,7 +30,7 @@
     "autoload": {
         "psr-4": {
             "LucidFrame\\Core\\": "lib/classes/",
-            "LucidFrame\\Console\\": "lib/classes/console"
+            "LucidFrame\\Console\\": "lib/classes/console/"
         }
     }
 }

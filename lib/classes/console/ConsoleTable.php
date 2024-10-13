@@ -42,7 +42,7 @@ class ConsoleTable
 
     /**
      * Adds a column to the table header
-     * @param  mixed  Header cell content
+     * @param  mixed $content Header cell content
      * @return object LucidFrame\Console\ConsoleTable
      */
     public function addHeader($content = '')
@@ -54,7 +54,7 @@ class ConsoleTable
 
     /**
      * Set headers for the columns in one-line
-     * @param  array  Array of header cell content
+     * @param  array $content Array of header cell content
      * @return object LucidFrame\Console\ConsoleTable
      */
     public function setHeaders(array $content)

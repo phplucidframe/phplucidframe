@@ -20,7 +20,7 @@ namespace LucidFrame\Console;
  */
 class Console
 {
-    /** @var LucidFrame\Console\Command The command being run */
+    /** @var Command The command being run */
     protected $command;
     /** @var string The command name */
     private $commandName;
@@ -48,10 +48,10 @@ class Console
 
     /**
      * Register a command
-     * @param LucidFrame\Console\Command $command
+     * @param Command $command
      * @return void
      */
-    public static function registerCommand(\LucidFrame\Console\Command $command)
+    public static function registerCommand(Command $command)
     {
         self::$commands[$command->getName()] = $command;
     }
