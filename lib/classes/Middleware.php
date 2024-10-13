@@ -52,11 +52,6 @@ class Middleware
     private function __clone() { }
 
     /**
-     * Prevent unserialization of the instance
-     */
-    private function __wakeup() { }
-
-    /**
      * Static method to provide access to the single instance
      */
     public static function getInstance()

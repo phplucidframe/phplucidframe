@@ -53,14 +53,14 @@ class QueryBuilderTestCase extends LucidFrameTestCase
         $qb = db_select('post', 'p')
             ->where()
             ->condition('p.id', 1);
-        $this->assertEqual($qb->getSQL(), 'SELECT `p`.* FROM `post` `p` WHERE `p`.`id` = :p_id');
-        $this->assertEqual($qb->getReadySQL(), 'SELECT `p`.* FROM `post` `p` WHERE `p`.`id` = 1');
+        $this->assertEqual($qb->getSQL(), 'SELECT `p`.* FROM `post` `p` WHERE 1 = 1 AND `p`.`id` = :p_id');
+        $this->assertEqual($qb->getReadySQL(), 'SELECT `p`.* FROM `post` `p` WHERE 1 = 1 AND `p`.`id` = 1');
 
         $qb = db_select('post', 'p')
             ->where()
             ->condition('p.created >', '2015-11-08');
-        $this->assertEqual($qb->getSQL(), 'SELECT `p`.* FROM `post` `p` WHERE `p`.`created` > :p_created');
-        $this->assertEqual($qb->getReadySQL(), 'SELECT `p`.* FROM `post` `p` WHERE `p`.`created` > 2015-11-08');
+        $this->assertEqual($qb->getSQL(), 'SELECT `p`.* FROM `post` `p` WHERE 1 = 1 AND `p`.`created` > :p_created');
+        $this->assertEqual($qb->getReadySQL(), 'SELECT `p`.* FROM `post` `p` WHERE 1 = 1 AND `p`.`created` > "2015-11-08"');
 
         $qb = db_select('post', 'p')
             ->fields('p', array('id', 'title'))
@@ -76,7 +76,8 @@ class QueryBuilderTestCase extends LucidFrameTestCase
             SELECT `p`.`id`, `p`.`title`, `u`.`full_name`, `u`.`username` FROM `post` `p`
             INNER JOIN `user` `u` ON `p`.`user_id` = `u`.`id`
             LEFT JOIN `category` `c` ON `p`.`cat_id` = `c`.`id`
-            WHERE `cat_id` = :cat_id
+            WHERE 1 = 1
+            AND `cat_id` = :cat_id
             AND `user_id` = :user_id
             ORDER BY `p`.`created` DESC, `c`.`id` ASC
         '));
@@ -84,7 +85,8 @@ class QueryBuilderTestCase extends LucidFrameTestCase
             SELECT `p`.`id`, `p`.`title`, `u`.`full_name`, `u`.`username` FROM `post` `p`
             INNER JOIN `user` `u` ON `p`.`user_id` = `u`.`id`
             LEFT JOIN `category` `c` ON `p`.`cat_id` = `c`.`id`
-            WHERE `cat_id` = 1
+            WHERE 1 = 1
+            AND `cat_id` = 1
             AND `user_id` = 1
             ORDER BY `p`.`created` DESC, `c`.`id` ASC
         '));
@@ -93,8 +95,8 @@ class QueryBuilderTestCase extends LucidFrameTestCase
             ->orWhere()
             ->condition('cat_id', 1)
             ->condition('cat_id', 2);
-        $this->assertEqual($qb->getSQL(), 'SELECT `p`.* FROM `post` `p` WHERE `cat_id` = :cat_id OR `cat_id` = :cat_id0');
-        $this->assertEqual($qb->getReadySQL(), 'SELECT `p`.* FROM `post` `p` WHERE `cat_id` = 1 OR `cat_id` = 2');
+        $this->assertEqual($qb->getSQL(), 'SELECT `p`.* FROM `post` `p` WHERE 1 = 1 AND `cat_id` = :cat_id OR `cat_id` = :cat_id0');
+        $this->assertEqual($qb->getReadySQL(), 'SELECT `p`.* FROM `post` `p` WHERE 1 = 1 AND `cat_id` = 1 OR `cat_id` = 2');
 
         $qb = db_select('post', 'p')
             ->fields('p')
@@ -113,16 +115,14 @@ class QueryBuilderTestCase extends LucidFrameTestCase
             SELECT `p`.*, `u`.`full_name`, `u`.`username` FROM `post` `p`
             INNER JOIN `user` `u` ON `p`.`user_id` = `u`.`id`
             LEFT JOIN `category` `c` ON `p`.`cat_id` = `c`.`id`
-            WHERE ( `title` LIKE CONCAT("%", :title, "%")
-            OR (`id` IN (:id0, :id1, :id2) AND `user_id` = :user_id) )
+            WHERE 1 = 1 AND ( `title` LIKE CONCAT("%", :title, "%") OR (`id` IN (:id0, :id1, :id2) AND `user_id` = :user_id) )
             ORDER BY `p`.`created` DESC
         '));
         $this->assertEqual($qb->getReadySQL(), self::oneline('
             SELECT `p`.*, `u`.`full_name`, `u`.`username` FROM `post` `p`
             INNER JOIN `user` `u` ON `p`.`user_id` = `u`.`id`
             LEFT JOIN `category` `c` ON `p`.`cat_id` = `c`.`id`
-            WHERE ( `title` LIKE CONCAT("%", A project, "%")
-            OR (`id` IN (1, 2, 3) AND `user_id` = 1) )
+            WHERE 1 = 1 AND ( `title` LIKE CONCAT("%", "A project", "%") OR (`id` IN (1, 2, 3) AND `user_id` = 1) )
             ORDER BY `p`.`created` DESC
         '));
 
@@ -144,7 +144,7 @@ class QueryBuilderTestCase extends LucidFrameTestCase
             SELECT `p`.*, `u`.`full_name`, `u`.`username` FROM `post` `p`
             INNER JOIN `user` `u` ON `p`.`user_id` = `u`.`id`
             INNER JOIN `category` `c` ON `p`.`cat_id` = `c`.`id`
-            WHERE ( `title` LIKE CONCAT("%", :title, "%")
+            WHERE 1 = 1 AND ( `title` LIKE CONCAT("%", :title, "%")
             AND (`id` IN (:id0, :id1, :id2) OR `user_id` = :user_id) )
             ORDER BY `p`.`created` DESC
             LIMIT 0, 20
@@ -153,7 +153,7 @@ class QueryBuilderTestCase extends LucidFrameTestCase
             SELECT `p`.*, `u`.`full_name`, `u`.`username` FROM `post` `p`
             INNER JOIN `user` `u` ON `p`.`user_id` = `u`.`id`
             INNER JOIN `category` `c` ON `p`.`cat_id` = `c`.`id`
-            WHERE ( `title` LIKE CONCAT("%", A project, "%")
+            WHERE 1 = 1 AND ( `title` LIKE CONCAT("%", "A project", "%")
             AND (`id` IN (1, 2, 3) OR `user_id` = 1) )
             ORDER BY `p`.`created` DESC
             LIMIT 0, 20
@@ -181,7 +181,8 @@ class QueryBuilderTestCase extends LucidFrameTestCase
             SELECT `p`.*, `u`.`full_name`, `u`.`username` FROM `post` `p`
             INNER JOIN `user` `u` ON `p`.`user_id` = `u`.`id`
             INNER JOIN `category` `c` ON `p`.`cat_id` = `c`.`id`
-            WHERE (
+            WHERE 1 = 1
+            AND (
                 `title` NOT LIKE CONCAT("%", :title, "%")
                 OR (`id` IN (:id0, :id1, :id2)
                     AND `id` <= :id3
@@ -194,11 +195,12 @@ class QueryBuilderTestCase extends LucidFrameTestCase
             SELECT `p`.*, `u`.`full_name`, `u`.`username` FROM `post` `p`
             INNER JOIN `user` `u` ON `p`.`user_id` = `u`.`id`
             INNER JOIN `category` `c` ON `p`.`cat_id` = `c`.`id`
-            WHERE (
-                `title` NOT LIKE CONCAT("%", A project, "%")
+            WHERE 1 = 1
+            AND (
+                `title` NOT LIKE CONCAT("%", "A project", "%")
                 OR (`id` IN (1, 2, 3)
                     AND `id` <= 10
-                    AND (`created` > 2014-12-31 OR `deleted` IS NULL))
+                    AND (`created` > "2014-12-31" OR `deleted` IS NULL))
             )
             ORDER BY `p`.`created` DESC
             LIMIT 5
@@ -238,8 +240,8 @@ class QueryBuilderTestCase extends LucidFrameTestCase
         $qb = db_count('post', 'id')
             ->where()
             ->condition('cat_id', 1);
-        $this->assertEqual($qb->getSQL(), 'SELECT COUNT(`id`) count FROM `post` `post` WHERE `cat_id` = :cat_id');
-        $this->assertEqual($qb->getReadySQL(), 'SELECT COUNT(`id`) count FROM `post` `post` WHERE `cat_id` = 1');
+        $this->assertEqual($qb->getSQL(), 'SELECT COUNT(`id`) count FROM `post` `post` WHERE 1 = 1 AND `cat_id` = :cat_id');
+        $this->assertEqual($qb->getReadySQL(), 'SELECT COUNT(`id`) count FROM `post` `post` WHERE 1 = 1 AND `cat_id` = 1');
     }
 
     public function testQueryBuilderAggregates()
@@ -392,14 +394,14 @@ class QueryBuilderTestCase extends LucidFrameTestCase
                 ->condition('post_id', db_raw('p.id'))
                 ->condition('tag_id', $tagId)
                 ->getReadySQL();
-            $this->assertEqual($subquery, 'SELECT `pt`.* FROM `post_to_tag` `pt` WHERE `post_id` = `p`.`id` AND `tag_id` = ' . $tagId);
+            $this->assertEqual($subquery, 'SELECT `pt`.* FROM `post_to_tag` `pt` WHERE 1 = 1 AND `post_id` = `p`.`id` AND `tag_id` = ' . $tagId);
 
             $qb = db_select('post', 'p')
                 ->where()
                 ->condition('deleted', null)
                 ->exists($subquery);
 
-            $this->assertEqual($qb->getReadySQL(), 'SELECT `p`.* FROM `post` `p` WHERE `deleted` IS NULL AND EXISTS (SELECT `pt`.* FROM `post_to_tag` `pt` WHERE `post_id` = `p`.`id` AND `tag_id` = ' . $tagId . ')');
+            $this->assertEqual($qb->getReadySQL(), 'SELECT `p`.* FROM `post` `p` WHERE 1 = 1 AND `deleted` IS NULL AND EXISTS (SELECT `pt`.* FROM `post_to_tag` `pt` WHERE 1 = 1 AND `post_id` = `p`.`id` AND `tag_id` = ' . $tagId . ')');
 
             $result = $qb->getResult();
             $this->assertEqual(count($result), $count);
@@ -419,14 +421,14 @@ class QueryBuilderTestCase extends LucidFrameTestCase
                 ->condition('post_id', db_raw('p.id'))
                 ->condition('tag_id', $tagId)
                 ->getReadySQL();
-            $this->assertEqual($subquery, 'SELECT `pt`.* FROM `post_to_tag` `pt` WHERE `post_id` = `p`.`id` AND `tag_id` = ' . $tagId);
+            $this->assertEqual($subquery, 'SELECT `pt`.* FROM `post_to_tag` `pt` WHERE 1 = 1 AND `post_id` = `p`.`id` AND `tag_id` = ' . $tagId);
 
             $qb = db_select('post', 'p')
                 ->where()
                 ->condition('deleted', null)
                 ->notExists($subquery);
 
-            $this->assertEqual($qb->getReadySQL(), 'SELECT `p`.* FROM `post` `p` WHERE `deleted` IS NULL AND NOT EXISTS (SELECT `pt`.* FROM `post_to_tag` `pt` WHERE `post_id` = `p`.`id` AND `tag_id` = ' . $tagId . ')');
+            $this->assertEqual($qb->getReadySQL(), 'SELECT `p`.* FROM `post` `p` WHERE 1 = 1 AND `deleted` IS NULL AND NOT EXISTS (SELECT `pt`.* FROM `post_to_tag` `pt` WHERE 1 = 1 AND `post_id` = `p`.`id` AND `tag_id` = ' . $tagId . ')');
 
             $result = $qb->getResult();
             $this->assertEqual(count($result), $count);

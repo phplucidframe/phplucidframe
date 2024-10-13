@@ -222,8 +222,6 @@ class DBHelperTestCase extends LucidFrameTestCase
             OR (`created` > 2014-12-31 OR `deleted` IS NULL)
         '));
 
-        $this->bootEnd = microtime(true);
-
         // 15. OR with NOT IN, gt
         QueryBuilder::clearBindValues();
         list($clause, $values) = db_or(array(

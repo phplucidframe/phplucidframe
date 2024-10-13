@@ -21,6 +21,8 @@ class UtilityHelperTestCase extends LucidFrameTestCase
         $lc_sitewideWarnings = array();
         $lc_minifyHTML = true;
         $lc_translationEnabled = true;
+
+        parent::__construct();
     }
     /**
      * Test cases for _g()
@@ -166,7 +168,7 @@ class UtilityHelperTestCase extends LucidFrameTestCase
 
         unset($_SERVER['HTTP_HOST']);
         unset($_SERVER['SERVER_NAME']);
-        $this->assertEqual(_host(), php_uname('n'));
+        $this->assertEqual(_host(), _env('host'));
     }
     /**
      * Test cases for _p()

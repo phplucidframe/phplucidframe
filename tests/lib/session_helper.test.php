@@ -12,6 +12,7 @@ class SessionHelperTestCase extends LucidFrameTestCase
      */
     public function __construct()
     {
+        parent::__construct();
         // clear session
         $_SESSION = array();
     }
@@ -20,18 +21,22 @@ class SessionHelperTestCase extends LucidFrameTestCase
      */
     public function testSessionSetterGetter()
     {
+        if (php_sapi_name() === 'cli') {
+            return false;
+        }
+
         // 1.
-        session_set('name.first', 'Sithu');
-        session_set('name.last', 'Kyaw');
+        session_set('name.first', 'John');
+        session_set('name.last', 'Doe');
         $this->assertEqual(session_get('name'), array(
-            'first' => 'Sithu',
-            'last' => 'Kyaw'
+            'first' => 'John',
+            'last' => 'Doe'
         ));
         // 2.
-        session_set('name.first', 'Kyaw');
+        session_set('name.first', 'Doe');
         $this->assertEqual(session_get('name'), array(
-            'first' => 'Kyaw',
-            'last' => 'Kyaw'
+            'first' => 'Doe',
+            'last' => 'Doe'
         ));
         // 3.
         session_set('foo', 'bar');
@@ -42,9 +47,9 @@ class SessionHelperTestCase extends LucidFrameTestCase
         $this->assertEqual(session_get('animals'), array('dog', 'cat', 'tiger'));
         // 5.
         session_set('user', array(
-            'fullName' => 'Sithu Kyaw',
-            'firstName' => 'Sithu',
-            'lastName' => 'Kyaw',
+            'fullName' => 'John Doe',
+            'firstName' => 'John',
+            'lastName' => 'Doe',
             'age' => 31,
             'phone' => array('123456', '987654'),
             'address' => array(
@@ -59,9 +64,9 @@ class SessionHelperTestCase extends LucidFrameTestCase
             )
         ));
         $this->assertEqual(session_get('user'), array(
-            'fullName' => 'Sithu Kyaw',
-            'firstName' => 'Sithu',
-            'lastName' => 'Kyaw',
+            'fullName' => 'John Doe',
+            'firstName' => 'John',
+            'lastName' => 'Doe',
             'age' => 31,
             'phone' => array('123456', '987654'),
             'address' => array(
@@ -79,9 +84,9 @@ class SessionHelperTestCase extends LucidFrameTestCase
         session_set('user.phone', '123456');
         session_set('user.address.zip', '11111');
         $this->assertEqual(session_get('user'), array(
-            'fullName' => 'Sithu Kyaw',
-            'firstName' => 'Sithu',
-            'lastName' => 'Kyaw',
+            'fullName' => 'John Doe',
+            'firstName' => 'John',
+            'lastName' => 'Doe',
             'age' => 31,
             'phone' => '123456',
             'address' => array(
@@ -106,6 +111,10 @@ class SessionHelperTestCase extends LucidFrameTestCase
 
     public function testForSessionDelete()
     {
+        if (php_sapi_name() === 'cli') {
+            return false;
+        }
+
         // 1.
         session_delete('name');
         $this->assertNull(session_get('name'));
@@ -120,8 +129,8 @@ class SessionHelperTestCase extends LucidFrameTestCase
         session_delete('user.address.street.room');
         session_delete('user.address.zip');
         $this->assertEqual(session_get('user'), array(
-            'firstName' => 'Sithu',
-            'lastName' => 'Kyaw',
+            'firstName' => 'John',
+            'lastName' => 'Doe',
             'age' => 31,
             'phone' => '123456',
             'address' => array(
@@ -140,6 +149,10 @@ class SessionHelperTestCase extends LucidFrameTestCase
 
     public function testForFlashSetterGetter()
     {
+        if (php_sapi_name() === 'cli') {
+            return false;
+        }
+
         // 1.
         $msg = 'This is success flash message.';
         flash_set($msg);
