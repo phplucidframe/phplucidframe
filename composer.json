@@ -25,7 +25,7 @@
         "ext-gd": "*"
     },
     "require-dev": {
-        "simpletest/simpletest": "^1.1"
+        "simpletest/simpletest": "^1.2"
     },
     "autoload": {
         "psr-4": {
