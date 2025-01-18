@@ -1664,6 +1664,10 @@ if (!function_exists('_slug')) {
      */
     function _slug($string, $table = '', array $condition = array())
     {
+        if (empty($string)) {
+            return '';
+        }
+
         $specChars = array(
             '`','~','!','@','#','$','%','\^','&',
             '*','(',')','=','+','{','}','[',']',
