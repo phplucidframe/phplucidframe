@@ -500,6 +500,16 @@ class QueryBuilder
     }
 
     /**
+     * Add ORDER BY RAND() clause
+     *
+     * @return object QueryBuilder
+     */
+    public function orderRand()
+    {
+        return $this->orderBy(db_raw('RAND()'));
+    }
+
+    /**
      * Add GROUP BY clause
      *
      * @param string $field The field name
