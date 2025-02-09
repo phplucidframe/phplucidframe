@@ -329,6 +329,11 @@ function __envLoader()
     $request    = explode('/', $requestURI);
     $lc_namespace = $request[0];
 
+    if (PHP_SAPI == 'cli' && $_SERVER['SCRIPT_NAME'] == 'lucidframe' && $_SERVER['argc'] == 2) {
+        $cmd = explode(':', $_SERVER['argv'][1]);
+        $lc_namespace = count($cmd) > 1 ? $cmd[0] : '';
+    }
+
     # Clean lang code in URL
     if (array_key_exists($lc_namespace, $lc_languages)) {
         array_shift($request);
