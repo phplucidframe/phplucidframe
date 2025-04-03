@@ -60,6 +60,7 @@ function __validation_init()
         'time'                   => "'%s' should be valid for the time format '%s'.",
         'datetime'               => "'%s' should be valid for the date/time format '%s %s'.",
         'unique'                 => "'%s' already exists. Please try another one.",
+        'mmPhone'                => "'%s' should be a valid Myanmar phone number.",
         'custom'                 => "'%s' should be a valid format."
     );
 
@@ -830,4 +831,25 @@ function validate_unique($value, $table, $field, $id = 0)
     }
 
     return $qb->fetch() ? false : true;
+}
+/**
+ * Validation of Myanmar phone number format
+ * @param mixed $value The value to check
+ * @return bool|int
+ */
+function validate_mmPhone($value)
+{
+    if (empty($value)) {
+        return true;
+    }
+
+    $pattern = '/^';
+    $pattern .= '((\+?959|\(\+?95\)9|^09)([2-9]\d{8})$)|';          # mobile number
+    $pattern .= '((\+?959|\(\+?95\)9|^09)(5\d{6})$)|';              # old mobile number
+    $pattern .= '((\+?95[1-8]|\(\+?95\)[1-8]|^0[1-8])\d{6,7}$)';    # landline number
+    $pattern .= '$/';
+
+    $value = str_replace(['-', ' '], '', $value); // clean dashes and spaces
+
+    return preg_match($pattern, $value);
 }

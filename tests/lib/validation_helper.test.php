@@ -190,4 +190,59 @@ class ValidationHelperTestCase extends LucidFrameTestCase
             $this->assertFalse(validation_check($validations));
         }
     }
+
+    public function testMyanmarPhoneValidation()
+    {
+        $phones = [
+            # old mobile number start with 095
+            '095123456',
+            '095654321',
+            # MPT start with 092, 094
+            '09212345678',
+            '09457746673',
+            '09255557777',
+            # Ooredoo start with 098 or 099.
+            '09812345678',
+            '09912345678',
+            '09970000234',
+            # Telenor/ATOM start with 097
+            '09760100820',
+            '09770707888',
+            '09790009000',
+            # Mytel start with 096
+            '09660909909',
+            '09690000966',
+            # Landline start with 01, 02, etc.
+            '01371848',
+            '012317722',
+            '018610322',
+            '012317777',
+            '012399106',
+        ];
+
+        foreach ($phones as $key => $ph) {
+            $validations = [
+                'txtPhone_' . $key => [
+                    'caption'   => 'Phone ' . $key,
+                    'value'     => $ph,
+                    'rules'     => ['mmPhone'],
+                ]
+            ];
+            $this->assertTrue(validation_check($validations));
+
+            $ph = substr($ph, 1); // cut the first 0
+
+            foreach (['95', '+95', '(+95)', '(95)'] as $countryCode) {
+                $val = $countryCode . $ph;
+                $validations = [
+                    'txtPhone_' . $key => [
+                        'caption'   => 'Phone ' . $key,
+                        'value'     => $val,
+                        'rules'     => ['mmPhone'],
+                    ]
+                ];
+                $this->assertTrue(validation_check($validations));
+            }
+        }
+    }
 }
