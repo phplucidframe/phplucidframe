@@ -61,7 +61,7 @@ class LucidFrameTestCase extends \UnitTestCase
         db_insert('user', array(
             'full_name' => 'Administrator',
             'username'  => 'admin',
-            'password'  => _encrypt('pwd@admin'),
+            'password'  => password_hash('pwd@admin', PASSWORD_DEFAULT),
             'email'     => 'admin@localhost.com',
             'role'      => 'admin',
             'is_master' => 1
