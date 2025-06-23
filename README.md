@@ -32,7 +32,7 @@ It supports a wide range of web application development features:
 ## Prerequisites
 
 - Web Server (Apache with `mod_rewrite` enabled)
-- PHP version 5.6 or newer is recommended, but we strongly advise you to use one of the currently supported versions.
+- PHP version 7.1 or newer is recommended, but we strongly advise you to use one of the currently supported versions.
 - MySQL 5.0 or newer
 
 ## Installation
