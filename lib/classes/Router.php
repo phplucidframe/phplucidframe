@@ -307,7 +307,10 @@ class Router
                             $regex = $value['patterns'][$name];
                             if (!preg_match('/^' . $regex . '$/', $var)) {
                                 _header(400);
-                                throw new \InvalidArgumentException(sprintf('The URL does not satisfy the argument value "%s" for "%s".', $var, $regex));
+                                throw new \InvalidArgumentException(sprintf(
+                                    'The route "%s" does not match "%s" with the argument value "%s" for "%s".',
+                                    $key, $name, $var, $regex
+                                ));
                             }
                         }
 
