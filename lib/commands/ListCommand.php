@@ -22,6 +22,7 @@ _consoleCommand('list')
         _writeln('Available commands:');
         $table      = _consoleTable();
         $commands   = _consoleCommands();
+        ksort($commands);
         foreach ($commands as $name => $command) {
             $table->addRow()
                 ->addColumn($name)
