@@ -649,14 +649,16 @@
                     }
                 });
             } else {
-                /* Init Create/Edit jQuery Dialog */
-                $(opt.formModal).dialog({
-                    modal: true,
-                    autoOpen: false,
-                    resizable: false,
-                    width: 340,
-                    minHeight: 120
-                });
+                if ($(opt.formModal).length) {
+                    /* Init Create/Edit jQuery Dialog */
+                    $(opt.formModal).dialog({
+                        modal: true,
+                        autoOpen: false,
+                        resizable: false,
+                        width: 340,
+                        minHeight: 120
+                    });
+                }
 
                 $(opt.formModalCancelButton).click(function () {
                     $(opt.formModal).dialog('close');
