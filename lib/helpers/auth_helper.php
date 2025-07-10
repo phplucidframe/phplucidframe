@@ -200,10 +200,10 @@ if (!function_exists('auth_roles')) {
     /**
      * Check if the authenticated user has the specific user role(s)
      * This function is overridable from the custom helpers/auth_helper.php
-     * @param  string [$role, ...] The list of user role names
+     * @param  array|string $roles or [$role, ...] Array of role name or The list of user role names
      * @return boolean
      */
-    function auth_roles()
+    function auth_roles($roles)
     {
         if (auth_isAnonymous()) {
             return false;
@@ -212,7 +212,7 @@ if (!function_exists('auth_roles')) {
         $auth       = auth_prerequisite();
         $field      = $auth['fields']['role'];
         $session    = auth_get();
-        $roles      = func_get_args();
+        $roles      = is_array($roles) ? $roles : func_get_args();
 
         return in_array($session->$field, $roles);
     }
