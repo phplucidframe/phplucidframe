@@ -17,7 +17,9 @@
  * with this source code in the file LICENSE
  */
 
+use LucidFrame\Core\Database;
 use LucidFrame\Core\Router;
+use LucidFrame\Core\View;
 
 if (!isset($_SERVER['REQUEST_URI'])) {
     $_SERVER['REQUEST_URI'] = __FILE__;
@@ -135,7 +137,7 @@ _autoloadDir(LIB . 'commands');
 
 if (__dbLoadable()) {
     # DB configuration & DB helper (required)
-    _app('db', new \LucidFrame\Core\Database());
+    _app('db', new Database());
 }
 
 if (file_exists(INC . 'autoload.php')) {
@@ -215,4 +217,4 @@ _autoloadDir(APP_ROOT . 'middleware');
 _autoloadDir(APP_ROOT . 'services');
 
 # Initialize view object
-_app('view', new \LucidFrame\Core\View());
+_app('view', new View());
