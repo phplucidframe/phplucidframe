@@ -1738,7 +1738,9 @@ function _sqlDate($date, $givenFormat = 'dmy', $separator = '-')
 }
 
 /**
- * Encrypts the given text using security salt if mcrypt extension is enabled, otherwise using md5()
+ * Encrypts the given text using security salt
+ * IMPORTANT: This function will only work if openssl extension is enabled
+ *  and the .secret file exists after running `php lucidframe secret:generate`
  *
  * @param  string $text Text to be encrypted
  * @return string The encrypted text
@@ -1747,7 +1749,7 @@ function _encrypt($text)
 {
     $secret = _cfg('securitySecret');
     if (!$secret || !function_exists('openssl_encrypt')) {
-        return md5($text);
+        return $text;
     }
 
     $method = _cipher();
@@ -1761,8 +1763,9 @@ function _encrypt($text)
 }
 
 /**
- * Decrypts the given text using security salt if mcrypt extension is enabled,
- * otherwise return the original encrypted string
+ * Decrypts the given text using security salt
+ * IMPORTANT: This function will only work if openssl extension is enabled
+ *  and the .secret file exists after running `php lucidframe secret:generate`
  *
  * @param   string $encryptedText Text to be decrypted
  * @return  string The decrypted text
