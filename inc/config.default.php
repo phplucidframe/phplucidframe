@@ -150,8 +150,10 @@ $lc_cipher = 'AES-256-CBC';
 # and set full path to `__secret()`, for example,
 # $lc_securitySecret = __secret('/home/example/.secret');
 $lc_securitySecret = __secret();
-# $lc_formTokenName - Customize your form token name at your own
-$lc_formTokenName = 'LCFormToken';
+# $lc_formTokenName - CSRF token name for Cross Site Request Forgery protection.
+$lc_formTokenName = 'csrf';
+# $lc_csrfHeaderTokenName - Header name for Cross Site Request Forgery protection.
+$lc_csrfHeaderTokenName = 'X-CSRF-TOKEN';
 # $lc_minifyHTML: Compacting HTML code, including any inline JavaScript and CSS contained in it,
 # can save many bytes of data and speed up downloading, parsing, and execution time.
 # It is forced to `false` when $lc_env = 'development'

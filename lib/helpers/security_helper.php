@@ -13,6 +13,8 @@
  * with this source code in the file LICENSE
  */
 
+use LucidFrame\Core\Form;
+
 /**
  * @internal
  * @ignore
@@ -28,6 +30,11 @@ function security_prerequisite()
         $msg .= 'open your terminal or command line, <code class="inline">cd</code> to your project directory, ';
         $msg .= 'then run <code class="inline">php lucidframe secret:generate</span>';
         _cfg('sitewideWarnings', function_exists('_t') ? _t($msg) : $msg);
+    }
+
+    Form::restoreToken();
+    if (!Form::$formToken) {
+        Form::generateToken();
     }
 }
 

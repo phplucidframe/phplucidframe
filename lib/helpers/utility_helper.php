@@ -16,6 +16,7 @@
 use LucidFrame\Console\Command;
 use LucidFrame\Console\Console;
 use LucidFrame\Console\ConsoleTable;
+use LucidFrame\Core\Form;
 use LucidFrame\Core\Middleware;
 use LucidFrame\Core\Pager;
 use LucidFrame\Core\AsynFileUploader;
@@ -376,6 +377,9 @@ function _script()
     $script .= 'LC.namespace = "'.LC_NAMESPACE.'";';
     $script .= 'LC.sites = "' . base64_encode(is_array($sites) && count($sites) ? json_encode($sites) : '[]') . _randomCode() . '";';
     $script .= 'LC.sitewideWarnings = '.json_encode($sitewideWarnings).';';
+
+    $csrf = ['name' => _cfg('csrfHeaderTokenName'), 'value' => _encrypt(Form::$formToken)];
+    $script .= 'LC.csrfToken = ' . json_encode($csrf) . ';';
 
     # run hook
     # @deprecated __script() hook will be removed in the later version

@@ -124,6 +124,9 @@
                 dataType: 'json',
                 data: values,
                 cache: false,
+                headers: {
+                    [LC.csrfToken.name]: LC.csrfToken.value
+                },
                 success: LC.Form.submitHandler
             });
 

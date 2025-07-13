@@ -34,6 +34,8 @@ class Form
     private static $callback = '';
     /** @var array Array of data that need to send to the client */
     private static $data = array();
+    /** @var string The hashed token */
+    public static $formToken = '';
 
     /**
      * Constructor
@@ -76,14 +78,57 @@ class Form
     }
 
     /**
+     * Get the posted CSRF token value
+     * @return string|null
+     */
+    protected static function getPostedCsrfToken(): ?string
+    {
+        if ($tokenValue = _post(self::getCsrfTokenName())) {
+            return $tokenValue;
+        }
+
+        $tokenValue = _requestHeader(_cfg('csrfHeaderTokenName'));
+
+        return $tokenValue ?: null;
+    }
+
+    /**
+     * Get the form token name
+     * @return string
+     */
+    public static function getCsrfTokenName(): string
+    {
+        return 'lc_formToken_' . _cfg('formTokenName');
+    }
+
+    /**
+     * Generates (Regenerates) the CSRF token Hash.
+     * @return string
+     */
+    public static function generateToken(): string
+    {
+        self::$formToken = bin2hex(random_bytes(16));
+        session_set(self::getCsrfTokenName(), self::$formToken);
+
+        return self::$formToken;
+    }
+
+    /**
+     * Restore the CSRF token Hash from Session
+     * @return void
+     */
+    public static function restoreToken()
+    {
+        self::$formToken = session_get(self::getCsrfTokenName());
+    }
+
+    /**
      * Form token generation
      * @return void
      */
     public static function token()
     {
-        $token = _randomCode(32);
-        session_set(_cfg('formTokenName'), $token);
-        echo '<input type="hidden" name="lc_formToken_' . _cfg('formTokenName') . '" value="' . $token . '" />';
+        echo '<input type="hidden" name="' . self::getCsrfTokenName() . '" value="' . _encrypt(self::$formToken) . '" />';
     }
 
     /**
@@ -94,17 +139,17 @@ class Form
      */
     public static function validate($validations = null, $data = [])
     {
-        if (!isset($_POST['lc_formToken_' . _cfg('formTokenName')])) {
+        $postedToken = self::getPostedCsrfToken();
+        if (!$postedToken) {
             Validation::addError('', _t('Invalid form token.'));
             return false;
         }
+        $postedToken = _decrypt($postedToken);
 
-        $token = session_get(_cfg('formTokenName'));
-        $postedToken = _post('lc_formToken_' . _cfg('formTokenName'));
         $result = false;
         # check token first
-        if ($token == $postedToken) {
-            # check referer if it is requesting in the same site
+        if (self::$formToken == $postedToken) {
+            # check the referer if it is requesting in the same site
             if (isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] && _cfg('siteDomain')) {
                 $siteDomain = _cfg('siteDomain');
                 $siteDomain = preg_replace('/^www\./', '', $siteDomain);

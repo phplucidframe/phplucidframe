@@ -14,7 +14,6 @@
  */
 
 use LucidFrame\Core\Form;
-use LucidFrame\Core\Validation;
 
 /**
  * Initialize form
