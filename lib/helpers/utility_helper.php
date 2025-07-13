@@ -1001,7 +1001,7 @@ function _header($status, $message = null)
  */
 function _redirect($path = null, $queryStr = array(), $lang = '', $status = null)
 {
-    if (stripos($path, 'http') === 0) {
+    if ($path && stripos($path, 'http') === 0) {
         if ($status === 301) {
             _header(301, 'Moved Permanently');
         }
