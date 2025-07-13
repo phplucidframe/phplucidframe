@@ -123,6 +123,7 @@
                 url: url,
                 dataType: 'json',
                 data: values,
+                cache: false,
                 success: LC.Form.submitHandler
             });
 
