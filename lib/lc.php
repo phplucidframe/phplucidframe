@@ -367,8 +367,18 @@ function __secret($file = null)
         return trim(file_get_contents($file));
     }
 
-    $file = INC . '.secret';
-    return (is_file($file) && file_exists($file)) ? trim(file_get_contents($file)) : '';
+    $path = [
+        ROOT . '.secret',
+        INC . '.secret', # TODO: for backward compatibility, to be removed
+    ];
+
+    foreach ($path as $file) {
+        if (is_file($file) && file_exists($file)) {
+            return trim(file_get_contents($file));
+        }
+    }
+
+    return '';
 }
 
 /**

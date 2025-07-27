@@ -23,12 +23,13 @@ use LucidFrame\Core\Form;
  */
 function security_prerequisite()
 {
-    $defaultSecret = md5('lucidframe');
     $secret = trim(_cfg('securitySecret'));
-    if (function_exists('mcrypt_encrypt') && (empty($secret) || strcmp($secret, $defaultSecret) === 0)) {
-        $msg = 'To change your own security secret, ';
+    if (empty($secret)) {
+        $msg = 'To define your own security secret, ';
         $msg .= 'open your terminal or command line, <code class="inline">cd</code> to your project directory, ';
-        $msg .= 'then run <code class="inline">php lucidframe secret:generate</span>';
+        $msg .= 'then run <code class="inline">php lucidframe secret:generate</code> (recommended)';
+        $msg .= ' OR go to <a href="https://www.phplucidframe.com/secret-generator" target="_blank">https://phplucidframe.com/secret-generator</a>';
+        $msg .= ' and copy the generated secret to your <code class="inline">.secret</code> file in the project root.';
         _cfg('sitewideWarnings', function_exists('_t') ? _t($msg) : $msg);
     }
 
