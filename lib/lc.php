@@ -854,7 +854,7 @@ function _env($name, $default = '')
     if ($lc_envParameters === null) {
         $files = array(
             INC . 'parameter/env.inc',
-            INC . 'parameter/parameter.env.inc',
+            INC . 'parameter/parameter.env.inc', # TODO: for backward compatibility, to be removed
         );
 
         foreach ($files as $file) {
