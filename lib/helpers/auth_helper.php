@@ -52,6 +52,11 @@ if (!function_exists('auth_create')) {
             if (isset($session)) {
                 $fieldRole = $lc_auth['fields']['role'];
 
+                // Regenerate session ID to prevent session fixation
+                if (session_status() === PHP_SESSION_ACTIVE) {
+                    session_regenerate_id(true);
+                }
+
                 $session->sessId        = session_id();
                 $session->timestamp     = time();
                 $session->token         = strtoupper(_randomCode(20));
