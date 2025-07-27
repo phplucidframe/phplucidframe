@@ -22,12 +22,13 @@ $lc_memoryLimit = '128M';
 # $lc_maxExecTime: The maximum time in seconds a script is allowed to run before it is terminated by the parser.
 $lc_maxExecTime = 300;
 # $lc_debugLevel: The debug level. If $lc_env = 'production', this is not considered.
+# `0` - error reporting is disabled
 # `1` - show fatal errors, parse errors, but no PHP startup errors
 # `2` - show fatal errors, parse errors, warnings and notices
 # `3` - show all errors and warnings, except of level E_STRICT prior to PHP 5.4.0.
 # `int level` - set your own error reporting level. The parameter is either an integer representing a bit field, or named constants
 #  @see http://php.net/manual/en/errorfunc.configuration.php#ini.error-reporting
-$lc_debugLevel = 3;
+$lc_debugLevel = _p('debugLevel');
 
 # $lc_siteName: Site Name
 $lc_siteName = 'PHPLucidFrame';

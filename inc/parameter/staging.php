@@ -11,6 +11,8 @@ return array(
     'siteDomain' => _host(),
     # SSL enabled or not
     'ssl' => false,
+    # The debug level: 0 ~ 3 or custom debug level
+    'debugLevel' => 0,
     # Database connection information
     'db' => array(
         'default' => array(

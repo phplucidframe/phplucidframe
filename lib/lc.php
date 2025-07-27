@@ -289,33 +289,37 @@ function __envLoader()
     if (!in_array($lc_env, __envList())) {
         $lc_env = ENV_PROD;
     }
-    if ($lc_env == ENV_PROD) {
-        error_reporting(0);
-        ini_set('display_errors', 0);
-        ini_set('display_startup_errors', 0);
-    } else {
-        $lc_minifyHTML = false;
-        switch($lc_debugLevel) {
-            case 1:
-                error_reporting(E_ERROR | E_PARSE);
-                ini_set('display_errors', 1);
-                ini_set('display_startup_errors', 0);
-                break;
-            case 2:
-                error_reporting(E_ERROR | E_PARSE | E_NOTICE | E_WARNING);
-                ini_set('display_errors', 1);
-                ini_set('display_startup_errors', 1);
-                break;
-            case 3:
-                error_reporting(E_ALL);
-                ini_set('display_errors', 1);
-                ini_set('display_startup_errors', 1);
-                break;
-            default:
-                error_reporting($lc_debugLevel);
-                ini_set('display_errors', 1);
-                ini_set('display_startup_errors', 1);
-        }
+
+    $lc_minifyHTML = $lc_env == ENV_PROD;
+    switch ($lc_debugLevel) {
+        case 0:
+            error_reporting(0);
+            ini_set('display_errors', 0);
+            ini_set('display_startup_errors', 0);
+            break;
+
+        case 1:
+            error_reporting(E_ERROR | E_PARSE);
+            ini_set('display_errors', 1);
+            ini_set('display_startup_errors', 0);
+            break;
+
+        case 2:
+            error_reporting(E_ERROR | E_PARSE | E_NOTICE | E_WARNING);
+            ini_set('display_errors', 1);
+            ini_set('display_startup_errors', 1);
+            break;
+
+        case 3:
+            error_reporting(E_ALL);
+            ini_set('display_errors', 1);
+            ini_set('display_startup_errors', 1);
+            break;
+
+        default:
+            error_reporting($lc_debugLevel); // customer debug level
+            ini_set('display_errors', 1);
+            ini_set('display_startup_errors', 1);
     }
 
     if (empty($lc_languages) || !is_array($lc_languages)) {
