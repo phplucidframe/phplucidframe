@@ -59,7 +59,8 @@ function __session_init()
     $options['use_cookies']      = true;
     $options['use_only_cookies'] = true;
     $options['use_trans_sid']    = false;
-    $options['cookie_httponly']  = true;
+    $options['cookie_secure']    = true; # Prior to PHP 7.2.0, the default was ""
+    $options['cookie_httponly']  = true; # Prior to PHP 7.2.0, the default was ""
 
     foreach ($options as $key => $value) {
         if ($key == 'gc_maxlifetime' || $key == 'cookie_lifetime') {
