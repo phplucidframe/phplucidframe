@@ -4,5 +4,4 @@ If you have the following files in this directory, they take precedence over the
 - 401.php
 - 403.php
 - 404.php
-- head.php
 - site.error.php
