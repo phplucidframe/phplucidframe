@@ -1219,6 +1219,10 @@ function db_findOrFail($table, $id, $fields = [])
  *       'field'  => 'asc|desc'
  *     )
  *
+ *  OR
+ *
+ *     array('RAW SQL expression')
+ *
  * @param array $pagerOptions Array of key/value pairs to Pager options
  * @return array [QueryBuilder, Pager, total]
  */
@@ -1257,7 +1261,11 @@ function db_findWithPager($table, array $condition = array(), array $orderBy = a
     $qb->limit($pager->get('offset'), $pager->get('itemsPerPage'));
 
     foreach ($orderBy as $field => $sort) {
-        $qb->orderBy($field, $sort);
+        if (is_numeric($field)) {
+            $qb->orderBy(db_raw($sort));
+        } else {
+            $qb->orderBy($field, $sort);
+        }
     }
 
     return array($qb, $pager, $rowCount);
@@ -1265,6 +1273,7 @@ function db_findWithPager($table, array $condition = array(), array $orderBy = a
 
 /**
  * Get data of a table by condition
+ *
  * @param string $table The table name to fetch data from
  * @param array $condition The condition array for query
  *
@@ -1292,6 +1301,10 @@ function db_findWithPager($table, array $condition = array(), array $orderBy = a
  *       'field'  => 'asc|desc'
  *     )
  *
+ *  OR
+ *
+ *     array('RAW SQL expression')
+ *
  * @param int $limit The number of records to return; No limit by default
  * @return array
  */
@@ -1304,7 +1317,11 @@ function db_findBy($table, array $condition, array $orderBy = array(), $limit = 
     $qb = db_select($table)->where($condition);
 
     foreach ($orderBy as $field => $sort) {
-        $qb->orderBy($field, $sort);
+        if (is_numeric($field)) {
+            $qb->orderBy(db_raw($sort));
+        } else {
+            $qb->orderBy($field, $sort);
+        }
     }
 
     if ($limit) {
@@ -1406,6 +1423,10 @@ function db_findOneByOrFail($table, array $condition, array $orderBy = array())
  *       'field'  => 'asc|desc'
  *     )
  *
+ *  OR
+ *
+ *     array('RAW SQL expression')
+ *
  * @return array
  */
 function db_findAll($table, $fields = array(), $orderBy = array())
@@ -1422,7 +1443,11 @@ function db_findAll($table, $fields = array(), $orderBy = array())
 
     if (!empty($orderBy)) {
         foreach ($orderBy as $field => $sort) {
-            $qb->orderBy($field, $sort);
+            if (is_numeric($field)) {
+                $qb->orderBy(db_raw($sort));
+            } else {
+                $qb->orderBy($field, $sort);
+            }
         }
     }
 
