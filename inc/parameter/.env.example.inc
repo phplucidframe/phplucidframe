@@ -7,6 +7,16 @@
  */
 return array(
     'host' => 'http://localhost', # change this by environment and accessible by _env('host')
+    'dev' => array( # either dev or development as you like
+        'db' => array(
+            'default' => array(
+                'database'  => '', // accessible by _env('dev.db.default.database')
+                'username'  => '', // accessible by _env('dev.db.default.username')
+                'password'  => '', // accessible by _env('dev.db.default.password')
+                'prefix'    => '', // accessible by _env('dev.db.default.prefix')
+            )
+        ),
+    ),
     'prod' => array( # either prod or production as you like
         'db' => array(
             'default' => array(

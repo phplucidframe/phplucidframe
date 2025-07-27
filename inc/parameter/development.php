@@ -17,9 +17,9 @@ return array(
             'driver'    => 'mysql',
             'host'      => 'localhost',
             'port'      => '',
-            'database'  => '',
-            'username'  => '',
-            'password'  => '',
+            'database'  => '', # or use _env('dev.db.default.database') here
+            'username'  => '', # or use _env('dev.db.default.username') here
+            'password'  => '', # or use _env('dev.db.default.password') here
             'prefix'    => '',
             'charset'   => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
@@ -30,8 +30,8 @@ return array(
             'host'      => 'localhost',
             'port'      => '',
             'database'  => 'lucid_blog',
-            'username'  => 'root',
-            'password'  => 'root',
+            'username'  => '',
+            'password'  => '',
             'prefix'    => '',
             'charset'   => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
