@@ -17,7 +17,7 @@ _consoleCommand('secret:generate')
     ->setDescription('Generate a secret key')
     ->setDefinition(function(\LucidFrame\Console\Command $cmd) {
         $secret = _randomCode(32);
-        file_put_contents(INC . '.secret', $secret . PHP_EOL);
+        file_put_contents(ROOT . '.secret', $secret . PHP_EOL);
         _writeln($secret);
     })
     ->register();
