@@ -31,11 +31,99 @@ It supports a wide range of web application development features:
 
 ## Prerequisites
 
-- Web Server (Apache with `mod_rewrite` enabled)
+- Web Server (Apache with `mod_rewrite` enabled or Nginx)
 - PHP version 7.1 or newer is recommended, but we strongly advise you to use one of the currently supported versions.
 - MySQL 5.0 or newer
 
-## Installation
+## Docker Installation (Recommended)
+
+The easiest way to get PHPLucidFrame running is using Docker with PHP, MySQL, and Nginx:
+
+### Prerequisites for Docker
+- Docker and Docker Compose installed on your system
+
+### Quick Start with Docker
+
+1. Clone or download the PHPLucidFrame repository
+2. Navigate to the project directory
+3. Run the following commands:
+
+```bash
+# Copy the Docker environment file
+cp .lcenv.docker .lcenv
+
+# Development (with volumes for live editing)
+docker-compose up -d
+
+# Production (optimized, smaller image)
+docker-compose -f docker-compose.prod.yml up -d
+
+# Generate security secret (run this once)
+docker-compose exec web php lucidframe secret:generate
+```
+
+### Docker Image Optimization
+
+We provide two Docker configurations:
+
+- **Development** (`Dockerfile`): ~200MB, includes development tools, live file mounting
+- **Production** (`Dockerfile.production`): ~80MB, Alpine-based, optimized for production
+
+**Image size comparison:**
+- Standard PHP-FPM + Nginx: ~400MB
+- Our optimized image: ~80MB (80% smaller!)
+
+**Optimizations included:**
+- Multi-stage builds to exclude build dependencies
+- Alpine Linux base for minimal footprint
+- Optimized PHP-FPM and Nginx configurations
+- Removed unnecessary packages and files
+- Production-ready security settings
+
+4. Access your application:
+   - **Main Application**: http://localhost:8080
+   - **phpMyAdmin**: http://localhost:8081 (username: `lucidframe`, password: `lucidframe_password`)
+
+### Docker Services
+
+The Docker setup includes:
+- **Web Server**: Nginx with PHP 8.1-FPM
+- **Database**: MySQL 8.0 with sample data
+- **Database Management**: phpMyAdmin for easy database administration
+
+### Docker Configuration
+
+- **Application Port**: 8080
+- **Database Port**: 3306 (accessible from host)
+- **phpMyAdmin Port**: 8081
+- **Database Name**: `lucidframe` (main), `lucid_blog` (sample)
+- **Database User**: `lucidframe`
+- **Database Password**: `lucidframe_password`
+
+### Docker Commands
+
+```bash
+# Start containers
+docker-compose up -d
+
+# Stop containers
+docker-compose down
+
+# View logs
+docker-compose logs web
+docker-compose logs db
+
+# Access web container shell
+docker-compose exec web bash
+
+# Run LucidFrame console commands
+docker-compose exec web php lucidframe [command]
+
+# Rebuild containers (after code changes)
+docker-compose up -d --build
+```
+
+## Manual Installation
 
 - Extract [the downloaded archive](http://www.phplucidframe.com/download/release/latest) in your local webserver document root, and you will get a folder named **phplucidframe-x.y.z** where **x.y.z** would be your downloaded version.
 - Rename it as **phplucidframe**.
@@ -82,6 +170,35 @@ PHPLucidFrame encourages a structured page organization. You can check the recom
 
 - [Stackoverflow](http://stackoverflow.com/questions/tagged/phplucidframe)
 - [GitHub issues](https://github.com/phplucidframe/phplucidframe/issues)
+
+## Docker Troubleshooting
+
+### Common Issues
+
+**Port conflicts**: If ports 8080, 3306, or 8081 are already in use, modify the ports in `docker-compose.yml`:
+```yaml
+ports:
+  - "8090:80"  # Change 8080 to 8090
+```
+
+**Permission issues**: If you encounter permission errors:
+```bash
+# Fix file permissions
+docker-compose exec web chown -R www-data:www-data /var/www/html
+docker-compose exec web chmod -R 755 /var/www/html
+```
+
+**Database connection issues**: Ensure the database container is running:
+```bash
+docker-compose ps
+docker-compose logs db
+```
+
+**Clear everything and start fresh**:
+```bash
+docker-compose down -v
+docker-compose up -d --build
+```
 
 ## Run Tests
 

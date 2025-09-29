@@ -1,0 +1,58 @@
+# Version control
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+CONTRIBUTING.md
+CHANGELOG.md
+LICENSE
+*.md
+
+# IDE and editor files
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Development files
+tests
+.phpunit.result.cache
+phpunit.xml
+.env*
+.lcenv*
+!.lcenv.docker
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+/tmp
+/logs
+
+# Docker related
+docker/nginx/logs
+Dockerfile*
+docker-compose*.yml
+docker-setup.*
+
+# Build artifacts
+vendor
+node_modules
+.sass-cache
+*.map
+
+# Cache directories
+cache
+/var/cache

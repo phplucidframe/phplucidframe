@@ -1,0 +1,127 @@
+# Multi-stage build for ultra-minimal production image
+FROM composer:2.6-alpine AS composer-stage
+WORKDIR /app
+COPY composer.json composer.lock* ./
+RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction --classmap-authoritative
+
+# Distroless-like minimal production stage
+FROM php:8.1-fpm-alpine AS production
+
+# Install only essential runtime dependencies
+RUN apk add --no-cache \
+    nginx \
+    libpng \
+    libjpeg-turbo \
+    freetype \
+    oniguruma \
+    libxml2 \
+    curl \
+    && apk add --no-cache --virtual .build-deps \
+    libpng-dev \
+    libjpeg-turbo-dev \
+    freetype-dev \
+    oniguruma-dev \
+    libxml2-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) \
+    pdo_mysql \
+    mbstring \
+    exif \
+    pcntl \
+    bcmath \
+    gd \
+    && apk del .build-deps \
+    && rm -rf /var/cache/apk/* /tmp/* /var/tmp/*
+
+# Create minimal nginx configuration
+RUN echo "user www-data;" > /etc/nginx/nginx.conf \
+    && echo "worker_processes auto;" >> /etc/nginx/nginx.conf \
+    && echo "error_log /dev/stderr warn;" >> /etc/nginx/nginx.conf \
+    && echo "pid /run/nginx.pid;" >> /etc/nginx/nginx.conf \
+    && echo "events { worker_connections 1024; use epoll; }" >> /etc/nginx/nginx.conf \
+    && echo "http {" >> /etc/nginx/nginx.conf \
+    && echo "  include /etc/nginx/mime.types;" >> /etc/nginx/nginx.conf \
+    && echo "  default_type application/octet-stream;" >> /etc/nginx/nginx.conf \
+    && echo "  sendfile on;" >> /etc/nginx/nginx.conf \
+    && echo "  tcp_nopush on;" >> /etc/nginx/nginx.conf \
+    && echo "  keepalive_timeout 65;" >> /etc/nginx/nginx.conf \
+    && echo "  gzip on;" >> /etc/nginx/nginx.conf \
+    && echo "  include /etc/nginx/http.d/*.conf;" >> /etc/nginx/nginx.conf \
+    && echo "}" >> /etc/nginx/nginx.conf
+
+# Create www-data user and directories
+RUN addgroup -g 82 -S www-data \
+    && adduser -u 82 -D -S -G www-data www-data \
+    && mkdir -p /var/log/nginx /var/lib/nginx/tmp /run/nginx /var/www/html \
+    && chown -R www-data:www-data /var/log/nginx /var/lib/nginx /run/nginx /var/www/html
+
+# Optimize PHP-FPM configuration for production
+RUN { \
+    echo '[global]'; \
+    echo 'error_log = /dev/stderr'; \
+    echo 'log_level = warning'; \
+    echo '[www]'; \
+    echo 'user = www-data'; \
+    echo 'group = www-data'; \
+    echo 'listen = 127.0.0.1:9000'; \
+    echo 'pm = dynamic'; \
+    echo 'pm.max_children = 20'; \
+    echo 'pm.start_servers = 2'; \
+    echo 'pm.min_spare_servers = 1'; \
+    echo 'pm.max_spare_servers = 3'; \
+    echo 'pm.max_requests = 1000'; \
+    echo 'access.log = /dev/stdout'; \
+    echo 'catch_workers_output = yes'; \
+    echo 'decorate_workers_output = no'; \
+} > /usr/local/etc/php-fpm.d/www.conf
+
+# Production PHP configuration
+RUN { \
+    echo 'expose_php = Off'; \
+    echo 'display_errors = Off'; \
+    echo 'log_errors = On'; \
+    echo 'error_log = /dev/stderr'; \
+    echo 'memory_limit = 128M'; \
+    echo 'max_execution_time = 30'; \
+    echo 'max_input_vars = 3000'; \
+    echo 'post_max_size = 32M'; \
+    echo 'upload_max_filesize = 32M'; \
+    echo 'opcache.enable = 1'; \
+    echo 'opcache.memory_consumption = 128'; \
+    echo 'opcache.interned_strings_buffer = 8'; \
+    echo 'opcache.max_accelerated_files = 4000'; \
+    echo 'opcache.revalidate_freq = 60'; \
+    echo 'opcache.fast_shutdown = 1'; \
+} > /usr/local/etc/php/conf.d/production.ini
+
+WORKDIR /var/www/html
+
+# Copy application files (minimal set)
+COPY --chown=www-data:www-data --from=composer-stage /app/vendor ./vendor
+COPY --chown=www-data:www-data app ./app
+COPY --chown=www-data:www-data lib ./lib
+COPY --chown=www-data:www-data inc ./inc
+COPY --chown=www-data:www-data assets ./assets
+COPY --chown=www-data:www-data index.php bootstrap.php ./
+COPY --chown=www-data:www-data composer.json ./
+
+# Copy optimized configurations
+COPY --chown=www-data:www-data docker/nginx/default.conf /etc/nginx/http.d/default.conf
+COPY --chown=www-data:www-data docker/start.sh /start.sh
+
+# Set final permissions and cleanup
+RUN chmod +x /start.sh \
+    && find /var/www/html -type f -exec chmod 644 {} \; \
+    && find /var/www/html -type d -exec chmod 755 {} \; \
+    && rm -rf /tmp/* /var/tmp/* /usr/share/man /usr/share/doc
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost/ || exit 1
+
+EXPOSE 80
+
+# Switch to non-root user
+USER www-data
+
+CMD ["/start.sh"]

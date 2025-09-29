@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+      - ./docker/nginx/logs:/var/log/nginx
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_DATABASE=lucidframe
+      - DB_USERNAME=lucidframe
+      - DB_PASSWORD=lucidframe_password
+    networks:
+      - lucidframe-network
+    restart: unless-stopped
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: lucidframe
+      MYSQL_USER: lucidframe
+      MYSQL_PASSWORD: lucidframe_password
+      MYSQL_ROOT_PASSWORD: root_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d
+    networks:
+      - lucidframe-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: db
+      PMA_USER: lucidframe
+      PMA_PASSWORD: lucidframe_password
+    ports:
+      - "8081:80"
+    depends_on:
+      - db
+    networks:
+      - lucidframe-network
+
+volumes:
+  mysql_data:
+
+networks:
+  lucidframe-network:
+    driver: bridge
