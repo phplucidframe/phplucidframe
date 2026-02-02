@@ -16,6 +16,9 @@
 
 namespace LucidFrame\Core;
 
+use LucidFrame\Core\drivers\DriverFactory;
+use LucidFrame\Core\drivers\DriverInterface;
+
 /**
  * This class is part of the PHPLucidFrame library.
  * Helper for file processing system
@@ -38,6 +41,12 @@ class Database
 
     private $connection;
 
+    /**
+     * Database driver instance
+     * @var DriverInterface
+     */
+    private $driverInstance;
+
     public $schemaManager;
 
     private static $queries = array();
@@ -45,6 +54,12 @@ class Database
 
     private $errorCode;
     private $error;
+
+    /**
+     * Last DatabaseException that occurred
+     * @var DatabaseException|null
+     */
+    private $lastException;
 
     private static $FETCH_MODE_MAP = array(
         LC_FETCH_OBJECT => \PDO::FETCH_OBJ,
@@ -57,6 +72,8 @@ class Database
         $this->config = _cfg('databases');
         if ($namespace === null) {
             $this->namespace = _cfg('defaultDbSource');
+        } else {
+            $this->namespace = $namespace;
         }
 
         _app('db', $this);
@@ -70,6 +87,15 @@ class Database
     public function getConnection()
     {
         return $this->connection;
+    }
+
+    /**
+     * Get the driver instance
+     * @return DriverInterface
+     */
+    public function getDriverInstance()
+    {
+        return $this->driverInstance;
     }
 
     /**
@@ -91,7 +117,8 @@ class Database
     /**
      * Start database connection
      * @param string $namespace
-     * @return \PDO or PDOException
+     * @return mixed Database connection
+     * @throws DatabaseException If connection fails
      */
     public function connect($namespace = null)
     {
@@ -99,6 +126,10 @@ class Database
             $this->namespace = $namespace;
         }
 
+        // Get configuration for the namespace with defaults applied
+        $config = $this->getConfigWithDefaults($this->namespace);
+
+        // Set properties from config for backward compatibility
         $this->driver       = $this->getDriver();
         $this->host         = $this->getHost();
         $this->port         = $this->getPort();
@@ -109,34 +140,49 @@ class Database
         $this->charset      = $this->getCharset();
         $this->collation    = $this->getCollation();
 
-        if ($this->driver) {
+        try {
+            // Create driver instance using factory
+            $this->driverInstance = DriverFactory::create($config);
+
+            // Connect using the driver
+            $this->connection = $this->driverInstance->connect($config);
+
+            // Load helper files for backward compatibility
             if ($file = _i('helpers' . _DS_ . 'db_helper.php', false)) {
                 include $file;
             }
 
-            if ($this->driver === 'mysql') {
-                require HELPER . 'db_helper.mysqli.php';
+            // Load driver-specific helper file
+            $helperFile = HELPER . 'db_helper.' . $this->driver . '.php';
+            if (file_exists($helperFile)) {
+                require $helperFile;
             } else {
-                require HELPER . 'db_helper.' . $this->driver . '.php';
-            }
-
-            if ($this->getHost() && $this->getUser() && $this->getName()) {
-                # Start DB connection
-                $dsn = sprintf('%s:host=%s;dbname=%s;charset=%s', $this->driver, $this->host, $this->name, $this->charset);
-                $options  = array(
-                    \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-                    \PDO::MYSQL_ATTR_INIT_COMMAND => sprintf('SET NAMES %s COLLATE %s', $this->charset, $this->collation)
-                );
-
-                $this->connection = new \PDO($dsn, $this->username, $this->password, $options);
-
-                # Load the schema of the currently connected database
-                $schema = _schema($this->namespace, true);
-                $this->schemaManager = new SchemaManager($schema);
-                if (!$this->schemaManager->isLoaded()) {
-                    $this->schemaManager->build($namespace);
+                // Fallback to mysqli helper for MySQL compatibility
+                if ($this->driver === 'mysql' && file_exists(HELPER . 'db_helper.mysqli.php')) {
+                    require HELPER . 'db_helper.mysqli.php';
                 }
             }
+
+            // Load the schema of the currently connected database
+            $schema = _schema($this->namespace, true);
+            $this->schemaManager = new SchemaManager($schema);
+            if (!$this->schemaManager->isLoaded()) {
+                $this->schemaManager->build($namespace);
+            }
+
+        } catch (\Exception $e) {
+            if ($e instanceof DatabaseException) {
+                $this->lastException = $e;
+                throw $e;
+            }
+
+            $exception = DatabaseException::connectionError(
+                'Failed to connect to database: ' . $e->getMessage(),
+                $e->getCode(),
+                $e->getMessage()
+            );
+            $this->lastException = $exception;
+            throw $exception;
         }
 
         return $this->connection;
@@ -169,10 +215,56 @@ class Database
         $namespace = $this->getNamespace($namespace);
 
         if (!isset($this->config[$namespace])) {
-            die('Database configuration error for ' . $namespace . '!');
+            throw new DatabaseException('Database configuration error for ' . $namespace . '!');
         }
 
         return $this->config[$namespace];
+    }
+
+    /**
+     * Validate configuration for a specific namespace without connecting
+     *
+     * @param string $namespace Namespace to validate
+     * @return bool True if configuration is valid
+     * @throws DatabaseException If configuration is invalid
+     */
+    public function validateConfig($namespace = null)
+    {
+        $namespace = $this->getNamespace($namespace);
+
+        // Get configuration for the namespace
+        $config = $this->getConfig($namespace);
+
+        // Apply default values based on driver
+        $config = DriverFactory::applyDefaults($config);
+
+        // Validate configuration
+        DriverFactory::validateConfig($config);
+
+        return true;
+    }
+
+    /**
+     * Get configuration with defaults applied for a specific namespace
+     *
+     * @param string $namespace Namespace to get configuration for
+     * @return array Configuration with defaults applied
+     * @throws DatabaseException If configuration is invalid
+     */
+    public function getConfigWithDefaults($namespace = null)
+    {
+        $namespace = $this->getNamespace($namespace);
+
+        // Get configuration for the namespace
+        $config = $this->getConfig($namespace);
+
+        // Apply default values based on driver
+        $config = DriverFactory::applyDefaults($config);
+
+        // Validate configuration
+        DriverFactory::validateConfig($config);
+
+        return $config;
     }
 
     /**
@@ -182,7 +274,7 @@ class Database
      */
     public function getDriver($namespace = null)
     {
-        $conf = $this->getConfig($this->getNamespace($namespace));
+        $conf = $this->getConfigWithDefaults($this->getNamespace($namespace));
 
         return $conf['driver'];
     }
@@ -194,7 +286,7 @@ class Database
      */
     public function getHost($namespace = null)
     {
-        $conf = $this->getConfig($this->getNamespace($namespace));
+        $conf = $this->getConfigWithDefaults($this->getNamespace($namespace));
 
         return $conf['host'];
     }
@@ -206,7 +298,7 @@ class Database
      */
     public function getPort($namespace = null)
     {
-        $conf = $this->getConfig($this->getNamespace($namespace));
+        $conf = $this->getConfigWithDefaults($this->getNamespace($namespace));
 
         return $conf['port'];
     }
@@ -218,10 +310,7 @@ class Database
      */
     public function getName($namespace = null)
     {
-        $conf = $this->getConfig($this->getNamespace($namespace));
-        if (!isset($conf['database'])) {
-            die('Database name is not set.');
-        }
+        $conf = $this->getConfigWithDefaults($this->getNamespace($namespace));
 
         return $conf['database'];
     }
@@ -233,10 +322,7 @@ class Database
      */
     public function getUser($namespace = null)
     {
-        $conf = $this->getConfig($this->getNamespace($namespace));
-        if (!isset($conf['username'])) {
-            die('Database username is not set.');
-        }
+        $conf = $this->getConfigWithDefaults($this->getNamespace($namespace));
 
         return $conf['username'];
     }
@@ -248,10 +334,7 @@ class Database
      */
     private function getPassword($namespace = null)
     {
-        $conf = $this->getConfig($this->getNamespace($namespace));
-        if (!isset($conf['password'])) {
-            die('Database password is not set.');
-        }
+        $conf = $this->getConfigWithDefaults($this->getNamespace($namespace));
 
         return $conf['password'];
     }
@@ -263,9 +346,9 @@ class Database
      */
     public function getPrefix($namespace = null)
     {
-        $conf = $this->getConfig($this->getNamespace($namespace));
+        $conf = $this->getConfigWithDefaults($this->getNamespace($namespace));
 
-        return isset($conf['prefix']) ? $conf['prefix'] : $this->prefix;
+        return $conf['prefix'];
     }
 
     /**
@@ -275,9 +358,9 @@ class Database
      */
     public function getCharset($namespace = null)
     {
-        $conf = $this->getConfig($this->getNamespace($namespace));
+        $conf = $this->getConfigWithDefaults($this->getNamespace($namespace));
 
-        return isset($conf['charset']) ? $conf['charset'] : $this->charset;
+        return $conf['charset'];
     }
 
     /**
@@ -287,9 +370,9 @@ class Database
      */
     public function getCollation($namespace = null)
     {
-        $conf = $this->getConfig($this->getNamespace($namespace));
+        $conf = $this->getConfigWithDefaults($this->getNamespace($namespace));
 
-        return isset($conf['collation']) ? $conf['collation'] : $this->collation;
+        return $conf['collation'];
     }
 
     /**
@@ -304,6 +387,7 @@ class Database
      * The prefix colon ":" for placeholder is optional
      *
      * @return mixed PDOStatement|boolean|string
+     * @throws DatabaseException If query execution fails
      */
     public function query($sql, $args = array())
     {
@@ -311,6 +395,7 @@ class Database
             $args = array();
         }
 
+        // Normalize parameters for backward compatibility
         $params = array();
         foreach ($args as $key => $value) {
             if (is_numeric($key)) {
@@ -326,24 +411,60 @@ class Database
         }
 
         try {
-            if (empty($params)) {
-                $stmt = $this->connection->query($sql);
-                self::$queries[] = $sql;
+            // Use driver instance if available, otherwise fall back to direct connection
+            if ($this->driverInstance) {
+                $stmt = $this->driverInstance->query($sql, $params);
             } else {
-                $stmt = $this->connection->prepare($sql);
-                $stmt->execute($params);
-                self::$queries[] = $sql;
+                // Fallback for backward compatibility
+                if (empty($params)) {
+                    $stmt = $this->connection->query($sql);
+                } else {
+                    $stmt = $this->connection->prepare($sql);
+                    $stmt->execute($params);
+                }
+            }
+
+            // Track queries for debugging
+            self::$queries[] = $sql;
+            if (!empty($params)) {
                 self::$bindParams = $params;
             }
 
             if (_g('db_printQuery')) {
                 return $this->getQueryStr();
             }
+
         } catch (\PDOException $e) {
             $this->errorCode = $e->getCode();
             $this->error = $e->getMessage();
 
+            // Convert to DatabaseException for standardized error handling
+            $standardCode = DatabaseException::mapDriverError($e->getCode(), $this->driver);
+            throw new DatabaseException(
+                'Database query failed: ' . $e->getMessage(),
+                $e->getCode(),
+                $e,
+                $e->getCode(),
+                $e->getMessage(),
+                $standardCode
+            );
+        } catch (DatabaseException $e) {
+            // Store the exception and re-throw DatabaseException as-is
+            $this->lastException = $e;
+            $this->errorCode = $e->getDriverCode();
+            $this->error = $e->getDriverMessage();
             throw $e;
+        } catch (\Exception $e) {
+            $this->errorCode = $e->getCode();
+            $this->error = $e->getMessage();
+
+            $exception = DatabaseException::driverError(
+                'Database operation failed: ' . $e->getMessage(),
+                $e->getCode(),
+                $e->getMessage()
+            );
+            $this->lastException = $exception;
+            throw $exception;
         }
 
         return $stmt;
@@ -389,6 +510,9 @@ class Database
      */
     public function fetchAssoc($stmt)
     {
+        if ($this->driverInstance) {
+            return $this->driverInstance->fetchAssoc($stmt);
+        }
         return $stmt ? $stmt->fetch(\PDO::FETCH_ASSOC) : false;
     }
 
@@ -400,6 +524,9 @@ class Database
      */
     public function fetchArray($stmt)
     {
+        if ($this->driverInstance) {
+            return $this->driverInstance->fetchArray($stmt);
+        }
         return $stmt ? $stmt->fetch(\PDO::FETCH_NUM) : false;
     }
 
@@ -410,6 +537,9 @@ class Database
      */
     public function fetchObject($stmt)
     {
+        if ($this->driverInstance) {
+            return $this->driverInstance->fetchObject($stmt);
+        }
         return $stmt ? $stmt->fetch(\PDO::FETCH_OBJ) : false;
     }
 
@@ -435,6 +565,12 @@ class Database
             $args = array();
         }
 
+        if ($this->driverInstance) {
+            $data = $this->driverInstance->fetchAll($sql, $args, $resultType);
+            return $data !== false && count($data) ? $data : false;
+        }
+
+        // Fallback for backward compatibility
         $stmt = $this->query($sql, $args);
         $data = $stmt->fetchAll(self::$FETCH_MODE_MAP[$resultType]);
 
@@ -459,6 +595,11 @@ class Database
      */
     function fetchResult($sql, $args = array())
     {
+        if ($this->driverInstance) {
+            return $this->driverInstance->fetchResult($sql, $args);
+        }
+
+        // Fallback for backward compatibility
         $sql = $this->appendLimit($sql);
 
         if ($result = $this->query($sql, $args)) {
@@ -488,6 +629,11 @@ class Database
      */
     public function fetchColumn($sql, $args = array())
     {
+        if ($this->driverInstance) {
+            return $this->driverInstance->fetchColumn($sql, $args);
+        }
+
+        // Fallback for backward compatibility
         $sql = $this->appendLimit($sql);
 
         if ($result = $this->query($sql, $args)) {
@@ -504,6 +650,9 @@ class Database
      */
     public function getNumRows($stmt)
     {
+        if ($this->driverInstance) {
+            return $this->driverInstance->getNumRows($stmt);
+        }
         return $stmt->rowCount();
     }
 
@@ -565,6 +714,9 @@ class Database
      */
     public function getInsertId()
     {
+        if ($this->driverInstance) {
+            return $this->driverInstance->getLastInsertId();
+        }
         return $this->connection ? $this->connection->lastInsertId() : 0;
     }
 
@@ -574,6 +726,9 @@ class Database
      */
     public function getError()
     {
+        if ($this->driverInstance) {
+            return $this->driverInstance->getError();
+        }
         return $this->error;
     }
 
@@ -583,7 +738,103 @@ class Database
      */
     public function getErrorCode()
     {
+        if ($this->driverInstance) {
+            return $this->driverInstance->getErrorCode();
+        }
         return $this->errorCode;
+    }
+
+    /**
+     * Get the last DatabaseException if available
+     * @return DatabaseException|null
+     */
+    public function getLastException()
+    {
+        // This would be set by the query method when an exception occurs
+        return isset($this->lastException) ? $this->lastException : null;
+    }
+
+    /**
+     * Check if the last operation resulted in a specific type of error
+     * @param string $errorType The standard error code to check for
+     * @return bool True if the last error matches the specified type
+     */
+    public function isErrorType($errorType)
+    {
+        $lastException = $this->getLastException();
+        return $lastException && $lastException->getStandardCode() === $errorType;
+    }
+
+    /**
+     * Check if the last error was a connection error
+     * @return bool True if connection error
+     */
+    public function isConnectionError()
+    {
+        return $this->isErrorType(DatabaseException::DB_CONNECTION_ERROR);
+    }
+
+    /**
+     * Check if the last error was a duplicate key error
+     * @return bool True if duplicate key error
+     */
+    public function isDuplicateKeyError()
+    {
+        return $this->isErrorType(DatabaseException::DB_DUPLICATE_KEY_ERROR);
+    }
+
+    /**
+     * Check if the last error was a foreign key constraint error
+     * @return bool True if foreign key error
+     */
+    public function isForeignKeyError()
+    {
+        return $this->isErrorType(DatabaseException::DB_FOREIGN_KEY_ERROR);
+    }
+
+    /**
+     * Check if the last error was a syntax error
+     * @return bool True if syntax error
+     */
+    public function isSyntaxError()
+    {
+        return $this->isErrorType(DatabaseException::DB_SYNTAX_ERROR);
+    }
+
+    /**
+     * Begin a database transaction
+     * @return bool True on success, false on failure
+     */
+    public function beginTransaction()
+    {
+        if ($this->driverInstance) {
+            return $this->driverInstance->beginTransaction();
+        }
+        return $this->connection ? $this->connection->beginTransaction() : false;
+    }
+
+    /**
+     * Commit the current transaction
+     * @return bool True on success, false on failure
+     */
+    public function commit()
+    {
+        if ($this->driverInstance) {
+            return $this->driverInstance->commit();
+        }
+        return $this->connection ? $this->connection->commit() : false;
+    }
+
+    /**
+     * Rollback the current transaction
+     * @return bool True on success, false on failure
+     */
+    public function rollback()
+    {
+        if ($this->driverInstance) {
+            return $this->driverInstance->rollback();
+        }
+        return $this->connection ? $this->connection->rollback() : false;
     }
 
     /**
@@ -592,6 +843,9 @@ class Database
      */
     public function close()
     {
+        if ($this->driverInstance) {
+            $this->driverInstance->close();
+        }
         $this->connection = null;
     }
 
