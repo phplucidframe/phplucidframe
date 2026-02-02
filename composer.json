@@ -3,13 +3,13 @@
     "description": "The simple, lightweight & yet powerful PHP framework",
     "type": "library",
     "keywords": ["framework"],
-    "homepage": "http://www.phplucidframe.com",
+    "homepage": "https://www.phplucidframe.com",
     "license": "MIT",
     "authors": [
         {
             "name": "Sithu K.",
             "email": "sithu@phplucidframe.com",
-                "homepage": "https://github.com/dev-sithu",
+            "homepage": "https://github.com/cithukyaw",
             "role": "Creator & Core Developer"
         }
     ],
