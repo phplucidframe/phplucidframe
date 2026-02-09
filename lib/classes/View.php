@@ -140,7 +140,7 @@ class View
      */
     public function block($name, array $data = array(), $return = false)
     {
-        $name = rtrim($name, '.php') . '.php';
+        $name = str_replace('.php', '', $name) . '.php';
 
         $paths = array();
         if (strrpos($name, '/') !== false) {
