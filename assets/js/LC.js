@@ -1164,6 +1164,16 @@
             }
         }
     };
+
+    LC.Component = {
+        refresh : function(name, query) {
+            var root = LC.namespace ? LC.Page.root + LC.namespace + '/' : LC.Page.root;
+            LC.Page.request('GET', root + '@components/' + name, query, function(response) {
+                $('#lc_component_' + name).replaceWith(response);
+            });
+        }
+    };
+
     /**
      * Change another select dropdown upon one select dropdown change
      */

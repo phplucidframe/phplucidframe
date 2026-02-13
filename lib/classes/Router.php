@@ -97,6 +97,8 @@ class Router
         # e.g. "&" or "%" that have special meanings in URLs and must be encoded.
         $_GET[ROUTE] = Router::request();
         _cfg('cleanRoute', $_GET[ROUTE]);
+
+        self::addComponentRoute();
     }
 
     /**
@@ -449,5 +451,26 @@ class Router
         }
 
         return $_page;
+    }
+
+    /**
+     * Add a component route to the routing system.
+     * This method defines a base route for loading components and dynamically maps additional routes for each site namespace.
+     */
+    private static function addComponentRoute()
+    {
+        $callback = static function () {
+            $name = _get('name');
+            return Component::render($name, Component::getData($name), true);
+        };
+
+        route('lc_@component')->map('/@components/{name}', $callback);
+
+        $sites = array_keys(_cfg('sites'));
+        if (count($sites)) {
+            foreach ($sites as $namespace) {
+                route("lc_{$namespace}_@component")->map("$namespace/@components/{name}", $callback);
+            }
+        }
     }
 }
