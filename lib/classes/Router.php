@@ -456,20 +456,21 @@ class Router
     /**
      * Add a component route to the routing system.
      * This method defines a base route for loading components and dynamically maps additional routes for each site namespace.
+     *
+     * @return void
      */
     private static function addComponentRoute()
     {
         $callback = static function () {
-            $name = _get('name');
-            return Component::render($name, Component::getData($name), true);
+            return (new Component(_get('name')))->render(true);
         };
 
-        route('lc_@component')->map('/@components/{name}', $callback);
+        route('lc_@component')->map('/@components/{name}', $callback, 'POST');
 
         $sites = array_keys(_cfg('sites'));
         if (count($sites)) {
             foreach ($sites as $namespace) {
-                route("lc_{$namespace}_@component")->map("$namespace/@components/{name}", $callback);
+                route("lc_{$namespace}_@component")->map("$namespace/@components/{name}", $callback, 'POST');
             }
         }
     }

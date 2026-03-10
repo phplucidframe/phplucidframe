@@ -16,33 +16,232 @@ class Component
     private const BASE_DIR = '@components';
 
     /**
-     * Render a UI component located under the base @components directory.
+     * @var string Component name
+     */
+    private $name;
+
+    /**
+     * @var array Props data to be passed to the component
+     */
+    private $props = [];
+
+    /**
+     * @var array Stateful data to be passed to the component
+     */
+    private $data;
+
+    /**
+     * @var array The component live action functions
+     */
+    private $actions = [];
+
+    /**
+     * @var array Arguments to each action function
+     */
+    private $actionParams = [];
+
+    /**
+     * @var string The resolved file path for the component logic
+     */
+    private $file;
+
+    /**
+     * @var string The resolved file path for the component view
+     */
+    private $view;
+
+    /**
+     * Component constructor.
+     *
+     * @param string $name The component name (with or without ".php")
+     * @param array $data Variables to be extracted and available in the component
+     */
+    public function __construct(string $name, array $data = array())
+    {
+        $requestData = _request($name) ?: [];
+        $action = _get('action');
+        if ($action && !empty($requestData['action_params'])) {
+            $this->actionParams[$action] = $requestData['action_params'];
+        }
+
+        $this->name = str_replace('.php', '', $name);
+        $this->data = array_merge($data, $requestData);
+
+        $this->resolveFiles();
+    }
+
+    /**
+     * Add props data to the component
+     *
+     * @param string $key The data key
+     * @param mixed $value The data value
+     * @return mixed
+     */
+    public function setProps(string $key, $value = '')
+    {
+        $this->props[$key] = $value;
+
+        if (isset($this->data[$key])) {
+            unset($this->data[$key]);
+        }
+
+        return $this->props[$key];
+    }
+
+    /**
+     * Get component props data
+     * @param string $name
+     * @return mixed
+     */
+    public function getProps(string $name = '')
+    {
+        if ($name) {
+            return $this->props[$name];
+        }
+
+        return $this->props;
+    }
+
+    /**
+     * Add stateful data to the component
+     *
+     * @param string $key The data key
+     * @param mixed $value The data value
+     * @return mixed
+     */
+    public function setData(string $key, $value = '')
+    {
+        $this->data[$key] = $value;
+
+        return $this->data[$key];
+    }
+
+    /**
+     * Get component stateful data
+     * @param string $name
+     * @return mixed
+     */
+    public function getData(string $name = '')
+    {
+        if ($name) {
+            return $this->data[$name];
+        }
+
+        return $this->data;
+    }
+
+    /**
+     * Create and get component stateful data with a default value if the key does not exist.
+     *
+     * @param string $name The data field name
+     * @param mixed $default The default value if the key does not exist
+     * @return mixed|null The data value or the default value
+     */
+    public function useData(string $name = '', $default = null)
+    {
+        if (!isset($this->data[$name])) {
+            $this->data[$name] = $default;
+        }
+
+        return $this->data[$name];
+    }
+
+    /**
+     * Register a live action function to the component.
+     *
+     * @param string $name The action (function) name
+     * @param \Closure $closure The function closure
+     * @return void
+     */
+    public function action(string $name, \Closure $closure): void
+    {
+        if (!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $name)) {
+            throw new \InvalidArgumentException("Action name '$name' must follow function naming convention: starts with a letter or underscore, followed by letters, numbers, or underscores");
+        }
+
+        $this->actions[$name] = $closure;
+    }
+
+    /**
+     * Render the component.
      * Resolves the component by name under "@components" using one of these layouts:
      *  - "@components/{name}.php" + "@components/{name}.view.php"
      *  - "@components/{name}/index.php" + "@components/{name}/view.php"
      *  The lookup also tries an underscore variant of the name (hyphens replaced with underscores).
      * - Merges auto-generated HTML attributes into the provided `$data` as `$data['attributes']`.
      *
-     * @param string $name   The component name (with or without ".php").
-     * @param array  $data   Variables to be extracted and available in the component
-     * @param bool   $return When true, returns the rendered HTML as a string; otherwise echoes it.
-     *
+     * @param bool $return When true, returns the rendered HTML as a string; otherwise echoes it.
      * @return false|string|void Returns the HTML string when `$return` is true; otherwise echoes the content
-     *
-     * @throws \RuntimeException When the component files cannot be found.
      */
-    public static function render(string $name, array $data = array(), bool $return = false)
+    public function render(bool $return = false)
     {
-        $name = str_replace('.php', '', $name);
+        $component = $this;
+        include $this->file;
+        $data = array_merge($this->data, $this->props);
+
+        [$action, $args] = $this->getAction();
+        if ($action) {
+            $args = $args ? array_merge([$this], $args) : [$this];
+            call_user_func_array($action, $args);
+            $data = array_merge($data, $this->data);
+        }
+
+        extract($data); // ensure the updated values are available to the view
+
+        ob_start();
+        echo '<div id="lc_component_' . $this->name . '">';
+        echo '<style>[data-loading]{ display: none }</style>';
+        include $this->view;
+        echo '<script>$(function() { LC.Component.init("' . $this->name . '", ' . json_encode($data). ') });</script>';
+        echo '</div>';
+
+        $content = ob_get_clean();
+
+        if ($return) {
+            return $content;
+        }
+
+        echo $content;
+    }
+
+    /**
+     * Retrieves the action to be called and its arguments.
+     *
+     * This method checks if an action is specified in the request and if it is defined in the component.
+     * If both conditions are met, the action is returned as a callable array.
+     * If the action requires arguments, they are also returned.
+     *
+     * @return array|null An array containing the callable action and its arguments, or null if no action is specified or not defined.
+     */
+    private function getAction(): ?array
+    {
+        $action = _get('action');
+        if ($action && isset($this->actions[$action])) {
+            return [
+                $this->actions[$action],
+                $this->actionParams[$action] ?? null
+            ];
+        }
+
+        return null;
+    }
+
+    /**
+     * Resolve the component file paths.
+     * Looks for the component files in multiple locations and naming conventions.
+     *
+     * @throws \RuntimeException When the component files cannot be found
+     */
+    private function resolveFiles(): void
+    {
         $paths = [
-            // _ds(_cr(), self::BASE_DIR, $name), # TODO: search in the current directory
-            _ds(self::BASE_DIR, $name),
-            _ds(self::BASE_DIR, str_replace('-', '_', $name)),
+            // _ds(_cr(), self::BASE_DIR, $this->name), # TODO: search in the current directory
+            _ds(self::BASE_DIR, $this->name),
+            _ds(self::BASE_DIR, str_replace('-', '_', $this->name)),
         ];
 
         foreach ($paths as $path) {
             $filePath = _i($path . '.php'); # /path/to/@components/{$name}.php
-            $file = $view = '';
             if (is_file($filePath) && file_exists($filePath)) {
                 # /path/to/@components/{$name}.php
                 # /path/to/@components/{$name}.view.php
@@ -56,86 +255,12 @@ class Component
             }
 
             if ($file && $view) {
-                $data['attributes'] = self::getAttributes($name);
-                self::saveData($name, $data);
-
-                extract($data);
-
-                ob_start();
-                include $file;
-                echo '<div id="lc_component_' . $name . '">';
-                include $view;
-                echo '</div>';
-                $content = ob_get_clean();
-                if ($return) {
-                    return $content;
-                }
-
-                echo $content;
+                $this->file = $file;
+                $this->view = $view;
                 return;
             }
         }
 
-        throw new \RuntimeException('The view component "' . $name . '" is missing.');
-    }
-
-    /**
-     * Retrieve the previously saved data for a component.
-     * The data is kept in the session and automatically cleared when the
-     * current request is not a component refresh (i.e. when the URL does not
-     * contain the base component directory).
-     *
-     * @param string $name The component name
-     * @return array The saved component data or an empty array when none
-     */
-    public static function getData(string $name): array
-    {
-        if (!self::refreshed()) {
-            session_delete(self::BASE_DIR . '_' . $name);
-            return [];
-        }
-
-        return session_get(self::BASE_DIR . '_' . $name, true);
-    }
-
-    /**
-     * Persist arbitrary data for a component into session storage.
-     * The data will be available to the component on its subsequent render
-     * (typically during an AJAX refresh triggered by the component route).
-     *
-     * @param string $name The component name
-     * @param array $data The data to store in session
-     * @return void
-     */
-    public static function saveData(string $name, array $data = []): void
-    {
-        session_set(self::BASE_DIR . '_' . $name, $data, true);
-    }
-
-    /**
-     * Determine whether the current request is for a component refresh.
-     * It checks if the current route contains the component base directory
-     * segment ("@components").
-     *
-     * @return bool True if the request targets a component, false otherwise
-     */
-    public static function refreshed(): bool
-    {
-        return str_contains(_r(), self::BASE_DIR);
-    }
-
-    /**
-     * Build default HTML attributes for the root element of a component.
-     * Produces a string like: id="name" data-name="name".
-     *
-     * @param string $name The component name
-     * @return string Space-separated HTML attributes
-     */
-    protected static function getAttributes(string $name): string
-    {
-        $attributes = ['id' => $name, 'data-name' => $name];
-        $attributes = array_map(static function ($k, $v) { return "$k=\"$v\""; }, array_keys($attributes), array_values($attributes));
-
-        return implode(' ', $attributes);
+        throw new \RuntimeException('The view component "' . $this->name . '" is missing.');
     }
 }

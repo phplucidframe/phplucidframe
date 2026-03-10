@@ -21,6 +21,7 @@
     <a href="<?php echo _url('blog/2/url-rewrite-to-a-lucid-page-including-a-form-example'); ?>" class="button blue">AJAX Form <?php echo _t('Example'); ?></a>
     <a href="<?php echo _url('example/comment'); ?>" class="button blue">Generic Form <?php echo _t('Example'); ?></a>
     <a href="<?php echo _url('example/asyn-file-uploader'); ?>" class="button black">AsynFileUploader <?php echo _t('Example'); ?></a>
+    <a href="<?php echo _url('example/component'); ?>" class="button black">Live Component <?php echo _t('Example'); ?></a>
 </p>
 
 <script type="text/javascript">
