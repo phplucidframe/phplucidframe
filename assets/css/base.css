@@ -13,7 +13,7 @@
  */
 
 body {
-    font-size: 12px;
+    font-size: 14px;
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
     color: #333333;
@@ -22,7 +22,7 @@ body {
 
 input, button, textarea, select {
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 12px;
+    font-size: 14px;
     margin: 0;
 }
 
@@ -57,7 +57,7 @@ h5 {
 }
 
 h6 {
-    font-size: 14px;
+    font-size: 15px;
     padding: 2px 0;
 }
 
@@ -88,13 +88,15 @@ a label {
 code {
     display: block;
     border: 1px #ededed solid;
-    padding: 0 15px 15px;
+    padding: 15px;
     background: #f5f5f5;
     margin: 5px 0;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
     -moz-box-shadow: inset 1px 1px 1px 0 rgba(210, 210, 210, 0.3);
     -webkit-box-shadow: inset 1px 1px 1px 0 rgba(210, 210, 210, 0.3);
     box-shadow: inset 1px 1px 1px 0 rgba(210, 210, 210, 0.3);
-    white-space: pre;
     overflow-x: auto;
 }
 
@@ -225,7 +227,7 @@ select.fluid-75 {
     width: 75%;
 }
 
-select.fluid-25 {
+select.fluid-100 {
     width: 100%;
 }
 
@@ -296,6 +298,11 @@ select.lc-form-input {
     padding: 2px;
 }
 
+select[multiple].lc-form-input {
+    height: auto;
+    padding: 2px;
+}
+
 .lc-form-input.disabled {
     color: #333333;
     background: #efede0;
@@ -332,7 +339,6 @@ label.radio {
     padding: 9px 15px;
     margin: 0 5px 2px 0;
     min-width: 65px;
-    font-size: 13px;
     font-weight: bold;
     color: #333;
     text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
@@ -366,7 +372,7 @@ label.radio {
 
 .button.large {
     padding: 12px 20px;
-    font-size: 15px;
+    font-size: 16px;
 }
 
 .button.full-width {
@@ -480,6 +486,11 @@ label.radio {
     border-color: #960114;
 }
 
+.button[disabled] {
+    opacity: 0.75;
+    cursor: not-allowed;
+}
+
 /*********/
 /* ol ul */
 /*********/
@@ -531,7 +542,7 @@ ol li div, ul li div {
     min-height: 30px;
     background: #333333;
     padding: 0 10px;
-    font-size: 11px;
+    font-size: 12px;
 }
 
 #top-bar a {
@@ -1023,12 +1034,16 @@ table.list {
 .table .row label {
     display: inline-block;
     font-weight: bold;
-    padding-bottom: 2px;
+    padding-bottom: 7px;
 }
 
 .table .row .label {
     margin: 2px 0;
     font-weight: bold;
+}
+
+.table .row label.form-check-label {
+    font-weight: normal;
 }
 
 .table .col.col-50 {
