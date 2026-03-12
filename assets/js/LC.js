@@ -35,6 +35,10 @@
                     return; // normal form submission
                 }
 
+                if ($form.closest('.lc-component')) {
+                    return; // no ajax form inside components
+                }
+
                 LC.Form.forms.push($form.attr('id'));
 
                 // Add a hidden input and a reset button
@@ -1170,39 +1174,46 @@
         debounceTimers: {},
         init : function(componentName, data) {
             LC.Component.bindData[componentName] = data;
+            LC.Component.applyBindValues(componentName);
 
             var $container = LC.Component.getComponent(componentName);
             $container.find('[data-bind]').each(function() {
                 var $elem = $(this);
-                var event = $elem.data('on') || 'change';
+                var event = LC.Component.getEvent($elem);
 
-                if (LC.Component.isMultiSelectElem($elem)) {
-                    event = 'click';
-                }
-
-                event = event.replace(/on/i, '').toLowerCase();
                 if (event === 'off') { // data-bind="off" to disable live data binding
                     return;
                 }
 
-                $elem.on(event, function() {
-                    if (event === 'keyup' || event === 'keydown' || event === 'keypress'
-                        || (event === 'click' && LC.Component.isMultiSelectElem($elem))) {
-                        LC.Component.delayRefresh(componentName, $elem);
+                var callDelayRefresh = LC.Component.isKeyboardEvent(event)
+                    || (event === 'click' && LC.Component.isMultiSelectElem($elem));
+
+                $elem.on(event, function(e) {
+                    if (callDelayRefresh) {
+                        LC.Component.delayRefresh(componentName, $elem, e);
                     } else {
-                        LC.Component.refresh(componentName);
+                        LC.Component.refresh(componentName, $elem, e);
                     }
                 });
             });
 
-            $container.find('[data-live]:not([data-bind])').on('click', function () {
-                LC.Component.refresh(componentName, $(this).data('live'));
+            $container.find('[data-live]:not([data-bind])').on('click', function (e) {
+                e.preventDefault();
+                LC.Component.refresh(componentName, $(this));
             });
         },
-        refresh : function(componentName, action) {
-            var query = LC.Component.getBindValues(componentName);
-            var root = LC.namespace ? LC.Page.root + LC.namespace + '/' : LC.Page.root;
-            action = action || 'render';
+        refresh : function(componentName, $elem, event) {
+            var query   = LC.Component.getBindValues(componentName);
+            var root    = LC.namespace ? LC.Page.root + LC.namespace + '/' : LC.Page.root;
+            var eventType   = LC.Component.getEvent($elem)
+            var action  = $elem.data('live') || 'render';
+            var isKeyboardEvent = LC.Component.isKeyboardEvent(eventType);
+            var elemBind = $elem.data('bind');
+
+            // If key is non-visible key, return early to not trigger request
+            if (event && isKeyboardEvent && LC.Component.isNonVisibleKey(event)) {
+                return;
+            }
 
             var regex = /^(\w+)(?:\((.*)\))?$/;
             var match = action.match(regex);
@@ -1232,6 +1243,26 @@
                     LC.Component.getComponent(componentName).replaceWith(response);
                     LC.Component.applyBindValues(componentName);
 
+                    if (isKeyboardEvent) {
+                        var $newElem = $();
+
+                        if (!$newElem.length && elemBind) {
+                            $newElem = LC.Component.getComponent(componentName)
+                                .find('[data-bind="' + elemBind + '"]')
+                                .first();
+                        }
+
+                        if ($newElem.length) {
+                            var domElem = $newElem.get(0);
+                            $newElem.focus();
+
+                            if (typeof domElem.setSelectionRange === 'function') {
+                                var value = $newElem.val() || '';
+                                domElem.setSelectionRange(value.length, value.length);
+                            }
+                        }
+                    }
+
                     if ($loading) {
                         $loading.hide();
                     }
@@ -1239,7 +1270,7 @@
                 false
             );
         },
-        delayRefresh : function(componentName, $elem) {
+        delayRefresh : function(componentName, $elem, event) {
             // Clear existing timer for this element
             var elementId = $elem.attr('id') || $elem.attr('name') || Math.random().toString(36).substring(2, 9);
             if (LC.Component.debounceTimers[elementId]) {
@@ -1248,12 +1279,21 @@
 
             // Set new timer to delay refresh
             LC.Component.debounceTimers[elementId] = setTimeout(function() {
-                LC.Component.refresh(componentName);
+                LC.Component.refresh(componentName, $elem, event);
                 delete LC.Component.debounceTimers[elementId];
             }, 500); // 500ms delay
         },
         getComponent : function(componentName) {
             return $('#lc_component_' + componentName);
+        },
+        getEvent : function($elem) {
+            var event = $elem.data('on') || 'change';
+
+            if (LC.Component.isMultiSelectElem($elem)) {
+                event = 'click';
+            }
+
+            return event.replace(/on/i, '').toLowerCase();
         },
         getLoading : function (componentName) {
             var $container = LC.Component.getComponent(componentName);
@@ -1261,7 +1301,7 @@
 
             return $loading.length ? $loading : null;
         },
-        getBindValues: function(componentName) {
+        getBindValues : function(componentName) {
             var query = LC.Component.bindData[componentName];
             var $container = LC.Component.getComponent(componentName);
 
@@ -1365,6 +1405,48 @@
         },
         isMultiSelectElem : function($elem) {
             return $elem.is('select') && $elem.is('[multiple]') && $elem.data('bind').slice(-2) === '[]';
+        },
+        isKeyboardEvent : function(event) {
+            event = event.toLowerCase();
+            return event === 'keyup' || event === 'keydown' || event === 'keypress'
+        },
+        isNonVisibleKey : function(event) {
+            var keyCode = event.which || event.keyCode;
+            // Non-visible keys that shouldn't trigger requests
+            var nonVisibleKeys = [
+                9,   // Tab
+                16,  // Shift
+                17,  // Ctrl
+                18,  // Alt
+                20,  // Caps Lock
+                27,  // Escape
+                33,  // Page Up
+                34,  // Page Down
+                35,  // End
+                36,  // Home
+                37,  // Left Arrow
+                38,  // Up Arrow
+                39,  // Right Arrow
+                40,  // Down Arrow
+                45,  // Insert
+                91,  // Windows Key
+                92,  // Windows Key
+                93,  // Menu Key
+                112, // F1
+                113, // F2
+                114, // F3
+                115, // F4
+                116, // F5
+                117, // F6
+                118, // F7
+                119, // F8
+                120, // F9
+                121, // F10
+                122, // F11
+                123  // F12
+            ];
+
+            return nonVisibleKeys.indexOf(keyCode) !== -1;
         }
     };
 

@@ -189,7 +189,7 @@ class Component
         extract($data); // ensure the updated values are available to the view
 
         ob_start();
-        echo '<div id="lc_component_' . $this->name . '">';
+        echo '<div id="lc_component_' . $this->name . '" class="lc-component">';
         echo '<style>[data-loading]{ display: none }</style>';
         include $this->view;
         echo '<script>$(function() { LC.Component.init("' . $this->name . '", ' . json_encode($data). ') });</script>';
