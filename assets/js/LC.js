@@ -35,7 +35,7 @@
                     return; // normal form submission
                 }
 
-                if ($form.closest('.lc-component')) {
+                if ($form.closest('.lc-component').length) {
                     return; // no ajax form inside components
                 }
 
