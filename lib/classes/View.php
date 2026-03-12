@@ -140,7 +140,7 @@ class View
      */
     public function block($name, array $data = array(), $return = false)
     {
-        $name = rtrim($name, '.php') . '.php';
+        $name = str_replace('.php', '', $name) . '.php';
 
         $paths = array();
         if (strrpos($name, '/') !== false) {
@@ -166,15 +166,27 @@ class View
                     ob_start();
                     include $block;
                     return ob_get_clean();
-                } else {
-                    include $block;
                 }
+
+                include $block;
 
                 return;
             }
         }
 
         throw new \RuntimeException('Block view file "' . $name . '" is missing.');
+    }
+
+    /**
+     * Render a component
+     *
+     * @param string $name The component name
+     * @param array $data The data injected to the component
+     * @return void
+     */
+    public function component(string $name, array $data = array()): void
+    {
+        (new Component($name, $data))->render();
     }
 
     /**

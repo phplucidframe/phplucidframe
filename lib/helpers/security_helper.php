@@ -204,6 +204,24 @@ function _patch($name = null)
 }
 
 /**
+ * Accessing request data from GET, POST, PUT or PATCH (sanitized).
+ * @param string $name The optional name of the value to be sanitized
+ * @return mixed The cleaned value or array of values
+ */
+function _request($name = null)
+{
+    if (_isRequestMethod('POST')) {
+        return _post($name);
+    }
+
+    if (_isRequestMethod('PUT') || _isRequestMethod('PATCH')) {
+        return __input($name);
+    }
+
+    return _get($name);
+}
+
+/**
  * Strips javascript tags in the value to prevent from XSS attack
  * @param mixed $value The value or The array of values being stripped.
  * @return mixed the cleaned value

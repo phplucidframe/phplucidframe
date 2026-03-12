@@ -35,6 +35,10 @@
                     return; // normal form submission
                 }
 
+                if ($form.closest('.lc-component').length) {
+                    return; // no ajax form inside components
+                }
+
                 LC.Form.forms.push($form.attr('id'));
 
                 // Add a hidden input and a reset button
@@ -1164,6 +1168,303 @@
             }
         }
     };
+
+    LC.Component = {
+        bindData: {},
+        debounceTimers: {},
+        init : function(componentName, data) {
+            LC.Component.bindData[componentName] = data;
+            LC.Component.applyBindValues(componentName);
+
+            var $container = LC.Component.getComponent(componentName);
+            $container.find('[data-bind]').each(function() {
+                var $elem = $(this);
+                var event = LC.Component.getEvent($elem);
+
+                if (event === 'off') { // data-bind="off" to disable live data binding
+                    return;
+                }
+
+                var callDelayRefresh = LC.Component.isKeyboardEvent(event)
+                    || (event === 'click' && LC.Component.isMultiSelectElem($elem));
+
+                $elem.on(event, function(e) {
+                    if (callDelayRefresh) {
+                        LC.Component.delayRefresh(componentName, $elem, e);
+                    } else {
+                        LC.Component.refresh(componentName, $elem, e);
+                    }
+                });
+            });
+
+            $container.find('[data-live]:not([data-bind])').on('click', function (e) {
+                e.preventDefault();
+                LC.Component.refresh(componentName, $(this));
+            });
+        },
+        refresh : function(componentName, $elem, event) {
+            var query   = LC.Component.getBindValues(componentName);
+            var root    = LC.namespace ? LC.Page.root + LC.namespace + '/' : LC.Page.root;
+            var eventType   = LC.Component.getEvent($elem)
+            var action  = $elem.data('live') || 'render';
+            var isKeyboardEvent = LC.Component.isKeyboardEvent(eventType);
+            var elemBind = $elem.data('bind');
+
+            // If key is non-visible key, return early to not trigger request
+            if (event && isKeyboardEvent && LC.Component.isNonVisibleKey(event)) {
+                return;
+            }
+
+            var regex = /^(\w+)(?:\((.*)\))?$/;
+            var match = action.match(regex);
+            if (!match) {
+                return;
+            }
+
+            action = match[1];
+            if (match[2]) {
+                 query.action_params = match[2].split(/\s*,\s*/);
+            } else {
+                if (query.action_params) {
+                    delete query.action_params;
+                }
+            }
+
+            var $loading = LC.Component.getLoading(componentName);
+            if ($loading) {
+                $loading.show();
+            }
+
+            LC.Page.request(
+                'POST',
+                root + '@components/' + componentName + (action !== 'render' ? '?action=' + action : '') ,
+                { [componentName]: query },
+                function(response) {
+                    LC.Component.getComponent(componentName).replaceWith(response);
+                    LC.Component.applyBindValues(componentName);
+
+                    if (isKeyboardEvent) {
+                        var $newElem = $();
+
+                        if (!$newElem.length && elemBind) {
+                            $newElem = LC.Component.getComponent(componentName)
+                                .find('[data-bind="' + elemBind + '"]')
+                                .first();
+                        }
+
+                        if ($newElem.length) {
+                            var domElem = $newElem.get(0);
+                            $newElem.focus();
+
+                            if (typeof domElem.setSelectionRange === 'function') {
+                                var value = $newElem.val() || '';
+                                domElem.setSelectionRange(value.length, value.length);
+                            }
+                        }
+                    }
+
+                    if ($loading) {
+                        $loading.hide();
+                    }
+                },
+                false
+            );
+        },
+        delayRefresh : function(componentName, $elem, event) {
+            // Keep a stable debounce key per element to ensure rapid typing triggers only one request.
+            var debounceKey = $elem.data('lcDebounceKey');
+            if (!debounceKey) {
+                debounceKey = [
+                    componentName,
+                    $elem.data('bind') || '',
+                    $elem.attr('id') || '',
+                    $elem.attr('name') || '',
+                    LC.Component.getEvent($elem)
+                ].join('|');
+
+                if (debounceKey === componentName + '||||') {
+                    debounceKey = componentName + '|idx|' + LC.Component.getComponent(componentName).find('[data-bind]').index($elem);
+                }
+
+                $elem.data('lcDebounceKey', debounceKey);
+            }
+
+            if (LC.Component.debounceTimers[debounceKey]) {
+                clearTimeout(LC.Component.debounceTimers[debounceKey]);
+            }
+
+            LC.Component.debounceTimers[debounceKey] = setTimeout(function() {
+                LC.Component.refresh(componentName, $elem, event);
+                delete LC.Component.debounceTimers[debounceKey];
+            }, 500); // 500ms delay
+        },
+        getComponent : function(componentName) {
+            return $('#lc_component_' + componentName);
+        },
+        getEvent : function($elem) {
+            var event = $elem.data('on') || 'change';
+
+            if (LC.Component.isMultiSelectElem($elem)) {
+                event = 'click';
+            }
+
+            return event.replace(/on/i, '').toLowerCase();
+        },
+        getLoading : function (componentName) {
+            var $container = LC.Component.getComponent(componentName);
+            var $loading = $container.find('[data-loading]');
+
+            return $loading.length ? $loading : null;
+        },
+        getBindValues : function(componentName) {
+            var query = LC.Component.bindData[componentName];
+            var $container = LC.Component.getComponent(componentName);
+
+            $container.find('[data-bind]').each(function () {
+                var $elem = $(this);
+                var name = $elem.data('bind');
+                var val = $elem.val() || '';
+                // skip empty keys
+                if (!name) {
+                    return;
+                }
+
+                // multi-select
+                if (LC.Component.isMultiSelectElem($elem)) {
+                    name = name.replace(/\[\]$/, ''); // remove [] from the name
+                    query[name] = val;
+                    return;
+                }
+
+                // a group of checkboxes: handle checkbox arrays (name ends with [])
+                if ($elem.is(':checkbox') && name.slice(-2) === '[]') {
+                    name = name.replace(/\[\]$/, '');
+                    if (!query[name]) {
+                        query[name] = [];
+                    }
+
+                    if (query[name].includes(val)) { // to remove and to make unique
+                        query[name].splice(query[name].indexOf(val), 1);
+                    }
+
+                    if ($elem.prop('checked')) {
+                        query[name].push(val);
+                    }
+
+                    return;
+                }
+
+                // single checkbox (on/off)
+                if ($elem.is(':checkbox') && name.slice(-2) !== '[]') {
+                    query[name] = $elem.prop('checked') ? 1 : 0; // true/false
+                    return;
+                }
+
+                // radio buttons
+                if ($elem.is(':radio')) {
+                    if ($elem.prop('checked') === true) {
+                        query[name] = val;
+                    }
+                    return;
+                }
+
+                query[name] = val;
+            });
+
+            LC.Component.bindData[componentName] = query;
+
+            return query;
+        },
+        applyBindValues : function(componentName) {
+            var query = LC.Component.bindData[componentName] || {};
+            var $container = LC.Component.getComponent(componentName);
+
+            $.each(query, function (key, val) {
+                var value = val || '';
+                var isArray = Array.isArray(value);
+                var bindKey = isArray ? key + '[]' : key;
+
+                $container.find('[data-bind="' + bindKey + '"]').each(function () {
+                    var $el = $(this);
+
+                    // handle checkboxes
+                    if ($el.is(':checkbox')) {
+                        if (isArray) {
+                            // checkbox array: check if element value is in the array
+                            $el.prop('checked', value.indexOf($el.val()) !== -1);
+                        } else {
+                            // single checkbox: accept true/false, 1/0, "1"/"0", "true"/"false", etc.
+                            $el.prop('checked', (value === true || value === 1 || value === '1' || value === 'true' || value === 'on'));
+                        }
+                        return;
+                    }
+
+                    // handle radio groups
+                    if ($el.is(':radio')) {
+                        // set checked radio among same name if possible
+                        var name = $el.attr('name');
+                        if (name) {
+                            $container
+                                .find('input[type="radio"][name="' + name + '"][value="' + value + '"]')
+                                .prop('checked', true);
+                        } else {
+                            $el.prop('checked', String($el.val()) === String(value));
+                        }
+                        return;
+                    }
+
+                    // default: input/select/textarea
+                    $el.val(value);
+                });
+            });
+        },
+        isMultiSelectElem : function($elem) {
+            return $elem.is('select') && $elem.is('[multiple]') && $elem.data('bind').slice(-2) === '[]';
+        },
+        isKeyboardEvent : function(event) {
+            event = event.toLowerCase();
+            return event === 'keyup' || event === 'keydown' || event === 'keypress'
+        },
+        isNonVisibleKey : function(event) {
+            var keyCode = event.which || event.keyCode;
+            // Non-visible keys that shouldn't trigger requests
+            var nonVisibleKeys = [
+                9,   // Tab
+                16,  // Shift
+                17,  // Ctrl
+                18,  // Alt
+                20,  // Caps Lock
+                27,  // Escape
+                33,  // Page Up
+                34,  // Page Down
+                35,  // End
+                36,  // Home
+                37,  // Left Arrow
+                38,  // Up Arrow
+                39,  // Right Arrow
+                40,  // Down Arrow
+                45,  // Insert
+                91,  // Windows Key
+                92,  // Windows Key
+                93,  // Menu Key
+                112, // F1
+                113, // F2
+                114, // F3
+                115, // F4
+                116, // F5
+                117, // F6
+                118, // F7
+                119, // F8
+                120, // F9
+                121, // F10
+                122, // F11
+                123  // F12
+            ];
+
+            return nonVisibleKeys.indexOf(keyCode) !== -1;
+        }
+    };
+
     /**
      * Change another select dropdown upon one select dropdown change
      */

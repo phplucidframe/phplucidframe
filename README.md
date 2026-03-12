@@ -20,6 +20,7 @@ It supports a wide range of web application development features:
 - Query Builder
 - Shell & Console Tool
 - Ajax
+- Live Component
 
 <table>
     <body>
