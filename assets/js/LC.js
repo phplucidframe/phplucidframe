@@ -1271,16 +1271,31 @@
             );
         },
         delayRefresh : function(componentName, $elem, event) {
-            // Clear existing timer for this element
-            var elementId = $elem.attr('id') || $elem.attr('name') || Math.random().toString(36).substring(2, 9);
-            if (LC.Component.debounceTimers[elementId]) {
-                clearTimeout(LC.Component.debounceTimers[elementId]);
+            // Keep a stable debounce key per element to ensure rapid typing triggers only one request.
+            var debounceKey = $elem.data('lcDebounceKey');
+            if (!debounceKey) {
+                debounceKey = [
+                    componentName,
+                    $elem.data('bind') || '',
+                    $elem.attr('id') || '',
+                    $elem.attr('name') || '',
+                    LC.Component.getEvent($elem)
+                ].join('|');
+
+                if (debounceKey === componentName + '||||') {
+                    debounceKey = componentName + '|idx|' + LC.Component.getComponent(componentName).find('[data-bind]').index($elem);
+                }
+
+                $elem.data('lcDebounceKey', debounceKey);
             }
 
-            // Set new timer to delay refresh
-            LC.Component.debounceTimers[elementId] = setTimeout(function() {
+            if (LC.Component.debounceTimers[debounceKey]) {
+                clearTimeout(LC.Component.debounceTimers[debounceKey]);
+            }
+
+            LC.Component.debounceTimers[debounceKey] = setTimeout(function() {
                 LC.Component.refresh(componentName, $elem, event);
-                delete LC.Component.debounceTimers[elementId];
+                delete LC.Component.debounceTimers[debounceKey];
             }, 500); // 500ms delay
         },
         getComponent : function(componentName) {
