@@ -16,12 +16,12 @@
     <a href="http://phplucidframe.com" class="button large blue" target="_blank"><?php echo _t('Download PHPLucidFrame'); ?></a>
 </p>
 <p>
-    <a href="<?php echo _url('example/blog'); ?>" class="button">AJAX List <?php echo _t('Example'); ?></a>
-    <a href="<?php echo _url('example/articles'); ?>" class="button">Ordinary List <?php echo _t('Example'); ?></a>
-    <a href="<?php echo _url('blog/2/url-rewrite-to-a-lucid-page-including-a-form-example'); ?>" class="button blue">AJAX Form <?php echo _t('Example'); ?></a>
-    <a href="<?php echo _url('example/comment'); ?>" class="button blue">Generic Form <?php echo _t('Example'); ?></a>
-    <a href="<?php echo _url('example/asyn-file-uploader'); ?>" class="button black">AsynFileUploader <?php echo _t('Example'); ?></a>
-    <a href="<?php echo _url('example/component'); ?>" class="button black">Live Component <?php echo _t('Example'); ?></a>
+    <a href="<?php echo _url('example/blog'); ?>" class="button mini">AJAX List <?php echo _t('Example'); ?></a>
+    <a href="<?php echo _url('example/articles'); ?>" class="button mini">Ordinary List <?php echo _t('Example'); ?></a>
+    <a href="<?php echo _url('blog/2/url-rewrite-to-a-lucid-page-including-a-form-example'); ?>" class="button blue mini">AJAX Form <?php echo _t('Example'); ?></a>
+    <a href="<?php echo _url('example/comment'); ?>" class="button blue mini">Generic Form <?php echo _t('Example'); ?></a>
+    <a href="<?php echo _url('example/asyn-file-uploader'); ?>" class="button black mini">AsynFileUploader <?php echo _t('Example'); ?></a>
+    <a href="<?php echo _url('example/component'); ?>" class="button black mini">Live Component <?php echo _t('Example'); ?></a>
 </p>
 
 <script type="text/javascript">

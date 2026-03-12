@@ -1,8 +1,10 @@
 <?php
 
-$max = $component->useData('max', 1000);
-
+# Define props that are not used to re-render the component
+$max = $component->setProps('max', 1000);
 $component->setProps('randomNumber', random_int(0, $max));
+
+# Define stateful data using default values
 $component->useData('count', 0);
 $component->useData('name', 'Alex Johnson');
 $component->useData('volume', 50);
@@ -15,21 +17,3 @@ $component->useData('contact_pref', 'email');
 $component->useData('skills', []);
 $component->useData('food', []);
 $component->useData('terms', 0);
-
-$component->action('increment', static function ($component) {
-    $count = $component->getData('count');
-    $component->setData('count', $count + 1);
-});
-
-$component->action('decrement', static function ($component) {
-    $count = $component->getData('count');
-    if ($count) {
-        $component->setData('count', $count - 1);
-    }
-});
-
-$component->action('delete', static function ($component, $id) {
-    // echo $id;
-});
-
-return $component->getData();
