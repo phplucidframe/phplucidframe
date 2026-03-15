@@ -626,11 +626,12 @@ function _schema($dbNamespace = 'default', $cache = false)
         if (is_file($f) && file_exists($f)) {
             $file = $f;
             if (pathinfo($file, PATHINFO_EXTENSION) == 'lock') {
-                return unserialize(file_get_contents($file));
-            } else {
-                $schema = include($file);
-                return is_array($schema) ? $schema : null;
+                return unserialize(file_get_contents($file), ['allow_classes' => false]);
             }
+
+            $schema = include($file);
+
+            return is_array($schema) ? $schema : null;
         }
     }
 

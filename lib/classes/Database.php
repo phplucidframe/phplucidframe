@@ -147,25 +147,15 @@ class Database
             // Connect using the driver
             $this->connection = $this->driverInstance->connect($config);
 
-            // Load helper files for backward compatibility
-            if ($file = _i('helpers' . _DS_ . 'db_helper.php', false)) {
-                include $file;
-            }
-
             // Load driver-specific helper file
             $helperFile = HELPER . 'db_helper.' . $this->driver . '.php';
             if (file_exists($helperFile)) {
                 require $helperFile;
-            } else {
-                // Fallback to mysqli helper for MySQL compatibility
-                if ($this->driver === 'mysql' && file_exists(HELPER . 'db_helper.mysqli.php')) {
-                    require HELPER . 'db_helper.mysqli.php';
-                }
             }
 
             // Load the schema of the currently connected database
             $schema = _schema($this->namespace, true);
-            $this->schemaManager = new SchemaManager($schema);
+            $this->schemaManager = new SchemaManager($schema, $this->namespace);
             if (!$this->schemaManager->isLoaded()) {
                 $this->schemaManager->build($namespace);
             }

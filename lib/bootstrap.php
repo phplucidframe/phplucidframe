@@ -138,6 +138,7 @@ _autoloadDir(LIB . 'commands');
 
 if (__dbLoadable()) {
     # DB configuration & DB helper (required)
+    require HELPER . 'db_helper.php';
     _app('db', new Database());
 }
 

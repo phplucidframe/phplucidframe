@@ -22,14 +22,15 @@ use LucidFrame\Core\DatabaseException;
  * Factory class for creating database drivers
  * Handles driver instantiation and validation
  */
-class DriverFactory
+abstract class DriverFactory
 {
     /**
      * Supported database drivers
      */
     public const SUPPORTED_DRIVERS = [
         'mysql' => 'MySQLDriver',
-        'pgsql' => 'PostgreSQLDriver'
+        'pgsql' => 'PostgreSQLDriver',
+        // TODO: more drivers
     ];
 
     /**
@@ -119,7 +120,7 @@ class DriverFactory
         $requiredFields = ['driver', 'host', 'database', 'username'];
 
         foreach ($requiredFields as $field) {
-            if (!isset($config[$field]) || empty($config[$field])) {
+            if (empty($config[$field])) {
                 throw new DatabaseException(
                     sprintf('Required database configuration field "%s" is missing or empty', $field)
                 );
@@ -151,6 +152,7 @@ class DriverFactory
      *
      * @param array $config Database configuration
      * @return array Configuration with defaults applied
+     * @throws DatabaseException
      */
     public static function applyDefaults(array $config)
     {
@@ -168,10 +170,11 @@ class DriverFactory
             case 'pgsql':
                 $config = self::applyPostgreSQLDefaults($config);
                 break;
+            // TODO: more drivers
         }
 
         // Apply common defaults
-        if (!isset($config['prefix'])) {
+        if (empty($config['prefix'])) {
             $config['prefix'] = '';
         }
 
@@ -187,12 +190,12 @@ class DriverFactory
     private static function validateMySQLConfig(array $config)
     {
         // Validate port if provided
-        if (isset($config['port']) && !empty($config['port']) && !is_numeric($config['port'])) {
+        if (!empty($config['port']) && !is_numeric($config['port'])) {
             throw new DatabaseException('MySQL port must be numeric');
         }
 
         // Validate charset if provided
-        if (isset($config['charset'])) {
+        if (!empty($config['charset'])) {
             $validCharsets = ['utf8', 'utf8mb4', 'latin1', 'ascii'];
             if (!in_array(strtolower($config['charset']), $validCharsets)) {
                 throw new DatabaseException(
@@ -205,7 +208,7 @@ class DriverFactory
         }
 
         // Validate engine if provided
-        if (isset($config['engine'])) {
+        if (!empty($config['engine'])) {
             $validEngines = ['InnoDB', 'MyISAM', 'Memory', 'Archive'];
             if (!in_array($config['engine'], $validEngines)) {
                 throw new DatabaseException(
@@ -227,7 +230,7 @@ class DriverFactory
     private static function validatePostgreSQLConfig(array $config)
     {
         // Validate port if provided
-        if (isset($config['port']) && !empty($config['port']) && !is_numeric($config['port'])) {
+        if (!empty($config['port']) && !is_numeric($config['port'])) {
             throw new DatabaseException('PostgreSQL port must be numeric');
         }
 
@@ -239,7 +242,7 @@ class DriverFactory
         }
 
         // Validate charset if provided
-        if (isset($config['charset'])) {
+        if (!empty($config['charset'])) {
             $validCharsets = ['utf8', 'utf-8', 'latin1', 'iso-8859-1'];
             if (!in_array(strtolower($config['charset']), $validCharsets)) {
                 throw new DatabaseException(
@@ -252,7 +255,7 @@ class DriverFactory
         }
 
         // Validate SSL mode if provided
-        if (isset($config['sslmode'])) {
+        if (!empty($config['sslmode'])) {
             $validSslModes = ['disable', 'allow', 'prefer', 'require', 'verify-ca', 'verify-full'];
             if (!in_array($config['sslmode'], $validSslModes)) {
                 throw new DatabaseException(
@@ -274,22 +277,22 @@ class DriverFactory
     private static function applyMySQLDefaults(array $config)
     {
         // Set default port for MySQL
-        if (!isset($config['port']) || empty($config['port'])) {
+        if (empty($config['port'])) {
             $config['port'] = '3306';
         }
 
         // Set default charset for MySQL
-        if (!isset($config['charset'])) {
+        if (empty($config['charset'])) {
             $config['charset'] = 'utf8mb4';
         }
 
         // Set default collation for MySQL
-        if (!isset($config['collation'])) {
+        if (empty($config['collation'])) {
             $config['collation'] = 'utf8mb4_unicode_ci';
         }
 
         // Set default engine for MySQL
-        if (!isset($config['engine'])) {
+        if (empty($config['engine'])) {
             $config['engine'] = 'InnoDB';
         }
 
@@ -305,23 +308,33 @@ class DriverFactory
     private static function applyPostgreSQLDefaults(array $config)
     {
         // Set default port for PostgreSQL
-        if (!isset($config['port']) || empty($config['port'])) {
+        if (empty($config['port'])) {
             $config['port'] = '5432';
         }
 
         // Set default charset for PostgreSQL
-        if (!isset($config['charset'])) {
+        if (empty($config['charset'])) {
             $config['charset'] = 'utf8';
         }
 
         // Set default schema for PostgreSQL
-        if (!isset($config['schema'])) {
+        if (empty($config['schema'])) {
             $config['schema'] = 'public';
         }
 
         // Set default SSL mode for PostgreSQL
-        if (!isset($config['sslmode'])) {
+        if (empty($config['sslmode'])) {
             $config['sslmode'] = 'prefer';
+        }
+
+        // Set default timeout for PostgreSQL
+        if (empty($config['timeout'])) {
+            $config['timeout'] = 30;
+        }
+
+        // Set default persistent for PostgreSQL
+        if (!isset($config['persistent'])) {
+            $config['persistent'] = false;
         }
 
         return $config;

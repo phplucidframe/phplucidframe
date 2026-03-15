@@ -4,7 +4,7 @@
  * MySQL-specific database helper functions
  *
  * @package     PHPLucidFrame\Core
- * @since       PHPLucidFrame v 3.0.0
+ * @since       PHPLucidFrame v 4.0.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @link        http://phplucidframe.com
  * @license     http://www.opensource.org/licenses/mit-license.php MIT License
@@ -13,7 +13,6 @@
  * with this source code in the file LICENSE
  */
 
-use LucidFrame\Core\Database;
 use LucidFrame\Core\QueryBuilder;
 
 /**

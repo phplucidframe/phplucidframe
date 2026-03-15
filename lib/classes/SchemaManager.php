@@ -25,7 +25,7 @@ class SchemaManager
     /** @var array The schema definition */
     protected $schema = array();
     /** @var string The database driver; currently it allows "mysql" only */
-    private $driver = 'mysql';
+    private $driver;
     /** @var array The global schema options */
     private $defaultOptions;
     /** @var array The data types for each db driver */
@@ -128,6 +128,8 @@ class SchemaManager
      */
     public function __construct($schema = array(), $dbNamespace = null)
     {
+        $this->driver = db_driver($dbNamespace);
+
         $this->setDefaultOptions();
         $this->setSchema($schema);
 
@@ -454,18 +456,37 @@ class SchemaManager
     {
         $type = $definition['type'];
 
-        if ($type == 'string' || $type == 'char') {
+        if ($this->driver === 'pgsql') {
+            if ($type === 'string' || $type === 'char') {
+                $length = 255;
+            } elseif ($type === 'decimal') {
+                $length = $definition['length'] ?? 0;
+                if (is_array($length) && count($length) === 2) {
+                    $length = implode(', ', $length);
+                }
+            } else {
+                // PostgreSQL does not support MySQL-style display widths (e.g. INTEGER(11)).
+                $length = 0;
+            }
+
+            if (isset($definition['length']) && is_numeric($definition['length']) && in_array($type, array('string', 'char', 'decimal'))) {
+                $length = $definition['length'];
+            }
+
+            return $length;
+        }
+
+        if ($type === 'string' || $type === 'char') {
             $length = 255;
-        } elseif ($type == 'int' || $type == 'integer') {
+        } elseif ($type === 'int' || $type === 'integer') {
             $length = 11;
         } elseif ($type === 'boolean') {
-            // PostgreSQL BOOLEAN type doesn't need length specification
-            $length = $this->driver === 'pgsql' ? 0 : 1;
+            $length = 1;
         } elseif (in_array($type, array('text', 'blob', 'array', 'json'))) {
             $length = 0;
-        } elseif ($type == 'decimal' || $type == 'float') {
-            $length = isset($definition['length']) ? $definition['length'] : 0;
-            if (is_array($length) && count($length) == 2) {
+        } elseif ($type === 'decimal' || $type === 'float') {
+            $length = $definition['length'] ?? 0;
+            if (is_array($length) && count($length) === 2) {
                 $length = implode(', ', $length);
             }
         } else {
@@ -1159,11 +1180,7 @@ class SchemaManager
                 return false;
             }
 
-            $sqls = explode(';', $sql);
-            $sql = array_filter($sqls, function($line) {
-                $line = trim($line);
-                return !empty($line) && strpos($line, '--') === false;
-            });
+            $sql = $this->splitSqlStatements($sql);
 
             if (empty($sql)) {
                 if ($verbose) {
@@ -1211,28 +1228,23 @@ class SchemaManager
 
         db_transaction();
 
-        array_unshift($queries, 'SET FOREIGN_KEY_CHECKS = 0;');
-        array_push($queries, 'SET FOREIGN_KEY_CHECKS = 1;');
+        $currentDriver = db_driver($dbNamespace);
+        if ($currentDriver === 'mysql') {
+            array_unshift($queries, 'SET FOREIGN_KEY_CHECKS = 0;');
+            array_push($queries, 'SET FOREIGN_KEY_CHECKS = 1;');
+        }
 
         $count = 0;
         $error = false;
-        foreach ($queries as $sql) {
-            $sql = trim($sql);
+        foreach ($queries as $queryChunk) {
+            foreach ($this->splitSqlStatements($queryChunk) as $sql) {
+                if (!db_query($sql)) {
+                    $error = true;
+                    break 2;
+                }
 
-            if (empty($sql)) {
-                continue;
+                $count++;
             }
-
-            if (substr($sql, 0, 2) == '--') {
-                continue;
-            }
-
-            if (!db_query($sql)) {
-                $error = true;
-                break;
-            }
-
-            $count++;
         }
 
         if ($error) {
@@ -1248,9 +1260,9 @@ class SchemaManager
 
         if ($error == true) {
             return false;
-        } else {
-            return $count;
         }
+
+        return $count;
     }
 
     /**
@@ -1348,6 +1360,125 @@ class SchemaManager
     }
 
     /**
+     * Split SQL script/chunk into executable statements.
+     * Handles quoted strings, comments, and PostgreSQL dollar-quoted blocks.
+     *
+     * @param string $sql SQL script or statement chunk
+     * @return array Array of trimmed SQL statements without trailing semicolons
+     */
+    private function splitSqlStatements(string $sql): array
+    {
+        $statements = array();
+        $current = '';
+        $length = strlen($sql);
+
+        $inSingleQuote = false;
+        $inDoubleQuote = false;
+        $inLineComment = false;
+        $inBlockComment = false;
+        $dollarTag = null;
+
+        for ($i = 0; $i < $length; $i++) {
+            $ch = $sql[$i];
+            $next = ($i + 1 < $length) ? $sql[$i + 1] : '';
+
+            if ($inLineComment) {
+                if ($ch === "\n") {
+                    $inLineComment = false;
+                }
+                continue;
+            }
+
+            if ($inBlockComment) {
+                if ($ch === '*' && $next === '/') {
+                    $inBlockComment = false;
+                    $i++;
+                }
+                continue;
+            }
+
+            if ($dollarTag !== null) {
+                $tagLen = strlen($dollarTag);
+                if ($tagLen > 0 && substr($sql, $i, $tagLen) === $dollarTag) {
+                    $current .= $dollarTag;
+                    $i += $tagLen - 1;
+                    $dollarTag = null;
+                    continue;
+                }
+
+                $current .= $ch;
+                continue;
+            }
+
+            if (!$inSingleQuote && !$inDoubleQuote) {
+                if ($ch === '-' && $next === '-') {
+                    $inLineComment = true;
+                    $i++;
+                    continue;
+                }
+
+                if ($ch === '/' && $next === '*') {
+                    $inBlockComment = true;
+                    $i++;
+                    continue;
+                }
+
+                if ($ch === '$') {
+                    $remaining = substr($sql, $i);
+                    if (preg_match('/^\$[A-Za-z_][A-Za-z0-9_]*\$/', $remaining, $matches) || preg_match('/^\$\$/', $remaining, $matches)) {
+                        $dollarTag = $matches[0];
+                        $current .= $dollarTag;
+                        $i += strlen($dollarTag) - 1;
+                        continue;
+                    }
+                }
+            }
+
+            if ($ch === "'" && !$inDoubleQuote) {
+                if ($inSingleQuote && $next === "'") {
+                    $current .= "''";
+                    $i++;
+                    continue;
+                }
+
+                $inSingleQuote = !$inSingleQuote;
+                $current .= $ch;
+                continue;
+            }
+
+            if ($ch === '"' && !$inSingleQuote) {
+                if ($inDoubleQuote && $next === '"') {
+                    $current .= '""';
+                    $i++;
+                    continue;
+                }
+
+                $inDoubleQuote = !$inDoubleQuote;
+                $current .= $ch;
+                continue;
+            }
+
+            if ($ch === ';' && !$inSingleQuote && !$inDoubleQuote) {
+                $stmt = trim($current);
+                if ($stmt !== '') {
+                    $statements[] = $stmt;
+                }
+                $current = '';
+                continue;
+            }
+
+            $current .= $ch;
+        }
+
+        $stmt = trim($current);
+        if ($stmt !== '') {
+            $statements[] = $stmt;
+        }
+
+        return $statements;
+    }
+
+    /**
      * Check if the schema is parsed and fully loaded
      * @return boolean TRUE/FALSE
      */
@@ -1367,9 +1498,9 @@ class SchemaManager
     {
         if (isset($haystack[$needle])) {
             return $haystack[$needle];
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -1827,7 +1958,8 @@ class SchemaManager
                 $constraintSql = "ALTER TABLE {$fullTableName}" . PHP_EOL;
                 $statement = array();
                 foreach ($constraint as $field => $rule) {
-                    $refTableName = $this->getSchemaQualifiedTableName($rule['reference_table']);
+                    // Normalize logical table name to actual DB table name (prefix-aware)
+                    $refTableName = $this->getSchemaQualifiedTableName(db_table($rule['reference_table']));
                     $constraintName = $this->quoteIdentifier($rule['name']);
                     $fieldName = $this->quoteIdentifier($rule['fields']);
                     $refFieldName = $this->quoteIdentifier($rule['reference_fields']);
@@ -1866,7 +1998,7 @@ class SchemaManager
 
                 if ($this->driver === 'pgsql') {
                     // PostgreSQL: Query information_schema to get constraint names
-                    $schemaName = isset($options['schema']) ? $options['schema'] : 'public';
+                    $schemaName = $options['schema'] ?? 'public';
                     $tableName = db_table($table);
                     $result = db_query("
                         SELECT constraint_name
@@ -1878,7 +2010,7 @@ class SchemaManager
 
                     $fKeys = array();
                     if ($result) {
-                        while ($row = db_fetchArray($result)) {
+                        while ($row = db_fetchAssoc($result)) {
                             $constraintName = $this->quoteIdentifier($row['constraint_name']);
                             $fKeys[] = " DROP CONSTRAINT {$constraintName}";
                         }
@@ -1892,7 +2024,7 @@ class SchemaManager
                     $result = db_query("SHOW CREATE TABLE {$fullTableName}");
                     if ($result && $row = db_fetchArray($result)) {
                         $fKeys = array();
-                        if (preg_match_all('/CONSTRAINT `(FK_[A-Z0-9]+)` FOREIGN KEY/', $row[1], $matches)) {
+                        if (preg_match_all('/CONSTRAINT\s+`([^`]+)`\s+FOREIGN KEY/i', $row[1], $matches)) {
                             foreach ($matches[1] as $constraintName) {
                                 $fKeys[] = " DROP FOREIGN KEY " . $this->quoteIdentifier($constraintName);
                             }
@@ -1969,7 +2101,7 @@ class SchemaManager
             $schema = $this->schema;
         }
 
-        return isset($schema[$table]['options']['collate']) ? $schema[$table]['options']['collate'] : null;
+        return $schema[$table]['options']['collate'] ?? null;
     }
 
     /**
@@ -2135,7 +2267,6 @@ class SchemaManager
 
             if (!isset($schemaFrom[$table])) {
                 $this->addedTables[] = $table;
-                continue;
             }
         }
     }
@@ -2295,7 +2426,6 @@ class SchemaManager
             if (isset($to[$key]) && $from[$key] != $to[$key]) {
                 $diff[$key] = $to[$key];
                 $changes++;
-                continue;
             }
         }
 

@@ -73,19 +73,15 @@ class PostgreSQLDriver implements DriverInterface
         }
 
         // Set PostgreSQL-specific defaults with optimizations
-        $charset = $config['charset'] ?? 'utf8';
-        $port = $config['port'] ?? 5432;
-        $schema = $config['schema'] ?? 'public';
-        $timeout = $config['timeout'] ?? 30;
-        $persistent = $config['persistent'] ?? false;
+        extract($config);
 
         try {
             // Build optimized DSN with PostgreSQL-specific options
             $dsn = sprintf(
                 'pgsql:host=%s;port=%d;dbname=%s',
-                $config['host'],
+                $host,
                 $port,
-                $config['database']
+                $database
             );
 
             // Add PostgreSQL-specific connection options to DSN
@@ -106,7 +102,14 @@ class PostgreSQLDriver implements DriverInterface
                 $options[\PDO::ATTR_PERSISTENT] = true;
             }
 
-            $this->connection = new \PDO($dsn, $config['username'], $config['password'], $options);
+            if (!extension_loaded('pdo_pgsql')) {
+                throw new DatabaseException(
+                    'PostgreSQL PDO driver is not installed. ' .
+                    'Please enable pdo_pgsql extension in php.ini or use a different database driver.'
+                );
+            }
+
+            $this->connection = new \PDO($dsn, $username, $password, $options);
 
             // Apply PostgreSQL-specific post-connection optimizations
             $this->applyPostgreSQLOptimizations($charset, $schema, $config);

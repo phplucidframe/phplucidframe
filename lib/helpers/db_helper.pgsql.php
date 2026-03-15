@@ -4,7 +4,7 @@
  * PostgreSQL-specific database helper functions
  *
  * @package     PHPLucidFrame\Core
- * @since       PHPLucidFrame v 3.0.0
+ * @since       PHPLucidFrame v 4.0.0
  * @copyright   Copyright (c), PHPLucidFrame.
  * @link        http://phplucidframe.com
  * @license     http://www.opensource.org/licenses/mit-license.php MIT License
@@ -13,7 +13,6 @@
  * with this source code in the file LICENSE
  */
 
-use LucidFrame\Core\Database;
 use LucidFrame\Core\QueryBuilder;
 
 /**
@@ -113,17 +112,52 @@ function pgsql_db_insert($table, $data = array(), $useSlug = true)
         }
     }
 
-    // PostgreSQL uses RETURNING clause to get the inserted ID
-    $sql = sprintf('INSERT INTO %s (%s) VALUES (%s) RETURNING id',
-                   pgsql_db_quote($table), $sqlFields, $placeHolders);
+    $returningField = null;
+    $dsm = $db->schemaManager;
+    if (is_object($dsm) && $dsm->isLoaded()) {
+        // Prefer "id" when present for backward compatibility.
+        if ($dsm->hasField($table, 'id')) {
+            $returningField = 'id';
+        } else {
+            $pkFields = $dsm->getPrimaryKeys();
+            $tablePk = array();
 
-    $result = db_query($sql, $values);
-    if ($result) {
-        $row = db_fetchAssoc($result);
-        return $row ? $row['id'] : false;
+            // Primary-key map may use prefixed or unprefixed table names.
+            if (isset($pkFields[$table])) {
+                $tablePk = $pkFields[$table];
+            } else {
+                $prefix = db_prefix();
+                if ($prefix && strpos($table, $prefix) === 0) {
+                    $tableWithoutPrefix = substr($table, strlen($prefix));
+                    if (isset($pkFields[$tableWithoutPrefix])) {
+                        $tablePk = $pkFields[$tableWithoutPrefix];
+                    }
+                }
+            }
+
+            // Only return a generated value when there is a single PK column.
+            if (count($tablePk) === 1) {
+                $returningField = array_keys($tablePk)[0];
+            }
+        }
     }
 
-    return false;
+    $sql = sprintf('INSERT INTO %s (%s) VALUES (%s)', pgsql_db_quote($table), $sqlFields, $placeHolders);
+    if ($returningField) {
+        $sql .= ' RETURNING ' . pgsql_db_quote($returningField);
+    }
+
+    $result = db_query($sql, $values);
+    if (!$result) {
+        return false;
+    }
+
+    if ($returningField) {
+        $row = db_fetchAssoc($result);
+        return ($row && array_key_exists($returningField, $row)) ? $row[$returningField] : false;
+    }
+
+    return true;
 }
 
 /**

@@ -5,6 +5,7 @@ use LucidFrame\Test\LucidFrameTestCase;
 
 /**
  * Unit Test for driver-specific database helper functions
+ * Tests MySQL and PostgreSQL specific implementations
  */
 class DBHelperDriversTestCase extends LucidFrameTestCase
 {
@@ -20,9 +21,36 @@ class DBHelperDriversTestCase extends LucidFrameTestCase
     {
         // Restore original driver
         if ($this->originalDriver) {
-            _app('db')->setDriver($this->originalDriver);
+            // Note: setDriver may not exist, this is just for test isolation
+            if (method_exists(_app('db'), 'setDriver')) {
+                _app('db')->setDriver($this->originalDriver);
+            }
         }
         parent::tearDown();
+    }
+
+    public function testCommonHelperFunctions()
+    {
+        // Test that common helper functions exist and work
+        $this->assertTrue(function_exists('db_namespace'));
+        $this->assertTrue(function_exists('db_config'));
+        $this->assertTrue(function_exists('db_engine'));
+        $this->assertTrue(function_exists('db_driver'));
+        $this->assertTrue(function_exists('db_host'));
+        $this->assertTrue(function_exists('db_name'));
+        $this->assertTrue(function_exists('db_user'));
+        $this->assertTrue(function_exists('db_prefix'));
+        $this->assertTrue(function_exists('db_collation'));
+        $this->assertTrue(function_exists('db_switch'));
+        $this->assertTrue(function_exists('db_close'));
+        $this->assertTrue(function_exists('db_prq'));
+        $this->assertTrue(function_exists('db_query'));
+        $this->assertTrue(function_exists('db_queryStr'));
+        $this->assertTrue(function_exists('db_error'));
+        $this->assertTrue(function_exists('db_errorNo'));
+        $this->assertTrue(function_exists('db_table'));
+        $this->assertTrue(function_exists('db_tableHasSlug'));
+        $this->assertTrue(function_exists('db_tableHasTimestamps'));
     }
 
     public function testMySQLDriverHelperFunctions()
@@ -216,6 +244,46 @@ class DBHelperDriversTestCase extends LucidFrameTestCase
         $this->assertTrue(function_exists('db_setForeignKeyCheck'));
         $this->assertTrue(function_exists('db_enableForeignKeyCheck'));
         $this->assertTrue(function_exists('db_disableForeignKeyCheck'));
+    }
+
+    public function testFileStructure()
+    {
+        // Test that the helper files exist in the correct structure
+        $helperPath = HELPER;
+
+        // Main helper file should exist
+        $this->assertTrue(file_exists($helperPath . 'db_helper.php'));
+
+        // Driver-specific files should exist
+        $this->assertTrue(file_exists($helperPath . 'db_helper.mysql.php'));
+        $this->assertTrue(file_exists($helperPath . 'db_helper.pgsql.php'));
+
+        // Old mysqli file should NOT exist (merged into mysql)
+        $this->assertFalse(file_exists($helperPath . 'db_helper.mysqli.php'));
+    }
+
+    public function testDriverDispatch()
+    {
+        // Test that db_insert dispatches to the correct driver function
+        $driver = db_driver();
+
+        db_prq(true);
+
+        // Call the generic function
+        db_insert('test_table', array('name' => 'test'));
+        $query = db_queryStr();
+
+        db_prq(false);
+
+        // Verify the query was generated
+        $this->assertContains('INSERT INTO', $query);
+
+        // Verify driver-specific syntax
+        if ($driver === 'mysql') {
+            $this->assertContains('`test_table`', $query);
+        } elseif ($driver === 'pgsql') {
+            $this->assertContains('"test_table"', $query);
+        }
     }
 
     public function testDriverSpecificFeatures()

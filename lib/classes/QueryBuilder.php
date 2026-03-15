@@ -192,45 +192,45 @@ class QueryBuilder
 
         if ($field === '*') {
             return self::quote($table) . '.' . $field;
-        } else {
-            if (is_array($field)) {
-                if (count($field) != 2) {
-                    return null;
-                }
-
-                # field with alias
-                list($fieldName, $alias) = $field;
-
-                $f = self::quote($fieldName);
-                $quoteChar = self::getQuoteCharacter();
-                if (substr($f, 0, 1) !== $quoteChar) {
-                    if (self::isRawExp($f)) {
-                        $f = self::parseFromRawExp($f);
-                    }
-
-                    return $f . ' AS ' . $alias;
-                } else {
-                    if (self::isRawExp($f)) {
-                        return self::parseFromRawExp($f) . ' AS ' . self::quote($alias);
-                    }
-
-                    return self::quote($table) . '.' . $f . ' AS ' . self::quote($alias);
-                }
-            } else {
-                # field without alias
-                $f = self::quote($field);
-                $quoteChar = self::getQuoteCharacter();
-                if (substr($f, 0, 1) !== $quoteChar) {
-                    return self::isRawExp($f) ? self::parseFromRawExp($f) : $f;
-                } else {
-                    if (self::isRawExp($f)) {
-                        return self::parseFromRawExp($f);
-                    }
-
-                    return self::quote($table) . '.' . $f;
-                }
-            }
         }
+
+        if (is_array($field)) {
+            if (count($field) != 2) {
+                return null;
+            }
+
+            # field with alias
+            list($fieldName, $alias) = $field;
+
+            $f = self::quote($fieldName);
+            $quoteChar = self::getQuoteCharacter();
+            if (substr($f, 0, 1) !== $quoteChar) {
+                if (self::isRawExp($f)) {
+                    $f = self::parseFromRawExp($f);
+                }
+
+                return $f . ' AS ' . $alias;
+            }
+
+            if (self::isRawExp($f)) {
+                return self::parseFromRawExp($f) . ' AS ' . self::quote($alias);
+            }
+
+            return self::quote($table) . '.' . $f . ' AS ' . self::quote($alias);
+        }
+
+        # field without alias
+        $f = self::quote($field);
+        $quoteChar = self::getQuoteCharacter();
+        if (substr($f, 0, 1) !== $quoteChar) {
+            return self::isRawExp($f) ? self::parseFromRawExp($f) : $f;
+        }
+
+        if (self::isRawExp($f)) {
+            return self::parseFromRawExp($f);
+        }
+
+        return self::quote($table) . '.' . $f;
     }
 
     /**
@@ -423,7 +423,7 @@ class QueryBuilder
     public function condition($field, $value)
     {
         if (isset($this->where[$this->whereType][$field])) {
-            $field .= uniqid('__' . trim(__METHOD__, 'LucidFrame\Core') . '__');
+            $field .= uniqid('__' . trim(__METHOD__, 'LucidFrame\Core') . '__', true);
         }
         $this->where[$this->whereType][$field] = $value;
 
@@ -707,7 +707,7 @@ class QueryBuilder
         if (!isset($this->aggregates[$name])) {
             $this->aggregates[$name] = array();
         }
-        $field = ($field === null) ? '*' : $field;
+        $field = $field ?? '*';
         $this->aggregates[$name][$field] = ($alias === null) ? $field : array($field, $alias);
 
         return $this;
@@ -1445,17 +1445,17 @@ class QueryBuilder
             // PostgreSQL syntax: LIMIT count OFFSET offset
             if ($offset !== null) {
                 return ' LIMIT ' . $limit . ' OFFSET ' . $offset;
-            } else {
-                return ' LIMIT ' . $limit;
             }
-        } else {
-            // MySQL syntax: LIMIT offset, count
-            if ($offset !== null) {
-                return ' LIMIT ' . $offset . ', ' . $limit;
-            } else {
-                return ' LIMIT ' . $limit;
-            }
+
+            return ' LIMIT ' . $limit;
         }
+
+        // MySQL syntax: LIMIT offset, count
+        if ($offset !== null) {
+            return ' LIMIT ' . $offset . ', ' . $limit;
+        }
+
+        return ' LIMIT ' . $limit;
     }
 
     /**
