@@ -223,6 +223,15 @@ class SchemaMySQL implements SchemaInterface
         return "ALTER TABLE {$quotedTableName} CHANGE COLUMN {$quotedOldField} {$newFieldStatement};";
     }
 
+    public function addColumnPosition($field, $fieldBefore)
+    {
+        if ($fieldBefore && $field != 'created') {
+            return ' AFTER ' . $this->quoteIdentifier($fieldBefore);
+        }
+
+        return '';
+    }
+
     public function getDropConstraintStatement($fullTableName, $table, $options, $quoteIdentifierCallback)
     {
         $result = db_query("SHOW CREATE TABLE {$fullTableName}");

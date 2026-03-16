@@ -994,9 +994,9 @@ class SchemaManager
                     }
                     # if new table, no need to lookup field changes and then continue the next table
                     continue;
-                } else {
-                    $tableFrom = $oldTable;
                 }
+
+                $tableFrom = $oldTable;
             }
 
             # Add new fields for existing table
@@ -1010,10 +1010,7 @@ class SchemaManager
                     $quotedTableName = $this->getSchemaQualifiedTableName($fullTableName);
                     $alterSql = "ALTER TABLE {$quotedTableName} ADD COLUMN ";
                     $alterSql .= $this->getFieldStatement($field, $fieldDef, $collate);
-                    if ($fieldBefore && $field != 'created') {
-                        $alterSql .= " AFTER `{$fieldBefore}`";
-                    }
-                    $alterSql .= ';';
+                    $alterSql .= $this->schemaDriver->addColumnPosition($field, $fieldBefore) . ';';
                     $sql['up'][] = $alterSql;
                 }
 

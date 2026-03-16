@@ -323,6 +323,11 @@ class SchemaPostgreSQL implements SchemaInterface
         return "ALTER TABLE {$quotedTableName} RENAME COLUMN {$quotedOldField} TO {$quotedNewField};";
     }
 
+    public function addColumnPosition($field, $fieldBefore)
+    {
+        return '';
+    }
+
     public function getDropConstraintStatement($fullTableName, $table, $options, $quoteIdentifierCallback)
     {
         $schemaName = isset($options['schema']) ? $options['schema'] : 'public';

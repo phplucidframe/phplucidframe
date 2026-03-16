@@ -56,5 +56,7 @@ interface SchemaInterface
 
     public function buildRenameColumnStatement($quotedTableName, $oldField, $newField, $newFieldStatement, $quoteIdentifierCallback);
 
+    public function addColumnPosition($field, $fieldBefore);
+
     public function getDropConstraintStatement($fullTableName, $table, $options, $quoteIdentifierCallback);
 }
