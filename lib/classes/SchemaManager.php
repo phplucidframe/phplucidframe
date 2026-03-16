@@ -72,6 +72,9 @@ class SchemaManager
             'int'       => 'INTEGER',
             'integer'   => 'INTEGER',
             'bigint'    => 'BIGINT',
+            'serial'    => 'SERIAL',
+            'bigserial' => 'BIGSERIAL',
+            'smallserial' => 'SMALLSERIAL',
             'decimal'   => 'NUMERIC',
             'float'     => 'DOUBLE PRECISION',
             # For decimal and float
@@ -241,6 +244,7 @@ class SchemaManager
         return array(
             'type'      => 'int',
             'autoinc'   => true,
+            'primary'   => true,
             'null'      => false,
             'unsigned'  => true
         );
@@ -293,20 +297,27 @@ class SchemaManager
             return '';
         }
 
-        // Handle PostgreSQL auto-increment with SERIAL types
-        if (isset($definition['autoinc']) && $definition['autoinc'] && $this->driver === 'pgsql') {
-            if ($definition['type'] === 'int' || $definition['type'] === 'integer') {
-                $type = 'SERIAL';
-            } elseif ($definition['type'] === 'bigint') {
-                $type = 'BIGSERIAL';
-            } elseif ($definition['type'] === 'smallint') {
-                $type = 'SMALLSERIAL';
-            }
+        if ($this->shouldUsePgsqlInlineIdentityPrimaryKey($definition)) {
+            $generator = $definition['generator'] ?? 'ALWAYS';
+            $generator = $generator === 'default' ? 'BY DEFAULT' : $generator;
+            return $this->quoteIdentifier($field) . ' ' .
+                $type . ' GENERATED ' . $generator . ' AS IDENTITY PRIMARY KEY NOT NULL';
         }
 
-        // Use appropriate identifier quoting
-        $quote = $this->driver === 'pgsql' ? '"' : '`';
-        $statement = "{$quote}{$field}{$quote} {$type}";
+        // Handle PostgreSQL auto-increment with SERIAL types
+//        if ($this->driver === 'pgsql' && (!empty($definition['primary']) || !empty($definition['autoinc']))) {
+//            if ($this->isExplicitSerialDefinition($definition)) {
+//                // Keep explicit serial type if user already requested it.
+//            } elseif ($definition['type'] === 'int' || $definition['type'] === 'integer') {
+//                $type = 'INT';
+//            } elseif ($definition['type'] === 'bigint') {
+//                $type = 'BIGINT';
+//            } elseif ($definition['type'] === 'smallint') {
+//                $type = 'SMALLINT';
+//            }
+//        }
+
+        $statement = $this->quoteIdentifier($field) . ' ' . $type;
 
         $length = $this->getFieldLength($definition);
         if ($length && !$this->isSerialType($type)) {
@@ -342,10 +353,13 @@ class SchemaManager
             }
         }
 
-        // Handle auto-increment for MySQL
-        if (isset($definition['autoinc']) && $definition['autoinc'] && $this->driver === 'mysql') {
-            # AUTO_INCREMENT
-            $statement .= ' AUTO_INCREMENT';
+        // Handle auto-increment
+        if (!empty($definition['primary']) || !empty($definition['autoinc'])) {
+            if ($this->driver === 'pgsql') {
+                $statement .= ' PRIMARY KEY';
+            } else {
+                $statement .= ' AUTO_INCREMENT';
+            }
         }
 
         return $statement;
@@ -358,7 +372,47 @@ class SchemaManager
      */
     private function isSerialType($type)
     {
-        return in_array(strtoupper($type), array('SERIAL', 'BIGSERIAL', 'SMALLSERIAL'));
+        return in_array(strtolower($type), array('serial', 'bigserial', 'smallserial'));
+    }
+
+    /**
+     * Check if definition explicitly uses PostgreSQL serial family types.
+     * @param array $definition Field definition
+     * @return boolean
+     */
+    private function isExplicitSerialDefinition($definition)
+    {
+        if (empty($definition['type'])) {
+            return false;
+        }
+
+        return in_array(strtolower($definition['type']), array('serial', 'bigserial', 'smallserial'));
+    }
+
+    /**
+     * Determine if pgsql field should be emitted as inline identity PK.
+     * @param array $definition Field definition
+     * @return boolean
+     */
+    private function shouldUsePgsqlInlineIdentityPrimaryKey($definition)
+    {
+        if ($this->driver !== 'pgsql') {
+            return false;
+        }
+
+        if (empty($definition['type'])) {
+            return false;
+        }
+
+        if (empty($definition['primary']) && empty($definition['autoinc'])) {
+            return false;
+        }
+
+        if ($this->isExplicitSerialDefinition($definition)) {
+            return false;
+        }
+
+        return in_array(strtolower($definition['type']), array('int', 'integer', 'bigint', 'smallint'));
     }
 
     /**
@@ -442,6 +496,10 @@ class SchemaManager
                     $definition['default'] = null;
                 }
             }
+        }
+
+        if (!empty($definition['primary']) || !empty($definition['autoinc'])) {
+            $definition['null'] = false;
         }
 
         return $type;
@@ -1661,9 +1719,12 @@ class SchemaManager
                         # default PK field type
                         $pkFields[$table][$pk] = $this->getPKDefaultType();
                     }
+
+                    $pkFields[$table][$pk]['primary'] = true;
                 }
             } else {
                 $pkFields[$table]['id'] = $this->getPKDefaultType();
+                $pkFields[$table]['id']['primary'] = true;
             }
         }
 
@@ -1836,11 +1897,8 @@ class SchemaManager
         $def['options'] = $options;
 
         # CREATE TABLE Statement
-        if ($this->driver === 'pgsql') {
-            $sql = "CREATE TABLE IF NOT EXISTS {$fullTableName} (" . PHP_EOL;
-        } else {
-            $sql = "CREATE TABLE IF NOT EXISTS {$fullTableName} (" . PHP_EOL;
-        }
+        $sql = "CREATE TABLE IF NOT EXISTS {$fullTableName} (" . PHP_EOL;
+        $tableDefinitions = array();
 
         # loop the fields
         $autoinc = false;
@@ -1850,7 +1908,7 @@ class SchemaManager
                 continue;
             }
 
-            $sql .= '  ' . $this->getFieldStatement($name, $rule, $this->getTableCollation($name, $schema)) . ',' . PHP_EOL;
+            $tableDefinitions[] = '  ' . $this->getFieldStatement($name, $rule, $this->getTableCollation($name, $schema));
 
             # if there is any unique index
             if (isset($rule['unique']) && $rule['unique']) {
@@ -1869,7 +1927,7 @@ class SchemaManager
             if (count($fkFields)) {
                 foreach (array_keys($fkFields) as $name) {
                     if (isset($fkFields[$name]['unique']) && $fkFields[$name]['unique']) {
-                        $sql .= '  CONSTRAINT ' . $this->quoteIdentifier("UQ_{$table}_{$name}") . ' UNIQUE (' . $this->quoteIdentifier($name) . '),' . PHP_EOL;
+                        $tableDefinitions[] = '  CONSTRAINT ' . $this->quoteIdentifier("UQ_{$table}_{$name}") . ' UNIQUE (' . $this->quoteIdentifier($name) . ')';
                     }
                 }
             }
@@ -1878,7 +1936,7 @@ class SchemaManager
             if (isset($options['unique']) && is_array($options['unique'])) {
                 foreach ($options['unique'] as $keyName => $uniqueFields) {
                     $quotedFields = array_map(array($this, 'quoteIdentifier'), $uniqueFields);
-                    $sql .= '  CONSTRAINT ' . $this->quoteIdentifier("UQ_{$table}_{$keyName}") . ' UNIQUE (' . implode(',', $quotedFields) . '),' . PHP_EOL;
+                    $tableDefinitions[] = '  CONSTRAINT ' . $this->quoteIdentifier("UQ_{$table}_{$keyName}") . ' UNIQUE (' . implode(',', $quotedFields) . ')';
                 }
             }
         } else {
@@ -1886,11 +1944,12 @@ class SchemaManager
             if (count($fkFields)) {
                 foreach (array_keys($fkFields) as $name) {
                     if (isset($fkFields[$name]['unique']) && $fkFields[$name]['unique']) {
-                        $sql .= '  UNIQUE KEY';
+                        $indexSql = '  UNIQUE KEY';
                     } else {
-                        $sql .= '  KEY';
+                        $indexSql = '  KEY';
                     }
-                    $sql .= " " . $this->quoteIdentifier("IDX_$name") . " (" . $this->quoteIdentifier($name) . ")," . PHP_EOL;
+                    $indexSql .= " " . $this->quoteIdentifier("IDX_$name") . " (" . $this->quoteIdentifier($name) . ")";
+                    $tableDefinitions[] = $indexSql;
                 }
             }
 
@@ -1898,15 +1957,25 @@ class SchemaManager
             if (isset($options['unique']) && is_array($options['unique'])) {
                 foreach ($options['unique'] as $keyName => $uniqueFields) {
                     $quotedFields = array_map(array($this, 'quoteIdentifier'), $uniqueFields);
-                    $sql .= '  UNIQUE KEY ' . $this->quoteIdentifier("IDX_$keyName") . ' (' . implode(',', $quotedFields) . '),' . PHP_EOL;
+                    $tableDefinitions[] = '  UNIQUE KEY ' . $this->quoteIdentifier("IDX_$keyName") . ' (' . implode(',', $quotedFields) . ')';
                 }
             }
         }
 
         # Primary key indexes
-        if (isset($pkFields[$table])) {
+        $skipTablePrimaryKey = false;
+        if ($this->driver === 'pgsql' && isset($pkFields[$table]) && count($pkFields[$table]) === 1) {
+            $singlePkField = current($pkFields[$table]);
+            $skipTablePrimaryKey = $this->shouldUsePgsqlInlineIdentityPrimaryKey($singlePkField);
+        }
+
+        if (isset($pkFields[$table]) && !$skipTablePrimaryKey) {
             $quotedPkFields = array_map(array($this, 'quoteIdentifier'), array_keys($pkFields[$table]));
-            $sql .= '  PRIMARY KEY (' . implode(',', $quotedPkFields) . ')' . PHP_EOL;
+            $tableDefinitions[] = '  PRIMARY KEY (' . implode(',', $quotedPkFields) . ')';
+        }
+
+        if (count($tableDefinitions)) {
+            $sql .= implode(',' . PHP_EOL, $tableDefinitions) . PHP_EOL;
         }
 
         $sql .= ')';
