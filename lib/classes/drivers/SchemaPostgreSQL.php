@@ -282,7 +282,9 @@ class SchemaPostgreSQL implements SchemaInterface
         }
 
         if ($typeExpression !== '') {
-            $actions[] = "ALTER COLUMN {$quotedOldField} TYPE {$typeExpression}";
+            // PostgreSQL does not always perform implicit casts during type changes.
+            // Explicit USING keeps migrations deterministic across existing data.
+            $actions[] = "ALTER COLUMN {$quotedOldField} TYPE {$typeExpression} USING CAST({$quotedOldField} AS {$typeExpression})";
         }
 
         if ($generator !== null) {
