@@ -16,6 +16,8 @@
 namespace LucidFrame\Core;
 
 use LucidFrame\Console\Command;
+use LucidFrame\Core\drivers\SchemaFactory;
+use LucidFrame\Core\drivers\SchemaInterface;
 
 /**
  * Schema Manager
@@ -26,6 +28,8 @@ class SchemaManager
     protected $schema = array();
     /** @var string The database driver; currently it allows "mysql" only */
     private $driver;
+    /** @var SchemaInterface Driver-specific schema SQL adapter */
+    private $schemaDriver;
     /** @var array The global schema options */
     private $defaultOptions;
     /** @var array The data types for each db driver */
@@ -132,6 +136,7 @@ class SchemaManager
     public function __construct($schema = array(), $dbNamespace = null)
     {
         $this->driver = db_driver($dbNamespace);
+        $this->schemaDriver = SchemaFactory::create($this->driver);
 
         $this->setDefaultOptions();
         $this->setSchema($schema);
@@ -147,22 +152,7 @@ class SchemaManager
      */
     private function setDefaultOptions()
     {
-        if ($this->driver === 'pgsql') {
-            $this->defaultOptions = array(
-                'timestamps'    => true,
-                'constraints'   => true,
-                'schema'        => 'public',
-            );
-        } else {
-            // MySQL defaults
-            $this->defaultOptions = array(
-                'timestamps'    => true,
-                'constraints'   => true,
-                'charset'       => 'utf8mb4',
-                'collate'       => 'utf8mb4_general_ci',
-                'engine'        => 'InnoDB',
-            );
-        }
+        $this->defaultOptions = $this->schemaDriver->getDefaultOptions();
     }
 
     /**
@@ -200,6 +190,7 @@ class SchemaManager
     public function setDriver($driver)
     {
         $this->driver = $driver;
+        $this->schemaDriver = SchemaFactory::create($this->driver);
         $this->setDefaultOptions(); // Refresh default options for the new driver
 
         return $this;
@@ -298,44 +289,26 @@ class SchemaManager
         }
 
         if ($this->shouldUsePgsqlInlineIdentityPrimaryKey($definition)) {
-            $generator = $definition['generator'] ?? 'ALWAYS';
-            $generator = $generator === 'default' ? 'BY DEFAULT' : $generator;
-            return $this->quoteIdentifier($field) . ' ' .
-                $type . ' GENERATED ' . $generator . ' AS IDENTITY PRIMARY KEY NOT NULL';
+            return $this->schemaDriver->buildInlineIdentityPrimaryKeyStatement(
+                $this->quoteIdentifier($field),
+                $type,
+                $definition
+            );
         }
-
-        // Handle PostgreSQL auto-increment with SERIAL types
-//        if ($this->driver === 'pgsql' && (!empty($definition['primary']) || !empty($definition['autoinc']))) {
-//            if ($this->isExplicitSerialDefinition($definition)) {
-//                // Keep explicit serial type if user already requested it.
-//            } elseif ($definition['type'] === 'int' || $definition['type'] === 'integer') {
-//                $type = 'INT';
-//            } elseif ($definition['type'] === 'bigint') {
-//                $type = 'BIGINT';
-//            } elseif ($definition['type'] === 'smallint') {
-//                $type = 'SMALLINT';
-//            }
-//        }
 
         $statement = $this->quoteIdentifier($field) . ' ' . $type;
 
         $length = $this->getFieldLength($definition);
-        if ($length && !$this->isSerialType($type)) {
+        if ($length && !$this->schemaDriver->isSerialType($type)) {
             $statement .= "($length)";
         }
 
-        // Handle collation for text fields (MySQL only)
-        if ($this->driver === 'mysql' && in_array($definition['type'], array('string', 'char', 'text', 'array', 'json'))) {
-            # COLLATE for text fields
-            $statement .= ' COLLATE ';
-            $statement .= $collate ?: $this->schema['_options']['collate'];
-        }
-
-        // Handle unsigned (MySQL only)
-        if ($this->driver === 'mysql' && isset($definition['unsigned'])) {
-            # unsigned
-            $statement .= ' unsigned';
-        }
+        $statement = $this->schemaDriver->appendDriverSpecificFieldStatement(
+            $statement,
+            $definition,
+            $collate,
+            $this->getOptions()
+        );
 
         if (isset($definition['null'])) {
             # true: DEFAULT NULL
@@ -344,49 +317,12 @@ class SchemaManager
         }
 
         if (isset($definition['default'])) {
-            // Handle boolean defaults for PostgreSQL
-            if ($this->driver === 'pgsql' && $definition['type'] === 'boolean') {
-                $defaultValue = $definition['default'] ? 'TRUE' : 'FALSE';
-                $statement .= " DEFAULT {$defaultValue}";
-            } else {
-                $statement .= sprintf(" DEFAULT '%s'", $definition['default']);
-            }
+            $statement .= $this->schemaDriver->getDefaultValueStatement($definition);
         }
 
-        // Handle auto-increment
-        if (!empty($definition['primary']) || !empty($definition['autoinc'])) {
-            if ($this->driver === 'pgsql') {
-                $statement .= ' PRIMARY KEY';
-            } else {
-                $statement .= ' AUTO_INCREMENT';
-            }
-        }
+        $statement .= $this->schemaDriver->getAutoIncrementStatement($definition);
 
         return $statement;
-    }
-
-    /**
-     * Check if a type is a PostgreSQL SERIAL type
-     * @param string $type The database type
-     * @return boolean True if it's a SERIAL type
-     */
-    private function isSerialType($type)
-    {
-        return in_array(strtolower($type), array('serial', 'bigserial', 'smallserial'));
-    }
-
-    /**
-     * Check if definition explicitly uses PostgreSQL serial family types.
-     * @param array $definition Field definition
-     * @return boolean
-     */
-    private function isExplicitSerialDefinition($definition)
-    {
-        if (empty($definition['type'])) {
-            return false;
-        }
-
-        return in_array(strtolower($definition['type']), array('serial', 'bigserial', 'smallserial'));
     }
 
     /**
@@ -396,23 +332,7 @@ class SchemaManager
      */
     private function shouldUsePgsqlInlineIdentityPrimaryKey($definition)
     {
-        if ($this->driver !== 'pgsql') {
-            return false;
-        }
-
-        if (empty($definition['type'])) {
-            return false;
-        }
-
-        if (empty($definition['primary']) && empty($definition['autoinc'])) {
-            return false;
-        }
-
-        if ($this->isExplicitSerialDefinition($definition)) {
-            return false;
-        }
-
-        return in_array(strtolower($definition['type']), array('int', 'integer', 'bigint', 'smallint'));
+        return $this->schemaDriver->shouldUseInlineIdentityPrimaryKey($definition);
     }
 
     /**
@@ -422,13 +342,7 @@ class SchemaManager
      */
     public function quoteIdentifier($identifier)
     {
-        if ($this->driver === 'pgsql') {
-            // PostgreSQL uses double quotes for identifiers
-            return '"' . str_replace('"', '""', $identifier) . '"';
-        }
-
-        // MySQL uses backticks
-        return '`' . str_replace('`', '``', $identifier) . '`';
+        return $this->schemaDriver->quoteIdentifier($identifier);
     }
 
     /**
@@ -438,13 +352,7 @@ class SchemaManager
      */
     public function getSchemaQualifiedTableName($tableName)
     {
-        if ($this->driver === 'pgsql') {
-            $options = $this->getOptions();
-            $schema = $options['schema'] ?? 'public';
-            return $this->quoteIdentifier($schema) . '.' . $this->quoteIdentifier($tableName);
-        }
-
-        return $this->quoteIdentifier($tableName);
+        return $this->schemaDriver->getSchemaQualifiedTableName($tableName, $this->getOptions());
     }
 
     /**
@@ -454,55 +362,11 @@ class SchemaManager
      */
     public function getVendorFieldType(&$definition)
     {
-        if (!isset(self::$dataTypes[$this->driver][$definition['type']])) {
-            # if no data type is defined
+        if (!isset(self::$dataTypes[$this->driver])) {
             return null;
         }
 
-        $type = self::$dataTypes[$this->driver][$definition['type']];
-
-        if (in_array($definition['type'], array('text', 'blob', 'array', 'json'))) {
-            // Handle JSON type specifically for PostgreSQL
-            if ($definition['type'] === 'json') {
-                return $type; // Return JSONB for PostgreSQL, TEXT for MySQL
-            }
-
-            if (isset($definition['length']) && in_array($definition['length'], array('tiny', 'medium', 'long'))) {
-                // PostgreSQL uses TEXT for all text sizes
-                if ($this->driver === 'pgsql') {
-                    return self::$dataTypes[$this->driver]['text'];
-                }
-                return strtoupper($definition['length']) . $type;
-            }
-
-            return $definition['type'] == 'blob' ? self::$dataTypes[$this->driver]['blob'] : self::$dataTypes[$this->driver]['text'];
-        }
-
-        if ($definition['type'] == 'boolean') {
-            # Handle boolean type differences between drivers
-            if ($this->driver === 'mysql') {
-                # if type is boolean, force unsigned for MySQL
-                $definition['unsigned'] = true;
-            }
-
-            if (!isset($definition['default'])) {
-                $definition['default'] = false;
-            }
-
-            if (!isset($definition['null'])) {
-                $definition['null'] = false;
-            } else {
-                if ($definition['null'] === true) {
-                    $definition['default'] = null;
-                }
-            }
-        }
-
-        if (!empty($definition['primary']) || !empty($definition['autoinc'])) {
-            $definition['null'] = false;
-        }
-
-        return $type;
+        return $this->schemaDriver->getVendorFieldType($definition, self::$dataTypes[$this->driver]);
     }
 
     /**
@@ -512,50 +376,7 @@ class SchemaManager
      */
     public function getFieldLength(&$definition)
     {
-        $type = $definition['type'];
-
-        if ($this->driver === 'pgsql') {
-            if ($type === 'string' || $type === 'char') {
-                $length = 255;
-            } elseif ($type === 'decimal') {
-                $length = $definition['length'] ?? 0;
-                if (is_array($length) && count($length) === 2) {
-                    $length = implode(', ', $length);
-                }
-            } else {
-                // PostgreSQL does not support MySQL-style display widths (e.g. INTEGER(11)).
-                $length = 0;
-            }
-
-            if (isset($definition['length']) && is_numeric($definition['length']) && in_array($type, array('string', 'char', 'decimal'))) {
-                $length = $definition['length'];
-            }
-
-            return $length;
-        }
-
-        if ($type === 'string' || $type === 'char') {
-            $length = 255;
-        } elseif ($type === 'int' || $type === 'integer') {
-            $length = 11;
-        } elseif ($type === 'boolean') {
-            $length = 1;
-        } elseif (in_array($type, array('text', 'blob', 'array', 'json'))) {
-            $length = 0;
-        } elseif ($type === 'decimal' || $type === 'float') {
-            $length = $definition['length'] ?? 0;
-            if (is_array($length) && count($length) === 2) {
-                $length = implode(', ', $length);
-            }
-        } else {
-            $length = 0;
-        }
-
-        if (isset($definition['length']) && is_numeric($definition['length'])) {
-            $length = $definition['length'];
-        }
-
-        return $length;
+        return $this->schemaDriver->getFieldLength($definition);
     }
 
     /**
@@ -579,6 +400,11 @@ class SchemaManager
 
         if (isset($fkField['autoinc'])) {
             unset($fkField['autoinc']);
+        }
+
+        // FK fields must not inherit primary-key semantics from the referenced PK.
+        if (isset($fkField['primary'])) {
+            unset($fkField['primary']);
         }
 
         if ($relation['unique']) {
@@ -657,10 +483,7 @@ class SchemaManager
         $sql = array();
 
         # Database-specific setup commands
-        if ($this->driver === 'mysql') {
-            $sql[] = 'SET FOREIGN_KEY_CHECKS=0;';
-        }
-        // PostgreSQL doesn't need foreign key checks disabled
+        $sql = array_merge($sql, $this->schemaDriver->getDisableForeignKeyChecksStatements());
 
         # Create each table
         foreach ($schema as $table => $def) {
@@ -682,10 +505,7 @@ class SchemaManager
         }
 
         # Database-specific cleanup commands
-        if ($this->driver === 'mysql') {
-            $sql[] = 'SET FOREIGN_KEY_CHECKS=1;';
-        }
-        // PostgreSQL doesn't need foreign key checks re-enabled
+        $sql = array_merge($sql, $this->schemaDriver->getEnableForeignKeyChecksStatements());
 
         $this->sqlStatements = $sql;
 
@@ -1088,15 +908,12 @@ class SchemaManager
                             $quotedTableName = $this->getSchemaQualifiedTableName($fullTableName);
                             $quotedOldField = $this->quoteIdentifier($oldField);
 
-                            if ($this->driver === 'pgsql') {
-                                // PostgreSQL uses ALTER COLUMN syntax
-                                $sql['up'][] = "ALTER TABLE {$quotedTableName} ALTER COLUMN {$quotedOldField} TYPE " .
-                                    $this->getFieldStatement($newField, $schemaTo[$table][$newField], $collate) . ';';
-                            } else {
-                                // MySQL uses CHANGE COLUMN syntax
-                                $sql['up'][] = "ALTER TABLE {$quotedTableName} CHANGE COLUMN {$quotedOldField} " .
-                                    $this->getFieldStatement($newField, $schemaTo[$table][$newField], $collate) . ';';
-                            }
+                            $newFieldStatement = $this->getFieldStatement($newField, $schemaTo[$table][$newField], $collate);
+                            $sql['up'][] = $this->schemaDriver->buildAlterColumnStatement(
+                                $quotedTableName,
+                                $quotedOldField,
+                                $newFieldStatement
+                            );
 
                             if (isset($schemaFrom[$table][$oldField]['unique']) && !isset($schemaTo[$table][$newField]['unique'])) {
                                 $sql['up'][] = "ALTER TABLE `{$fullTableName}` DROP INDEX `IDX_$oldField`;";
@@ -1109,8 +926,14 @@ class SchemaManager
                         } else {
                             if ($renamedField) {
                                 $fieldNamesChanged[] = $table . '.' . $renamedField;
-                                $sql['up'][] = "ALTER TABLE `{$fullTableName}` CHANGE COLUMN `{$oldField}` " .
-                                    $this->getFieldStatement($renamedField, $schemaTo[$table][$renamedField], $collate) . ';';
+                                $renamedFieldStatement = $this->getFieldStatement($renamedField, $schemaTo[$table][$renamedField], $collate);
+                                $sql['up'][] = $this->schemaDriver->buildRenameColumnStatement(
+                                    $quotedTableName,
+                                    $oldField,
+                                    $renamedField,
+                                    $renamedFieldStatement,
+                                    array($this, 'quoteIdentifier')
+                                );
                             }
                         }
                     } else {
@@ -1287,10 +1110,12 @@ class SchemaManager
         db_transaction();
 
         $currentDriver = db_driver($dbNamespace);
-        if ($currentDriver === 'mysql') {
-            array_unshift($queries, 'SET FOREIGN_KEY_CHECKS = 0;');
-            array_push($queries, 'SET FOREIGN_KEY_CHECKS = 1;');
-        }
+        $currentSchemaDriver = SchemaFactory::create($currentDriver);
+        $queries = array_merge(
+            $currentSchemaDriver->getDisableForeignKeyChecksStatements(),
+            $queries,
+            $currentSchemaDriver->getEnableForeignKeyChecksStatements()
+        );
 
         $count = 0;
         $error = false;
@@ -1358,7 +1183,7 @@ class SchemaManager
     {
         $version = 0;
         if ($schema = self::getSchemaLockDefinition($this->dbNamespace)) {
-            $version = isset($schema['_options']['version']) ? $schema['_options']['version'] : 0;
+            $version = $schema['_options']['version'] ?? 0;
         }
 
         return $version;
@@ -1607,7 +1432,7 @@ class SchemaManager
 
         $table = db_table($table);
 
-        return (isset($this->schema[$table]['options']['timestamps']) && $this->schema[$table]['options']['timestamps']) ? true : false;
+        return !empty($this->schema[$table]['options']['timestamps']);
     }
 
     /**
@@ -1623,7 +1448,7 @@ class SchemaManager
 
         $table = db_table($table);
 
-        return isset($this->schema[$table]['slug']) ? true : false;
+        return isset($this->schema[$table]['slug']);
     }
 
     /**
@@ -1920,54 +1745,18 @@ class SchemaManager
             }
         }
 
-        # Indexes - PostgreSQL handles indexes differently
-        if ($this->driver === 'pgsql') {
-            // PostgreSQL creates indexes separately, not in CREATE TABLE
-            // Unique constraints can be added inline
-            if (count($fkFields)) {
-                foreach (array_keys($fkFields) as $name) {
-                    if (isset($fkFields[$name]['unique']) && $fkFields[$name]['unique']) {
-                        $tableDefinitions[] = '  CONSTRAINT ' . $this->quoteIdentifier("UQ_{$table}_{$name}") . ' UNIQUE (' . $this->quoteIdentifier($name) . ')';
-                    }
-                }
-            }
-
-            // Unique indexes for composite unique fields
-            if (isset($options['unique']) && is_array($options['unique'])) {
-                foreach ($options['unique'] as $keyName => $uniqueFields) {
-                    $quotedFields = array_map(array($this, 'quoteIdentifier'), $uniqueFields);
-                    $tableDefinitions[] = '  CONSTRAINT ' . $this->quoteIdentifier("UQ_{$table}_{$keyName}") . ' UNIQUE (' . implode(',', $quotedFields) . ')';
-                }
-            }
-        } else {
-            // MySQL index syntax
-            if (count($fkFields)) {
-                foreach (array_keys($fkFields) as $name) {
-                    if (isset($fkFields[$name]['unique']) && $fkFields[$name]['unique']) {
-                        $indexSql = '  UNIQUE KEY';
-                    } else {
-                        $indexSql = '  KEY';
-                    }
-                    $indexSql .= " " . $this->quoteIdentifier("IDX_$name") . " (" . $this->quoteIdentifier($name) . ")";
-                    $tableDefinitions[] = $indexSql;
-                }
-            }
-
-            // Unique indexes for composite unique fields
-            if (isset($options['unique']) && is_array($options['unique'])) {
-                foreach ($options['unique'] as $keyName => $uniqueFields) {
-                    $quotedFields = array_map(array($this, 'quoteIdentifier'), $uniqueFields);
-                    $tableDefinitions[] = '  UNIQUE KEY ' . $this->quoteIdentifier("IDX_$keyName") . ' (' . implode(',', $quotedFields) . ')';
-                }
-            }
-        }
+        $tableDefinitions = array_merge(
+            $tableDefinitions,
+            $this->schemaDriver->buildTableIndexDefinitions(
+                $table,
+                $fkFields,
+                $options,
+                array($this, 'quoteIdentifier')
+            )
+        );
 
         # Primary key indexes
-        $skipTablePrimaryKey = false;
-        if ($this->driver === 'pgsql' && isset($pkFields[$table]) && count($pkFields[$table]) === 1) {
-            $singlePkField = current($pkFields[$table]);
-            $skipTablePrimaryKey = $this->shouldUsePgsqlInlineIdentityPrimaryKey($singlePkField);
-        }
+        $skipTablePrimaryKey = isset($pkFields[$table]) && $this->schemaDriver->shouldSkipTablePrimaryKey($pkFields[$table]);
 
         if (isset($pkFields[$table]) && !$skipTablePrimaryKey) {
             $quotedPkFields = array_map(array($this, 'quoteIdentifier'), array_keys($pkFields[$table]));
@@ -1981,27 +1770,17 @@ class SchemaManager
         $sql .= ')';
 
         # Database-specific table options
-        if ($this->driver === 'mysql') {
-            $sql .= ' ENGINE=' . $options['engine'];
-            $sql .= ' DEFAULT CHARSET=' . $options['charset'];
-            $sql .= ' COLLATE=' . $options['collate'];
-
-            if ($autoinc) {
-                $sql .= ' AUTO_INCREMENT=1';
-            }
-        }
-        // PostgreSQL doesn't use ENGINE, CHARSET, COLLATE, or AUTO_INCREMENT in CREATE TABLE
+        $sql .= $this->schemaDriver->getCreateTableOptionsStatement($options, $autoinc);
 
         $sql .= ';' . PHP_EOL;
 
-        # Create separate indexes for PostgreSQL non-unique fields
-        if ($this->driver === 'pgsql' && count($fkFields)) {
-            foreach (array_keys($fkFields) as $name) {
-                if (!isset($fkFields[$name]['unique']) || !$fkFields[$name]['unique']) {
-                    $indexName = $this->quoteIdentifier("IDX_{$table}_{$name}");
-                    $sql .= "CREATE INDEX IF NOT EXISTS {$indexName} ON {$fullTableName} (" . $this->quoteIdentifier($name) . ");" . PHP_EOL;
-                }
-            }
+        foreach ($this->schemaDriver->getPostCreateTableStatements(
+            $table,
+            $fullTableName,
+            $fkFields,
+            array($this, 'quoteIdentifier')
+        ) as $postCreateSql) {
+            $sql .= $postCreateSql . PHP_EOL;
         }
 
         return $sql;
@@ -2065,44 +1844,14 @@ class SchemaManager
             foreach ($tables as $table) {
                 $fullTableName = $this->getSchemaQualifiedTableName(db_table($table));
 
-                if ($this->driver === 'pgsql') {
-                    // PostgreSQL: Query information_schema to get constraint names
-                    $schemaName = $options['schema'] ?? 'public';
-                    $tableName = db_table($table);
-                    $result = db_query("
-                        SELECT constraint_name
-                        FROM information_schema.table_constraints
-                        WHERE table_schema = '{$schemaName}'
-                        AND table_name = '{$tableName}'
-                        AND constraint_type = 'FOREIGN KEY'
-                    ");
-
-                    $fKeys = array();
-                    if ($result) {
-                        while ($row = db_fetchAssoc($result)) {
-                            $constraintName = $this->quoteIdentifier($row['constraint_name']);
-                            $fKeys[] = " DROP CONSTRAINT {$constraintName}";
-                        }
-                    }
-
-                    if (count($fKeys)) {
-                        $sql[] = "ALTER TABLE {$fullTableName}" . PHP_EOL . implode(',' . PHP_EOL, $fKeys) . ';';
-                    }
-                } else {
-                    // MySQL: Use SHOW CREATE TABLE
-                    $result = db_query("SHOW CREATE TABLE {$fullTableName}");
-                    if ($result && $row = db_fetchArray($result)) {
-                        $fKeys = array();
-                        if (preg_match_all('/CONSTRAINT\s+`([^`]+)`\s+FOREIGN KEY/i', $row[1], $matches)) {
-                            foreach ($matches[1] as $constraintName) {
-                                $fKeys[] = " DROP FOREIGN KEY " . $this->quoteIdentifier($constraintName);
-                            }
-                        }
-
-                        if (count($fKeys)) {
-                            $sql[] = "ALTER TABLE {$fullTableName}" . PHP_EOL . implode(',' . PHP_EOL, $fKeys) . ';';
-                        }
-                    }
+                $dropStatement = $this->schemaDriver->getDropConstraintStatement(
+                    $fullTableName,
+                    $table,
+                    $options,
+                    array($this, 'quoteIdentifier')
+                );
+                if ($dropStatement) {
+                    $sql[] = $dropStatement;
                 }
             }
         }
@@ -2576,7 +2325,7 @@ class SchemaManager
             return null;
         }
 
-        return unserialize(file_get_contents($file));
+        return unserialize(file_get_contents($file), ['allow_classes' => false]);
     }
 
     /**

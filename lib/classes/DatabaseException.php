@@ -70,11 +70,31 @@ class DatabaseException extends \Exception
         $driverMessage = '',
         $standardCode = self::DB_UNKNOWN_ERROR
     ) {
-        parent::__construct($message, $code, $previous);
+        parent::__construct($message, $this->normalizeExceptionCode($code), $previous);
 
         $this->driverCode = $driverCode;
         $this->driverMessage = $driverMessage;
         $this->standardCode = $standardCode;
+    }
+
+    /**
+     * Normalize exception code for PHP's base Exception constructor.
+     * SQLSTATE values are strings (e.g. "42P16"), but Exception requires int.
+     *
+     * @param mixed $code
+     * @return int
+     */
+    private function normalizeExceptionCode($code)
+    {
+        if (is_int($code)) {
+            return $code;
+        }
+
+        if (is_numeric($code)) {
+            return (int) $code;
+        }
+
+        return 0;
     }
 
     /**
