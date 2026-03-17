@@ -133,7 +133,7 @@ __autoloadHelper(array('utility'));
 # Autoload all system files by directory
 _autoloadDir(CLASSES);
 _autoloadDir(CLASSES . 'console');
-_autoloadDir(CLASSES . 'drivers');
+_autoloadDir(CLASSES . 'db');
 _autoloadDir(LIB . 'commands');
 
 if (__dbLoadable()) {
