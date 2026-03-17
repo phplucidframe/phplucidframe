@@ -139,6 +139,16 @@ class SchemaMySQL implements SchemaInterface
 
     public function getDefaultValueStatement($definition)
     {
+
+        if ($definition['default'] === null) {
+            return ' DEFAULT NULL';
+        }
+
+        if ($definition['type'] === 'boolean') {
+            $defaultValue = $definition['default'] ? 1 : 0;
+            return " DEFAULT {$defaultValue}";
+        }
+
         return sprintf(" DEFAULT '%s'", $definition['default']);
     }
 
