@@ -963,11 +963,14 @@ class SchemaManager
 
                 # Rename table
                 if ($renamedTable) {
-                    $sql['up'][] = 'RENAME TABLE `' . $fullTableName . '` TO `' . db_table($renamedTable) . '`;';
+                    $quotedTableName = $this->getSchemaQualifiedTableName($fullTableName);
+                    $quotedRenamedTable = $this->quoteIdentifier(db_table($renamedTable));
+                    $sql['up'][] = "ALTER TABLE {$quotedTableName} RENAME TO {$quotedRenamedTable};";
                 }
             } else {
                 # Drop table
-                $sql['up'][] = "DROP TABLE IF EXISTS `{$fullTableName}`;";
+                $quotedTableName = $this->getSchemaQualifiedTableName($fullTableName);
+                $sql['up'][] = "DROP TABLE IF EXISTS {$quotedTableName};";
             }
         }
 
