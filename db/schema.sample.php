@@ -18,7 +18,7 @@ return array(
         'collate'       => _p('db.sample.collation'),
     ),
     'lc_sessions' => array( // only useful when you use database session
-        'sid'       => array('type' => 'serial', 'primary' => true),
+        'sid'       => array('type' => 'string', 'length' => 64, 'null' => false),
         'host'      => array('type' => 'string', 'length' => 128, 'null' => false),
         'timestamp' => array('type' => 'integer', 'unsigned' => true, 'null' => false),
         'session'   => array('type' => 'blob', 'length' => 'long', 'null' => false),
@@ -118,7 +118,6 @@ return array(
         ),
     ),
     'social_profile' => array(
-        'id'        => array('type' => 'serial', 'primary' => true),
         'facebook'  => array('type' => 'string', 'length' => 100, 'null' => true),
         'twitter'   => array('type' => 'string', 'length' => 100, 'null' => true),
         'instagram' => array('type' => 'string', 'length' => 100, 'null' => true),
