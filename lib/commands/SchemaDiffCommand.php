@@ -19,7 +19,7 @@
  * with this source code in the file LICENSE
  */
 
-use LucidFrame\Core\SchemaManager;
+use LucidFrame\Core\db\SchemaManager;
 
 _consoleCommand('schema:diff')
     ->setDescription('Generates the SQL (.sqlc) by comparing your current database to your mapping metadata.')

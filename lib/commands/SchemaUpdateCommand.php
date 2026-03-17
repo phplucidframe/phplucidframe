@@ -19,7 +19,7 @@
  * with this source code in the file LICENSE
  */
 
-use LucidFrame\Core\SchemaManager;
+use LucidFrame\Core\db\SchemaManager;
 
 _consoleCommand('schema:update')
     ->setDescription('Generates and executes the SQL to synchronize the database schema with the current mapping metadata.')

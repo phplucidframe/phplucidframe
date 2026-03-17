@@ -1,7 +1,7 @@
 <?php
 
-use LucidFrame\Core\Database;
-use LucidFrame\Core\drivers\DriverFactory;
+use LucidFrame\Core\db\Database;
+use LucidFrame\Core\db\drivers\DriverFactory;
 use LucidFrame\Test\LucidFrameTestCase;
 
 /**
@@ -16,7 +16,7 @@ class TransactionInterfaceTestCase extends LucidFrameTestCase
      */
     public function testDriverInterfaceHasTransactionMethods()
     {
-        $reflection = new ReflectionClass('LucidFrame\Core\drivers\DriverInterface');
+        $reflection = new ReflectionClass('LucidFrame\Core\db\drivers\DriverInterface');
 
         // Check that transaction methods are defined in the interface
         $this->assertTrue($reflection->hasMethod('beginTransaction'));
@@ -39,10 +39,10 @@ class TransactionInterfaceTestCase extends LucidFrameTestCase
      */
     public function testMySQLDriverImplementsTransactionMethods()
     {
-        $reflection = new ReflectionClass('LucidFrame\Core\drivers\MySQLDriver');
+        $reflection = new ReflectionClass('LucidFrame\Core\db\drivers\MySQLDriver');
 
         // Check that MySQL driver implements DriverInterface
-        $this->assertTrue($reflection->implementsInterface('LucidFrame\Core\drivers\DriverInterface'));
+        $this->assertTrue($reflection->implementsInterface('LucidFrame\Core\db\drivers\DriverInterface'));
 
         // Check that transaction methods are implemented
         $this->assertTrue($reflection->hasMethod('beginTransaction'));
@@ -65,10 +65,10 @@ class TransactionInterfaceTestCase extends LucidFrameTestCase
      */
     public function testPostgreSQLDriverImplementsTransactionMethods()
     {
-        $reflection = new ReflectionClass('LucidFrame\Core\drivers\PostgreSQLDriver');
+        $reflection = new ReflectionClass('LucidFrame\Core\db\drivers\PostgreSQLDriver');
 
         // Check that PostgreSQL driver implements DriverInterface
-        $this->assertTrue($reflection->implementsInterface('LucidFrame\Core\drivers\DriverInterface'));
+        $this->assertTrue($reflection->implementsInterface('LucidFrame\Core\db\drivers\DriverInterface'));
 
         // Check that transaction methods are implemented
         $this->assertTrue($reflection->hasMethod('beginTransaction'));
@@ -91,7 +91,7 @@ class TransactionInterfaceTestCase extends LucidFrameTestCase
      */
     public function testDatabaseClassExposesTransactionMethods()
     {
-        $reflection = new ReflectionClass('LucidFrame\Core\Database');
+        $reflection = new ReflectionClass('LucidFrame\Core\db\Database');
 
         // Check that Database class has transaction methods
         $this->assertTrue($reflection->hasMethod('beginTransaction'));
@@ -185,8 +185,8 @@ class TransactionInterfaceTestCase extends LucidFrameTestCase
      */
     public function testTransactionMethodConsistencyAcrossDrivers()
     {
-        $mysqlReflection = new ReflectionClass('LucidFrame\Core\drivers\MySQLDriver');
-        $pgsqlReflection = new ReflectionClass('LucidFrame\Core\drivers\PostgreSQLDriver');
+        $mysqlReflection = new ReflectionClass('LucidFrame\Core\db\drivers\MySQLDriver');
+        $pgsqlReflection = new ReflectionClass('LucidFrame\Core\db\drivers\PostgreSQLDriver');
 
         $transactionMethods = ['beginTransaction', 'commit', 'rollback'];
 

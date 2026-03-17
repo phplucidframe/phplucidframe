@@ -9,15 +9,13 @@
  * @link        http://phplucidframe.com
  * @license     http://www.opensource.org/licenses/mit-license.php MIT License
  *
- * This source file is subject to the MIT license that is bundled
+ * This source file is subject to the MIT license bundled
  * with this source code in the file LICENSE
  */
 
-namespace LucidFrame\Core;
+namespace LucidFrame\Core\db;
 
 use LucidFrame\Console\Command;
-use LucidFrame\Core\drivers\SchemaFactory;
-use LucidFrame\Core\drivers\SchemaInterface;
 
 /**
  * Schema Manager

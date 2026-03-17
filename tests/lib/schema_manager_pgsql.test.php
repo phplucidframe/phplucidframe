@@ -5,7 +5,7 @@
 
 require_once 'test_bootstrap.php';
 
-use LucidFrame\Core\SchemaManager;
+use LucidFrame\Core\db\SchemaManager;
 
 class SchemaManagerPgsqlTestCase extends LucidFrameTestCase
 {

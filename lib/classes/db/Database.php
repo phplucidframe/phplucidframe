@@ -10,14 +10,15 @@
  * @link        http://phplucidframe.com
  * @license     http://www.opensource.org/licenses/mit-license.php MIT License
  *
- * This source file is subject to the MIT license that is bundled
+ * This source file is subject to the MIT license bundled
  * with this source code in the file LICENSE
  */
 
-namespace LucidFrame\Core;
+namespace LucidFrame\Core\db;
 
-use LucidFrame\Core\drivers\DriverFactory;
-use LucidFrame\Core\drivers\DriverInterface;
+use LucidFrame\Core\db\drivers\DriverFactory;
+use LucidFrame\Core\db\drivers\DriverInterface;
+use LucidFrame\Core\QueryBuilder;
 
 /**
  * This class is part of the PHPLucidFrame library.

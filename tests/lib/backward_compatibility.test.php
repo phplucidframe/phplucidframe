@@ -1,6 +1,5 @@
 <?php
 
-use LucidFrame\Core\Database;
 use LucidFrame\Core\QueryBuilder;
 use LucidFrame\Test\LucidFrameTestCase;
 

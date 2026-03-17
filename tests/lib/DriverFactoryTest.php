@@ -12,10 +12,10 @@ require_once __DIR__ . '/../../lib/classes/DriverFactory.php';
 require_once __DIR__ . '/../../lib/classes/MySQLDriver.php';
 require_once __DIR__ . '/../../lib/classes/PostgreSQLDriver.php';
 
-use LucidFrame\Core\DatabaseException;
-use LucidFrame\Core\drivers\DriverFactory;
-use LucidFrame\Core\drivers\MySQLDriver;
-use LucidFrame\Core\drivers\PostgreSQLDriver;
+use LucidFrame\Core\db\DatabaseException;
+use LucidFrame\Core\db\drivers\DriverFactory;
+use LucidFrame\Core\db\drivers\MySQLDriver;
+use LucidFrame\Core\db\drivers\PostgreSQLDriver;
 
 /**
  * Test DriverFactory functionality
@@ -38,10 +38,10 @@ function testDriverFactory()
 
     // Test driver class names
     $mysqlClass = DriverFactory::getDriverClass('mysql');
-    assert($mysqlClass === 'LucidFrame\\Core\\drivers\\MySQLDriver', 'MySQL driver class should be correct');
+    assert($mysqlClass === 'LucidFrame\\Core\\db\\drivers\\MySQLDriver', 'MySQL driver class should be correct');
 
     $pgsqlClass = DriverFactory::getDriverClass('pgsql');
-    assert($pgsqlClass === 'LucidFrame\\Core\\drivers\\PostgreSQLDriver', 'PostgreSQL driver class should be correct');
+    assert($pgsqlClass === 'LucidFrame\\Core\\db\\drivers\\PostgreSQLDriver', 'PostgreSQL driver class should be correct');
     echo "✓ Driver class name test passed\n";
 
     // Test configuration validation

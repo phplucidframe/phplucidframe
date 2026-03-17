@@ -1,7 +1,7 @@
 <?php
 
-use LucidFrame\Core\DatabaseException;
-use LucidFrame\Core\drivers\DriverFactory;
+use LucidFrame\Core\db\DatabaseException;
+use LucidFrame\Core\db\drivers\DriverFactory;
 use LucidFrame\Test\LucidFrameTestCase;
 
 /**

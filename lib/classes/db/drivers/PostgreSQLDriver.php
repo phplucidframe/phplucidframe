@@ -2,7 +2,7 @@
 
 /**
  * This file is part of the PHPLucidFrame library.
- * MySQL database driver implementation
+ * PostgreSQL database driver implementation
  *
  * @package     PHPLucidFrame\Core
  * @since       PHPLucidFrame v 4.0.0
@@ -10,20 +10,20 @@
  * @link        http://phplucidframe.com
  * @license     http://www.opensource.org/licenses/mit-license.php MIT License
  *
- * This source file is subject to the MIT license that is bundled
+ * This source file is subject to the MIT license bundled
  * with this source code in the file LICENSE
  */
 
-namespace LucidFrame\Core\drivers;
+namespace LucidFrame\Core\db\drivers;
 
-use LucidFrame\Core\DatabaseException;
-use LucidFrame\Core\SchemaManager;
+use LucidFrame\Core\db\DatabaseException;
+use LucidFrame\Core\db\SchemaManager;
 
 /**
- * MySQL database driver implementation
- * Handles MySQL-specific database operations and connection management
+ * PostgreSQL database driver implementation
+ * Handles PostgreSQL-specific database operations and connection management
  */
-class MySQLDriver implements DriverInterface
+class PostgreSQLDriver implements DriverInterface
 {
     /** @var \PDO Database connection */
     private $connection;
@@ -54,7 +54,7 @@ class MySQLDriver implements DriverInterface
     ];
 
     /**
-     * Establish MySQL database connection with optimizations
+     * Establish PostgreSQL database connection with optimizations
      *
      * @param array $config Database configuration array
      * @return \PDO Database connection object
@@ -68,37 +68,33 @@ class MySQLDriver implements DriverInterface
         $required = ['host', 'database', 'username', 'password'];
         foreach ($required as $key) {
             if (!isset($config[$key])) {
-                throw new \InvalidArgumentException("MySQL configuration missing required key: {$key}");
+                throw new \InvalidArgumentException("PostgreSQL configuration missing required key: {$key}");
             }
         }
 
-        // Set MySQL-specific defaults with optimizations
-        $charset = $config['charset'] ?? 'utf8mb4';
-        $collation = $config['collation'] ?? 'utf8mb4_unicode_ci';
-        $port = $config['port'] ?? 3306;
-        $engine = $config['engine'] ?? 'InnoDB';
-        $timeout = $config['timeout'] ?? 30;
-        $persistent = $config['persistent'] ?? false;
+        // Set PostgreSQL-specific defaults with optimizations
+        extract($config);
 
         try {
-            // Build optimized DSN
+            // Build optimized DSN with PostgreSQL-specific options
             $dsn = sprintf(
-                'mysql:host=%s;port=%d;dbname=%s;charset=%s',
-                $config['host'],
+                'pgsql:host=%s;port=%d;dbname=%s',
+                $host,
                 $port,
-                $config['database'],
-                $charset
+                $database
             );
 
-            // MySQL-specific optimized PDO options
+            // Add PostgreSQL-specific connection options to DSN
+            $this->addPostgreSQLDsnOptions($dsn, $config);
+
+            // PostgreSQL-specific optimized PDO options
             $options = [
                 \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
                 \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_OBJ,
+                \PDO::ATTR_CASE => \PDO::CASE_NATURAL,
                 \PDO::ATTR_EMULATE_PREPARES => false, // Use native prepared statements
                 \PDO::ATTR_STRINGIFY_FETCHES => false, // Keep data types
                 \PDO::ATTR_TIMEOUT => $timeout,
-                \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true, // Buffer results for better memory usage
-                \PDO::MYSQL_ATTR_INIT_COMMAND => $this->buildInitCommand($charset, $collation, $engine, $config),
             ];
 
             // Enable persistent connections if configured
@@ -106,25 +102,17 @@ class MySQLDriver implements DriverInterface
                 $options[\PDO::ATTR_PERSISTENT] = true;
             }
 
-            // Enhanced SSL configuration
-            if (isset($config['ssl']) && $config['ssl']) {
-                $this->configureSslOptions($options, $config);
+            if (!extension_loaded('pdo_pgsql')) {
+                throw new DatabaseException(
+                    'PostgreSQL PDO driver is not installed. ' .
+                    'Please enable pdo_pgsql extension in php.ini or use a different database driver.'
+                );
             }
 
-            // Connection compression for better performance over network
-            if (isset($config['compress']) && $config['compress']) {
-                $options[\PDO::MYSQL_ATTR_COMPRESS] = true;
-            }
+            $this->connection = new \PDO($dsn, $username, $password, $options);
 
-            // Local infile support if needed
-            if (isset($config['local_infile']) && $config['local_infile']) {
-                $options[\PDO::MYSQL_ATTR_LOCAL_INFILE] = true;
-            }
-
-            $this->connection = new \PDO($dsn, $config['username'], $config['password'], $options);
-
-            // Post-connection optimizations
-            $this->applyPostConnectionOptimizations($config);
+            // Apply PostgreSQL-specific post-connection optimizations
+            $this->applyPostgreSQLOptimizations($charset, $schema, $config);
 
             return $this->connection;
 
@@ -132,9 +120,9 @@ class MySQLDriver implements DriverInterface
             $this->errorCode = $e->getCode();
             $this->error = $e->getMessage();
 
-            $standardCode = DatabaseException::mapDriverError($e->getCode(), 'mysql');
+            $standardCode = DatabaseException::mapDriverError($e->getCode(), 'pgsql');
             throw new DatabaseException(
-                "MySQL connection failed: " . $e->getMessage(),
+                "PostgreSQL connection failed: " . $e->getMessage(),
                 $e->getCode(),
                 $e,
                 $e->getCode(),
@@ -195,9 +183,9 @@ class MySQLDriver implements DriverInterface
             $this->errorCode = $e->getCode();
             $this->error = $e->getMessage();
 
-            $standardCode = DatabaseException::mapDriverError($e->getCode(), 'mysql');
+            $standardCode = DatabaseException::mapDriverError($e->getCode(), 'pgsql');
             throw new DatabaseException(
-                "MySQL query failed: " . $e->getMessage(),
+                "PostgreSQL query failed: " . $e->getMessage(),
                 $e->getCode(),
                 $e,
                 $e->getCode(),
@@ -209,12 +197,14 @@ class MySQLDriver implements DriverInterface
 
     /**
      * Get the last inserted ID
+     * PostgreSQL uses sequences for auto-increment, so we need to specify the sequence name
      *
+     * @param string $sequenceName Optional sequence name for PostgreSQL
      * @return int Last inserted ID
      */
-    public function getLastInsertId()
+    public function getLastInsertId($sequenceName = null)
     {
-        return $this->connection ? $this->connection->lastInsertId() : 0;
+        return $this->connection ? $this->connection->lastInsertId($sequenceName) : 0;
     }
 
     /**
@@ -269,50 +259,50 @@ class MySQLDriver implements DriverInterface
 
     /**
      * Quote an identifier (table name, column name, etc.)
-     * MySQL uses backticks for identifier quoting
+     * PostgreSQL uses double quotes for identifier quoting
      *
      * @param string $identifier The identifier to quote
      * @return string Quoted identifier
      */
     public function quote($identifier)
     {
-        return '`' . str_replace('`', '``', $identifier) . '`';
+        return '"' . str_replace('"', '""', $identifier) . '"';
     }
 
     /**
-     * Get MySQL-specific data types mapping
+     * Get PostgreSQL-specific data types mapping
      *
      * @return array Array of data type mappings
      */
     public function getDataTypes()
     {
         return [
-            'int' => 'INT',
-            'integer' => 'INT',
+            'int' => 'INTEGER',
+            'integer' => 'INTEGER',
             'bigint' => 'BIGINT',
             'smallint' => 'SMALLINT',
-            'tinyint' => 'TINYINT',
+            'tinyint' => 'SMALLINT', // PostgreSQL doesn't have TINYINT, use SMALLINT
             'string' => 'VARCHAR',
             'varchar' => 'VARCHAR',
             'char' => 'CHAR',
             'text' => 'TEXT',
-            'longtext' => 'LONGTEXT',
-            'mediumtext' => 'MEDIUMTEXT',
-            'boolean' => 'TINYINT(1)',
-            'bool' => 'TINYINT(1)',
-            'datetime' => 'DATETIME',
+            'longtext' => 'TEXT', // PostgreSQL TEXT can handle large content
+            'mediumtext' => 'TEXT',
+            'boolean' => 'BOOLEAN',
+            'bool' => 'BOOLEAN',
+            'datetime' => 'TIMESTAMP',
             'timestamp' => 'TIMESTAMP',
             'date' => 'DATE',
             'time' => 'TIME',
-            'decimal' => 'DECIMAL',
-            'numeric' => 'DECIMAL',
-            'float' => 'FLOAT',
-            'double' => 'DOUBLE',
-            'json' => 'JSON',
+            'decimal' => 'NUMERIC',
+            'numeric' => 'NUMERIC',
+            'float' => 'REAL',
+            'double' => 'DOUBLE PRECISION',
+            'json' => 'JSONB', // Use JSONB for better performance
             'array' => 'TEXT',
-            'blob' => 'BLOB',
-            'binary' => 'BINARY',
-            'varbinary' => 'VARBINARY'
+            'blob' => 'BYTEA',
+            'binary' => 'BYTEA',
+            'varbinary' => 'BYTEA'
         ];
     }
 
@@ -512,17 +502,19 @@ class MySQLDriver implements DriverInterface
     }
 
     /**
-     * Get MySQL-specific SQL syntax for auto-increment
+     * Get PostgreSQL-specific SQL syntax for auto-increment
+     * PostgreSQL uses SERIAL or IDENTITY columns
      *
      * @return string Auto-increment syntax
      */
     public function getAutoIncrementSyntax()
     {
-        return 'AUTO_INCREMENT';
+        return 'SERIAL';
     }
 
     /**
-     * Get MySQL-specific LIMIT syntax
+     * Get PostgreSQL-specific LIMIT syntax
+     * PostgreSQL uses LIMIT count OFFSET offset
      *
      * @param int $limit Number of records to limit
      * @param int $offset Number of records to skip
@@ -531,7 +523,7 @@ class MySQLDriver implements DriverInterface
     public function getLimitSyntax($limit, $offset = 0)
     {
         if ($offset > 0) {
-            return "LIMIT {$offset}, {$limit}";
+            return "LIMIT {$limit} OFFSET {$offset}";
         }
 
         return "LIMIT {$limit}";
@@ -548,7 +540,7 @@ class MySQLDriver implements DriverInterface
     }
 
     /**
-     * Get MySQL server version
+     * Get PostgreSQL server version
      *
      * @return string Server version
      */
@@ -562,25 +554,23 @@ class MySQLDriver implements DriverInterface
     }
 
     /**
-     * Execute MySQL-specific foreign key check commands
+     * PostgreSQL doesn't have a direct equivalent to MySQL's FOREIGN_KEY_CHECKS
+     * This method provides a no-op for compatibility
      *
-     * @param int $flag 0 to disable, 1 to enable
-     * @return bool True on success, false on failure
+     * @param int $flag 0 to disable, 1 to enable (ignored in PostgreSQL)
+     * @return bool Always returns true for PostgreSQL
      */
     public function setForeignKeyCheck($flag)
     {
-        try {
-            $this->query('SET FOREIGN_KEY_CHECKS = ' . (int)$flag);
-            return true;
-        } catch (\Exception $e) {
-            return false;
-        }
+        // PostgreSQL doesn't have a global foreign key check setting
+        // Foreign key constraints are always enforced unless deferred
+        return true;
     }
 
     /**
-     * Enable foreign key checks
+     * Enable foreign key checks (no-op for PostgreSQL compatibility)
      *
-     * @return bool True on success, false on failure
+     * @return bool Always returns true for PostgreSQL
      */
     public function enableForeignKeyCheck()
     {
@@ -588,9 +578,9 @@ class MySQLDriver implements DriverInterface
     }
 
     /**
-     * Disable foreign key checks
+     * Disable foreign key checks (no-op for PostgreSQL compatibility)
      *
-     * @return bool True on success, false on failure
+     * @return bool Always returns true for PostgreSQL
      */
     public function disableForeignKeyCheck()
     {
@@ -598,125 +588,209 @@ class MySQLDriver implements DriverInterface
     }
 
     /**
-     * Build MySQL initialization command with optimizations
+     * Get PostgreSQL-specific boolean value representation
      *
-     * @param string $charset Character set
-     * @param string $collation Collation
-     * @param string $engine Default storage engine
-     * @param array $config Full configuration array
-     * @return string Initialization command
+     * @param mixed $value The value to convert
+     * @return string PostgreSQL boolean representation
      */
-    private function buildInitCommand($charset, $collation, $engine, array $config)
+    public function getBooleanValue($value)
     {
-        $commands = [];
-
-        // Set character set and collation
-        $commands[] = "SET NAMES {$charset} COLLATE {$collation}";
-
-        // Set default storage engine
-        $commands[] = "SET default_storage_engine = {$engine}";
-
-        // Set SQL mode for better compatibility and performance
-        $sqlMode = $config['sql_mode'] ?? 'STRICT_TRANS_TABLES,NO_ZERO_DATE,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO';
-        $commands[] = "SET sql_mode = '{$sqlMode}'";
-
-        // Set timezone if specified
-        if (isset($config['timezone'])) {
-            $commands[] = "SET time_zone = '{$config['timezone']}'";
-        }
-
-        // Performance optimizations
-        if (isset($config['autocommit']) && !$config['autocommit']) {
-            $commands[] = "SET autocommit = 0";
-        }
-
-        // Query cache optimization (if enabled)
-        if (isset($config['query_cache_type'])) {
-            $commands[] = "SET SESSION query_cache_type = {$config['query_cache_type']}";
-        }
-
-        return implode('; ', $commands);
+        return $value ? 'TRUE' : 'FALSE';
     }
 
     /**
-     * Configure SSL options for MySQL connection
+     * Get PostgreSQL-specific sequence name for a table's auto-increment column
      *
-     * @param array &$options PDO options array (passed by reference)
-     * @param array $config Configuration array
-     * @return void
+     * @param string $table Table name
+     * @param string $column Column name (default: 'id')
+     * @return string Sequence name
      */
-    private function configureSslOptions(array &$options, array $config)
+    public function getSequenceName($table, $column = 'id')
     {
-        // Basic SSL configuration
-        $options[\PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = $config['ssl_verify_cert'] ?? false;
-
-        // SSL certificate files
-        if (isset($config['ssl_ca'])) {
-            $options[\PDO::MYSQL_ATTR_SSL_CA] = $config['ssl_ca'];
-        }
-
-        if (isset($config['ssl_cert'])) {
-            $options[\PDO::MYSQL_ATTR_SSL_CERT] = $config['ssl_cert'];
-        }
-
-        if (isset($config['ssl_key'])) {
-            $options[\PDO::MYSQL_ATTR_SSL_KEY] = $config['ssl_key'];
-        }
-
-        if (isset($config['ssl_capath'])) {
-            $options[\PDO::MYSQL_ATTR_SSL_CAPATH] = $config['ssl_capath'];
-        }
-
-        if (isset($config['ssl_cipher'])) {
-            $options[\PDO::MYSQL_ATTR_SSL_CIPHER] = $config['ssl_cipher'];
-        }
+        return $table . '_' . $column . '_seq';
     }
 
     /**
-     * Apply post-connection optimizations
+     * Execute PostgreSQL-specific commands to reset sequence
      *
-     * @param array $config Configuration array
-     * @return void
+     * @param string $table Table name
+     * @param string $column Column name
+     * @return bool True on success, false on failure
      */
-    private function applyPostConnectionOptimizations(array $config)
+    public function resetSequence($table, $column = 'id')
     {
         try {
-            // Set session-specific optimizations
+            $sequenceName = $this->getSequenceName($table, $column);
+            $sql = "SELECT setval('{$sequenceName}', COALESCE((SELECT MAX({$column}) FROM {$table}), 1), false)";
+            $this->query($sql);
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Get PostgreSQL-specific UPSERT syntax (INSERT ... ON CONFLICT)
+     *
+     * @param string $table Table name
+     * @param array $data Data to insert/update
+     * @param array $conflictColumns Columns that define the conflict
+     * @param array $updateColumns Columns to update on conflict
+     * @return string UPSERT SQL statement
+     */
+    public function getUpsertSyntax($table, array $data, array $conflictColumns, array $updateColumns = [])
+    {
+        $columns = array_keys($data);
+        $placeholders = array_map(function ($col) {
+            return ':' . $col;
+        }, $columns);
+
+        $sql = "INSERT INTO {$table} (" . implode(', ', $columns) . ") VALUES (" . implode(', ', $placeholders) . ")";
+
+        if (!empty($conflictColumns)) {
+            $sql .= " ON CONFLICT (" . implode(', ', $conflictColumns) . ")";
+
+            if (!empty($updateColumns)) {
+                $updates = array_map(function ($col) {
+                    return "{$col} = EXCLUDED.{$col}";
+                }, $updateColumns);
+                $sql .= " DO UPDATE SET " . implode(', ', $updates);
+            } else {
+                $sql .= " DO NOTHING";
+            }
+        }
+
+        return $sql;
+    }
+
+    /**
+     * Add PostgreSQL-specific options to DSN
+     *
+     * @param string &$dsn DSN string (passed by reference)
+     * @param array $config Configuration array
+     * @return void
+     */
+    private function addPostgreSQLDsnOptions(&$dsn, array $config)
+    {
+        // SSL configuration
+        if (isset($config['sslmode'])) {
+            $dsn .= ';sslmode=' . $config['sslmode'];
+        }
+
+        if (isset($config['sslcert'])) {
+            $dsn .= ';sslcert=' . $config['sslcert'];
+        }
+
+        if (isset($config['sslkey'])) {
+            $dsn .= ';sslkey=' . $config['sslkey'];
+        }
+
+        if (isset($config['sslrootcert'])) {
+            $dsn .= ';sslrootcert=' . $config['sslrootcert'];
+        }
+
+        if (isset($config['sslcrl'])) {
+            $dsn .= ';sslcrl=' . $config['sslcrl'];
+        }
+
+        // Connection optimization options
+        if (isset($config['connect_timeout'])) {
+            $dsn .= ';connect_timeout=' . $config['connect_timeout'];
+        }
+
+        if (isset($config['application_name'])) {
+            $dsn .= ';application_name=' . $config['application_name'];
+        }
+
+        // Client encoding
+        if (isset($config['client_encoding'])) {
+            $dsn .= ';client_encoding=' . $config['client_encoding'];
+        }
+    }
+
+    /**
+     * Apply PostgreSQL-specific post-connection optimizations
+     *
+     * @param string $charset Character encoding
+     * @param string $schema Default schema
+     * @param array $config Configuration array
+     * @return void
+     */
+    private function applyPostgreSQLOptimizations($charset, $schema, array $config)
+    {
+        try {
             $optimizations = [];
 
-            // Transaction isolation level
-            if (isset($config['isolation_level'])) {
-                $optimizations[] = "SET SESSION TRANSACTION ISOLATION LEVEL {$config['isolation_level']}";
+            // Set client encoding
+            $optimizations[] = "SET NAMES '{$charset}'";
+
+            // Set search path to schema(s)
+            $searchPath = is_array($schema) ? implode(',', $schema) : $schema;
+            $optimizations[] = "SET search_path TO {$searchPath}";
+
+            // Set timezone if specified
+            if (isset($config['timezone'])) {
+                $optimizations[] = "SET TIME ZONE '{$config['timezone']}'";
             }
 
-            // Read buffer size optimization
-            if (isset($config['read_buffer_size'])) {
-                $optimizations[] = "SET SESSION read_buffer_size = {$config['read_buffer_size']}";
+            // Set statement timeout for query optimization
+            if (isset($config['statement_timeout'])) {
+                $optimizations[] = "SET statement_timeout = '{$config['statement_timeout']}'";
             }
 
-            // Sort buffer size optimization
-            if (isset($config['sort_buffer_size'])) {
-                $optimizations[] = "SET SESSION sort_buffer_size = {$config['sort_buffer_size']}";
+            // Set lock timeout
+            if (isset($config['lock_timeout'])) {
+                $optimizations[] = "SET lock_timeout = '{$config['lock_timeout']}'";
             }
 
-            // Join buffer size optimization
-            if (isset($config['join_buffer_size'])) {
-                $optimizations[] = "SET SESSION join_buffer_size = {$config['join_buffer_size']}";
+            // Set idle in transaction timeout
+            if (isset($config['idle_in_transaction_session_timeout'])) {
+                $optimizations[] = "SET idle_in_transaction_session_timeout = '{$config['idle_in_transaction_session_timeout']}'";
             }
 
-            // Execute optimizations
+            // Work memory optimization for complex queries
+            if (isset($config['work_mem'])) {
+                $optimizations[] = "SET work_mem = '{$config['work_mem']}'";
+            }
+
+            // Maintenance work memory for maintenance operations
+            if (isset($config['maintenance_work_mem'])) {
+                $optimizations[] = "SET maintenance_work_mem = '{$config['maintenance_work_mem']}'";
+            }
+
+            // Random page cost for query planner optimization
+            if (isset($config['random_page_cost'])) {
+                $optimizations[] = "SET random_page_cost = {$config['random_page_cost']}";
+            }
+
+            // Effective cache size for query planner
+            if (isset($config['effective_cache_size'])) {
+                $optimizations[] = "SET effective_cache_size = '{$config['effective_cache_size']}'";
+            }
+
+            // Default transaction isolation level
+            if (isset($config['default_transaction_isolation'])) {
+                $optimizations[] = "SET default_transaction_isolation = '{$config['default_transaction_isolation']}'";
+            }
+
+            // Enable/disable JIT compilation
+            if (isset($config['jit'])) {
+                $optimizations[] = "SET jit = " . ($config['jit'] ? 'on' : 'off');
+            }
+
+            // Execute all optimizations
             foreach ($optimizations as $sql) {
                 $this->connection->exec($sql);
             }
 
         } catch (\PDOException $e) {
             // Log optimization failures but don't fail the connection
-            error_log("MySQL optimization warning: " . $e->getMessage());
+            error_log("PostgreSQL optimization warning: " . $e->getMessage());
         }
     }
 
     /**
-     * Get MySQL-specific connection pool configuration
+     * Get PostgreSQL-specific connection pool configuration
      *
      * @return array Connection pool settings
      */
@@ -729,12 +803,14 @@ class MySQLDriver implements DriverInterface
             'idle_timeout' => $this->config['idle_timeout'] ?? 600,
             'max_lifetime' => $this->config['max_lifetime'] ?? 3600,
             'validation_query' => 'SELECT 1',
-            'validation_timeout' => 3
+            'validation_timeout' => 3,
+            'prepared_statement_cache_queries' => $this->config['prepared_statement_cache_queries'] ?? 256,
+            'prepared_statement_cache_size' => $this->config['prepared_statement_cache_size'] ?? '10MB'
         ];
     }
 
     /**
-     * Optimize query execution for MySQL
+     * Optimize query execution for PostgreSQL
      *
      * @param string $sql SQL query
      * @param array $args Query parameters
@@ -742,8 +818,8 @@ class MySQLDriver implements DriverInterface
      */
     public function optimizedQuery($sql, array $args = [])
     {
-        // Add MySQL-specific query hints for optimization
-        $sql = $this->addQueryHints($sql);
+        // Add PostgreSQL-specific query optimizations
+        $sql = $this->addPostgreSQLQueryOptimizations($sql);
 
         // Use prepared statement caching for better performance
         if (isset($this->config['use_prepared_cache']) && $this->config['use_prepared_cache']) {
@@ -754,21 +830,25 @@ class MySQLDriver implements DriverInterface
     }
 
     /**
-     * Add MySQL-specific query hints for optimization
+     * Add PostgreSQL-specific query optimizations
      *
      * @param string $sql Original SQL query
      * @return string SQL with optimization hints
      */
-    private function addQueryHints($sql)
+    private function addPostgreSQLQueryOptimizations($sql)
     {
-        // Add USE INDEX hints for common patterns
-        if (preg_match('/SELECT.*FROM\s+(\w+)/i', $sql, $matches)) {
-            $table = $matches[1];
+        // Add query hints for PostgreSQL optimizer
+        if (preg_match('/SELECT/i', $sql)) {
+            // For large result sets, consider using cursor
+            if (strpos($sql, 'LIMIT') === false && strpos($sql, 'COUNT(') === false) {
+                // This is a potential large result set query
+                // Could add hints or modify for cursor usage
+            }
 
-            // Add hints based on query patterns
-            if (strpos($sql, 'ORDER BY') !== false && strpos($sql, 'LIMIT') !== false) {
-                // For paginated queries, suggest using covering indexes
-                $sql = str_replace("FROM {$table}", "FROM {$table} USE INDEX FOR ORDER BY", $sql);
+            // Optimize JOIN queries with explicit join conditions
+            if (preg_match_all('/JOIN\s+(\w+)/i', $sql, $matches)) {
+                // PostgreSQL benefits from explicit join order hints in complex queries
+                // This could be enhanced based on table statistics
             }
         }
 
@@ -799,36 +879,17 @@ class MySQLDriver implements DriverInterface
     }
 
     /**
-     * Get MySQL storage engine information
+     * Vacuum table for better performance
      *
      * @param string $table Table name
-     * @return string Storage engine name
-     */
-    public function getStorageEngine($table = null)
-    {
-        if ($table) {
-            try {
-                $stmt = $this->query("SHOW TABLE STATUS LIKE ?", [$table]);
-                $result = $stmt->fetch(\PDO::FETCH_ASSOC);
-                return $result['Engine'] ?? 'Unknown';
-            } catch (\Exception $e) {
-                return 'Unknown';
-            }
-        }
-
-        return $this->config['engine'] ?? 'InnoDB';
-    }
-
-    /**
-     * Optimize table for better performance
-     *
-     * @param string $table Table name
+     * @param bool $full Whether to perform full vacuum
      * @return bool True on success, false on failure
      */
-    public function optimizeTable($table)
+    public function vacuumTable($table, $full = false)
     {
         try {
-            $this->query("OPTIMIZE TABLE {$table}");
+            $sql = $full ? "VACUUM FULL {$table}" : "VACUUM {$table}";
+            $this->query($sql);
             return true;
         } catch (\Exception $e) {
             return false;
@@ -844,7 +905,91 @@ class MySQLDriver implements DriverInterface
     public function analyzeTable($table)
     {
         try {
-            $this->query("ANALYZE TABLE {$table}");
+            $this->query("ANALYZE {$table}");
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Reindex table for better performance
+     *
+     * @param string $table Table name
+     * @return bool True on success, false on failure
+     */
+    public function reindexTable($table)
+    {
+        try {
+            $this->query("REINDEX TABLE {$table}");
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Get PostgreSQL-specific query execution plan
+     *
+     * @param string $sql SQL query
+     * @param array $args Query parameters
+     * @param bool $analyze Whether to execute and analyze
+     * @return array Query execution plan
+     */
+    public function explainQuery($sql, array $args = [], $analyze = false)
+    {
+        try {
+            $explainSql = $analyze ? "EXPLAIN (ANALYZE, BUFFERS) " . $sql : "EXPLAIN " . $sql;
+            $stmt = $this->query($explainSql, $args);
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
+
+    /**
+     * Get PostgreSQL server configuration parameter
+     *
+     * @param string $parameter Parameter name
+     * @return string Parameter value
+     */
+    public function getServerParameter($parameter)
+    {
+        try {
+            $stmt = $this->query("SHOW {$parameter}");
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+            return $result ? reset($result) : '';
+        } catch (\Exception $e) {
+            return '';
+        }
+    }
+
+    /**
+     * Check if PostgreSQL extension is available
+     *
+     * @param string $extension Extension name
+     * @return bool True if available, false otherwise
+     */
+    public function isExtensionAvailable($extension)
+    {
+        try {
+            $stmt = $this->query("SELECT 1 FROM pg_available_extensions WHERE name = ?", [$extension]);
+            return $stmt->fetchColumn() !== false;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Enable PostgreSQL extension
+     *
+     * @param string $extension Extension name
+     * @return bool True on success, false on failure
+     */
+    public function enableExtension($extension)
+    {
+        try {
+            $this->query("CREATE EXTENSION IF NOT EXISTS {$extension}");
             return true;
         } catch (\Exception $e) {
             return false;

@@ -1,7 +1,7 @@
 <?php
 
-use LucidFrame\Core\drivers\MySQLDriver;
-use LucidFrame\Core\SchemaManager;
+use LucidFrame\Core\db\drivers\MySQLDriver;
+use LucidFrame\Core\db\SchemaManager;
 use LucidFrame\Test\LucidFrameTestCase;
 
 /**
@@ -9,7 +9,7 @@ use LucidFrame\Test\LucidFrameTestCase;
  */
 class MySQLDriverTestCase extends LucidFrameTestCase
 {
-    /** @var \LucidFrame\Core\drivers\MySQLDriver */
+    /** @var \LucidFrame\Core\db\drivers\MySQLDriver */
     private $driver;
 
     /** @var array */
@@ -41,7 +41,7 @@ class MySQLDriverTestCase extends LucidFrameTestCase
 
     public function testImplementsDriverInterface()
     {
-        $this->assertTrue($this->driver instanceof \LucidFrame\Core\drivers\DriverInterface);
+        $this->assertTrue($this->driver instanceof \LucidFrame\Core\db\drivers\DriverInterface);
     }
 
     public function testConnectWithMissingConfig()

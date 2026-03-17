@@ -1,7 +1,7 @@
 <?php
 
-use LucidFrame\Core\Database;
-use LucidFrame\Core\drivers\DriverFactory;
+use LucidFrame\Core\db\Database;
+use LucidFrame\Core\db\drivers\DriverFactory;
 use LucidFrame\Core\QueryBuilder;
 use LucidFrame\Test\LucidFrameTestCase;
 

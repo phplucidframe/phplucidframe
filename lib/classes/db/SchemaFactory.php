@@ -14,7 +14,7 @@
  * with this source code in the file LICENSE
  */
 
-namespace LucidFrame\Core\drivers;
+namespace LucidFrame\Core\db;
 
 class SchemaFactory
 {

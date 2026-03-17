@@ -14,7 +14,7 @@
  * with this source code in the file LICENSE
  */
 
-use LucidFrame\Core\Database;
+use LucidFrame\Core\db\Database;
 use LucidFrame\Core\QueryBuilder;
 
 /**

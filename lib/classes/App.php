@@ -14,6 +14,8 @@
 
 namespace LucidFrame\Core;
 
+use LucidFrame\Core\db\Database;
+
 final class App
 {
     /**

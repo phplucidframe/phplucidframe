@@ -1,8 +1,8 @@
 <?php
 
-use LucidFrame\Core\Database;
-use LucidFrame\Core\DatabaseException;
-use LucidFrame\Core\drivers\DriverFactory;
+use LucidFrame\Core\db\Database;
+use LucidFrame\Core\db\DatabaseException;
+use LucidFrame\Core\db\drivers\DriverFactory;
 use LucidFrame\Test\LucidFrameTestCase;
 
 /**
@@ -23,7 +23,7 @@ class DatabaseMultiDriverTestCase extends LucidFrameTestCase
 
         try {
             $mysqlDriver = DriverFactory::create($mysqlConfig);
-            $this->assertTrue($mysqlDriver instanceof \LucidFrame\Core\drivers\MySQLDriver);
+            $this->assertTrue($mysqlDriver instanceof \LucidFrame\Core\db\drivers\MySQLDriver);
         } catch (DatabaseException $e) {
             // Expected if MySQL is not available in test environment
             $this->assertTrue(true);
@@ -40,7 +40,7 @@ class DatabaseMultiDriverTestCase extends LucidFrameTestCase
 
         try {
             $pgsqlDriver = DriverFactory::create($pgsqlConfig);
-            $this->assertTrue($pgsqlDriver instanceof \LucidFrame\Core\drivers\PostgreSQLDriver);
+            $this->assertTrue($pgsqlDriver instanceof \LucidFrame\Core\db\drivers\PostgreSQLDriver);
         } catch (DatabaseException $e) {
             // Expected if PostgreSQL is not available in test environment
             $this->assertTrue(true);

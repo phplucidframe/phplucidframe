@@ -9,7 +9,7 @@
  * @link        http://phplucidframe.com
  * @license     http://www.opensource.org/licenses/mit-license.php MIT License
  *
- * This source file is subject to the MIT license that is bundled
+ * This source file is subject to the MIT license bundled
  * with this source code in the file LICENSE
  */
 
@@ -1441,7 +1441,7 @@ class QueryBuilder
         }
 
         // Check if we're using PostgreSQL driver
-        if ($driver && get_class($driver) === 'LucidFrame\Core\drivers\PostgreSQLDriver') {
+        if ($driver && get_class($driver) === 'LucidFrame\Core\db\drivers\PostgreSQLDriver') {
             // PostgreSQL syntax: LIMIT count OFFSET offset
             if ($offset !== null) {
                 return ' LIMIT ' . $limit . ' OFFSET ' . $offset;
@@ -1472,7 +1472,7 @@ class QueryBuilder
         }
 
         // Check if we're using PostgreSQL driver
-        if ($driver && get_class($driver) === 'LucidFrame\Core\drivers\PostgreSQLDriver') {
+        if ($driver && get_class($driver) === 'LucidFrame\Core\db\drivers\PostgreSQLDriver') {
             // PostgreSQL uses || for concatenation instead of CONCAT()
             return array(
                 'like'      => 'LIKE \'%\' || :placeholder || \'%\'',

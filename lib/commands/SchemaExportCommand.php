@@ -19,7 +19,7 @@
  * with this source code in the file LICENSE
  */
 
-use LucidFrame\Core\SchemaManager;
+use LucidFrame\Core\db\SchemaManager;
 
 _consoleCommand('schema:export')
     ->setDescription('Process the schema and export the database sql dump file')

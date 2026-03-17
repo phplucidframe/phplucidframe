@@ -1,7 +1,7 @@
 <?php
 
-use LucidFrame\Core\drivers\PostgreSQLDriver;
-use LucidFrame\Core\SchemaManager;
+use LucidFrame\Core\db\drivers\PostgreSQLDriver;
+use LucidFrame\Core\db\SchemaManager;
 use LucidFrame\Test\LucidFrameTestCase;
 
 /**
@@ -40,7 +40,7 @@ class PostgreSQLDriverTestCase extends LucidFrameTestCase
 
     public function testImplementsDriverInterface()
     {
-        $this->assertTrue($this->driver instanceof \LucidFrame\Core\drivers\DriverInterface);
+        $this->assertTrue($this->driver instanceof \LucidFrame\Core\db\drivers\DriverInterface);
     }
 
     public function testConnectWithMissingConfig()
