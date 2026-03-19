@@ -733,7 +733,7 @@ class SchemaManager
 
                     _writeln();
                     _writeln($versionDir . _DS_ . $dbVersion . $this->sqlExtension . ' is exported.');
-                    _writeln('Check the file and run `php lucidframe schema:update ' . $dbNamespace . '`');
+                    _writeln('Review the file and run `php lucidframe schema:update ' . $dbNamespace . '`');
 
                     return true;
                 }
