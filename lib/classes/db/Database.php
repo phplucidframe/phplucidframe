@@ -26,9 +26,9 @@ use LucidFrame\Core\QueryBuilder;
  */
 class Database
 {
-    private $namespace = 'default';
+    private $namespace;
 
-    private $config = array();
+    private $config;
 
     private $driver = 'mysql';
     private $host;
