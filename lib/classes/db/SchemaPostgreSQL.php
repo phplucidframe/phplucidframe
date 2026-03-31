@@ -101,7 +101,7 @@ class SchemaPostgreSQL implements SchemaInterface
         return $length;
     }
 
-    public function shouldUseInlineIdentityPrimaryKey($definition)
+    public function shouldUseInlineIdentityPK($definition)
     {
         if (empty($definition['type'])) {
             return false;
@@ -123,9 +123,9 @@ class SchemaPostgreSQL implements SchemaInterface
         return in_array(strtolower($type), array('serial', 'bigserial', 'smallserial'));
     }
 
-    public function buildInlineIdentityPrimaryKeyStatement($field, $type, $definition)
+    public function buildInlineIdentityPKStatement($field, $type, $definition)
     {
-        $generator = isset($definition['generator']) ? $definition['generator'] : 'ALWAYS';
+        $generator = $definition['generator'] ?? 'ALWAYS';
         $generator = $generator === 'default' ? 'BY DEFAULT' : $generator;
 
         return $field . ' ' . $type . ' GENERATED ' . $generator . ' AS IDENTITY PRIMARY KEY NOT NULL';
@@ -146,7 +146,7 @@ class SchemaPostgreSQL implements SchemaInterface
         return sprintf(" DEFAULT '%s'", $definition['default']);
     }
 
-    public function getAutoIncrementStatement($definition)
+    public function getAutoIncStatement($definition)
     {
         if (!empty($definition['primary']) || !empty($definition['autoinc'])) {
             return ' PRIMARY KEY';
@@ -155,12 +155,12 @@ class SchemaPostgreSQL implements SchemaInterface
         return '';
     }
 
-    public function getDisableForeignKeyChecksStatements()
+    public function getDisableFKCheckStatements()
     {
         return array();
     }
 
-    public function getEnableForeignKeyChecksStatements()
+    public function getEnableFKCheckStatements()
     {
         return array();
     }
@@ -198,7 +198,7 @@ class SchemaPostgreSQL implements SchemaInterface
         }
 
         $singlePkField = current($pkFieldsForTable);
-        return $this->shouldUseInlineIdentityPrimaryKey($singlePkField);
+        return $this->shouldUseInlineIdentityPK($singlePkField);
     }
 
     public function getCreateTableOptionsStatement($options, $autoinc)

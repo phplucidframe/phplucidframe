@@ -28,21 +28,21 @@ interface SchemaInterface
 
     public function getFieldLength($definition);
 
-    public function shouldUseInlineIdentityPrimaryKey($definition);
+    public function shouldUseInlineIdentityPK($definition);
 
     public function isSerialType($type);
 
-    public function buildInlineIdentityPrimaryKeyStatement($field, $type, $definition);
+    public function buildInlineIdentityPKStatement($field, $type, $definition);
 
     public function appendDriverSpecificFieldStatement($statement, $definition, $collate, $schemaOptions = array());
 
     public function getDefaultValueStatement($definition);
 
-    public function getAutoIncrementStatement($definition);
+    public function getAutoIncStatement($definition);
 
-    public function getDisableForeignKeyChecksStatements();
+    public function getDisableFKCheckStatements();
 
-    public function getEnableForeignKeyChecksStatements();
+    public function getEnableFKCheckStatements();
 
     public function buildTableIndexDefinitions($table, $fkFields, $options, $quoteIdentifierCallback);
 

@@ -287,7 +287,7 @@ class SchemaManager
         }
 
         if ($this->shouldUsePgsqlInlineIdentityPrimaryKey($definition)) {
-            return $this->schemaDriver->buildInlineIdentityPrimaryKeyStatement(
+            return $this->schemaDriver->buildInlineIdentityPKStatement(
                 $this->quoteIdentifier($field),
                 $type,
                 $definition
@@ -318,7 +318,7 @@ class SchemaManager
             $statement .= $this->schemaDriver->getDefaultValueStatement($definition);
         }
 
-        $statement .= $this->schemaDriver->getAutoIncrementStatement($definition);
+        $statement .= $this->schemaDriver->getAutoIncStatement($definition);
 
         return $statement;
     }
@@ -330,7 +330,7 @@ class SchemaManager
      */
     private function shouldUsePgsqlInlineIdentityPrimaryKey($definition)
     {
-        return $this->schemaDriver->shouldUseInlineIdentityPrimaryKey($definition);
+        return $this->schemaDriver->shouldUseInlineIdentityPK($definition);
     }
 
     /**
@@ -481,7 +481,7 @@ class SchemaManager
         $sql = array();
 
         # Database-specific setup commands
-        $sql = array_merge($sql, $this->schemaDriver->getDisableForeignKeyChecksStatements());
+        $sql = array_merge($sql, $this->schemaDriver->getDisableFKCheckStatements());
 
         # Create each table
         foreach ($schema as $table => $def) {
@@ -503,7 +503,7 @@ class SchemaManager
         }
 
         # Database-specific cleanup commands
-        $sql = array_merge($sql, $this->schemaDriver->getEnableForeignKeyChecksStatements());
+        $sql = array_merge($sql, $this->schemaDriver->getEnableFKCheckStatements());
 
         $this->sqlStatements = $sql;
 
@@ -1110,9 +1110,9 @@ class SchemaManager
         $currentDriver = db_driver($dbNamespace);
         $currentSchemaDriver = SchemaFactory::create($currentDriver);
         $queries = array_merge(
-            $currentSchemaDriver->getDisableForeignKeyChecksStatements(),
+            $currentSchemaDriver->getDisableFKCheckStatements(),
             $queries,
-            $currentSchemaDriver->getEnableForeignKeyChecksStatements()
+            $currentSchemaDriver->getEnableFKCheckStatements()
         );
 
         $count = 0;

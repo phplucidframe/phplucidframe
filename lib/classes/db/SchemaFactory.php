@@ -19,14 +19,14 @@ namespace LucidFrame\Core\db;
 class SchemaFactory
 {
     /**
-     * Create schema driver by name.
+     * Create a schema driver by name.
      *
      * @param string $driver
      * @return SchemaInterface
      */
-    public static function create($driver)
+    public static function create(string $driver)
     {
-        $driver = strtolower((string)$driver);
+        $driver = strtolower($driver);
 
         switch ($driver) {
             case 'pgsql':

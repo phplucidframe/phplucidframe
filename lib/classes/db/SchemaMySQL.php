@@ -108,7 +108,7 @@ class SchemaMySQL implements SchemaInterface
         return $length;
     }
 
-    public function shouldUseInlineIdentityPrimaryKey($definition)
+    public function shouldUseInlineIdentityPK($definition)
     {
         return false;
     }
@@ -118,7 +118,7 @@ class SchemaMySQL implements SchemaInterface
         return false;
     }
 
-    public function buildInlineIdentityPrimaryKeyStatement($field, $type, $definition)
+    public function buildInlineIdentityPKStatement($field, $type, $definition)
     {
         return '';
     }
@@ -152,7 +152,7 @@ class SchemaMySQL implements SchemaInterface
         return sprintf(" DEFAULT '%s'", $definition['default']);
     }
 
-    public function getAutoIncrementStatement($definition)
+    public function getAutoIncStatement($definition)
     {
         if (!empty($definition['primary']) || !empty($definition['autoinc'])) {
             return ' AUTO_INCREMENT';
@@ -161,12 +161,12 @@ class SchemaMySQL implements SchemaInterface
         return '';
     }
 
-    public function getDisableForeignKeyChecksStatements()
+    public function getDisableFKCheckStatements()
     {
         return array('SET FOREIGN_KEY_CHECKS=0;');
     }
 
-    public function getEnableForeignKeyChecksStatements()
+    public function getEnableFKCheckStatements()
     {
         return array('SET FOREIGN_KEY_CHECKS=1;');
     }
