@@ -204,13 +204,14 @@
          * LC.Form.clear()
          * Clear the form values and form messages
          */
-        clear : function( formId ) {
+        clear : function( formId, force ) {
             var $form = $('#'+formId);
+            force = force || false;
 
             $form.find('.message').filter(':first').html('').hide();
             $form.find('.invalid').removeClass('invalid');
 
-            if ($form.data('clear') === 'off') {
+            if (force === false && $form.data('clear') === 'off') {
                 return;
             }
 
