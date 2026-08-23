@@ -192,7 +192,7 @@
                 }
 
                 if (typeof LC.Form.hooks.afterSubmit[response.formId] !== 'undefined' && $.inArray(response.formId, LC.Form.forms) !== -1) {
-                    LC.Form.hooks.afterSubmit[response.formId]();
+                    LC.Form.hooks.afterSubmit[response.formId](response);
                 }
 
                 LC.Page.progress.stop(response.formId);
