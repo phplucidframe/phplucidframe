@@ -9,7 +9,7 @@
  * @link        http://phplucidframe.com
  * @license     http://www.opensource.org/licenses/mit-license.php MIT License
  *
- * This source file is subject to the MIT license that is bundled
+ * This source file is subject to the MIT license bundled
  * with this source code in the file LICENSE
  */
 
@@ -192,43 +192,45 @@ class QueryBuilder
 
         if ($field === '*') {
             return self::quote($table) . '.' . $field;
-        } else {
-            if (is_array($field)) {
-                if (count($field) != 2) {
-                    return null;
-                }
-
-                # field with alias
-                list($fieldName, $alias) = $field;
-
-                $f = self::quote($fieldName);
-                if (substr($f, 0, 1) !== '`') {
-                    if (self::isRawExp($f)) {
-                        $f = self::parseFromRawExp($f);
-                    }
-
-                    return $f . ' AS ' . $alias;
-                } else {
-                    if (self::isRawExp($f)) {
-                        return self::parseFromRawExp($f) . ' AS ' . self::quote($alias);
-                    }
-
-                    return self::quote($table) . '.' . $f . ' AS ' . self::quote($alias);
-                }
-            } else {
-                # field without alias
-                $f = self::quote($field);
-                if (substr($f, 0, 1) !== '`') {
-                    return self::isRawExp($f) ? self::parseFromRawExp($f) : $f;
-                } else {
-                    if (self::isRawExp($f)) {
-                        return self::parseFromRawExp($f);
-                    }
-
-                    return self::quote($table) . '.' . $f;
-                }
-            }
         }
+
+        if (is_array($field)) {
+            if (count($field) != 2) {
+                return null;
+            }
+
+            # field with alias
+            list($fieldName, $alias) = $field;
+
+            $f = self::quote($fieldName);
+            $quoteChar = self::getQuoteCharacter();
+            if (substr($f, 0, 1) !== $quoteChar) {
+                if (self::isRawExp($f)) {
+                    $f = self::parseFromRawExp($f);
+                }
+
+                return $f . ' AS ' . $alias;
+            }
+
+            if (self::isRawExp($f)) {
+                return self::parseFromRawExp($f) . ' AS ' . self::quote($alias);
+            }
+
+            return self::quote($table) . '.' . $f . ' AS ' . self::quote($alias);
+        }
+
+        # field without alias
+        $f = self::quote($field);
+        $quoteChar = self::getQuoteCharacter();
+        if (substr($f, 0, 1) !== $quoteChar) {
+            return self::isRawExp($f) ? self::parseFromRawExp($f) : $f;
+        }
+
+        if (self::isRawExp($f)) {
+            return self::parseFromRawExp($f);
+        }
+
+        return self::quote($table) . '.' . $f;
     }
 
     /**
@@ -421,7 +423,7 @@ class QueryBuilder
     public function condition($field, $value)
     {
         if (isset($this->where[$this->whereType][$field])) {
-            $field .= uniqid('__' . trim(__METHOD__, 'LucidFrame\Core') . '__');
+            $field .= uniqid('__' . trim(__METHOD__, 'LucidFrame\Core') . '__', true);
         }
         $this->where[$this->whereType][$field] = $value;
 
@@ -705,7 +707,7 @@ class QueryBuilder
         if (!isset($this->aggregates[$name])) {
             $this->aggregates[$name] = array();
         }
-        $field = ($field === null) ? '*' : $field;
+        $field = $field ?? '*';
         $this->aggregates[$name][$field] = ($alias === null) ? $field : array($field, $alias);
 
         return $this;
@@ -846,11 +848,11 @@ class QueryBuilder
             $sql .= ' ORDER BY ' . implode(', ', $orderBy);
         }
 
-        # LIMIT clause
+        # LIMIT clause - handle driver-specific syntax
         if ($this->offset !== null && $this->limit) {
-            $sql .= ' LIMIT ' . $this->offset . ', ' . $this->limit;
+            $sql .= self::buildLimitClause($this->limit, $this->offset);
         } elseif ($this->limit && $this->offset === null) {
-            $sql .= ' LIMIT ' . $this->limit;
+            $sql .= self::buildLimitClause($this->limit);
         }
 
         $this->sql = $sql;
@@ -1107,7 +1109,7 @@ class QueryBuilder
     }
 
     /**
-     * Quote table name and field name
+     * Quote table name and field name with appropriate identifier quotes based on database driver
      *
      * @param string $name The table name or field name or table.field
      * @return string
@@ -1126,11 +1128,34 @@ class QueryBuilder
             }
         }
 
+        // Get the appropriate quote character from the current database driver
+        $quoteChar = self::getQuoteCharacter();
+
         if (strpos($name, '.') !== false) {
-            $name = str_replace('.', '`.`', $name);
+            $name = str_replace('.', $quoteChar . '.' . $quoteChar, $name);
         }
 
-        return '`' . $name . '`';
+        return $quoteChar . $name . $quoteChar;
+    }
+
+    /**
+     * Get the appropriate quote character for the current database driver
+     * @return string Quote character (backtick for MySQL, double quote for PostgreSQL)
+     */
+    private static function getQuoteCharacter()
+    {
+        $db = _app('db');
+        if ($db && $db->getDriverInstance()) {
+            $driver = $db->getDriverInstance();
+            // Use driver's quote method to get a sample and extract the quote character
+            $sample = $driver->quote('test');
+            if (strpos($sample, '"') === 0) {
+                return '"';
+            }
+        }
+
+        // Default to MySQL backticks for backward compatibility
+        return '`';
     }
 
     /**
@@ -1140,7 +1165,11 @@ class QueryBuilder
      */
     public static function hasQuote($value)
     {
-        return preg_match_all('/(`[a-z0-9_-]+`\.`[a-z0-9_-]+`)/i', $value);
+        // Check for both MySQL backticks and PostgreSQL double quotes
+        $mysqlQuotes = preg_match_all('/(`[a-z0-9_-]+`\.`[a-z0-9_-]+`)/i', $value);
+        $pgsqlQuotes = preg_match_all('/("[a-z0-9_-]+"\.\"[a-z0-9_-]+\")/i', $value);
+
+        return $mysqlQuotes || $pgsqlQuotes;
     }
 
     /**
@@ -1269,8 +1298,9 @@ class QueryBuilder
                     continue;
                 }
 
-                if (array_key_exists($opr, self::$likes)) {
-                    $condition[] = $field . ' ' . str_replace(':placeholder', $placeholder, self::$likes[$opr]);
+                $likeExpressions = self::getLikeExpressions();
+                if (array_key_exists($opr, $likeExpressions)) {
+                    $condition[] = $field . ' ' . str_replace(':placeholder', $placeholder, $likeExpressions[$opr]);
                     self::setBindValue($placeholder, $value);
                     continue;
                 }
@@ -1393,5 +1423,68 @@ class QueryBuilder
     public static function getBindValues()
     {
         return self::$bindValues;
+    }
+
+    /**
+     * Build LIMIT clause with driver-specific syntax
+     * @param int $limit The row count limit
+     * @param int|null $offset The offset (optional)
+     * @return string LIMIT clause
+     */
+    private static function buildLimitClause($limit, $offset = null)
+    {
+        $db = _app('db');
+        $driver = null;
+
+        if ($db && $db->getDriverInstance()) {
+            $driver = $db->getDriverInstance();
+        }
+
+        // Check if we're using PostgreSQL driver
+        if ($driver && get_class($driver) === 'LucidFrame\Core\db\drivers\PostgreSQLDriver') {
+            // PostgreSQL syntax: LIMIT count OFFSET offset
+            if ($offset !== null) {
+                return ' LIMIT ' . $limit . ' OFFSET ' . $offset;
+            }
+
+            return ' LIMIT ' . $limit;
+        }
+
+        // MySQL syntax: LIMIT offset, count
+        if ($offset !== null) {
+            return ' LIMIT ' . $offset . ', ' . $limit;
+        }
+
+        return ' LIMIT ' . $limit;
+    }
+
+    /**
+     * Get driver-specific LIKE expressions
+     * @return array LIKE expressions for the current driver
+     */
+    private static function getLikeExpressions()
+    {
+        $db = _app('db');
+        $driver = null;
+
+        if ($db && $db->getDriverInstance()) {
+            $driver = $db->getDriverInstance();
+        }
+
+        // Check if we're using PostgreSQL driver
+        if ($driver && get_class($driver) === 'LucidFrame\Core\db\drivers\PostgreSQLDriver') {
+            // PostgreSQL uses || for concatenation instead of CONCAT()
+            return array(
+                'like'      => 'LIKE \'%\' || :placeholder || \'%\'',
+                'like%~'    => 'LIKE \'%\' || :placeholder',
+                'like~%'    => 'LIKE :placeholder || \'%\'',
+                'nlike'     => 'NOT LIKE \'%\' || :placeholder || \'%\'',
+                'nlike%~'   => 'NOT LIKE \'%\' || :placeholder',
+                'nlike~%'   => 'NOT LIKE :placeholder || \'%\'',
+            );
+        } else {
+            // MySQL uses CONCAT() function
+            return self::$likes;
+        }
     }
 }

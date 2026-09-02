@@ -5,9 +5,18 @@ use LucidFrame\Test\LucidFrameTestCase;
 
 /**
  * Unit Test for QueryBuilder.php
+ * Tests work across both MySQL and PostgreSQL drivers
  */
 class QueryBuilderTestCase extends LucidFrameTestCase
 {
+    private $driver;
+
+    public function setUp()
+    {
+        parent::setUp();
+        $this->driver = db_driver();
+    }
+
     public function testQueryBuilderSELECT()
     {
         $qb = new QueryBuilder('post', 'p');

@@ -21,15 +21,12 @@ function auth_prerequisite()
     db_prerequisite();
 
     $auth = _cfg('auth');
-
-    if (isset($auth['table']) && $auth['table'] &&
-        isset($auth['fields']['id']) && $auth['fields']['id'] &&
-        isset($auth['fields']['role']) && $auth['fields']['role']) {
+    if (!empty($auth['table']) && !empty($auth['fields']['id']) && !empty($auth['fields']['role'])) {
         return $auth;
-    } else {
-        _header(400);
-        throw new \InvalidArgumentException('Required to configure <code class="inline">$lc_auth</code> in <code class="inline">/inc/config.php</code>.');
     }
+
+    _header(400);
+    throw new \InvalidArgumentException('Required to configure <code class="inline">$lc_auth</code> in <code class="inline">/inc/config.php</code>.');
 }
 
 if (!function_exists('auth_create')) {

@@ -9,11 +9,11 @@
  * @link        http://phplucidframe.com
  * @license     http://www.opensource.org/licenses/mit-license.php MIT License
  *
- * This source file is subject to the MIT license that is bundled
+ * This source file is subject to the MIT license bundled
  * with this source code in the file LICENSE
  */
 
-namespace LucidFrame\Core;
+namespace LucidFrame\Core\db;
 
 use LucidFrame\Console\Command;
 
@@ -25,7 +25,9 @@ class SchemaManager
     /** @var array The schema definition */
     protected $schema = array();
     /** @var string The database driver; currently it allows "mysql" only */
-    private $driver = 'mysql';
+    private $driver;
+    /** @var SchemaInterface Driver-specific schema SQL adapter */
+    private $schemaDriver;
     /** @var array The global schema options */
     private $defaultOptions;
     /** @var array The data types for each db driver */
@@ -65,6 +67,43 @@ class SchemaManager
             'datetime'  => 'DATETIME',
             'time'      => 'TIME',
         ),
+        'pgsql' => array(
+            'tinyint'   => 'SMALLINT',
+            'smallint'  => 'SMALLINT',
+            'mediumint' => 'INTEGER',
+            'int'       => 'INTEGER',
+            'integer'   => 'INTEGER',
+            'bigint'    => 'BIGINT',
+            'serial'    => 'SERIAL',
+            'bigserial' => 'BIGSERIAL',
+            'smallserial' => 'SMALLSERIAL',
+            'decimal'   => 'NUMERIC',
+            'float'     => 'DOUBLE PRECISION',
+            # For decimal and float
+            # length => array(p, s) where p is the precision and s is the scale
+            # The precision represents the number of significant digits that are stored for values, and
+            # the scale represents the number of digits that can be stored following the decimal point.
+            'string'    => 'VARCHAR',
+            'char'      => 'CHAR',
+            'binary'    => 'BYTEA',
+            'tinytext'  => 'TEXT',
+            'text'      => 'TEXT',
+            'mediumtext'=> 'TEXT',
+            'longtext'  => 'TEXT',
+            'tinyblob'  => 'BYTEA',
+            'blob'      => 'BYTEA',
+            'mediumblob'=> 'BYTEA',
+            'longblob'  => 'BYTEA',
+            'array'     => 'TEXT',
+            'json'      => 'JSONB',
+            # For text, blob, array and json
+            # PostgreSQL uses TEXT for all text sizes
+            # JSONB is preferred over JSON for better performance
+            'boolean'   => 'BOOLEAN',
+            'date'      => 'DATE',
+            'datetime'  => 'TIMESTAMP',
+            'time'      => 'TIME',
+        ),
     );
     /** @var array The relational database relationships */
     public static $relationships = array('1:m', 'm:1', 'm:m', '1:1');
@@ -94,19 +133,24 @@ class SchemaManager
      */
     public function __construct($schema = array(), $dbNamespace = null)
     {
-        $this->defaultOptions = array(
-            'timestamps'    => true,
-            'constraints'   => true,
-            'charset'       => 'utf8mb4',
-            'collate'       => 'utf8mb4_general_ci',
-            'engine'        => 'InnoDB',
-        );
+        $this->driver = db_driver($dbNamespace);
+        $this->schemaDriver = SchemaFactory::create($this->driver);
 
+        $this->setDefaultOptions();
         $this->setSchema($schema);
 
         if ($dbNamespace) {
             $this->dbNamespace = $dbNamespace;
         }
+    }
+
+    /**
+     * Set default options based on database driver
+     * @return void
+     */
+    private function setDefaultOptions()
+    {
+        $this->defaultOptions = $this->schemaDriver->getDefaultOptions();
     }
 
     /**
@@ -138,13 +182,14 @@ class SchemaManager
 
     /**
      * Setter for the property `driver`
-     * Currently driver allows mysql only, that's why this method is private
-     * @param string $driver Database driver
+     * @param string $driver Database driver (mysql or pgsql)
      * @return object SchemaManager
      */
-    private function setDriver($driver)
+    public function setDriver($driver)
     {
         $this->driver = $driver;
+        $this->schemaDriver = SchemaFactory::create($this->driver);
+        $this->setDefaultOptions(); // Refresh default options for the new driver
 
         return $this;
     }
@@ -188,6 +233,7 @@ class SchemaManager
         return array(
             'type'      => 'int',
             'autoinc'   => true,
+            'primary'   => true,
             'null'      => false,
             'unsigned'  => true
         );
@@ -240,23 +286,27 @@ class SchemaManager
             return '';
         }
 
-        $statement = "`{$field}` {$type}";
+        if ($this->shouldUsePgsqlInlineIdentityPrimaryKey($definition)) {
+            return $this->schemaDriver->buildInlineIdentityPKStatement(
+                $this->quoteIdentifier($field),
+                $type,
+                $definition
+            );
+        }
+
+        $statement = $this->quoteIdentifier($field) . ' ' . $type;
 
         $length = $this->getFieldLength($definition);
-        if ($length) {
+        if ($length && !$this->schemaDriver->isSerialType($type)) {
             $statement .= "($length)";
         }
 
-        if (in_array($definition['type'], array('string', 'char', 'text', 'array', 'json'))) {
-            # COLLATE for text fields
-            $statement .= ' COLLATE ';
-            $statement .= $collate ? $collate : $this->schema['_options']['collate'];
-        }
-
-        if (isset($definition['unsigned'])) {
-            # unsigned
-            $statement .= ' unsigned';
-        }
+        $statement = $this->schemaDriver->appendDriverSpecificFieldStatement(
+            $statement,
+            $definition,
+            $collate,
+            $this->getOptions()
+        );
 
         if (isset($definition['null'])) {
             # true: DEFAULT NULL
@@ -265,15 +315,42 @@ class SchemaManager
         }
 
         if (isset($definition['default'])) {
-            $statement .= sprintf(" DEFAULT '%s'", $definition['default']);
+            $statement .= $this->schemaDriver->getDefaultValueStatement($definition);
         }
 
-        if (isset($definition['autoinc']) && $definition['autoinc']) {
-            # AUTO_INCREMENT
-            $statement .= ' AUTO_INCREMENT';
-        }
+        $statement .= $this->schemaDriver->getAutoIncStatement($definition);
 
         return $statement;
+    }
+
+    /**
+     * Determine if pgsql field should be emitted as inline identity PK.
+     * @param array $definition Field definition
+     * @return boolean
+     */
+    private function shouldUsePgsqlInlineIdentityPrimaryKey($definition)
+    {
+        return $this->schemaDriver->shouldUseInlineIdentityPK($definition);
+    }
+
+    /**
+     * Quote identifier based on database driver
+     * @param string $identifier The identifier to quote
+     * @return string The quoted identifier
+     */
+    public function quoteIdentifier($identifier)
+    {
+        return $this->schemaDriver->quoteIdentifier($identifier);
+    }
+
+    /**
+     * Get schema-qualified table name for PostgreSQL
+     * @param string $tableName The table name
+     * @return string The schema-qualified table name
+     */
+    public function getSchemaQualifiedTableName($tableName)
+    {
+        return $this->schemaDriver->getSchemaQualifiedTableName($tableName, $this->getOptions());
     }
 
     /**
@@ -283,39 +360,11 @@ class SchemaManager
      */
     public function getVendorFieldType(&$definition)
     {
-        if (!isset(self::$dataTypes[$this->driver][$definition['type']])) {
-            # if no data type is defined
+        if (!isset(self::$dataTypes[$this->driver])) {
             return null;
         }
 
-        $type = self::$dataTypes[$this->driver][$definition['type']];
-
-        if (in_array($definition['type'], array('text', 'blob', 'array', 'json'))) {
-            if (isset($definition['length']) && in_array($definition['length'], array('tiny', 'medium', 'long'))) {
-                return strtoupper($definition['length']) . $type;
-            } else {
-                return $definition['type'] == 'blob' ? self::$dataTypes[$this->driver]['blob'] : self::$dataTypes[$this->driver]['text'];
-            }
-        }
-
-        if ($definition['type'] == 'boolean') {
-            # if type is boolean, force unsigned
-            $definition['unsigned'] = true;
-
-            if (!isset($definition['default'])) {
-                $definition['default'] = false;
-            }
-
-            if (!isset($definition['null'])) {
-                $definition['null'] = false;
-            } else {
-                if ($definition['null'] === true) {
-                    $definition['default'] = null;
-                }
-            }
-        }
-
-        return $type;
+        return $this->schemaDriver->getVendorFieldType($definition, self::$dataTypes[$this->driver]);
     }
 
     /**
@@ -325,30 +374,7 @@ class SchemaManager
      */
     public function getFieldLength(&$definition)
     {
-        $type = $definition['type'];
-
-        if ($type == 'string' || $type == 'char') {
-            $length = 255;
-        } elseif ($type == 'int' || $type == 'integer') {
-            $length = 11;
-        } elseif ($type === 'boolean') {
-            $length = 1;
-        } elseif (in_array($type, array('text', 'blob', 'array', 'json'))) {
-            $length = 0;
-        } elseif ($type == 'decimal' || $type == 'float') {
-            $length = isset($definition['length']) ? $definition['length'] : 0;
-            if (is_array($length) && count($length) == 2) {
-                $length = implode(', ', $length);
-            }
-        } else {
-            $length = 0;
-        }
-
-        if (isset($definition['length']) && is_numeric($definition['length'])) {
-            $length = $definition['length'];
-        }
-
-        return $length;
+        return $this->schemaDriver->getFieldLength($definition);
     }
 
     /**
@@ -372,6 +398,11 @@ class SchemaManager
 
         if (isset($fkField['autoinc'])) {
             unset($fkField['autoinc']);
+        }
+
+        // FK fields must not inherit primary-key semantics from the referenced PK.
+        if (isset($fkField['primary'])) {
+            unset($fkField['primary']);
         }
 
         if ($relation['unique']) {
@@ -448,17 +479,19 @@ class SchemaManager
         $pkFields = $this->getPrimaryKeys();
 
         $sql = array();
-        $sql[] = 'SET FOREIGN_KEY_CHECKS=0;';
+
+        # Database-specific setup commands
+        $sql = array_merge($sql, $this->schemaDriver->getDisableFKCheckStatements());
 
         # Create each table
         foreach ($schema as $table => $def) {
-            $fullTableName = db_table($table); # The full table name with prefix
+            $fullTableName = $this->getSchemaQualifiedTableName(db_table($table));
             $createSql = $this->createTableStatement($table, $schema, $pkFields, $constraints);
             if ($createSql) {
                 $sql[] = '--';
-                $sql[] = '-- Table structure for table `' . $fullTableName . '`';
+                $sql[] = '-- Table structure for table ' . $fullTableName;
                 $sql[] = '--';
-                $sql[] = "DROP TABLE IF EXISTS `{$fullTableName}`;";
+                $sql[] = "DROP TABLE IF EXISTS {$fullTableName};";
                 $sql[] = $createSql;
             }
         }
@@ -469,7 +502,8 @@ class SchemaManager
             $sql = array_merge($sql, $constraintSql);
         }
 
-        $sql[] = 'SET FOREIGN_KEY_CHECKS=1;';
+        # Database-specific cleanup commands
+        $sql = array_merge($sql, $this->schemaDriver->getEnableFKCheckStatements());
 
         $this->sqlStatements = $sql;
 
@@ -699,7 +733,7 @@ class SchemaManager
 
                     _writeln();
                     _writeln($versionDir . _DS_ . $dbVersion . $this->sqlExtension . ' is exported.');
-                    _writeln('Check the file and run `php lucidframe schema:update ' . $dbNamespace . '`');
+                    _writeln('Review the file and run `php lucidframe schema:update ' . $dbNamespace . '`');
 
                     return true;
                 }
@@ -869,8 +903,15 @@ class SchemaManager
 
                             $newField = $field;
 
-                            $sql['up'][] = "ALTER TABLE `{$fullTableName}` CHANGE COLUMN `{$oldField}` " .
-                                $this->getFieldStatement($newField, $schemaTo[$table][$newField], $collate) . ';';
+                            $quotedTableName = $this->getSchemaQualifiedTableName($fullTableName);
+                            $quotedOldField = $this->quoteIdentifier($oldField);
+
+                            $newFieldStatement = $this->getFieldStatement($newField, $schemaTo[$table][$newField], $collate);
+                            $sql['up'][] = $this->schemaDriver->buildAlterColumnStatement(
+                                $quotedTableName,
+                                $quotedOldField,
+                                $newFieldStatement
+                            );
 
                             if (isset($schemaFrom[$table][$oldField]['unique']) && !isset($schemaTo[$table][$newField]['unique'])) {
                                 $sql['up'][] = "ALTER TABLE `{$fullTableName}` DROP INDEX `IDX_$oldField`;";
@@ -883,8 +924,14 @@ class SchemaManager
                         } else {
                             if ($renamedField) {
                                 $fieldNamesChanged[] = $table . '.' . $renamedField;
-                                $sql['up'][] = "ALTER TABLE `{$fullTableName}` CHANGE COLUMN `{$oldField}` " .
-                                    $this->getFieldStatement($renamedField, $schemaTo[$table][$renamedField], $collate) . ';';
+                                $renamedFieldStatement = $this->getFieldStatement($renamedField, $schemaTo[$table][$renamedField], $collate);
+                                $sql['up'][] = $this->schemaDriver->buildRenameColumnStatement(
+                                    $quotedTableName,
+                                    $oldField,
+                                    $renamedField,
+                                    $renamedFieldStatement,
+                                    array($this, 'quoteIdentifier')
+                                );
                             }
                         }
                     } else {
@@ -906,17 +953,22 @@ class SchemaManager
                             continue;
                         }
 
-                        $sql['up'][] = "ALTER TABLE `{$fullTableName}` DROP COLUMN `{$field}`;";
+                        $quotedTableName = $this->getSchemaQualifiedTableName($fullTableName);
+                        $quotedField = $this->quoteIdentifier($field);
+                        $sql['up'][] = "ALTER TABLE {$quotedTableName} DROP COLUMN {$quotedField};";
                     }
                 }
 
                 # Rename table
                 if ($renamedTable) {
-                    $sql['up'][] = 'RENAME TABLE `' . $fullTableName . '` TO `' . db_table($renamedTable) . '`;';
+                    $quotedTableName = $this->getSchemaQualifiedTableName($fullTableName);
+                    $quotedRenamedTable = $this->quoteIdentifier(db_table($renamedTable));
+                    $sql['up'][] = "ALTER TABLE {$quotedTableName} RENAME TO {$quotedRenamedTable};";
                 }
             } else {
                 # Drop table
-                $sql['up'][] = "DROP TABLE IF EXISTS `{$fullTableName}`;";
+                $quotedTableName = $this->getSchemaQualifiedTableName($fullTableName);
+                $sql['up'][] = "DROP TABLE IF EXISTS {$quotedTableName};";
             }
         }
 
@@ -943,9 +995,9 @@ class SchemaManager
                     }
                     # if new table, no need to lookup field changes and then continue the next table
                     continue;
-                } else {
-                    $tableFrom = $oldTable;
                 }
+
+                $tableFrom = $oldTable;
             }
 
             # Add new fields for existing table
@@ -956,12 +1008,10 @@ class SchemaManager
 
                 if (!isset($schemaFrom[$tableFrom][$field]) && array_search($table . '.' . $field, $fieldNamesChanged) === false) {
                     # Add a new field
-                    $alterSql = "ALTER TABLE `{$fullTableName}` ADD COLUMN ";
+                    $quotedTableName = $this->getSchemaQualifiedTableName($fullTableName);
+                    $alterSql = "ALTER TABLE {$quotedTableName} ADD COLUMN ";
                     $alterSql .= $this->getFieldStatement($field, $fieldDef, $collate);
-                    if ($fieldBefore && $field != 'created') {
-                        $alterSql .= " AFTER `{$fieldBefore}`";
-                    }
-                    $alterSql .= ';';
+                    $alterSql .= $this->schemaDriver->addColumnPosition($field, $fieldBefore) . ';';
                     $sql['up'][] = $alterSql;
                 }
 
@@ -1009,11 +1059,7 @@ class SchemaManager
                 return false;
             }
 
-            $sqls = explode(';', $sql);
-            $sql = array_filter($sqls, function($line) {
-                $line = trim($line);
-                return !empty($line) && strpos($line, '--') === false;
-            });
+            $sql = $this->splitSqlStatements($sql);
 
             if (empty($sql)) {
                 if ($verbose) {
@@ -1061,28 +1107,25 @@ class SchemaManager
 
         db_transaction();
 
-        array_unshift($queries, 'SET FOREIGN_KEY_CHECKS = 0;');
-        array_push($queries, 'SET FOREIGN_KEY_CHECKS = 1;');
+        $currentDriver = db_driver($dbNamespace);
+        $currentSchemaDriver = SchemaFactory::create($currentDriver);
+        $queries = array_merge(
+            $currentSchemaDriver->getDisableFKCheckStatements(),
+            $queries,
+            $currentSchemaDriver->getEnableFKCheckStatements()
+        );
 
         $count = 0;
         $error = false;
-        foreach ($queries as $sql) {
-            $sql = trim($sql);
+        foreach ($queries as $queryChunk) {
+            foreach ($this->splitSqlStatements($queryChunk) as $sql) {
+                if (!db_query($sql)) {
+                    $error = true;
+                    break 2;
+                }
 
-            if (empty($sql)) {
-                continue;
+                $count++;
             }
-
-            if (substr($sql, 0, 2) == '--') {
-                continue;
-            }
-
-            if (!db_query($sql)) {
-                $error = true;
-                break;
-            }
-
-            $count++;
         }
 
         if ($error) {
@@ -1098,9 +1141,9 @@ class SchemaManager
 
         if ($error == true) {
             return false;
-        } else {
-            return $count;
         }
+
+        return $count;
     }
 
     /**
@@ -1138,7 +1181,7 @@ class SchemaManager
     {
         $version = 0;
         if ($schema = self::getSchemaLockDefinition($this->dbNamespace)) {
-            $version = isset($schema['_options']['version']) ? $schema['_options']['version'] : 0;
+            $version = $schema['_options']['version'] ?? 0;
         }
 
         return $version;
@@ -1198,6 +1241,125 @@ class SchemaManager
     }
 
     /**
+     * Split SQL script/chunk into executable statements.
+     * Handles quoted strings, comments, and PostgreSQL dollar-quoted blocks.
+     *
+     * @param string $sql SQL script or statement chunk
+     * @return array Array of trimmed SQL statements without trailing semicolons
+     */
+    private function splitSqlStatements(string $sql): array
+    {
+        $statements = array();
+        $current = '';
+        $length = strlen($sql);
+
+        $inSingleQuote = false;
+        $inDoubleQuote = false;
+        $inLineComment = false;
+        $inBlockComment = false;
+        $dollarTag = null;
+
+        for ($i = 0; $i < $length; $i++) {
+            $ch = $sql[$i];
+            $next = ($i + 1 < $length) ? $sql[$i + 1] : '';
+
+            if ($inLineComment) {
+                if ($ch === "\n") {
+                    $inLineComment = false;
+                }
+                continue;
+            }
+
+            if ($inBlockComment) {
+                if ($ch === '*' && $next === '/') {
+                    $inBlockComment = false;
+                    $i++;
+                }
+                continue;
+            }
+
+            if ($dollarTag !== null) {
+                $tagLen = strlen($dollarTag);
+                if ($tagLen > 0 && substr($sql, $i, $tagLen) === $dollarTag) {
+                    $current .= $dollarTag;
+                    $i += $tagLen - 1;
+                    $dollarTag = null;
+                    continue;
+                }
+
+                $current .= $ch;
+                continue;
+            }
+
+            if (!$inSingleQuote && !$inDoubleQuote) {
+                if ($ch === '-' && $next === '-') {
+                    $inLineComment = true;
+                    $i++;
+                    continue;
+                }
+
+                if ($ch === '/' && $next === '*') {
+                    $inBlockComment = true;
+                    $i++;
+                    continue;
+                }
+
+                if ($ch === '$') {
+                    $remaining = substr($sql, $i);
+                    if (preg_match('/^\$[A-Za-z_][A-Za-z0-9_]*\$/', $remaining, $matches) || preg_match('/^\$\$/', $remaining, $matches)) {
+                        $dollarTag = $matches[0];
+                        $current .= $dollarTag;
+                        $i += strlen($dollarTag) - 1;
+                        continue;
+                    }
+                }
+            }
+
+            if ($ch === "'" && !$inDoubleQuote) {
+                if ($inSingleQuote && $next === "'") {
+                    $current .= "''";
+                    $i++;
+                    continue;
+                }
+
+                $inSingleQuote = !$inSingleQuote;
+                $current .= $ch;
+                continue;
+            }
+
+            if ($ch === '"' && !$inSingleQuote) {
+                if ($inDoubleQuote && $next === '"') {
+                    $current .= '""';
+                    $i++;
+                    continue;
+                }
+
+                $inDoubleQuote = !$inDoubleQuote;
+                $current .= $ch;
+                continue;
+            }
+
+            if ($ch === ';' && !$inSingleQuote && !$inDoubleQuote) {
+                $stmt = trim($current);
+                if ($stmt !== '') {
+                    $statements[] = $stmt;
+                }
+                $current = '';
+                continue;
+            }
+
+            $current .= $ch;
+        }
+
+        $stmt = trim($current);
+        if ($stmt !== '') {
+            $statements[] = $stmt;
+        }
+
+        return $statements;
+    }
+
+    /**
      * Check if the schema is parsed and fully loaded
      * @return boolean TRUE/FALSE
      */
@@ -1217,9 +1379,9 @@ class SchemaManager
     {
         if (isset($haystack[$needle])) {
             return $haystack[$needle];
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -1268,7 +1430,7 @@ class SchemaManager
 
         $table = db_table($table);
 
-        return (isset($this->schema[$table]['options']['timestamps']) && $this->schema[$table]['options']['timestamps']) ? true : false;
+        return !empty($this->schema[$table]['options']['timestamps']);
     }
 
     /**
@@ -1284,7 +1446,7 @@ class SchemaManager
 
         $table = db_table($table);
 
-        return isset($this->schema[$table]['slug']) ? true : false;
+        return isset($this->schema[$table]['slug']);
     }
 
     /**
@@ -1380,9 +1542,12 @@ class SchemaManager
                         # default PK field type
                         $pkFields[$table][$pk] = $this->getPKDefaultType();
                     }
+
+                    $pkFields[$table][$pk]['primary'] = true;
                 }
             } else {
                 $pkFields[$table]['id'] = $this->getPKDefaultType();
+                $pkFields[$table]['id']['primary'] = true;
             }
         }
 
@@ -1484,7 +1649,7 @@ class SchemaManager
         }
 
         $def            = $schema[$table]; # The table definition
-        $fullTableName  = db_table($table); # The full table name with prefix
+        $fullTableName  = $this->getSchemaQualifiedTableName(db_table($table)); # The full table name with prefix and schema
         $fkFields       = array(); # Populate foreign key fields
 
         # OneToMany
@@ -1555,7 +1720,8 @@ class SchemaManager
         $def['options'] = $options;
 
         # CREATE TABLE Statement
-        $sql = "CREATE TABLE IF NOT EXISTS `{$fullTableName}` (" . PHP_EOL;
+        $sql = "CREATE TABLE IF NOT EXISTS {$fullTableName} (" . PHP_EOL;
+        $tableDefinitions = array();
 
         # loop the fields
         $autoinc = false;
@@ -1565,7 +1731,7 @@ class SchemaManager
                 continue;
             }
 
-            $sql .= '  ' . $this->getFieldStatement($name, $rule, $this->getTableCollation($name, $schema)) . ',' . PHP_EOL;
+            $tableDefinitions[] = '  ' . $this->getFieldStatement($name, $rule, $this->getTableCollation($name, $schema));
 
             # if there is any unique index
             if (isset($rule['unique']) && $rule['unique']) {
@@ -1577,41 +1743,43 @@ class SchemaManager
             }
         }
 
-        # Indexes
-        if (count($fkFields)) {
-            foreach (array_keys($fkFields) as $name) {
-                if (isset($fkFields[$name]['unique']) && $fkFields[$name]['unique']) {
-                    $sql .= '  UNIQUE KEY';
-                } else {
-                    $sql .= '  KEY';
-                }
-                $sql .= " `IDX_$name` (`$name`)," . PHP_EOL;
-            }
-        }
-
-        // Unique indexes for composite unique fields
-        if (isset($options['unique']) && is_array($options['unique'])) {
-            foreach ($options['unique'] as $keyName => $uniqueFields) {
-                $sql .= '  UNIQUE KEY';
-                $sql .= " `IDX_$keyName` (`" . implode('`,`', $uniqueFields) . "`)," . PHP_EOL;
-            }
-        }
+        $tableDefinitions = array_merge(
+            $tableDefinitions,
+            $this->schemaDriver->buildTableIndexDefinitions(
+                $table,
+                $fkFields,
+                $options,
+                array($this, 'quoteIdentifier')
+            )
+        );
 
         # Primary key indexes
-        if (isset($pkFields[$table])) {
-            $sql .= '  PRIMARY KEY (`' . implode('`,`', array_keys($pkFields[$table])) . '`)' . PHP_EOL;
+        $skipTablePrimaryKey = isset($pkFields[$table]) && $this->schemaDriver->shouldSkipTablePrimaryKey($pkFields[$table]);
+
+        if (isset($pkFields[$table]) && !$skipTablePrimaryKey) {
+            $quotedPkFields = array_map(array($this, 'quoteIdentifier'), array_keys($pkFields[$table]));
+            $tableDefinitions[] = '  PRIMARY KEY (' . implode(',', $quotedPkFields) . ')';
+        }
+
+        if (count($tableDefinitions)) {
+            $sql .= implode(',' . PHP_EOL, $tableDefinitions) . PHP_EOL;
         }
 
         $sql .= ')';
-        $sql .= ' ENGINE=' . $options['engine'];
-        $sql .= ' DEFAULT CHARSET=' . $options['charset'];
-        $sql .= ' COLLATE=' . $options['collate'];
 
-        if ($autoinc) {
-            $sql .= ' AUTO_INCREMENT=1';
-        }
+        # Database-specific table options
+        $sql .= $this->schemaDriver->getCreateTableOptionsStatement($options, $autoinc);
 
         $sql .= ';' . PHP_EOL;
+
+        foreach ($this->schemaDriver->getPostCreateTableStatements(
+            $table,
+            $fullTableName,
+            $fkFields,
+            array($this, 'quoteIdentifier')
+        ) as $postCreateSql) {
+            $sql .= $postCreateSql . PHP_EOL;
+        }
 
         return $sql;
     }
@@ -1632,12 +1800,18 @@ class SchemaManager
         # FK constraints
         if ($options['constraints']) {
             foreach ($constraints as $table => $constraint) {
-                $fullTableName = db_table($table);
-                $constraintSql = "ALTER TABLE `{$fullTableName}`" . PHP_EOL;
+                $fullTableName = $this->getSchemaQualifiedTableName(db_table($table));
+                $constraintSql = "ALTER TABLE {$fullTableName}" . PHP_EOL;
                 $statement = array();
                 foreach ($constraint as $field => $rule) {
-                    $statement[] = "  ADD CONSTRAINT `{$rule['name']}` FOREIGN KEY (`{$rule['fields']}`)"
-                        . " REFERENCES `{$rule['reference_table']}` (`{$rule['reference_fields']}`)"
+                    // Normalize logical table name to actual DB table name (prefix-aware)
+                    $refTableName = $this->getSchemaQualifiedTableName(db_table($rule['reference_table']));
+                    $constraintName = $this->quoteIdentifier($rule['name']);
+                    $fieldName = $this->quoteIdentifier($rule['fields']);
+                    $refFieldName = $this->quoteIdentifier($rule['reference_fields']);
+
+                    $statement[] = "  ADD CONSTRAINT {$constraintName} FOREIGN KEY ({$fieldName})"
+                        . " REFERENCES {$refTableName} ({$refFieldName})"
                         . " ON DELETE {$rule['on_delete']}"
                         . " ON UPDATE {$rule['on_update']}";
                 }
@@ -1666,19 +1840,16 @@ class SchemaManager
         if ($options['constraints']) {
             $tables = array_keys($constraints);
             foreach ($tables as $table) {
-                $fullTableName = db_table($table);
-                $result = db_query("SHOW CREATE TABLE `{$fullTableName}`");
-                if ($result && $row = db_fetchArray($result)) {
-                    $fKeys = array();
-                    if (preg_match_all('/CONSTRAINT `(FK_[A-Z0-9]+)` FOREIGN KEY/', $row[1], $matches)) {
-                        foreach ($matches[1] as $constraintName) {
-                            $fKeys[] = " DROP FOREIGN KEY `{$constraintName}`";
-                        }
-                    }
+                $fullTableName = $this->getSchemaQualifiedTableName(db_table($table));
 
-                    if (count($fKeys)) {
-                        $sql[] = "ALTER TABLE `{$fullTableName}`" . PHP_EOL . implode(',' . PHP_EOL, $fKeys) . ';';
-                    }
+                $dropStatement = $this->schemaDriver->getDropConstraintStatement(
+                    $fullTableName,
+                    $table,
+                    $options,
+                    array($this, 'quoteIdentifier')
+                );
+                if ($dropStatement) {
+                    $sql[] = $dropStatement;
                 }
             }
         }
@@ -1746,7 +1917,7 @@ class SchemaManager
             $schema = $this->schema;
         }
 
-        return isset($schema[$table]['options']['collate']) ? $schema[$table]['options']['collate'] : null;
+        return $schema[$table]['options']['collate'] ?? null;
     }
 
     /**
@@ -1912,7 +2083,6 @@ class SchemaManager
 
             if (!isset($schemaFrom[$table])) {
                 $this->addedTables[] = $table;
-                continue;
             }
         }
     }
@@ -2072,7 +2242,6 @@ class SchemaManager
             if (isset($to[$key]) && $from[$key] != $to[$key]) {
                 $diff[$key] = $to[$key];
                 $changes++;
-                continue;
             }
         }
 
@@ -2154,7 +2323,7 @@ class SchemaManager
             return null;
         }
 
-        return unserialize(file_get_contents($file));
+        return unserialize(file_get_contents($file), ['allow_classes' => false]);
     }
 
     /**

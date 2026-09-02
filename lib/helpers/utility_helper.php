@@ -16,13 +16,13 @@
 use LucidFrame\Console\Command;
 use LucidFrame\Console\Console;
 use LucidFrame\Console\ConsoleTable;
+use LucidFrame\Core\App;
+use LucidFrame\Core\AsynFileUploader;
+use LucidFrame\Core\db\SchemaManager;
+use LucidFrame\Core\File;
 use LucidFrame\Core\Form;
 use LucidFrame\Core\Middleware;
 use LucidFrame\Core\Pager;
-use LucidFrame\Core\AsynFileUploader;
-use LucidFrame\Core\File;
-use LucidFrame\Core\SchemaManager;
-use LucidFrame\Core\App;
 
 /**
  * Set/Get a global variable/object

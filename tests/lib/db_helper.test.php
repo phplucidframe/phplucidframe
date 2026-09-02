@@ -4,10 +4,38 @@ use LucidFrame\Core\QueryBuilder;
 use LucidFrame\Test\LucidFrameTestCase;
 
 /**
- * Unit Test for db_helper.mysqli.php
+ * Unit Test for db_helper.php (common database helper functions)
+ * Tests work across both MySQL and PostgreSQL drivers
  */
 class DBHelperTestCase extends LucidFrameTestCase
 {
+    public function testDriverInitialization()
+    {
+        // Test that db_init function exists
+        // $this->assertTrue(function_exists('db_init'));
+
+        // Test that common functions exist
+        $this->assertTrue(function_exists('db_query'));
+        $this->assertTrue(function_exists('db_insert'));
+        $this->assertTrue(function_exists('db_update'));
+        $this->assertTrue(function_exists('db_delete'));
+        $this->assertTrue(function_exists('db_select'));
+        $this->assertTrue(function_exists('db_find'));
+        $this->assertTrue(function_exists('db_driver'));
+
+        // Test that driver-specific functions are loaded
+        $driver = db_driver();
+        if ($driver === 'mysql') {
+            $this->assertTrue(function_exists('mysql_db_insert'));
+            $this->assertTrue(function_exists('mysql_db_update'));
+            $this->assertTrue(function_exists('mysql_db_delete'));
+        } elseif ($driver === 'pgsql') {
+            $this->assertTrue(function_exists('pgsql_db_insert'));
+            $this->assertTrue(function_exists('pgsql_db_update'));
+            $this->assertTrue(function_exists('pgsql_db_delete'));
+        }
+    }
+
     public function testCondition()
     {
         db_prq(true);

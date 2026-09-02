@@ -17,7 +17,7 @@
  * with this source code in the file LICENSE
  */
 
-use LucidFrame\Core\Database;
+use LucidFrame\Core\db\Database;
 use LucidFrame\Core\Router;
 use LucidFrame\Core\View;
 
@@ -133,10 +133,12 @@ __autoloadHelper(array('utility'));
 # Autoload all system files by directory
 _autoloadDir(CLASSES);
 _autoloadDir(CLASSES . 'console');
+_autoloadDir(CLASSES . 'db');
 _autoloadDir(LIB . 'commands');
 
 if (__dbLoadable()) {
     # DB configuration & DB helper (required)
+    require HELPER . 'db_helper.php';
     _app('db', new Database());
 }
 

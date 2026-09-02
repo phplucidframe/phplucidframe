@@ -16,7 +16,7 @@ return array(
     # Database connection information
     'db' => array(
         'default' => array(
-            'driver'    => 'mysql',
+            'driver'    => 'mysql', // or pgsql
             'host'      => 'localhost',
             'port'      => '',
             'database'  => '', # or use _env('dev.db.default.database') here
@@ -38,7 +38,21 @@ return array(
             'charset'   => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'engine'    => 'InnoDB',
-        )
+        ),
+        /*
+       'sample_pg' => array(
+           'driver'    => 'pgsql',
+           'host'      => 'localhost',
+           'port'      => '5432',
+           'database'  => 'lucid_blog',
+           'username'  => '',
+           'password'  => '',
+           'prefix'    => '',
+           'charset'   => 'utf8',
+           'collation' => '',
+           'engine'    => '',
+       ),
+       */
     ),
     # The site contact email address - This address used as "To" for all incoming mails
     'siteReceiverEmail' => 'admin@localhost.com',

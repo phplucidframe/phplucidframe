@@ -12,7 +12,7 @@
  * with this source code in the file LICENSE
  */
 
-use LucidFrame\Core\SchemaManager;
+use LucidFrame\Core\db\SchemaManager;
 
 /**
  * @ignore Flag for image resize to the fitted dimension to the given dimension
@@ -636,11 +636,12 @@ function _schema($dbNamespace = 'default', $cache = false)
         if (is_file($f) && file_exists($f)) {
             $file = $f;
             if (pathinfo($file, PATHINFO_EXTENSION) == 'lock') {
-                return unserialize(file_get_contents($file));
-            } else {
-                $schema = include($file);
-                return is_array($schema) ? $schema : null;
+                return unserialize(file_get_contents($file), ['allow_classes' => false]);
             }
+
+            $schema = include($file);
+
+            return is_array($schema) ? $schema : null;
         }
     }
 
