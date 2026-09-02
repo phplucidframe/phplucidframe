@@ -471,8 +471,18 @@ function __kernelErrorHandler($code, $message, $file, $line)
 function __kernelShutdownHandler()
 {
     $error = error_get_last();
+    $fatalErrors = array(
+        E_ERROR,
+        E_PARSE,
+        E_CORE_ERROR,
+        E_COMPILE_ERROR,
+        E_USER_ERROR,
+        E_RECOVERABLE_ERROR,
+    );
 
-    if (is_array($error)) {
+    // error_get_last() also contains recoverable warnings and notices. Those
+    // must not be turned into a framework fatal-error response at shutdown.
+    if (is_array($error) && in_array($error['type'], $fatalErrors)) {
         if (__env() == ENV_PROD || error_reporting() == 0) {
             _log($error);
         }

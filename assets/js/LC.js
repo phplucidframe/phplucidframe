@@ -192,7 +192,7 @@
                 }
 
                 if (typeof LC.Form.hooks.afterSubmit[response.formId] !== 'undefined' && $.inArray(response.formId, LC.Form.forms) !== -1) {
-                    LC.Form.hooks.afterSubmit[response.formId]();
+                    LC.Form.hooks.afterSubmit[response.formId](response);
                 }
 
                 LC.Page.progress.stop(response.formId);
@@ -204,13 +204,14 @@
          * LC.Form.clear()
          * Clear the form values and form messages
          */
-        clear : function( formId ) {
+        clear : function( formId, force ) {
             var $form = $('#'+formId);
+            force = force || false;
 
             $form.find('.message').filter(':first').html('').hide();
             $form.find('.invalid').removeClass('invalid');
 
-            if ($form.data('clear') === 'off') {
+            if (force === false && $form.data('clear') === 'off') {
                 return;
             }
 

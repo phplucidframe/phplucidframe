@@ -580,6 +580,43 @@ function _img($file, $version = null)
     return $img;
 }
 
+/**
+ * Get the asset file name with absolute web path
+ *
+ * @param string $file An absolute file path or file name only.
+ *  The file name only will be prepended the folder name css/ and it will be looked in every sub-sites "css" folder
+ * @param string $subDir The sub-directory under assets directory, where the file exists
+ * @param bool $version Whether asset version appended to the file name or not
+ * @return string The absolute asset URL if the file found or empty string if it is not found
+ */
+function _assets($file, $subDir = '', $version = null)
+{
+    if ($subDir) {
+        $subDir = trim('assets/' . $subDir, '/') . '/';
+    } else {
+        $subDir = 'assets/';
+    }
+
+    $fileWithPath = $subDir . $file;
+    $fileWithPath = _i($fileWithPath);
+
+    if (empty($fileWithPath)) {
+        return '';
+    }
+
+    if (stripos($fileWithPath, APP_ROOT) === 0) {
+        $file = WEB_APP_ROOT . str_replace(APP_ROOT, '', $fileWithPath);
+    } else {
+        $file = WEB_ROOT . str_replace(ROOT, '', $fileWithPath);
+    }
+
+    if ($version) {
+        $file .= '?v' . _cfg('assetVersion');
+    }
+
+    return $file;
+}
+
 if (!function_exists('_image')) {
     /**
      * Display an image fitting into the desired dimension
