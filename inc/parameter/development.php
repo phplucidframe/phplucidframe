@@ -1,7 +1,8 @@
 <?php
 /*
  * Infrastructure related configuration
- * Set parameters here that is related to development environment
+ * Set parameters here that is related to development environment. The value can be accessible using _p('...').
+ * Non-sensitive values can be defined here. Sensitive values should go to inc/parameter/env.inc.
  */
 return array(
     # No trailing slash (only if it is located in a sub-directory of the document root)
