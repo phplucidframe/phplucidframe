@@ -8,8 +8,7 @@ No template engine to eliminate overhead of template processing and to save your
 
 It supports a wide range of web application development features:
 
-- Multi-driver database support (MySQL & PostgreSQL)
-- Database access API
+- Database access API with multi-driver support (MySQL & PostgreSQL)
 - Security control
 - URL routing
 - Validation helpers
@@ -80,14 +79,6 @@ PHPLucidFrame encourages a structured page organization. You can check the recom
 - [Code Samples](https://github.com/phplucidframe/phplucidframe/releases/latest) - The quick reference and coding samples are also available in the release.
 - [Sample Administration Module](https://github.com/phplucidframe/phplucidframe/wiki/Configuration-for-The-Sample-Administration-Module) - The configuration guideline for sample administration module.
 
-### Multi-Driver Database Documentation
-
-- [Multi-Driver Documentation Index](docs/multi-driver-documentation-index.md) - Complete guide to using MySQL and PostgreSQL drivers
-- [Configuration Guide](docs/multi-driver-configuration.md) - Database configuration examples and best practices
-- [Migration Guide](docs/driver-migration-guide.md) - Step-by-step guide for switching between database drivers
-- [Driver Features & Limitations](docs/driver-features-limitations.md) - Detailed comparison of MySQL and PostgreSQL features
-- [Troubleshooting Guide](docs/multi-driver-troubleshooting.md) - Solutions to common multi-driver issues
-
 ## Support & Resources
 
 - [Stackoverflow](http://stackoverflow.com/questions/tagged/phplucidframe)
@@ -110,28 +101,26 @@ From **Command Line**,
     # to run all tests
     php tests/tests.php
 
-    # to run tests/lib/db_helper.test.php only
+    # to run only the core library tests
+    php tests/lib.php
+
+    # to run only the app tests
+    php tests/app.php
+
+    # tests under tests/lib are grouped by folder (core, classes, console, db, helpers)
+    # to run tests/lib/helpers/db_helper.test.php only
     php tests/tests.php --file=db_helper
 
-    # to run tests/lib/validation_helper.test.php only
+    # to run tests/lib/helpers/validation_helper.test.php only
     php tests/tests.php -f=validation_helper
     # or
     php tests/tests.php -f validation_helper
 
-    # to run tests/lib/db_helper.test.php and query_builer.test.php
+    # to run tests/lib/helpers/db_helper.test.php and tests/lib/classes/query_builder.test.php
     php tests/tests.php --file=db_helper,query_builder
 
+    # the file name may be qualified with its group folder, for example
+    php tests/tests.php -f helpers/db_helper
+    php tests/tests.php -f db/driver_factory
+
 Note: You can also use the short-form option name `f` instead of `file`.
-
-From **Browser**,
-
-    # to run all tests
-    http://[site_url]/tests/tests.php
-
-    # to run tests/lib/db_helper.test.php only
-    http://[site_url]/tests/tests.php?file=db_helper
-
-    # to run tests/lib/db_helper.test.php and query_builer.test.php
-    http://[site_url]/tests/tests.php?file=db_helper,query_builder
-
-Note: You can also use the query string parameter `f` instead of `file`.

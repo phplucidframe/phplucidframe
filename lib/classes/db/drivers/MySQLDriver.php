@@ -161,6 +161,11 @@ class MySQLDriver implements DriverInterface
         // Normalize parameters
         $params = [];
         foreach ($args as $key => $value) {
+            // JSON-encode arrays so they can be bound to JSON/string columns
+            if (is_array($value)) {
+                $value = json_encode($value);
+            }
+
             if (is_numeric($key)) {
                 $params[$key] = $value;
                 continue;

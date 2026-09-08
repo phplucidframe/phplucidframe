@@ -15,11 +15,17 @@
 
 namespace LucidFrame\Test;
 
+/**
+ * Pure unit test base class: no database required.
+ * For tests that need the sample database, extend LucidFrameDatabaseTestCase instead.
+ */
 class LucidFrameTestCase extends \UnitTestCase
 {
     public function setUp()
     {
-        $this->cleanup();
+        // Defensive reset: a test that enables print-query mode (db_prq(true))
+        // must never leak it into subsequent tests
+        _g('db_printQuery', false);
     }
 
     public function tearDown()
@@ -40,31 +46,141 @@ class LucidFrameTestCase extends \UnitTestCase
         return $clause;
     }
 
-    protected function cleanup()
+    /* =====================================================================
+     * Assertion compatibility layer: PHPUnit-style assertion names built on
+     * top of native SimpleTest assertions only. This keeps the suite running
+     * unchanged on PHP 7.4 through the latest PHP 8.x under SimpleTest 1.3.
+     * ===================================================================== */
+
+    public function assertNotFalse($value, $message = '%s')
     {
-        // Data cleanup by each test run
-        // This is an example for the sample database
-        db_setForeignKeyCheck(0);
+        return $this->assertTrue($value !== false, $message);
+    }
 
-        db_truncate('document');
-        db_truncate('post_to_tag');
-        db_truncate('post_image');
-        db_truncate('post');
-        db_truncate('tag');
-        db_truncate('category');
-        db_truncate('lc_sessions');
-        db_truncate('social_profile');
-        db_truncate('user');
+    public function assertNotTrue($value, $message = '%s')
+    {
+        return $this->assertFalse($value === true, $message);
+    }
 
-        db_setForeignKeyCheck(1);
+    public function assertEquals($expected, $actual, $message = '%s')
+    {
+        return $this->assertEqual($expected, $actual, $message);
+    }
 
-        db_insert('user', array(
-            'full_name' => 'Administrator',
-            'username'  => 'admin',
-            'password'  => password_hash('pwd@admin', PASSWORD_DEFAULT),
-            'email'     => 'admin@localhost.com',
-            'role'      => 'admin',
-            'is_master' => 1
-        ));
+    public function assertNotEquals($expected, $actual, $message = '%s')
+    {
+        return $this->assertNotEqual($expected, $actual, $message);
+    }
+
+    public function assertGreaterThan($expected, $actual, $message = '%s')
+    {
+        return $this->assertTrue($actual > $expected, $message);
+    }
+
+    public function assertGreaterThanOrEqual($expected, $actual, $message = '%s')
+    {
+        return $this->assertTrue($actual >= $expected, $message);
+    }
+
+    public function assertLessThan($expected, $actual, $message = '%s')
+    {
+        return $this->assertTrue($actual < $expected, $message);
+    }
+
+    public function assertLessThanOrEqual($expected, $actual, $message = '%s')
+    {
+        return $this->assertTrue($actual <= $expected, $message);
+    }
+
+    public function assertIsArray($value, $message = '%s')
+    {
+        return $this->assertTrue(is_array($value), $message);
+    }
+
+    public function assertIsString($value, $message = '%s')
+    {
+        return $this->assertTrue(is_string($value), $message);
+    }
+
+    public function assertIsInt($value, $message = '%s')
+    {
+        return $this->assertTrue(is_int($value), $message);
+    }
+
+    public function assertIsBool($value, $message = '%s')
+    {
+        return $this->assertTrue(is_bool($value), $message);
+    }
+
+    public function assertIsNumeric($value, $message = '%s')
+    {
+        return $this->assertTrue(is_numeric($value), $message);
+    }
+
+    public function assertCount($expectedCount, $haystack, $message = '%s')
+    {
+        if (!is_countable($haystack)) {
+            return $this->fail($message . ' [count() expects a countable value, ' . gettype($haystack) . ' given]');
+        }
+
+        return $this->assertTrue(count($haystack) === $expectedCount, $message);
+    }
+
+    public function assertEmpty($value, $message = '%s')
+    {
+        return $this->assertTrue(empty($value), $message);
+    }
+
+    public function assertNotEmpty($value, $message = '%s')
+    {
+        return $this->assertFalse(empty($value), $message);
+    }
+
+    public function assertStringContainsString($needle, $haystack, $message = '%s')
+    {
+        return $this->assertTrue(strpos($haystack, $needle) !== false, $message);
+    }
+
+    public function assertStringNotContainsString($needle, $haystack, $message = '%s')
+    {
+        return $this->assertFalse(strpos($haystack, $needle) !== false, $message);
+    }
+
+    public function assertStringStartsWith($prefix, $string, $message = '%s')
+    {
+        return $this->assertTrue(strpos($string, $prefix) === 0, $message);
+    }
+
+    public function assertStringEndsWith($suffix, $string, $message = '%s')
+    {
+        return $this->assertTrue($suffix === '' || substr($string, -strlen($suffix)) === $suffix, $message);
+    }
+
+    public function assertArrayHasKey($key, $array, $message = '%s')
+    {
+        return $this->assertTrue(is_array($array) && array_key_exists($key, $array), $message);
+    }
+
+    public function assertArrayNotHasKey($key, $array, $message = '%s')
+    {
+        return $this->assertFalse(is_array($array) && array_key_exists($key, $array), $message);
+    }
+
+    public function assertContains($needle, $haystack, $message = '%s')
+    {
+        if (is_string($haystack)) {
+            return $this->assertTrue(strpos($haystack, $needle) !== false, $message);
+        }
+
+        return $this->assertTrue(in_array($needle, (array) $haystack), $message);
+    }
+
+    public function assertNotContains($needle, $haystack, $message = '%s')
+    {
+        if (is_string($haystack)) {
+            return $this->assertFalse(strpos($haystack, $needle) !== false, $message);
+        }
+
+        return $this->assertFalse(in_array($needle, (array) $haystack), $message);
     }
 }
