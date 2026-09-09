@@ -22,5 +22,6 @@ if (!defined('TEST')) {
 
 require_once VENDOR . 'simpletest/simpletest/src/autorun.php';
 require_once TEST_DIR . 'LucidFrameTestCase.php';
+require_once TEST_DIR . 'RecursivePatternCollector.php';
 require_once TEST_DIR . 'LucidFrameTestSuite.php';
 require_once TEST_DIR . 'LucidFrameDatabaseTestCase.php';
