@@ -393,6 +393,22 @@ function __secret($file = null)
  */
 function __env()
 {
+    global $argv;
+
+    # The automated test runners (`php tests/*.php` from CLI or `/tests/*` from
+    # the browser) force the "test" environment regardless of the .lcenv file,
+    # so the whole suite - including _p('env') and __env() - can rely on it even
+    # when this checkout is set to another environment for local work (e.g.
+    # development). `php lucidframe` keeps the current environment so that the
+    # env command can still read and switch the active environment in .lcenv.
+    if (PHP_SAPI == 'cli') {
+        if (!(isset($argv[0]) && stripos($argv[0], 'lucidframe') !== false)) {
+            return ENV_TEST;
+        }
+    } elseif (stripos($_SERVER['REQUEST_URI'], 'tests/') !== false) {
+        return ENV_TEST;
+    }
+
     $defaultEnv = ENV_DEV;
 
     $oldFile = ROOT . '.env';

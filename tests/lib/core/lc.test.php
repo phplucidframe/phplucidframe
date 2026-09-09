@@ -98,7 +98,8 @@ class LcTest extends LucidFrameTestCase
 
     public function testForEnvReadsLcEnvFile()
     {
-        // The .lcenv file of this checkout declares the test environment
+        // The test runner forces the "test" environment, so __env() reports it
+        // regardless of the .lcenv file content
         $this->assertEqual(__env(), 'test');
     }
 
