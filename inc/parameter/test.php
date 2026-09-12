@@ -15,6 +15,10 @@ return array(
     # The debug level: 0 ~ 3 or custom debug level
     'debugLevel' => 3,
     # Database connection information
+    # The keys are the database namespaces. The key matching $lc_defaultDbSource
+    # in inc/config.php is the namespace the test database is prepared from
+    # (see tests/LucidFrameDatabaseTestCase.php); any other namespace can be
+    # added the same way.
     'db' => array(
         'default' => array(
             'driver'    => 'mysql',

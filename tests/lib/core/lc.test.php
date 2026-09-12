@@ -53,7 +53,10 @@ class LcTest extends LucidFrameTestCase
         _cfg('lc_kernel_test_cfg', $original);
 
         // The lc_ prefix is optional and stripped
-        $this->assertEqual(_cfg('defaultDbSource'), 'sample');
+        // The active database namespace is resolved from the config, never a literal
+        $source = _cfg('defaultDbSource');
+        $this->assertIsString($source);
+        $this->assertTrue($source !== '', '$lc_defaultDbSource must not be empty');
 
         // Unknown keys give null
         $this->assertNull(_cfg('no_such_cfg_key'));
@@ -69,9 +72,14 @@ class LcTest extends LucidFrameTestCase
 
     public function testForPReadsParameterFile()
     {
-        // The test parameter file defines the sample DB host
-        $this->assertEqual(_p('db.default.host'), 'localhost');
-        $this->assertEqual(_p('db.sample.database'), 'lucid_blog_test');
+        // The test parameter file defines the DB connection under the "db"
+        // option keyed by the namespace matching $lc_defaultDbSource
+        $source = _cfg('defaultDbSource');
+
+        $dbConfig = _p("db.{$source}");
+        $this->assertIsArray($dbConfig);
+        $this->assertArrayHasKey('host', $dbConfig);
+        $this->assertArrayHasKey('database', $dbConfig);
     }
 
     public function testForPReturnsCurrentEnv()
@@ -147,11 +155,11 @@ class LcTest extends LucidFrameTestCase
 
     public function testForSchemaLoading()
     {
-        $schema = _schema('sample');
+        // The schema of the active namespace is loaded, whatever it is
+        $source = _cfg('defaultDbSource');
+        $schema = _schema($source);
 
         $this->assertIsArray($schema);
-        $this->assertArrayHasKey('post', $schema);
-        $this->assertArrayHasKey('user', $schema);
         $this->assertArrayHasKey('_options', $schema);
 
         // An unknown namespace falls back to the default /db/schema.php

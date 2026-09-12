@@ -77,9 +77,9 @@ class CommandsTest extends LucidFrameTestCase
         $cmd = Console::getCommands()['schema:build'];
 
         $cmd->resetToDefaults();
-        list($args, $options) = $cmd->parseArguments(array('sample', '--backup'));
+        list($args, $options) = $cmd->parseArguments(array('lc-test-db', '--backup'));
 
-        $this->assertEqual($args['db'], 'sample');
+        $this->assertEqual($args['db'], 'lc-test-db');
         $this->assertEqual($options['backup'], true);
     }
 
@@ -88,9 +88,9 @@ class CommandsTest extends LucidFrameTestCase
         $cmd = Console::getCommands()['db:seed'];
 
         $cmd->resetToDefaults();
-        list($args, $options) = $cmd->parseArguments(array('sample', '--entity=post,user'));
+        list($args, $options) = $cmd->parseArguments(array('lc-test-db', '--entity=post,user'));
 
-        $this->assertEqual($args['db'], 'sample');
+        $this->assertEqual($args['db'], 'lc-test-db');
         $this->assertEqual($options['entity'], 'post,user');
     }
 
@@ -99,9 +99,9 @@ class CommandsTest extends LucidFrameTestCase
         $cmd = Console::getCommands()['schema:load'];
 
         $cmd->resetToDefaults();
-        list($args, $options) = $cmd->parseArguments(array('sample'));
+        list($args, $options) = $cmd->parseArguments(array('lc-test-db'));
 
-        $this->assertEqual($args['db'], 'sample');
+        $this->assertEqual($args['db'], 'lc-test-db');
     }
 
     public function testForSecretGenerateCommandIsRegistered()

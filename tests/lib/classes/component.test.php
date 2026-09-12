@@ -21,19 +21,74 @@ class ComponentTest extends LucidFrameTestCase
         parent::setUp();
 
         $this->tmpDir = ROOT . '@components';
-        if (!is_dir($this->tmpDir)) {
-            mkdir($this->tmpDir, 0777, true);
+        $this->writeFixtures();
+    }
+
+    /**
+     * Write the fixture component files and verify they are readable
+     *
+     * Under filesystem pressure (real-time scanning, delete-pending
+     * directories) a just-written file can transiently fail to stat; retry
+     * the write+verify cycle a few times before giving up.
+     *
+     * @return void
+     */
+    private function writeFixtures()
+    {
+        $logic = $this->fixtureLogic();
+        $view  = $this->fixtureView();
+
+        for ($attempt = 0; $attempt < 3; $attempt++) {
+            $this->ensureDir($this->tmpDir);
+
+            $written = file_put_contents($this->tmpDir . '/test_card.php', $logic) !== false
+                && file_put_contents($this->tmpDir . '/test_card.view.php', $view) !== false;
+
+            clearstatcache(true, $this->tmpDir . '/test_card.php');
+            clearstatcache(true, $this->tmpDir . '/test_card.view.php');
+
+            if ($written
+                && is_file($this->tmpDir . '/test_card.php')
+                && is_file($this->tmpDir . '/test_card.view.php')) {
+                return;
+            }
+
+            usleep(200000);
+        }
+    }
+
+    /**
+     * Ensure the given directory exists
+     *
+     * A directory removed by a previous tearDown can still be delete-pending
+     * on Windows, making is_dir() and mkdir() disagree; pause and retry once.
+     *
+     * @param string $dir The directory path
+     * @return void
+     */
+    private function ensureDir($dir)
+    {
+        clearstatcache(true, $dir);
+        if (!is_dir($dir)) {
+            @mkdir($dir, 0777, true);
         }
 
-        file_put_contents($this->tmpDir . '/test_card.php', $this->fixtureLogic());
-        file_put_contents($this->tmpDir . '/test_card.view.php', $this->fixtureView());
+        if (!is_dir($dir)) {
+            usleep(200000);
+            clearstatcache(true, $dir);
+            @mkdir($dir, 0777, true);
+        }
     }
 
     public function tearDown()
     {
+        // Remove the fixture files but KEEP the directory: on Windows a
+        // just-removed directory stays delete-pending for a while, so a
+        // recreate in the next setUp can transiently fail (mkdir: File
+        // exists followed by a vanished name). The empty directory leaves
+        // no trace in the repository.
         @unlink($this->tmpDir . '/test_card.php');
         @unlink($this->tmpDir . '/test_card.view.php');
-        @rmdir($this->tmpDir);
 
         parent::tearDown();
     }

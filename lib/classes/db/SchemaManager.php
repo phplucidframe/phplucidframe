@@ -125,6 +125,37 @@ class SchemaManager
     private $tablesRenamed = array();
     /** @var array Renamed field names */
     private $columnsRenamed = array();
+    /** @var string|null Optional static override of the schema lock directory; NULL for the default /db/build/ */
+    private static $lockDir;
+
+    /**
+     * Set an optional static override for the schema lock directory
+     *
+     * By default the schema lock files are written to and read from /db/build/.
+     * Setting an override redirects `build()` and `import()` to write/read the
+     * lock files from the given directory (the directory is created on demand);
+     * passing NULL restores the default /db/build/ directory.
+     *
+     * @param string|null $dir The directory for the schema lock files; NULL to reset to the default /db/build/
+     * @return void
+     */
+    public static function setLockDir($dir)
+    {
+        self::$lockDir = ($dir === null) ? null : rtrim(rtrim($dir, '/'), '\\');
+    }
+
+    /**
+     * Get the schema lock directory path including the trailing directory separator
+     * @return string The full directory path
+     */
+    private static function getLockDir()
+    {
+        if (self::$lockDir === null) {
+            return DB . _DS_ . 'build' . _DS_;
+        }
+
+        return self::$lockDir . _DS_;
+    }
 
     /**
      * Constructor
@@ -539,6 +570,11 @@ class SchemaManager
         }
 
         $fileName = self::getSchemaLockFileName($dbNamespace);
+        $lockDir = dirname($fileName);
+        if (!is_dir($lockDir)) {
+            @mkdir($lockDir, 0777, true);
+        }
+
         $result = file_put_contents($fileName, serialize($this->schema));
         if ($result) {
             if ($backup) {
@@ -2313,7 +2349,7 @@ class SchemaManager
      */
     public static function getSchemaLockDefinition($dbNamespace = null)
     {
-        $file = DB . _DS_ . 'build' . _DS_ . 'schema';
+        $file = self::getLockDir() . 'schema';
         if ($dbNamespace) {
             $file .= '.' . $dbNamespace;
         }
@@ -2334,7 +2370,7 @@ class SchemaManager
      */
     public static function getSchemaLockFileName($dbNamespace = null, $backupFileName = false)
     {
-        $file = DB . _DS_ . 'build' . _DS_;
+        $file = self::getLockDir();
 
         if ($backupFileName) {
             $file .= '~';

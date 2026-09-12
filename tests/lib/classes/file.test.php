@@ -29,9 +29,7 @@ class FileTest extends LucidFrameTestCase
         parent::setUp();
 
         $this->tmpDir = FILE . 'tmp' . _DS_ . 'lc-file-test' . _DS_;
-        if (!is_dir($this->tmpDir)) {
-            @mkdir($this->tmpDir, 0777, true);
-        }
+        $this->ensureDir(rtrim($this->tmpDir, _DS_));
 
         // Create a 40x30 PNG source image
         $this->sourcePng = $this->tmpDir . 'source.png';
@@ -59,6 +57,11 @@ class FileTest extends LucidFrameTestCase
             return;
         }
 
+        // Remove the files but KEEP the directories: on Windows a
+        // just-removed directory stays delete-pending for a while, so a
+        // recreate in the next setUp can transiently fail (mkdir: File
+        // exists followed by a vanished name). The empty directory tree
+        // lives under the git-ignored files/ and leaves no repo trace.
         $items = scandir($dir);
         foreach ($items as $item) {
             if ($item === '.' || $item === '..') {
@@ -71,7 +74,29 @@ class FileTest extends LucidFrameTestCase
                 @unlink($path);
             }
         }
-        @rmdir($dir);
+    }
+
+    /**
+     * Ensure the given directory exists
+     *
+     * A directory removed by a previous tearDown can still be delete-pending
+     * on Windows, making is_dir() and mkdir() disagree; pause and retry once.
+     *
+     * @param string $dir The directory path
+     * @return void
+     */
+    private function ensureDir($dir)
+    {
+        clearstatcache(true, $dir);
+        if (!is_dir($dir)) {
+            @mkdir($dir, 0777, true);
+        }
+
+        if (!is_dir($dir)) {
+            usleep(200000);
+            clearstatcache(true, $dir);
+            @mkdir($dir, 0777, true);
+        }
     }
 
     /**

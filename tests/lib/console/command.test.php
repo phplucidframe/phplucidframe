@@ -55,12 +55,12 @@ class CommandTest extends LucidFrameTestCase
     {
         $cmd = new Command('lc-test-command');
         $cmd->addArgument('env', 'The environment');
-        $cmd->addArgument('db', 'The database namespace', 'sample');
+        $cmd->addArgument('db', 'The database namespace', 'lc-test-db');
         $cmd->resetToDefaults();
 
         $args = $cmd->getArguments();
         $this->assertEqual($args['env'], null);
-        $this->assertEqual($args['db'], 'sample');
+        $this->assertEqual($args['db'], 'lc-test-db');
     }
 
     public function testForResetToDefaults()
@@ -192,7 +192,9 @@ class CommandTest extends LucidFrameTestCase
         $this->assertArrayHasKey('lc_test_registered_command_xyz', $registered);
         $this->assertTrue($registered['lc_test_registered_command_xyz'] === $cmd);
 
+        ob_start();
         $console = new Console();
+        ob_end_clean();
         $this->assertTrue($console->hasCommand('lc_test_registered_command_xyz'));
         $this->assertTrue($console->getCommand('lc_test_registered_command_xyz') === $cmd);
         $this->assertFalse($console->hasCommand('no_such_command_xyz'));

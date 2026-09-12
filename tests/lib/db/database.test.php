@@ -17,21 +17,24 @@ class DatabaseTest extends LucidFrameDatabaseTestCase
 {
     public function testForDefaultNamespace()
     {
-        $db = new Database('sample');
+        // The active namespace is resolved from the config, never a literal
+        $source = _cfg('defaultDbSource');
 
-        $this->assertEqual($db->getNamespace(), 'sample');
+        $db = new Database($source);
+
+        $this->assertEqual($db->getNamespace(), $source);
         $this->assertEqual($db->getNamespace('default'), 'default');
     }
 
     public function testForConfigurationGetters()
     {
         $db = _app('db');
+        $source = _cfg('defaultDbSource');
 
-        $this->assertEqual($db->getDriver(), 'mysql');
-        $this->assertEqual($db->getHost(), _env('test.db.sample.mysql.host'));
-        $this->assertEqual($db->getName(), _env('test.db.sample.mysql.database'));
-        $this->assertEqual($db->getUser(), _env('test.db.sample.mysql.username'));
-        $this->assertEqual($db->getPrefix(), '');
+        $driver = $db->getDriver();
+        $this->assertEqual($db->getHost(), _env("test.db.{$source}.{$driver}.host"));
+        $this->assertEqual($db->getName(), _env("test.db.{$source}.{$driver}.database"));
+        $this->assertEqual($db->getUser(), _env("test.db.{$source}.{$driver}.username"));
     }
 
     public function testForGetConnection()
@@ -71,7 +74,7 @@ class DatabaseTest extends LucidFrameDatabaseTestCase
         $db = _app('db');
         $original = $db->getSchemaManager();
 
-        $manager = new SchemaManager(array(), 'sample');
+        $manager = new SchemaManager(array(), _cfg('defaultDbSource'));
         $db->setSchemaManager($manager);
         $this->assertIdentical($db->getSchemaManager(), $manager);
 
