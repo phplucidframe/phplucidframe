@@ -151,7 +151,7 @@ class Database
             // Load driver-specific helper file
             $helperFile = HELPER . 'db_helper.' . $this->driver . '.php';
             if (file_exists($helperFile)) {
-                require $helperFile;
+                require_once $helperFile;
             }
 
             // Load the schema of the currently connected database

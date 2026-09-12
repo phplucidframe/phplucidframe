@@ -74,6 +74,10 @@ class PostgreSQLDriver implements DriverInterface
 
         // Set PostgreSQL-specific defaults with optimizations
         extract($config);
+        $timeout = $config['timeout'] ?? 30;
+        $persistent = $config['persistent'] ?? false;
+        $charset = $config['charset'] ?? 'utf8';
+        $schema = $config['schema'] ?? 'public';
 
         try {
             // Build optimized DSN with PostgreSQL-specific options
@@ -149,6 +153,11 @@ class PostgreSQLDriver implements DriverInterface
         // Normalize parameters
         $params = [];
         foreach ($args as $key => $value) {
+            // JSON-encode arrays so they can be bound to JSON/string columns
+            if (is_array($value)) {
+                $value = json_encode($value);
+            }
+
             if (is_numeric($key)) {
                 $params[$key] = $value;
                 continue;

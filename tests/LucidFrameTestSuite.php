@@ -23,7 +23,7 @@ class LucidFrameTestSuite extends \TestSuite
     {
         parent::__construct();
 
-        switch($target) {
+        switch ($target) {
             case 'lib':
                 $this->target[] = dirname(__FILE__) . '/lib/';
                 break;
@@ -39,7 +39,8 @@ class LucidFrameTestSuite extends \TestSuite
         }
     }
 
-    public function execute() {
+    public function execute()
+    {
         $files = array();
         $options = array();
 
@@ -63,17 +64,43 @@ class LucidFrameTestSuite extends \TestSuite
         }
 
         $this->files = array_map('trim', $files);
-        if (count($files)) {
-            foreach ($files as $fileName) {
-                $fileName = $fileName.'.test.php';
-                foreach ($this->target as $dir) {
-                    $this->collect($dir, new \SimplePatternCollector('/'.$fileName.'/'));
-                }
+
+        if (count($this->files)) {
+            foreach ($this->files as $fileName) {
+                $this->collectFiles(new RecursivePatternCollector($this->buildPattern($fileName)));
             }
         } else {
-            foreach ($this->target as $dir) {
-                $this->collect($dir, new \SimplePatternCollector('/.test.php/'));
-            }
+            $this->collectFiles(new RecursivePatternCollector('~\.test\.php$~'));
         }
+    }
+
+    /**
+     * Collects test files from all target directories using the given collector
+     *
+     * @param RecursivePatternCollector $collector
+     *
+     * @return void
+     */
+    private function collectFiles(RecursivePatternCollector $collector)
+    {
+        foreach ($this->target as $dir) {
+            $this->collect($dir, $collector);
+        }
+    }
+
+    /**
+     * Builds an anchored PCRE pattern for the -f/--file filter. Accepts a plain
+     * test name ("utility_helper") or a group-qualified path ("helpers/utility_helper",
+     * "db/driver_factory"). Both "/" and "\" group separators are supported.
+     *
+     * @param string $fileName
+     *
+     * @return string
+     */
+    private function buildPattern($fileName)
+    {
+        $escaped = str_replace('/', '[/\\\\]', preg_quote($fileName, '~'));
+
+        return '~(^|[/\\\\])' . $escaped . '\.test\.php$~';
     }
 }

@@ -34,11 +34,41 @@ class Seeder
     /**
      * Constructor
      * @param string $namespace The database namespace
+     * @param string|null $path Optional directory path to the files of seeding definition;
+     *                          NULL for the default /db/seed/ directory
      */
-    public function __construct($namespace = 'default')
+    public function __construct($namespace = 'default', $path = null)
     {
         $this->dbNamespace = $namespace;
-        $this->path = DB . 'seed' . _DS_;
+        $this->setPath($path);
+    }
+
+    /**
+     * Set the directory path to the files of seeding definition
+     *
+     * The per-namespace subfolder mechanism ({path}/{dbNamespace}) is applied
+     * on the given path. By default the seeding definition files are read from
+     * /db/seed/{dbNamespace}/.
+     *
+     * @param string|null $path The directory path; NULL for the default /db/seed/
+     * @return object Seeder
+     */
+    public function setPath($path)
+    {
+        $this->path = ($path === null)
+            ? DB . 'seed' . _DS_
+            : rtrim(rtrim($path, '/'), '\\') . _DS_;
+
+        return $this;
+    }
+
+    /**
+     * Getter for the directory path to the files of seeding definition
+     * @return string The directory path including the trailing directory separator
+     */
+    public function getPath()
+    {
+        return $this->path;
     }
 
     /**

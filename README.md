@@ -8,8 +8,7 @@ No template engine to eliminate overhead of template processing and to save your
 
 It supports a wide range of web application development features:
 
-- Multi-driver database support (MySQL & PostgreSQL)
-- Database access API
+- Database access API with multi-driver support (MySQL & PostgreSQL)
 - Security control
 - URL routing
 - Validation helpers
@@ -80,14 +79,6 @@ PHPLucidFrame encourages a structured page organization. You can check the recom
 - [Code Samples](https://github.com/phplucidframe/phplucidframe/releases/latest) - The quick reference and coding samples are also available in the release.
 - [Sample Administration Module](https://github.com/phplucidframe/phplucidframe/wiki/Configuration-for-The-Sample-Administration-Module) - The configuration guideline for sample administration module.
 
-### Multi-Driver Database Documentation
-
-- [Multi-Driver Documentation Index](docs/multi-driver-documentation-index.md) - Complete guide to using MySQL and PostgreSQL drivers
-- [Configuration Guide](docs/multi-driver-configuration.md) - Database configuration examples and best practices
-- [Migration Guide](docs/driver-migration-guide.md) - Step-by-step guide for switching between database drivers
-- [Driver Features & Limitations](docs/driver-features-limitations.md) - Detailed comparison of MySQL and PostgreSQL features
-- [Troubleshooting Guide](docs/multi-driver-troubleshooting.md) - Solutions to common multi-driver issues
-
 ## Support & Resources
 
 - [Stackoverflow](http://stackoverflow.com/questions/tagged/phplucidframe)
@@ -95,43 +86,82 @@ PHPLucidFrame encourages a structured page organization. You can check the recom
 
 ## Run Tests
 
-Prerequisites:
+**Prerequisites**:
+```bash
+composer install
+```
 
-    composer install
+Configure your test database credentials. Default values for the `sample` namespace are already provided in `inc/parameter/test.php` — adjust them as needed. Sensitive values can be moved to `inc/parameter/env.inc` (git-ignored) and accessed via `_env()`.
 
-    php lucidframe env test
+Database multi-driver tests for `lib` require this configuration in `inc/parameter/env.inc`:
 
-Create a test database and setup in `inc/parameter/test.php`. By default, the database name `lucid_blog_test` is set up under `sample` namespace. Then you can create a new database `lucid_blog_test` and run `schema:load sample`.
+```php
+    'test' => array(
+        'db' => array(
+            'sample' => array(
+                'mysql' => array(
+                    'host'      => 'localhost',
+                    'port'      => '',
+                    'database'  => 'lucid_blog_test',
+                    'username'  => '',
+                    'password'  => '',
+                    'charset'   => 'utf8mb4',
+                    'collation' => 'utf8mb4_unicode_ci',
+                ),
+                'pgsql' => array(
+                    'host'      => 'localhost',
+                    'port'      => '5432',
+                    'database'  => 'lucid_blog_test',
+                    'username'  => '',
+                    'password'  => '',
+                    'charset'   => 'utf8',
+                    'collation' => '',
+                    'schema'    => 'public',
+                ),
+            ),
+        ),
+    ),
+```
 
-    php lucidframe schema:load sample
+**Commands**:
 
-From **Command Line**,
+Both Composer and direct PHP commands are available:
 
-    # to run all tests
-    php tests/tests.php
+```shell
+# to run all tests
+composer test
+# or: php tests/tests.php
 
-    # to run tests/lib/db_helper.test.php only
-    php tests/tests.php --file=db_helper
+# to run only the core library tests
+composer test:lib
+# or: php tests/lib.php
 
-    # to run tests/lib/validation_helper.test.php only
-    php tests/tests.php -f=validation_helper
-    # or
-    php tests/tests.php -f validation_helper
+# to run only the app tests
+composer test:app
+# or: php tests/app.php
 
-    # to run tests/lib/db_helper.test.php and query_builer.test.php
-    php tests/tests.php --file=db_helper,query_builder
+# tests under tests/lib are grouped by folder (core, classes, console, db, helpers)
+# to run a single test by name (basename match)
+composer test -- -f db_helper
+# or: php tests/tests.php -f db_helper
 
-Note: You can also use the short-form option name `f` instead of `file`.
+# to run multiple tests by name (comma-separated)
+composer test -- -f db_helper,query_builder
 
-From **Browser**,
+# to run a test by group-qualified path (useful when names overlap across groups)
+composer test -- -f helpers/db_helper
+composer test -- -f db/driver_factory
+```
 
-    # to run all tests
-    http://[site_url]/tests/tests.php
+Tests can also be run from a browser by passing the `f` or `file` query parameter:
+```
+http://localhost/phplucidframe/tests/tests.php?f=db_helper
+http://localhost/phplucidframe/tests/tests.php?file=helpers/db_helper,query_builder
+```
 
-    # to run tests/lib/db_helper.test.php only
-    http://[site_url]/tests/tests.php?file=db_helper
-
-    # to run tests/lib/db_helper.test.php and query_builer.test.php
-    http://[site_url]/tests/tests.php?file=db_helper,query_builder
-
-Note: You can also use the query string parameter `f` instead of `file`.
+**Note**:
+- Two test suites are available by default — `tests/app` and `tests/lib`.
+- Application-specific tests reside in `app` and framework-specific tests reside in `lib`.
+- A custom test suite can be created in a directory by adding a runner file (like `tests/app.php` or `tests/lib.php`) that extends `LucidFrameTestSuite`.
+- Pure unit test classes should extend `tests/LucidFrameTestCase.php` (no database required).
+- Database test classes should extend `tests/LucidFrameDatabaseTestCase.php`. This base class automatically prepares the test database (schema load + seed) before running tests. Set `protected $refreshPerTest = true;` in your subclass to purge and rebuild the schema before every individual test case (slower but fully isolated).

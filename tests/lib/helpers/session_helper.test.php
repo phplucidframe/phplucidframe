@@ -1,0 +1,180 @@
+<?php
+
+use LucidFrame\Test\LucidFrameDatabaseTestCase;
+
+/**
+ * Unit Test for session_helper.php
+ */
+class SessionHelperTestCase extends LucidFrameDatabaseTestCase
+{
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        // clear session
+        $_SESSION = array();
+    }
+    /**
+     * Test cases for _g()
+     */
+    public function testSessionSetterGetter()
+    {
+        if (php_sapi_name() === 'cli') {
+            return false;
+        }
+
+        // 1.
+        session_set('name.first', 'John');
+        session_set('name.last', 'Doe');
+        $this->assertEqual(session_get('name'), array(
+            'first' => 'John',
+            'last' => 'Doe'
+        ));
+        // 2.
+        session_set('name.first', 'Doe');
+        $this->assertEqual(session_get('name'), array(
+            'first' => 'Doe',
+            'last' => 'Doe'
+        ));
+        // 3.
+        session_set('foo', 'bar');
+        $this->assertEqual(session_get('foo'), 'bar');
+        // 4.
+        $animals = array('dog', 'cat', 'tiger');
+        session_set('animals', $animals);
+        $this->assertEqual(session_get('animals'), array('dog', 'cat', 'tiger'));
+        // 5.
+        session_set('user', array(
+            'fullName' => 'John Doe',
+            'firstName' => 'John',
+            'lastName' => 'Doe',
+            'age' => 31,
+            'phone' => array('123456', '987654'),
+            'address' => array(
+                'street' => array(
+                    'no' => 1,
+                    'room' => 2,
+                    'street' => 'Main Street',
+                ),
+                'city' => 'Yangon',
+                'country' => 'Myanmar',
+                'zip' => '11001'
+            )
+        ));
+        $this->assertEqual(session_get('user'), array(
+            'fullName' => 'John Doe',
+            'firstName' => 'John',
+            'lastName' => 'Doe',
+            'age' => 31,
+            'phone' => array('123456', '987654'),
+            'address' => array(
+                'street' => array(
+                    'no' => 1,
+                    'room' => 2,
+                    'street' => 'Main Street',
+                ),
+                'city' => 'Yangon',
+                'country' => 'Myanmar',
+                'zip' => '11001'
+            )
+        ));
+        // 6.
+        session_set('user.phone', '123456');
+        session_set('user.address.zip', '11111');
+        $this->assertEqual(session_get('user'), array(
+            'fullName' => 'John Doe',
+            'firstName' => 'John',
+            'lastName' => 'Doe',
+            'age' => 31,
+            'phone' => '123456',
+            'address' => array(
+                'street' => array(
+                    'no' => 1,
+                    'room' => 2,
+                    'street' => 'Main Street',
+                ),
+                'city' => 'Yangon',
+                'country' => 'Myanmar',
+                'zip' => '11111'
+            )
+        ));
+        // 7.
+        $auth = array(
+            'name' => 'tetete',
+            'email' => 'tetete@localhost.com'
+        );
+        session_set('auth', $auth, true);
+        $this->assertEqual(session_get('auth', true), $auth);
+    }
+
+    public function testForSessionDelete()
+    {
+        if (php_sapi_name() === 'cli') {
+            return false;
+        }
+
+        // 1.
+        session_delete('name');
+        $this->assertNull(session_get('name'));
+        // 2.
+        session_delete('foo');
+        $this->assertNull(session_get('foo'));
+        // 3.
+        session_delete('animals');
+        $this->assertNull(session_get('animals'));
+        // 4.
+        session_delete('user.fullName');
+        session_delete('user.address.street.room');
+        session_delete('user.address.zip');
+        $this->assertEqual(session_get('user'), array(
+            'firstName' => 'John',
+            'lastName' => 'Doe',
+            'age' => 31,
+            'phone' => '123456',
+            'address' => array(
+                'street' => array(
+                    'no' => 1,
+                    'street' => 'Main Street',
+                ),
+                'city' => 'Yangon',
+                'country' => 'Myanmar'
+            )
+        ));
+        // 5.
+        session_delete('user');
+        $this->assertNull(session_get('user'));
+    }
+
+    public function testForFlashSetterGetter()
+    {
+        if (php_sapi_name() === 'cli') {
+            return false;
+        }
+
+        // 1.
+        $msg = 'This is success flash message.';
+        flash_set($msg);
+        $expectedOutput = '<div class="message"><div class="message-success alert alert-success">' . $msg . '</div></div>';
+        $this->assertEqual(flash_get(), $expectedOutput);
+
+        // 2.
+        $msg = 'This is error flash message.';
+        flash_set($msg, null, 'error');
+        $expectedOutput = '<div class="message"><div class="message-error alert alert-danger">' . $msg . '</div></div>';
+        $this->assertEqual(flash_get(), $expectedOutput);
+
+        // 3.
+        $msg = array(
+            '(1) This is array of flash messages.',
+            '(2) This is array of flash messages.'
+        );
+        flash_set($msg, null, 'error');
+        $expectedOutput  = '<div class="message"><div class="message-error alert alert-danger"><ul>';
+        $expectedOutput .= '<li>(1) This is array of flash messages.</li>';
+        $expectedOutput .= '<li>(2) This is array of flash messages.</li>';
+        $expectedOutput .= '</ul></div></div>';
+        $this->assertEqual(flash_get(), $expectedOutput);
+    }
+}

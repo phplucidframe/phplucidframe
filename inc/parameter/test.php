@@ -1,7 +1,8 @@
 <?php
 /*
  * Infrastructure related configuration
- * Set parameters here that is related to test environment
+ * Set parameters here that is related to test environment. The value can be accessible using _p('...').
+ * Non-sensitive values can be defined here. Sensitive values should go to inc/parameter/env.inc.
  */
 return array(
     # No trailing slash (only if it is located in a sub-directory of the document root)
@@ -14,6 +15,10 @@ return array(
     # The debug level: 0 ~ 3 or custom debug level
     'debugLevel' => 3,
     # Database connection information
+    # The keys are the database namespaces. The key matching $lc_defaultDbSource
+    # in inc/config.php is the namespace the test database is prepared from
+    # (see tests/LucidFrameDatabaseTestCase.php); any other namespace can be
+    # added the same way.
     'db' => array(
         'default' => array(
             'driver'    => 'mysql',

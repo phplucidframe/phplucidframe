@@ -112,13 +112,15 @@ class File extends \SplFileInfo
 
         # if $uniqueId is explicitly given and $name was not explicitly given
         # make $name and $uniqueId same
-        if ($key === 'uniqueId' && $value & $this->name === $this->uniqueId) {
+        if ($key === 'uniqueId' && $value && $this->name === $this->uniqueId) {
             $this->name = $value;
         }
 
         if ($key === 'uploadDir' || $key === 'uploadPath') {
             $value = rtrim(rtrim($value, '/'), _DS_) . _DS_;
             $this->uploadPath = $value;
+
+            return $this;
         }
 
         $this->{$key} = $value;
