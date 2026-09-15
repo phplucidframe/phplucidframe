@@ -97,8 +97,24 @@ define('CACHE', FILE . 'cache' . _DS_);
 
 # System prerequisites
 require LIB . 'lc.php';
+# The App class must be loaded before the config is loaded
+# because the config is stored in App::$config and accessed via _app('config')
+require_once CLASSES . 'App.php';
+# Utility helpers (required) - needed by _cfg() and __configLoad() below
+# It is required directly because __autoloadHelper() relies on _baseDirs()
+# which needs LC_NAMESPACE, defined later by __envLoader()
+if (file_exists(APP_ROOT . 'helpers' . _DS_ . 'utility_helper.php')) {
+    require_once APP_ROOT . 'helpers' . _DS_ . 'utility_helper.php';
+} else {
+    require_once HELPER . 'utility_helper.php';
+}
 # System configuration variables
-require INC . 'config.php';
+# Pre-seed the running environment so that _p() can resolve it
+# while /inc/config.php is being loaded
+__configLoad(array('env' => __env()));
+$config = require INC . 'config.php';
+__configLoad($config);
+unset($config);
 # Load environment settings
 __envLoader();
 
@@ -127,9 +143,6 @@ if ($file = _i('inc' . _DS_ . 'constants.php', false)) {
     require_once $file;
 }
 
-# Utility helpers (required)
-__autoloadHelper(array('utility'));
-
 # Autoload all system files by directory
 _autoloadDir(CLASSES);
 _autoloadDir(CLASSES . 'console');
@@ -147,10 +160,18 @@ if (file_exists(INC . 'autoload.php')) {
 }
 
 # Site-specific configuration variables
-require APP_ROOT . 'inc' . _DS_ . 'site.config.php';
-if ($file = _i('inc' . _DS_ . 'site.config.php', false)) {
-    require_once $file;
+# The config files return arrays which are merged into App::$config -
+# `/app/inc/site.config.php` first, then the sub-site one if any
+$siteConfigFile = APP_ROOT . 'inc' . _DS_ . 'site.config.php';
+if (file_exists($siteConfigFile)) {
+    __configLoad(require $siteConfigFile);
 }
+if ($file = _i('inc' . _DS_ . 'site.config.php', false)) {
+    if ($file !== $siteConfigFile) {
+        __configLoad(require $file);
+    }
+}
+unset($siteConfigFile);
 
 __autoloadHelper(array('session', 'i18n'));
 
@@ -191,7 +212,7 @@ _app('auth', auth_get());
 security_prerequisite();
 
 $module = null;
-foreach ($lc_autoload as $file) {
+foreach (_cfg('autoload') as $file) {
     if ($module = _readyloader($file)) {
         require $module;
     }

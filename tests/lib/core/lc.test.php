@@ -56,10 +56,22 @@ class LcTest extends LucidFrameTestCase
         // The active database namespace is resolved from the config, never a literal
         $source = _cfg('defaultDbSource');
         $this->assertIsString($source);
-        $this->assertTrue($source !== '', '$lc_defaultDbSource must not be empty');
+        $this->assertTrue($source !== '', 'The defaultDbSource config must not be empty');
 
         // Unknown keys give null
         $this->assertNull(_cfg('no_such_cfg_key'));
+
+        // The config keys are stored without the `lc_` prefix in App::$config,
+        // but the `lc_` prefixed key still resolves to the same value
+        $this->assertEqual(_cfg('lc_env'), _cfg('env'));
+        $this->assertContains(_cfg('env'), __envList());
+
+        // A runtime (non-config) key is created dynamically via _cfg()
+        // with two parameters and read back
+        $originalCleanRoute = _cfg('cleanRoute');
+        _cfg('cleanRoute', 'runtime-route');
+        $this->assertEqual(_cfg('cleanRoute'), 'runtime-route');
+        _cfg('cleanRoute', $originalCleanRoute);
     }
 
     public function testForCfgOption()
@@ -73,7 +85,7 @@ class LcTest extends LucidFrameTestCase
     public function testForPReadsParameterFile()
     {
         // The test parameter file defines the DB connection under the "db"
-        // option keyed by the namespace matching $lc_defaultDbSource
+        // option keyed by the namespace matching the `defaultDbSource` config key
         $source = _cfg('defaultDbSource');
 
         $dbConfig = _p("db.{$source}");

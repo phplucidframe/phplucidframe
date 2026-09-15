@@ -110,11 +110,9 @@ function __session_open()
  */
 function __session_close()
 {
-    global $lc_session;
-
     $probability = mt_rand(1, 100);
     if ($probability <= 10) {
-        $maxlifetime = $lc_session['options']['gc_maxlifetime'];
+        $maxlifetime = _cfg('session.options.gc_maxlifetime');
         __session_clean($maxlifetime);
     }
 
@@ -196,7 +194,7 @@ function __session_destroy($sessionId)
  * The garbage collector callback is invoked internally by PHP periodically in order to purge old database session data
  *
  * @param  integer $maxlifetime The value of lifetime which is passed to this callback
- *   that can be set in `$lc_session['options']['gc_maxlifetime']` reflected to `session.gc_maxlifetime`
+ *   that can be set in the `session.options.gc_maxlifetime` config (`_cfg('session.options.gc_maxlifetime')`) reflected to `session.gc_maxlifetime`
  * @return boolean Success
  */
 function __session_clean($maxlifetime)
@@ -327,7 +325,7 @@ if (!function_exists('flash_get')) {
  *  In other words, you'll most likely set this with the time() function plus the number of seconds before you want it to expire.
  *  If f set to 0, or omitted, the cookie will expire at the end of the session
  * @param string $path     The path on the server in which the cookie will be available on. The default path '/' will make it available to the entire domain.
- * @param string $domain   The domain that the cookie is available to. If it is not set, it depends on the configuration variable $lc_siteDomain.
+ * @param string $domain   The domain that the cookie is available to. If it is not set, it depends on the `siteDomain` config (`_cfg('siteDomain')`).
  * @param bool   $secure   Indicates that the cookie should only be transmitted over a secure HTTPS connection from the client
  * @param bool   $httpOnly When TRUE the cookie will be made accessible only through the HTTP protocol.
  *  This means that the cookie won't be accessible by scripting languages, such as JavaScript

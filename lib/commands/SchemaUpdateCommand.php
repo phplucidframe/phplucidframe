@@ -7,7 +7,7 @@
  *      schema:update [<db>]
  *
  * Arguments:
- *      db      The database namespace defined in $lc_databases of config.php [default: "default"]
+ *      db      The database namespace defined in the `databases` config of config.php [default: "default"]
  *
  * @package     PHPLucidFrame\Console
  * @since       PHPLucidFrame v 1.17.0
@@ -23,7 +23,7 @@ use LucidFrame\Core\db\SchemaManager;
 
 _consoleCommand('schema:update')
     ->setDescription('Generates and executes the SQL to synchronize the database schema with the current mapping metadata.')
-    ->addArgument('db', 'The database namespace defined in $lc_databases of config.php; if not provided $lc_defaultDbSource will be used.')
+    ->addArgument('db', 'The database namespace defined in the `databases` config of config.php; if not provided the `defaultDbSource` config will be used.')
     ->setDefinition(function(\LucidFrame\Console\Command $cmd) {
         $db = $cmd->getArgument('db');
         if (empty($db)) {

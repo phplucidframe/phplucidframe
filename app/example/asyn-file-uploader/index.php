@@ -33,7 +33,7 @@ $photo = _asynFileUploader('photo');
 $photo->setCaption('Choose Image'); # default to "Choose File"
 $photo->setMaxSize(MAX_FILE_UPLOAD_SIZE); # default to 10MB
 # image dimension to resize, array('W1xH2', 'W1xH2');
-# this should be defined in site.config.php, for example, $lc_imageDimensions = array('400x300', '200x150');
+# this should be defined in site.config.php, for example, 'imageDimensions' => array('400x300', '200x150'),
 $photo->setDimensions(array('400x300', '200x150'));
 $photo->setExtensions(array('jpg', 'jpeg', 'png', 'gif')); # default to any file
 $photo->setUploadAsOriginalFileName(true); // the original file name will be used for uploaded file

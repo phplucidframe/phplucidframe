@@ -18,33 +18,23 @@ class I18nHelperTestCase extends LucidFrameTestCase
     {
         parent::setUp();
 
-        global $lc_lang;
-        global $lc_translationEnabled;
-        global $lc_translation;
-
-        $this->savedLang = $lc_lang;
-        $this->savedTranslationEnabled = $lc_translationEnabled;
-        $lc_translation = array();
+        $this->savedLang = _cfg('lang');
+        $this->savedTranslationEnabled = _cfg('translationEnabled');
+        _cfg('translation', array());
     }
 
     public function tearDown()
     {
-        global $lc_lang;
-        global $lc_translationEnabled;
-
-        $lc_lang = $this->savedLang;
-        $lc_translationEnabled = $this->savedTranslationEnabled;
+        _cfg('lang', $this->savedLang);
+        _cfg('translationEnabled', $this->savedTranslationEnabled);
 
         parent::tearDown();
     }
 
     public function testForTMissingKeyPassthrough()
     {
-        global $lc_lang;
-        global $lc_translationEnabled;
-
-        $lc_lang = 'en';
-        $lc_translationEnabled = true;
+        _cfg('lang', 'en');
+        _cfg('translationEnabled', true);
 
         // There is no en.po file, so the given string is returned as-is
         $this->assertEqual(_t('This string is not translated.'), 'This string is not translated.');
@@ -52,11 +42,8 @@ class I18nHelperTestCase extends LucidFrameTestCase
 
     public function testTWithParams()
     {
-        global $lc_lang;
-        global $lc_translationEnabled;
-
-        $lc_lang = 'en';
-        $lc_translationEnabled = true;
+        _cfg('lang', 'en');
+        _cfg('translationEnabled', true);
 
         $result = _t('Hello %s, you have %d new messages.', 'John', 3);
         $this->assertEqual($result, 'Hello John, you have 3 new messages.');
@@ -64,11 +51,8 @@ class I18nHelperTestCase extends LucidFrameTestCase
 
     public function testTWithTranslationDisabled()
     {
-        global $lc_lang;
-        global $lc_translationEnabled;
-
-        $lc_lang = 'en';
-        $lc_translationEnabled = false;
+        _cfg('lang', 'en');
+        _cfg('translationEnabled', false);
 
         // Even with a known translation key, the string is not translated
         $this->assertEqual(_t("'%s' is required."), "'%s' is required.");
@@ -78,11 +62,8 @@ class I18nHelperTestCase extends LucidFrameTestCase
 
     public function testTWithMyanmarTranslation()
     {
-        global $lc_lang;
-        global $lc_translationEnabled;
-
-        $lc_lang = 'my';
-        $lc_translationEnabled = true;
+        _cfg('lang', 'my');
+        _cfg('translationEnabled', true);
 
         // Force (re-)load the my.po translations
         __i18n_load();
@@ -98,22 +79,16 @@ class I18nHelperTestCase extends LucidFrameTestCase
 
     public function testTTrimsTheSourceString()
     {
-        global $lc_lang;
-        global $lc_translationEnabled;
-
-        $lc_lang = 'en';
-        $lc_translationEnabled = false;
+        _cfg('lang', 'en');
+        _cfg('translationEnabled', false);
 
         $this->assertEqual(_t('  padded string  '), 'padded string');
     }
 
     public function testTcForDefaultLang()
     {
-        global $lc_lang;
-        global $lc_translationEnabled;
-
-        $lc_lang = 'en';
-        $lc_translationEnabled = true;
+        _cfg('lang', 'en');
+        _cfg('translationEnabled', true);
 
         $content = _tc('about');
         $this->assertIsString($content);
@@ -122,11 +97,8 @@ class I18nHelperTestCase extends LucidFrameTestCase
 
     public function testTcForMyanmarLang()
     {
-        global $lc_lang;
-        global $lc_translationEnabled;
-
-        $lc_lang = 'my';
-        $lc_translationEnabled = true;
+        _cfg('lang', 'my');
+        _cfg('translationEnabled', true);
 
         $content = _tc('about');
         $this->assertIsString($content);
@@ -135,11 +107,8 @@ class I18nHelperTestCase extends LucidFrameTestCase
 
     public function testTcWithArgs()
     {
-        global $lc_lang;
-        global $lc_translationEnabled;
-
-        $lc_lang = 'en';
-        $lc_translationEnabled = true;
+        _cfg('lang', 'en');
+        _cfg('translationEnabled', true);
 
         // i18n/ctn/en/about.en contains the word "framework"
         $content = _tc('about');
@@ -148,27 +117,21 @@ class I18nHelperTestCase extends LucidFrameTestCase
 
     public function testTcWithMissingFile()
     {
-        global $lc_lang;
-        global $lc_translationEnabled;
-
-        $lc_lang = 'en';
-        $lc_translationEnabled = true;
+        _cfg('lang', 'en');
+        _cfg('translationEnabled', true);
 
         $this->assertEqual(_tc('no-such-content-file'), '');
     }
 
     public function testI18nLoadWithUnknownLang()
     {
-        global $lc_lang;
-        global $lc_translationEnabled;
-
-        $lc_lang = 'en';
-        $lc_translationEnabled = true;
+        _cfg('lang', 'en');
+        _cfg('translationEnabled', true);
 
         // There is no en.po file; __i18n_load() returns false
         $this->assertFalse(__i18n_load());
 
-        $lc_lang = 'my';
+        _cfg('lang', 'my');
         $result = __i18n_load();
 
         // The my.po file exists and must be parsed into an array of translations

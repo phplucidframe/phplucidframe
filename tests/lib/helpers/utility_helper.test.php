@@ -13,14 +13,12 @@ class UtilityHelperTestCase extends LucidFrameDatabaseTestCase
     public function __construct()
     {
         // reset to defaults
-        global $lc_autoload;
-        global $lc_sitewideWarnings;
-        global $lc_minifyHTML;
-        global $lc_translationEnabled;
-        $lc_autoload = array();
-        $lc_sitewideWarnings = array();
-        $lc_minifyHTML = true;
-        $lc_translationEnabled = true;
+        _cfg('autoload', array());
+        // reset the config values via _cfg() so that App::$config
+        // and the legacy $lc_-prefixed globals stay in sync
+        _cfg('minifyHTML', true);
+        _cfg('translationEnabled', true);
+        _cfg('sitewideWarnings', array());
 
         parent::__construct();
     }
@@ -77,18 +75,16 @@ class UtilityHelperTestCase extends LucidFrameDatabaseTestCase
      */
     public function testForFunctionsLoaderAndUnloader()
     {
-        global $lc_autoload;
-
         // 1.
         _loader('i18n_helper');
         _loader('pager_helper');
-        $this->assertEqual($lc_autoload, array(
+        $this->assertEqual(_cfg('autoload'), array(
             HELPER . 'i18n_helper.php',
             HELPER . 'pager_helper.php',
         ));
         // 2.
         _unloader('session_helper');
-        $this->assertEqual($lc_autoload, array(
+        $this->assertEqual(_cfg('autoload'), array(
             HELPER . 'i18n_helper.php',
             HELPER . 'pager_helper.php',
         ));
@@ -99,7 +95,7 @@ class UtilityHelperTestCase extends LucidFrameDatabaseTestCase
         _loader('security_helper');
         _loader('form_helper');
         _loader('file_helper');
-        $this->assertEqual($lc_autoload, array(
+        $this->assertEqual(_cfg('autoload'), array(
             HELPER . 'i18n_helper.php',
             HELPER . 'pager_helper.php',
             HELPER . 'session_helper.php',
@@ -112,7 +108,7 @@ class UtilityHelperTestCase extends LucidFrameDatabaseTestCase
         // 4.
         _unloader('file_helper');
         _unloader('pager_helper');
-        $this->assertEqual($lc_autoload, array(
+        $this->assertEqual(_cfg('autoload'), array(
             HELPER . 'i18n_helper.php',
             HELPER . 'session_helper.php',
             HELPER . 'validation_helper.php',

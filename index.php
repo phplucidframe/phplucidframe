@@ -13,4 +13,4 @@
  */
 
 require_once 'lib/bootstrap.php';
-_redirect('home', null, $lc_lang);
+_redirect('home', null, _cfg('lang'));

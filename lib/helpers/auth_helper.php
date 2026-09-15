@@ -26,7 +26,7 @@ function auth_prerequisite()
     }
 
     _header(400);
-    throw new \InvalidArgumentException('Required to configure <code class="inline">$lc_auth</code> in <code class="inline">/inc/config.php</code>.');
+    throw new \InvalidArgumentException('Required to configure the <code class="inline">auth</code> config in <code class="inline">/inc/config.php</code>.');
 }
 
 if (!function_exists('auth_create')) {
@@ -41,13 +41,13 @@ if (!function_exists('auth_create')) {
      */
     function auth_create($id, $data = null)
     {
-        $lc_auth = auth_prerequisite();
+        $authConfig = auth_prerequisite();
         $auth = auth_get();
 
         if (!$auth) {
             $session = is_object($data) ? $data : auth_getUserInfo($id);
             if (isset($session)) {
-                $fieldRole = $lc_auth['fields']['role'];
+                $fieldRole = $authConfig['fields']['role'];
 
                 // Regenerate session ID to prevent session fixation
                 if (session_status() === PHP_SESSION_ACTIVE) {
@@ -93,7 +93,7 @@ if (!function_exists('auth_getUserInfo')) {
 /**
  * Get the namespace for the authentication object
  * The Auth session name can be different upon directory (namespace)
- * But it can also be shared according to $lc_sharedNamespaces
+ * But it can also be shared according to the `sharedNamespaces` config (`_cfg('sharedNamespaces')`)
  *
  * @return string
  */

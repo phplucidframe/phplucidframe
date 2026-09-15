@@ -110,17 +110,14 @@ class Router
      */
     public static function request()
     {
-        global $lc_baseURL;
-        global $lc_languages;
-        global $lc_lang;
-        global $lc_langInURI;
-
-        $lc_langInURI = _getLangInURI();
-        if ($lc_langInURI === false) {
-            $lc_lang = $lang = _cfg('defaultLang');
+        $langInURI = _getLangInURI();
+        _cfg('langInURI', $langInURI);
+        if ($langInURI === false) {
+            $lang = _cfg('defaultLang');
         } else {
-            $lc_lang = $lang = $lc_langInURI;
+            $lang = $langInURI;
         }
+        _cfg('lang', $lang);
 
         if (isset($_GET[ROUTE]) && is_string($_GET[ROUTE])) {
             # This is a request with a ?route=foo/bar query string.
@@ -128,21 +125,21 @@ class Router
             if (isset($_GET['lang']) && $_GET['lang']) {
                 $lang = strip_tags(urldecode($_GET['lang']));
                 $lang = rtrim($lang, '/');
-                if (array_key_exists($lang, $lc_languages)) {
-                    $lc_lang = $lang;
+                if (array_key_exists($lang, _cfg('languages'))) {
+                    _cfg('lang', $lang);
                 }
             }
         } elseif (isset($_SERVER['REQUEST_URI'])) {
             # This request is either a clean URL, or 'index.php', or nonsense.
             # Extract the path from REQUEST_URI.
             $requestPath = urldecode(strtok($_SERVER['REQUEST_URI'], '?'));
-            $requestPath = str_replace($lc_baseURL, '', ltrim($requestPath, '/'));
+            $requestPath = str_replace(_cfg('baseURL'), '', ltrim($requestPath, '/'));
             $requestPath = ltrim($requestPath, '/');
 
             if ($lang) {
-                $lc_lang = $lang;
+                _cfg('lang', $lang);
                 $path = trim($requestPath, '/');
-                if (strpos($path, $lc_lang) === 0) {
+                if (strpos($path, $lang) === 0) {
                     $path = substr($path, strlen($lang));
                 }
             } else {
@@ -178,7 +175,7 @@ class Router
             }
         }
 
-        session_set('lang', $lc_lang);
+        session_set('lang', _cfg('lang'));
 
         return $path;
     }

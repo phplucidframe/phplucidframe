@@ -23,7 +23,7 @@ use LucidFrame\Core\db\SchemaManager;
  * Base class for tests that need the application database.
  *
  * The active database namespace is never a literal: it is resolved at runtime
- * from `$lc_defaultDbSource` (inc/config.php), and its connection settings are
+ * from the `defaultDbSource` config (`_cfg('defaultDbSource')` in inc/config.php), and its connection settings are
  * read from the `db` option of inc/parameter/test.php.
  *
  * The test database is prepared by replaying the exact logic of `schema:load`
@@ -124,7 +124,7 @@ class LucidFrameDatabaseTestCase extends LucidFrameTestCase
     {
         $source = _cfg('defaultDbSource');
         if ($source === null || $source === '') {
-            throw new \RuntimeException('The test database namespace could not be resolved: $lc_defaultDbSource is empty in inc/config.php.');
+            throw new \RuntimeException('The test database namespace could not be resolved: the `defaultDbSource` config is empty in inc/config.php.');
         }
 
         // Session hygiene: a failed DDL import (or a test that opens a
@@ -343,7 +343,7 @@ class LucidFrameDatabaseTestCase extends LucidFrameTestCase
      * Build a DB connection configuration array for the given driver,
      * reading every value from inc/parameter/env.inc via _env().
      *
-     * The namespace is never a literal: it is resolved from `$lc_defaultDbSource`,
+     * The namespace is never a literal: it is resolved from the `defaultDbSource` config,
      * so the env.inc keys are `test.db.{$source}.{$driver}.*`.
      *
      * Supported drivers: "mysql" and "pgsql".
