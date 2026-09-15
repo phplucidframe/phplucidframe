@@ -50,6 +50,14 @@ define('LC_CONSOLE_OPTION_NOVALUE', 6);
 /**
  * @internal
  * @ignore
+ * Runtime state variables - they are not part of the config (App::$config)
+ * but they can be read and written through `_cfg()`; the getter falls back
+ * to these legacy $lc_-prefixed globals when the key is not in the config
+ */
+
+/**
+ * @internal
+ * @ignore
  * HTTP status code
  */
 $lc_httpStatusCode = 200;
@@ -247,6 +255,33 @@ function __dotNotationToArray($key, $scope = 'global', $value = '', $serialize =
 /**
  * @internal
  * @ignore
+ *
+ * Store the given config array in `App::$config` and expose its values as
+ * the legacy `$lc_`-prefixed global variables so that the code reading them
+ * directly keeps working
+ *
+ * @param array $config The config array returned by a config file
+ * @return array The merged config array
+ */
+function __configLoad($config)
+{
+    if (!is_array($config)) {
+        return _app('config');
+    }
+
+    $merged = array_merge(_app('config'), $config);
+    _app('config', $merged);
+
+    foreach ($merged as $key => $value) {
+        $GLOBALS['lc_' . $key] = $value;
+    }
+
+    return $merged;
+}
+
+/**
+ * @internal
+ * @ignore
  * Load running environment settings
  * Initialize the site language(s), error reporting
  * Define two constants - REQUEST_URI and LC_NAMESPACE
@@ -255,16 +290,6 @@ function __dotNotationToArray($key, $scope = 'global', $value = '', $serialize =
  */
 function __envLoader()
 {
-    global $lc_languages;
-    global $lc_baseURL;
-    global $lc_sites;
-    global $lc_env;
-    global $lc_debugLevel;
-    global $lc_minifyHTML;
-    global $lc_timeZone;
-    global $lc_memoryLimit;
-    global $lc_maxExecTime;
-
     /**
      * Don't escape quotes when reading files from the database, disk, etc.
      */
@@ -273,25 +298,26 @@ function __envLoader()
      * Set the maximum amount of memory in bytes that a script is allowed to allocate.
      * This helps prevent poorly written scripts for eating up all available memory on a server
      */
-    ini_set('memory_limit', $lc_memoryLimit);
+    ini_set('memory_limit', _cfg('memoryLimit'));
     /**
      * Set the maximum time in seconds a script is allowed to run before it is terminated by the parser.
      * This helps prevent poorly written scripts from tying up the server. The default setting is 30.
      */
-    ini_set('max_execution_time', $lc_maxExecTime);
+    ini_set('max_execution_time', _cfg('maxExecTime'));
 
     /**
      * Default Time Zone
      */
-    date_default_timezone_set($lc_timeZone);
+    date_default_timezone_set(_cfg('timeZone'));
 
-    $lc_env = strtolower($lc_env);
-    if (!in_array($lc_env, __envList())) {
-        $lc_env = ENV_PROD;
+    $env = strtolower(_cfg('env'));
+    if (!in_array($env, __envList())) {
+        $env = ENV_PROD;
     }
+    _cfg('env', $env);
 
-    $lc_minifyHTML = $lc_env == ENV_PROD;
-    switch ($lc_debugLevel) {
+    _cfg('minifyHTML', $env == ENV_PROD);
+    switch (_cfg('debugLevel')) {
         case 0:
             error_reporting(0);
             ini_set('display_errors', 0);
@@ -317,42 +343,47 @@ function __envLoader()
             break;
 
         default:
-            error_reporting($lc_debugLevel); // customer debug level
+            error_reporting(_cfg('debugLevel')); // customer debug level
             ini_set('display_errors', 1);
             ini_set('display_startup_errors', 1);
     }
 
-    if (empty($lc_languages) || !is_array($lc_languages)) {
-        $lc_languages = array('en' => 'English');
+    $languages = _cfg('languages');
+    if (empty($languages) || !is_array($languages)) {
+        $languages = array('en' => 'English');
+        _cfg('languages', $languages);
     }
+
+    $baseURL = _cfg('baseURL');
+    $sites = _cfg('sites');
 
     $REQUEST_URI = $_SERVER['REQUEST_URI'];
 
-    $requestURI = substr($REQUEST_URI, strpos($REQUEST_URI, '/'.$lc_baseURL) + strlen($lc_baseURL) + 1);
+    $requestURI = substr($REQUEST_URI, strpos($REQUEST_URI, '/'.$baseURL) + strlen($baseURL) + 1);
     $requestURI = ltrim($requestURI, '/');
     $request    = explode('/', $requestURI);
-    $lc_namespace = $request[0];
+    $namespace = $request[0];
 
     if (PHP_SAPI == 'cli' && $_SERVER['SCRIPT_NAME'] == 'lucidframe' && $_SERVER['argc'] == 2) {
         $cmd = explode(':', $_SERVER['argv'][1]);
-        $lc_namespace = count($cmd) > 1 ? $cmd[0] : '';
+        $namespace = count($cmd) > 1 ? $cmd[0] : '';
     }
 
     # Clean lang code in URL
-    if (array_key_exists($lc_namespace, $lc_languages)) {
+    if (array_key_exists($namespace, $languages)) {
         array_shift($request);
-        $requestURI = ltrim(ltrim($requestURI, $lc_namespace), '/'); # clean the language code from URI
-        $lc_namespace = count($request) ? $request[0] : '';
+        $requestURI = ltrim(ltrim($requestURI, $namespace), '/'); # clean the language code from URI
+        $namespace = count($request) ? $request[0] : '';
     }
 
-    if (!(isset($lc_sites) && is_array($lc_sites) && array_key_exists($lc_namespace, $lc_sites))) {
-        $lc_namespace = '';
+    if (!(is_array($sites) && array_key_exists($namespace, $sites))) {
+        $namespace = '';
     }
 
     # REQUEST_URI excluding the base URL
     define('REQUEST_URI', trim($requestURI, '/'));
     # Namespace according to the site directories
-    define('LC_NAMESPACE', $lc_namespace);
+    define('LC_NAMESPACE', $namespace);
 
     unset($requestURI);
     unset($request);
@@ -361,7 +392,7 @@ function __envLoader()
 /**
  * @internal
  * @ignore
- * Read .secret and return the hash string which is the value for $lc_securitySecret
+ * Read .secret and return the hash string which is the value for the `securitySecret` config
  * @param  string $file The optional file path
  * @return string
  */
@@ -666,7 +697,7 @@ function _schema($dbNamespace = 'default', $cache = false)
 
 /**
  * File include helper
- * Find files under the default directories inc/, js/, css/ according to the defined site directories $lc_sites
+ * Find files under the default directories inc/, js/, css/ according to the defined site directories in the `sites` config (`_cfg('sites')`)
  *
  * @param $file    string File name with directory path
  * @param $recursive boolean True to find the file name until the site root
@@ -675,9 +706,9 @@ function _schema($dbNamespace = 'default', $cache = false)
  */
 function _i($file, $recursive = true)
 {
-    global $lc_baseURL;
-    global $lc_sites;
-    global $lc_languages;
+    $baseURL = _cfg('baseURL');
+    $sites = _cfg('sites');
+    $languages = _cfg('languages');
 
     $ext = strtolower(substr($file, strrpos($file, '.')+1)); # get the file extension
     if (in_array($ext, array('js', 'css'))) {
@@ -688,18 +719,18 @@ function _i($file, $recursive = true)
         $root = ROOT;
     }
 
-    if (!is_array($lc_languages)) {
-        $lc_languages = array('en' => 'English');
+    if (!is_array($languages)) {
+        $languages = array('en' => 'English');
     }
 
     $REQUEST_URI = $_SERVER['REQUEST_URI'];
 
-    $requestURI = trim(ltrim($REQUEST_URI, '/'.$lc_baseURL)); # /base-dir/path/to/sub/dir to path/to/sub/dir
+    $requestURI = trim(ltrim($REQUEST_URI, '/'.$baseURL)); # /base-dir/path/to/sub/dir to path/to/sub/dir
     $request    = explode('/', $requestURI);
 
     $needle = $request[0];
     # Clean lang code in URL
-    if (array_key_exists($needle, $lc_languages)) {
+    if (array_key_exists($needle, $languages)) {
         array_shift($request);
     }
 
@@ -712,11 +743,11 @@ function _i($file, $recursive = true)
         );
     }
 
-    if (isset($lc_sites) && is_array($lc_sites) && count($lc_sites)) {
-        if (array_key_exists(LC_NAMESPACE, $lc_sites)) {
+    if (is_array($sites) && count($sites)) {
+        if (array_key_exists(LC_NAMESPACE, $sites)) {
             # Find in SUB-DIR -> APP_ROOT -> ROOT
             $folders = array(
-                APP_ROOT.$lc_sites[LC_NAMESPACE]._DS_ => $appRoot . $lc_sites[LC_NAMESPACE] . _DS_,
+                APP_ROOT.$sites[LC_NAMESPACE]._DS_ => $appRoot . $sites[LC_NAMESPACE] . _DS_,
                 APP_ROOT => $appRoot,
                 ROOT => $root
             );
@@ -786,6 +817,10 @@ function _host()
 /**
  * Convenience method to get/set a config variable without global declaration within the calling function
  *
+ * The config is stored in `App::$config` as an associative array whose keys are
+ * the config variable names without the `lc_` prefix. A `lc_` prefixed key is
+ * still accepted and stripped for backward compatibility.
+ *
  * @param string $key The config variable name without prefix
  * @param mixed $value The value to set to the config variable; if it is omitted, it is Getter method.
  * @return mixed The value of the config variable
@@ -796,9 +831,30 @@ function _cfg($key, $value = '')
         $key = substr($key, 3);
     }
 
-    $key = 'lc_' . $key;
+    if (count(func_get_args()) == 2) {
+        # Write to the legacy $lc_-prefixed global variable, then mirror the
+        # top-level value into the config registry (App::$config) so that it,
+        # stored without the `lc_` prefix, stays in sync
+        $result = __dotNotationToArray('lc_' . $key, 'global', $value);
+        $topKey = substr($key, 0, strcspn($key, '.'));
+        if (array_key_exists('lc_' . $topKey, $GLOBALS)) {
+            $config = _app('config');
+            $config[$topKey] = $GLOBALS['lc_' . $topKey];
+            _app('config', $config);
+        }
 
-    return count(func_get_args()) == 2 ? __dotNotationToArray($key, 'global', $value) : __dotNotationToArray($key, 'global');
+        return $result;
+    }
+
+    $config = _app('config');
+    if (is_array($config) && array_key_exists(substr($key, 0, strcspn($key, '.')), $config)) {
+        return __dotNotationToArray($key, $config);
+    }
+
+    # Fall back to the legacy $lc_-prefixed global variable for the runtime
+    # state (such as `canonical`, `jsVars`, `cleanRoute`, `sitewideWarnings`)
+    # which is initialized in this file and is not a config key
+    return __dotNotationToArray('lc_' . $key, 'global');
 }
 
 /**
@@ -880,9 +936,9 @@ function _g($key, $value = '')
  */
 function _env($name, $default = '')
 {
-    global $lc_envParameters;
+    $envParameters = _cfg('envParameters');
 
-    if ($lc_envParameters === null) {
+    if ($envParameters === null) {
         $files = array(
             INC . 'parameter/env.inc',
             INC . 'parameter/parameter.env.inc', # TODO: for backward compatibility, to be removed
@@ -890,13 +946,14 @@ function _env($name, $default = '')
 
         foreach ($files as $file) {
             if (is_file($file) && file_exists($file)) {
-                $lc_envParameters = include($file);
+                $envParameters = include($file);
                 break;
             }
         }
+        _cfg('envParameters', $envParameters);
     }
 
-    $value = __dotNotationToArray($name, $lc_envParameters);
+    $value = __dotNotationToArray($name, $envParameters);
 
     return $value ?: $default;
 }

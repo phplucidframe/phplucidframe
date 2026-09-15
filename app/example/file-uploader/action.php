@@ -32,19 +32,19 @@ if (_isHttpPost()) {
         $file->set('uploadDir', FILE . 'tmp/'); // optional
 
         // set image dimension to resize
-        // this should be defined in site.config.php such as `$lc_imageDimensions = array('400x300', '200x150');`
+        // this should be defined in site.config.php such as `'imageDimensions' => array('400x300', '200x150'),`
         // and use here `$file->set('dimensions', _cfg('imageDimensions'));`
         // optional; if this is omitted, only primary image will be uploaded to the uploadDir set above
-        // by resizing according to `$lc_imageFilterSet['maxDimension']`
+        // by resizing according to the `imageFilterSet.maxDimension` config (`_cfg('imageFilterSet.maxDimension')`)
         $file->set('dimensions', array('400x300', '200x150'));
 
         // image resize mode:
         // FILE_RESIZE_BOTH (by default) - resize to the fitted dimension to the given dimension
         // FILE_RESIZE_WIDTH - resize to the given width, but height is aspect ratio of the width
         // FILE_RESIZE_HEIGHT - resize to the given height, but width is aspect ratio of the height
-        $file->set('resizeMode', FILE_RESIZE_BOTH); // (optional) this overrides the global setting `$lc_imageFilterSet['resizeMode']`
-        $file->set('maxDimension', '800x600'); // (optional) this overrides the global setting `$lc_imageFilterSet['maxDimension']`
-        $file->set('jpgQuality', 75); // (optional) this overrides the global setting `$lc_imageFilterSet['jpgQuality']`
+        $file->set('resizeMode', FILE_RESIZE_BOTH); // (optional) this overrides the config setting `_cfg('imageFilterSet.resizeMode')`
+        $file->set('maxDimension', '800x600'); // (optional) this overrides the config setting `_cfg('imageFilterSet.maxDimension')`
+        $file->set('jpgQuality', 75); // (optional) this overrides the config setting `_cfg('imageFilterSet.jpgQuality')`
 
         $uploads = $file->upload('filImage'); // argument could be $_FILES['filImage'] or 'filImage'
         if ($uploads) {

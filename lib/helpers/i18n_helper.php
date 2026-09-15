@@ -24,15 +24,15 @@
  */
 function _t($str/*[, mixed $args [, mixed $... ]]*/)
 {
-    global $lc_lang;
-    global $lc_translation;
-    global $lc_translationEnabled;
+    $lang = _cfg('lang');
+    $translation = _cfg('translation');
+    $translationEnabled = _cfg('translationEnabled');
 
     $args  = func_get_args();
     $str   = array_shift($args);
     $str   = trim($str);
 
-    if ($lc_translationEnabled == false) {
+    if ($translationEnabled == false) {
         return (count($args)) ? vsprintf($str, $args) : $str;
     }
 
@@ -42,11 +42,11 @@ function _t($str/*[, mixed $args [, mixed $... ]]*/)
     }
     $po[$str] = '';
 
-    if (isset($lc_translation[$lc_lang])) {
+    if (isset($translation[$lang])) {
         # check with lowercase
         $lowerStr = strtolower($str);
-        if (isset($lc_translation[$lc_lang][$lowerStr]) && !empty($lc_translation[$lc_lang][$lowerStr])) {
-            $translated = $lc_translation[$lc_lang][$lowerStr];
+        if (isset($translation[$lang][$lowerStr]) && !empty($translation[$lang][$lowerStr])) {
+            $translated = $translation[$lang][$lowerStr];
             $str = (is_array($translated)) ? $translated[0] : $translated;
         }
     }
@@ -66,10 +66,7 @@ function _t($str/*[, mixed $args [, mixed $... ]]*/)
  */
 function _tc($fileName, $args = array())
 {
-    global $lc_defaultLang;
-    global $lc_lang;
-
-    $langs = array($lc_lang, $lc_defaultLang);
+    $langs = array(_cfg('lang'), _cfg('defaultLang'));
     foreach ($langs as $lng) {
         $file = I18N . 'ctn/' . $lng . '/' . $fileName . '.' . $lng;
         if (is_file($file) && file_exists($file)) {
@@ -94,32 +91,35 @@ function _tc($fileName, $args = array())
  */
 function __i18n_load()
 {
-    global $lc_lang;
-    global $lc_translation;
-    global $lc_translationEnabled;
+    $lang = _cfg('lang');
+    $translation = _cfg('translation');
+    $translationEnabled = _cfg('translationEnabled');
 
-    if (!$lc_translationEnabled) {
+    if (!$translationEnabled) {
         return false;
     }
 
-    $filename = I18N . $lc_lang.'.po';
+    $filename = I18N . $lang.'.po';
     if (!file_exists($filename)) {
         return false;
     }
 
     # Open the po file
     if (!$file = fopen($filename, 'r')) {
-        session_delete("i18n.{$lc_lang}");
+        session_delete("i18n.{$lang}");
         return false;
     }
 
     # if the respective po file is already parsed
-    if ($translations = session_get("i18n.{$lc_lang}")) {
-        return $lc_translation[$lc_lang] = $translations;
+    if ($translations = session_get("i18n.{$lang}")) {
+        $translation[$lang] = $translations;
+        _cfg('translation', $translation);
+
+        return $translations;
     }
 
     # parse the file
-    session_delete("i18n.{$lc_lang}");
+    session_delete("i18n.{$lang}");
 
     /**
      * Thanks to CakePHP for the po file parsing logic in the do...while loop
@@ -187,9 +187,10 @@ function __i18n_load()
     fclose($file);
 
     $merge[''] = $header;
-    $lc_translation[$lc_lang] = array_merge($merge, $translations);
+    $translation[$lang] = array_merge($merge, $translations);
+    _cfg('translation', $translation);
     # Store the array of translations in Session
-    session_set("i18n.{$lc_lang}", $lc_translation[$lc_lang]);
+    session_set("i18n.{$lang}", $translation[$lang]);
 
-    return $lc_translation;
+    return $translation;
 }

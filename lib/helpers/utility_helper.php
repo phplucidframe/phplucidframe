@@ -180,7 +180,7 @@ function _flush($buffer, $phase)
 }
 
 /**
- * Minify and compress the given HTML according to the configuration `$lc_minifyHTML`
+ * Minify and compress the given HTML according to the `minifyHTML` config (`_cfg('minifyHTML')`)
  * @param  string $html HTML to be compressed or minified
  * @return string The compressed or minifed HTML
  */
@@ -243,9 +243,12 @@ function _dir($name)
  */
 function _loader($name, $path = HELPER)
 {
-    global $lc_autoload;
-
     $path = rtrim($path, _DS_) . _DS_;
+
+    $autoload = _cfg('autoload');
+    if (!is_array($autoload)) {
+        $autoload = array();
+    }
 
     $dir = $path . $name . _DS_;
     if (is_dir($dir)) {
@@ -260,16 +263,16 @@ function _loader($name, $path = HELPER)
             }
 
             if (file_exists($file)) {
-                $lc_autoload[] = $file;
+                $autoload[] = $file;
             }
         }
     } else {
         // include one file from the library
         $name = rtrim($name, '.php');
-        $lc_autoload[] = $path . $name . '.php';
+        $autoload[] = $path . $name . '.php';
     }
 
-    $lc_autoload = array_unique($lc_autoload);
+    _cfg('autoload', array_unique($autoload));
 }
 
 /**
@@ -280,13 +283,12 @@ function _loader($name, $path = HELPER)
  */
 function _unloader($name, $path = HELPER)
 {
-    global $lc_autoload;
-
     $file = $path . $name . '.php';
-    $key = array_search($file, $lc_autoload);
+    $autoload = _cfg('autoload');
+    $key = array_search($file, $autoload);
     if ($key !== false) {
-        unset($lc_autoload[$key]);
-        $lc_autoload = array_values($lc_autoload);
+        unset($autoload[$key]);
+        _cfg('autoload', array_values($autoload));
     }
 }
 
@@ -301,15 +303,14 @@ function _unloader($name, $path = HELPER)
  */
 function _readyloader($name, $path = HELPER)
 {
-    global $lc_autoload;
-
     if (stripos($name, '.php') === false) {
         $file = $path . $name . '.php';
     } else {
         $file = $name;
     }
 
-    return (array_search($file, $lc_autoload) !== false && is_file($file) && file_exists($file)) ? $file : false;
+    $autoload = _cfg('autoload');
+    return (array_search($file, $autoload) !== false && is_file($file) && file_exists($file)) ? $file : false;
 }
 
 /**
@@ -417,8 +418,12 @@ function _script()
  */
 function _addJsVar($name, $value = '')
 {
-    global $lc_jsVars;
-    $lc_jsVars[$name] = $value;
+    $jsVars = _cfg('jsVars');
+    if (!is_array($jsVars)) {
+        $jsVars = array();
+    }
+    $jsVars[$name] = $value;
+    _cfg('jsVars', $jsVars);
 }
 
 /**
@@ -801,11 +806,11 @@ function _defaultLang()
  */
 function _langs($excepts = null)
 {
-    global $lc_languages;
+    $languages = _cfg('languages');
 
     $langs = array();
     if ($excepts) {
-        foreach ($lc_languages as $lcode => $lname) {
+        foreach ($languages as $lcode => $lname) {
             if (is_array($excepts) && in_array($lcode, $excepts)) {
                 continue;
             }
@@ -815,7 +820,7 @@ function _langs($excepts = null)
             $langs[$lcode] = $lname;
         }
     } else {
-        $langs = $lc_languages;
+        $langs = $languages;
     }
 
     return count($langs) ? $langs : false;
@@ -864,7 +869,7 @@ function _defaultQueryLang()
  * If no given code, return the language name of the default language code
  *
  * @param string $lang The language code (optional - if not provided,
- *   the default language code from $lc_defaultLang will be used)
+ *   the default language code from the `defaultLang` config will be used)
  * @return string The language name as per defined in /inc/config.php
  */
 function _langName($lang = '')
@@ -873,13 +878,13 @@ function _langName($lang = '')
         return '';
     }
 
-    global $lc_languages;
+    $languages = _cfg('languages');
     $lang = str_replace('_', '-', $lang);
 
-    if (isset($lc_languages[$lang])) {
-        return $lc_languages[$lang];
+    if (isset($languages[$lang])) {
+        return $languages[$lang];
     } else {
-        return $lc_languages[_cfg('defaultLang')];
+        return $languages[_cfg('defaultLang')];
     }
 }
 
@@ -1184,9 +1189,8 @@ function _isRewriteRule()
  */
 function _canonical($url = null)
 {
-    global $lc_canonical;
     if (!is_null($url)) {
-        $lc_canonical = $url;
+        _cfg('canonical', $url);
     } else {
         return (_cfg('canonical')) ? _cfg('canonical') : _url();
     }
@@ -1198,9 +1202,8 @@ function _canonical($url = null)
  */
 function _hreflang()
 {
-    global $lc_languages;
     if (_multilingual()) {
-        foreach ($lc_languages as $hrefLang => $langDesc) {
+        foreach (_cfg('languages') as $hrefLang => $langDesc) {
             if (_canonical() == _url()) {
                 $alternate = _url('', null, $hrefLang);
                 $xdefault  = _url('', null, false);
@@ -1227,21 +1230,20 @@ function _hreflang()
  */
 function _getLangInURI()
 {
-    global $lc_languages;
-
     if (!isset($_SERVER['REQUEST_URI'])) {
         return false;
     }
 
-    if (!is_array($lc_languages)) {
-        $lc_languages = array('en' => 'English');
+    $languages = _cfg('languages');
+    if (!is_array($languages)) {
+        $languages = array('en' => 'English');
     }
 
     $baseURL = trim(_cfg('baseURL'), '/');
     $baseURL = ($baseURL) ? "/$baseURL/" : '/';
     $baseURL = str_replace('/', '\/', $baseURL); // escape literal `/`
     $baseURL = str_replace('.', '\.', $baseURL); // escape literal `.`
-    $regex   = '/^('.$baseURL.')\b('.implode('|', array_keys($lc_languages)).'){1}\b(\/?)/i';
+    $regex   = '/^('.$baseURL.')\b('.implode('|', array_keys($languages)).'){1}\b(\/?)/i';
 
     if (preg_match($regex, $_SERVER['REQUEST_URI'], $matches)) {
         return $matches[2];
@@ -1269,8 +1271,8 @@ function _validHost($host)
  */
 function _title()
 {
-    global $lc_siteName;
-    global $lc_titleSeparator;
+    $siteName = _cfg('siteName');
+    $titleSeparator = _cfg('titleSeparator');
 
     $args = func_get_args();
 
@@ -1286,7 +1288,7 @@ function _title()
     }
 
     if (count($args) == 0) {
-        return $lc_siteName;
+        return $siteName;
     }
 
     if (count($args) == 1) {
@@ -1301,23 +1303,23 @@ function _title()
         $title = $args;
     }
 
-    $lc_titleSeparator = trim($lc_titleSeparator);
-    if ($lc_titleSeparator) {
-        $lc_titleSeparator = ' '.$lc_titleSeparator.' ';
+    $titleSeparator = trim($titleSeparator);
+    if ($titleSeparator) {
+        $titleSeparator = ' '.$titleSeparator.' ';
     } else {
-        $lc_titleSeparator = ' ';
+        $titleSeparator = ' ';
     }
 
     if (count($title)) {
-        $title = implode($lc_titleSeparator, $title);
-        if ($lc_siteName) {
-            $title .= ' | '.$lc_siteName;
+        $title = implode($titleSeparator, $title);
+        if ($siteName) {
+            $title .= ' | '.$siteName;
         }
 
         return strip_tags($title);
     }
 
-    return $lc_siteName;
+    return $siteName;
 }
 
 /**
@@ -1350,19 +1352,19 @@ function _notEmpty($value)
  */
 function _breadcrumb()
 {
-    global $lc_breadcrumbSeparator;
+    $breadcrumbSeparator = _cfg('breadcrumbSeparator');
 
     $args = func_get_args();
 
-    if (!$lc_breadcrumbSeparator) {
-        $lc_breadcrumbSeparator = '&raquo;';
+    if (!$breadcrumbSeparator) {
+        $breadcrumbSeparator = '&raquo;';
     }
 
     if (count($args) == 1 && is_array($args[0])) {
         $args = $args[0];
     }
 
-    echo implode(" {$lc_breadcrumbSeparator} ", $args);
+    echo implode(" {$breadcrumbSeparator} ", $args);
 }
 
 /**
@@ -1970,7 +1972,7 @@ function _mail($from, $to, $subject = '', $message = '', $cc = '', $bcc = '')
  */
 function _postTranslationStrings($post, $fields, $lang = null)
 {
-    global $lc_languages;
+    $languages = _cfg('languages');
 
     $data = array();
     foreach ($fields as $key => $name) {
@@ -1983,7 +1985,7 @@ function _postTranslationStrings($post, $fields, $lang = null)
             if (isset($post[$name])) {
                 $data[$key.'_'._defaultLang()] = $post[$name];
             }
-            foreach ($lc_languages as $lcode => $lname) {
+            foreach ($languages as $lcode => $lname) {
                 $lcode = _queryLang($lcode);
                 if (isset($post[$name.'_'.$lcode])) {
                     $data[$key.'_'.$lcode] = $post[$name.'_'.$lcode];
@@ -2008,7 +2010,7 @@ function _postTranslationStrings($post, $fields, $lang = null)
  */
 function _getTranslationStrings($data, $fields, $lang = null)
 {
-    global $lc_languages;
+    $languages = _cfg('languages');
 
     $isObject = is_object($data);
     $data = (array) $data;
@@ -2026,7 +2028,7 @@ function _getTranslationStrings($data, $fields, $lang = null)
                 $data[$name.'_i18n'] = $data[$name];
             }
         } else {
-            foreach ($lc_languages as $lcode => $lname) {
+            foreach ($languages as $lcode => $lname) {
                 $lcode = _queryLang($lcode);
                 if (isset($data[$name.'_'.$lcode])) {
                     $data[$name.'_i18n'][$lcode] = $data[$name.'_'.$lcode];

@@ -42,8 +42,8 @@ function db_init()
  * @ignore
  *
  * Return the current database namespace
- * if $namespace is not provided, $lc_defaultDbSource will be returned
- * if $lc_defaultDbSource is empty, `default` will be returned
+ * if $namespace is not provided, the `defaultDbSource` config will be returned
+ * if the `defaultDbSource` config is empty, `default` will be returned
  *
  * @param string $namespace The given namespace
  * @return string The database namespace

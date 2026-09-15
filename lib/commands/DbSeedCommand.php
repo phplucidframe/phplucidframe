@@ -7,7 +7,7 @@
  *      db:seed [options] [<db>]
  *
  * Arguments:
- *      db      The database namespace defined in $lc_databases of config.php [default: "default"]
+ *      db      The database namespace defined in the `databases` config of config.php [default: "default"]
  *
  * @package     PHPLucidFrame\Console
  * @since       PHPLucidFrame v 1.14.0
@@ -23,7 +23,7 @@ use LucidFrame\Core\Seeder;
 
 _consoleCommand('db:seed')
     ->setDescription('Initial seeding of your database with default data or sample data')
-    ->addArgument('db', 'The database namespace defined in $lc_databases of config.php; if not provided $lc_defaultDbSource will be used.')
+    ->addArgument('db', 'The database namespace defined in the `databases` config of config.php; if not provided the `defaultDbSource` config will be used.')
     ->addOption('entity', null, 'Optional comma-separated list of entity names to be executed', null, LC_CONSOLE_OPTION_OPTIONAL)
     ->setDefinition(function (\LucidFrame\Console\Command $cmd) {
         $db = $cmd->getArgument('db');

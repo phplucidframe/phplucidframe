@@ -19,6 +19,11 @@ use LucidFrame\Core\db\Database;
 final class App
 {
     /**
+     * @var array The site configuration loaded from the config files
+     * @see /inc/config.php, /app/inc/site.config.php
+     */
+    public static $config = [];
+    /**
      * @var Database
      */
     public static $db;

@@ -171,10 +171,10 @@ function route_path()
  */
 function route_url($path = null, $queryStr = array(), $lang = '')
 {
-    global $lc_cleanURL;
-    global $lc_translationEnabled;
-    global $lc_sites;
-    global $lc_langInURI;
+    $cleanURL = _cfg('cleanURL');
+    $translationEnabled = _cfg('translationEnabled');
+    $sites = _cfg('sites');
+    $langInURI = _cfg('langInURI');
 
     $forceExcludeLangInURL = $lang === false;
 
@@ -211,13 +211,13 @@ function route_url($path = null, $queryStr = array(), $lang = '')
                 $value = urlencode($value);
             }
             if (is_numeric($key)) {
-                if ($lc_cleanURL) {
+                if ($cleanURL) {
                     $q .= '/' . $value;
                 } else {
                     $q .= '&' . $value;
                 }
             } else {
-                if ($lc_cleanURL) {
+                if ($cleanURL) {
                     $q .= '/-' . $key . '/' . $value;
                 } else {
                     $q .= '&' . $key . '=' . $value;
@@ -226,24 +226,25 @@ function route_url($path = null, $queryStr = array(), $lang = '')
         }
     }
 
-    if (is_array($lc_sites) && array_key_exists(LC_NAMESPACE, $lc_sites)) {
-        $regex = str_replace('/', '\/', $lc_sites[LC_NAMESPACE]);
+    if (is_array($sites) && array_key_exists(LC_NAMESPACE, $sites)) {
+        $regex = str_replace('/', '\/', $sites[LC_NAMESPACE]);
         $regex = '/\b^(' . $regex . ') {1}\b/i';
         $path = preg_replace($regex, LC_NAMESPACE, $path);
     }
 
     # If URI contains the language code, force to include it in the URI
-    if (is_null($lc_langInURI)) {
-        $lc_langInURI = _getLangInURI();
+    if (is_null($langInURI)) {
+        $langInURI = _getLangInURI();
+        _cfg('langInURI', $langInURI);
     }
 
-    if (empty($lang) && $lc_langInURI) {
-        $lang = $lc_langInURI;
+    if (empty($lang) && $langInURI) {
+        $lang = $langInURI;
     }
 
     $url = WEB_ROOT;
-    if ($lang && $lc_translationEnabled && !$forceExcludeLangInURL) {
-        if ($lc_cleanURL) {
+    if ($lang && $translationEnabled && !$forceExcludeLangInURL) {
+        if ($cleanURL) {
             $url .= $lang . '/';
         } else {
             $q .= '&lang=' . $lang;
@@ -255,7 +256,7 @@ function route_url($path = null, $queryStr = array(), $lang = '')
         $q = ltrim($q, '/');
     }
 
-    if ($lc_cleanURL) {
+    if ($cleanURL) {
         $url .= $path . $q;
     } else {
         $url .= $path . '?' . ltrim($q, '&');
@@ -283,10 +284,10 @@ function route_url($path = null, $queryStr = array(), $lang = '')
  */
 function route_updateQueryStr($path, &$queryStr = array())
 {
-    global $lc_cleanURL;
+    $cleanURL = _cfg('cleanURL');
 
     if (is_array($queryStr) && count($queryStr)) {
-        if ($lc_cleanURL) {
+        if ($cleanURL) {
             # For clean URLs like /path/query/str/-key/value
             foreach ($queryStr as $key => $value) {
                 $route = _arg($key, $path);
